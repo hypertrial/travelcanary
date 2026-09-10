@@ -9,8 +9,7 @@ import { locations } from "@/lib/data";
 import type { AggregateSourceResult, NormalizedEvent } from "@/lib/domain/schemas";
 import { collectAdapterResult } from "@/lib/ingestion/orchestrator";
 import { createEmptyState, mergeSourceResults } from "@/lib/risk-state";
-import { createSourceDiagnostics } from "@/lib/ingestion/types";
-import type { SourceAdapter } from "@/lib/ingestion/types";
+import { createSourceDiagnostics, type SourceAdapter } from "@/lib/ingestion/types";
 
 function scopeAdapterResult(...args: Parameters<typeof rawScopeAdapterResult>): AggregateSourceResult {
   const scoped = rawScopeAdapterResult(...args);

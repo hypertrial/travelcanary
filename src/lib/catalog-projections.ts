@@ -5,7 +5,7 @@ import { expandedDelayedHazards } from "./expanded-source-health";
 import { expandedHazardCoverage, expandedProviderApplies, expandedProviderIds, type ExpandedProviderId } from "./expanded-coverage";
 import { sourceHazards } from "./risk-policy";
 import { eventIsPublishable } from "./hazard-lifecycle";
-import { clusterPublicHazards } from "./risk-snapshot";
+import { clusterPublicHazards, projectCatalog2Snapshot } from "./risk-snapshot";
 import { HazardTypeSchema, countryCodes } from "./domain/schemas";
 import { catalogV3CountryCodes } from "./domain/contract-identities";
 import type { IngestionStateV14 } from "./domain/catalog-state";
@@ -14,7 +14,6 @@ import { conditionAttribution, conditionSourceEnabled } from "./conditions/sourc
 import { marineConditionEligible } from "./conditions/marine";
 import { currentConditions } from "./conditions/presentation";
 import { conditionRecords, CONDITIONS_TOTAL_LIMIT, emptyConditions } from "./domain/conditions";
-import { projectCatalog2Snapshot } from "./risk-snapshot";
 import { projectCatalog2Conditions } from "./conditions/state";
 
 const legacyCountries = new Set<string>(countryCodes);

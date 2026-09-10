@@ -5,10 +5,9 @@ import { currentConditions, infrastructureTiming } from "@/lib/conditions/presen
 import { buildConditionsFiles } from "@/lib/conditions/state";
 import { runConditions } from "@/lib/conditions/worker";
 import { MemoryStateStore } from "@/lib/storage";
-import { conditionSourceIds } from "@/lib/domain/conditions";
 import { describe, expect, it } from "vitest";
 import { locations } from "@/lib/data";
-import { ConditionsSchema, emptyConditions, type InfrastructureIncident } from "@/lib/domain/conditions";
+import { conditionSourceIds, ConditionsSchema, emptyConditions, type InfrastructureIncident } from "@/lib/domain/conditions";
 import { createEmptyState, buildSnapshot } from "@/lib/risk";
 import { downgradeIngestionStateV12, parseIngestionState } from "@/lib/domain/schemas";
 import { mergeInfrastructure, parseAutobahnInfrastructure, parseEacInfrastructure, parseEnemaltaInfrastructure,

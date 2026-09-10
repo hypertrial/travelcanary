@@ -1,7 +1,6 @@
 import { expandedCheckIsCurrent } from "./expanded-source-health";
 import { expandedHazardCoverage, expandedProviderApplies, isExpandedDestination } from "./expanded-coverage";
-import { catalogLocationState } from "./domain/catalog-public";
-import type { PublicCatalogLocation as PublicLocation, CatalogSnapshot as Snapshot } from "./domain/catalog-public";
+import { catalogLocationState, type PublicCatalogLocation as PublicLocation, type CatalogSnapshot as Snapshot } from "./domain/catalog-public";
 import coverageJson from "../../data/coverage.json";
 import {
   CoverageMatrixSchema,

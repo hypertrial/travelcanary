@@ -3,8 +3,7 @@ import catalog from "../../public/catalogs/3/locations.json";
 import packageJson from "../../package.json";
 import { ConditionsV3Schema, SnapshotV11Schema } from "./domain/catalog-public";
 import { catalogV3Paths } from "./catalog-paths";
-import { COLLECTOR_STATUS_KEY, LocalDatabase } from "./local-storage";
-import { readLocalPolicy } from "./local-storage";
+import { COLLECTOR_STATUS_KEY, LocalDatabase, readLocalPolicy } from "./local-storage";
 import { restrictedConditionSourceIds, restrictedSourceCount, restrictedSourcesActive } from "./local-policy";
 import { catalogV3CountryCodes } from "./domain/contract-identities";
 

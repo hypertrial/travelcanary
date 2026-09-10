@@ -26,7 +26,12 @@ function portValue(value) {
   if (!Number.isInteger(port) || port < 1 || port > 65535) fail("Port must be an integer from 1 to 65535");
   return port;
 }
-function composeArgs(current, rest) { return ["compose", "--env-file", current.environmentFile, ...rest]; }
+function compose(current, rest, options = {}) {
+  const plugin = spawnSync("docker", ["compose", "version"], { cwd: repository, env: options.env || process.env, stdio: "ignore" });
+  return plugin.status === 0
+    ? run("docker", ["compose", "--env-file", current.environmentFile, ...rest], options)
+    : run("docker-compose", ["--env-file", current.environmentFile, ...rest], options);
+}
 function inner(extraEnvironment = {}) {
   if (!existsSync(join(repository, "node_modules", "tsx"))) fail("Application dependencies are missing; run npm ci or use Docker setup");
   run(process.execPath, ["--import", "tsx", join(repository, "scripts", "travelcanary-cli.ts"), command, ...args], {
@@ -40,31 +45,31 @@ if (command === "setup" && args[runtimeIndex + 1] === "docker") {
   const environmentFile = join(controlDirectory, "docker.env");
   mkdirSync(controlDirectory, { recursive: true, mode: 0o700 });
   writeFileSync(environmentFile, `TRAVELCANARY_PORT=${port}\n`, { mode: 0o600 }); chmodSync(environmentFile, 0o600);
-  run("docker", ["compose", "version"]);
-  run("docker", ["compose", "--env-file", environmentFile, "up", "--build", "-d"]);
+  compose({ environmentFile }, ["version"]);
+  compose({ environmentFile }, ["up", "--build", "-d"]);
   writeInstall({ runtime: "docker", port, environmentFile });
   console.log(`TravelCanary is starting at http://127.0.0.1:${port}`);
 } else {
   const current = install();
-  const outsideDocker = current?.runtime === "docker" && process.env.TRAVELCANARY_DATA_DIR !== "/data";
+  const outsideDocker = current?.runtime === "docker" && !process.env.TRAVELCANARY_DATA_DIR;
   if (outsideDocker && command === "status") {
     try {
       const response = await fetch(`http://127.0.0.1:${current.port}/api/v1/health`, { signal: AbortSignal.timeout(3000) });
       console.log(JSON.stringify(await response.json(), null, 2)); if (!response.ok) process.exitCode = 1;
     } catch { fail(`TravelCanary is unavailable at http://127.0.0.1:${current.port}`); }
   } else if (outsideDocker && command === "policy") {
-    run("docker", composeArgs(current, ["exec", "-T", "collector", "bin/travelcanary", "policy", args[0]]));
+    compose(current, ["exec", "-T", "collector", "bin/travelcanary", "policy", args[0]]);
   } else if (outsideDocker && command === "backup") {
     const destination = resolve(args[0] || `travelcanary-backup-${new Date().toISOString().replaceAll(":", "-")}.db`);
     if (existsSync(destination)) fail(`Refusing to overwrite ${destination}`);
-    const bytes = run("docker", composeArgs(current, ["exec", "-T", "collector", "bin/travelcanary", "backup", "-"]), { capture: true });
+    const bytes = compose(current, ["exec", "-T", "collector", "bin/travelcanary", "backup", "-"], { capture: true });
     writeFileSync(destination, bytes, { mode: 0o600 }); chmodSync(destination, 0o600); console.log(`Private backup created: ${destination}`);
   } else if (outsideDocker && command === "restore") {
     if (!args[0]) fail("Usage: travelcanary restore <backup>");
     const bytes = readFileSync(resolve(args[0]));
-    run("docker", composeArgs(current, ["stop", "web", "collector"]));
-    try { run("docker", composeArgs(current, ["run", "--rm", "--no-deps", "-T", "collector", "bin/travelcanary", "restore", "-"]), { input: bytes }); }
-    finally { run("docker", composeArgs(current, ["up", "-d"])); }
+    compose(current, ["stop", "web", "collector"]);
+    try { compose(current, ["run", "--rm", "--no-deps", "-T", "collector", "bin/travelcanary", "restore", "-"], { input: bytes }); }
+    finally { compose(current, ["up", "-d"]); }
   } else if (command === "setup" && args[runtimeIndex + 1] === "native") {
     if (process.versions.node !== "24.19.0") fail(`Node 24.19.0 is required; found ${process.version}`);
     const npm = spawnSync("npm", ["--version"], { encoding: "utf8" });

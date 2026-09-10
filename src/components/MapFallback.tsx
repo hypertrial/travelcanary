@@ -1,7 +1,5 @@
 import type { PublicCatalogLocation as PublicLocation, CatalogSnapshot as Snapshot } from "@/lib/domain/catalog-public";
-
-import type { SelectionOrigin } from "@/lib/ui-presentation";
-import { locationState, publicAccessibleLabels, publicLabels, publicSymbols } from "@/lib/ui-presentation";
+import { locationState, publicAccessibleLabels, publicLabels, publicSymbols, type SelectionOrigin } from "@/lib/ui-presentation";
 import { UiIcon } from "./UiIcon";
 import styles from "./MapFallback.module.css";
 

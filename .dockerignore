@@ -1,5 +1,9 @@
 .git
 .next
+.next-c2
+.next-c3
+.cache
+.eslintcache
 .travelcanary
 node_modules
 playwright-report

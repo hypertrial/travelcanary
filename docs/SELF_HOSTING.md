@@ -4,7 +4,7 @@ TravelCanary supports one host, one web process, and one collector. It stores on
 
 ## Docker Compose
 
-Install Docker with Compose, then run:
+Install Docker with either the Compose plugin (`docker compose`) or standalone Compose (`docker-compose`), then run:
 
 ```bash
 bin/travelcanary setup --runtime docker --port 3000
@@ -12,6 +12,8 @@ bin/travelcanary status
 ```
 
 The setup builds one image, starts separate web and collector services, shares a named data volume, and publishes only `127.0.0.1:3000`. The web process listens on the container network so Docker port forwarding works; the host still exposes only the loopback port. The initial catalog contains all 679 destinations as `UNKNOWN`; live states replace them as reviewed sources complete.
+
+Compose gives the collector up to 60 seconds to finish its current bounded job and release its single-owner lease during a restart.
 
 ## Native Node and systemd
 

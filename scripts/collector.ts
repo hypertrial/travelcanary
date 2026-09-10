@@ -53,7 +53,7 @@ export async function runLocalCollector() {
       console.error(JSON.stringify({ event: "collector_failed", operation, message }));
     }
   });
-  void scheduler.start(completedAt);
+  void scheduler.start(completedAt); status("idle");
   let stopping = false;
   const stop = async () => {
     if (stopping) return;

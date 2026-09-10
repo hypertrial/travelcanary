@@ -1,5 +1,4 @@
-import type { AttentionPresentation, SelectionOrigin } from "@/lib/ui-presentation";
-import { locationTypeLabels, publicAccessibleLabels, publicSymbols } from "@/lib/ui-presentation";
+import { locationTypeLabels, publicAccessibleLabels, publicSymbols, type AttentionPresentation, type SelectionOrigin } from "@/lib/ui-presentation";
 import type { MapFilter } from "@/lib/map-presentation";
 import { UiIcon } from "./UiIcon";
 import styles from "./AlertsView.module.css";

@@ -5,7 +5,6 @@ import type { PublicCatalogLocation as PublicLocation, CatalogSnapshot as Snapsh
 import { useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
 import type { GeoJSONSource, Map as MapLibreMap } from "maplibre-gl";
-import type {} from "@/lib/domain/schemas";
 import {
   applyFieldGuideBasemap,
   CATALOG_OVERVIEW_MAX_ZOOM,
@@ -22,8 +21,7 @@ import {
   selectedDetailsPadding,
   type MapFilter,
 } from "@/lib/map-presentation";
-import type { SelectionOrigin } from "@/lib/ui-presentation";
-import { publicAccessibleLabels, publicLabels } from "@/lib/ui-presentation";
+import { publicAccessibleLabels, publicLabels, type SelectionOrigin } from "@/lib/ui-presentation";
 import { UiIcon } from "./UiIcon";
 import styles from "./RiskMap.module.css";
 

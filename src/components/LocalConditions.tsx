@@ -1,7 +1,6 @@
 import type { PublicCatalogLocation as PublicLocation } from "@/lib/domain/catalog-public";
 import { useEffect, useRef } from "react";
 import Image from "next/image";
-import type {} from "@/lib/domain/schemas";
 import { conditionRecords, type ConditionRecord, type ConditionSourceId, type InfrastructureIncident } from "@/lib/domain/conditions";
 import { currentConditions, infrastructureTiming } from "@/lib/conditions/presentation";
 import { useConditions } from "@/lib/use-conditions";

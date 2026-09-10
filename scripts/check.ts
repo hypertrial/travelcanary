@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-import { spawn, type ChildProcess, type StdioOptions } from "node:child_process";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawn, type ChildProcess, type StdioOptions } from "node:child_process";
 import { mkdirSync, readFileSync } from "node:fs";
 import { createServer } from "node:net";
 import os from "node:os";

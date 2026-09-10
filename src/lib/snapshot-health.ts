@@ -1,8 +1,7 @@
 import { expandedDelayedHazards } from "./expanded-source-health";
 import { expandedHazardCoverage, isExpandedDestination } from "./expanded-coverage";
 import type { HazardType } from "./domain/schemas";
-import { parseCatalogSnapshot } from "./domain/catalog-public";
-import type { PublicCatalogLocation as PublicLocation, CatalogSnapshot as Snapshot } from "./domain/catalog-public";
+import { parseCatalogSnapshot, type PublicCatalogLocation as PublicLocation, type CatalogSnapshot as Snapshot } from "./domain/catalog-public";
 import { currentPublicHazards } from "./hazard-lifecycle";
 import { enabledHazards, hazardAppliesToLocation } from "./risk-policy";
 

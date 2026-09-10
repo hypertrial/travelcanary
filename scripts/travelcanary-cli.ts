@@ -5,12 +5,11 @@ import { homedir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { initializeLocalRuntime, localDatabasePath, LocalDatabase, publicObjectLimit, readLocalPolicy, writeLocalPolicy } from "../src/lib/local-storage";
-import { disabledLocalPolicy, restrictedSourceManifestDigest } from "../src/lib/local-policy";
+import { disabledLocalPolicy, LocalRuntimePolicySchema, restrictedSourceManifestDigest } from "../src/lib/local-policy";
 import { localHealth } from "../src/lib/local-status";
 import { writeNativeFiles } from "../src/lib/native-setup";
 import { parseCatalogState } from "../src/lib/domain/catalog-state";
 import { ConditionsV3Schema, SnapshotV11Schema } from "../src/lib/domain/catalog-public";
-import { LocalRuntimePolicySchema } from "../src/lib/local-policy";
 import { catalogV3Paths } from "../src/lib/catalog-paths";
 import { catalogV3CountryCodes } from "../src/lib/domain/contract-identities";
 import { PRIVATE_STATE_HARD_LIMIT_BYTES } from "../src/lib/ingestion/limits";
@@ -112,7 +111,7 @@ function directPolicy(action: string) {
 function policy(action: string) {
   if (!new Set(["accept-restricted", "disable-restricted"]).has(action)) fail("Usage: travelcanary policy accept-restricted|disable-restricted");
   const install = readInstall();
-  if (install?.runtime === "docker" && process.env.TRAVELCANARY_DATA_DIR !== "/data") {
+  if (install?.runtime === "docker" && !process.env.TRAVELCANARY_DATA_DIR) {
     run("docker", composeArgs(install, ["exec", "-T", "collector", "bin/travelcanary", "policy", action])); return;
   }
   if (install?.dataDirectory) process.env.TRAVELCANARY_DATA_DIR = install.dataDirectory;
@@ -139,7 +138,7 @@ async function directBackup(output: string) {
 async function backupCommand(output?: string) {
   const install = readInstall();
   const destination = resolve(output || `travelcanary-backup-${new Date().toISOString().replaceAll(":", "-")}.db`);
-  if (install?.runtime === "docker" && process.env.TRAVELCANARY_DATA_DIR !== "/data") {
+  if (install?.runtime === "docker" && !process.env.TRAVELCANARY_DATA_DIR) {
     if (existsSync(destination)) fail(`Refusing to overwrite ${destination}`);
     const bytes = run("docker", composeArgs(install, ["exec", "-T", "collector", "bin/travelcanary", "backup", "-"]), { capture: true });
     writeFileSync(destination, bytes!, { mode: 0o600 }); console.log(`Private backup created: ${destination}`); return;
@@ -193,7 +192,7 @@ function directRestore(input: string) {
 function restoreCommand(input?: string) {
   if (!input) fail("Usage: travelcanary restore <backup>");
   const install = readInstall();
-  if (install?.runtime === "docker" && process.env.TRAVELCANARY_DATA_DIR !== "/data") {
+  if (install?.runtime === "docker" && !process.env.TRAVELCANARY_DATA_DIR) {
     const bytes = readFileSync(resolve(input));
     run("docker", composeArgs(install, ["stop", "web", "collector"]));
     try { run("docker", composeArgs(install, ["run", "--rm", "--no-deps", "-T", "collector", "bin/travelcanary", "restore", "-"]), { input: bytes }); }

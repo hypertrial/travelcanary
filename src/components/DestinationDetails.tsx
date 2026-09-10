@@ -1,5 +1,4 @@
-import { catalogLocationState } from "@/lib/domain/catalog-public";
-import type { PublicCatalogLocation as PublicLocation, CatalogSnapshot as Snapshot } from "@/lib/domain/catalog-public";
+import { catalogLocationState, type PublicCatalogLocation as PublicLocation, type CatalogSnapshot as Snapshot } from "@/lib/domain/catalog-public";
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { Button, Dialog, Modal, ModalOverlay } from "react-aria-components";
 import type { LocationState, PublicHazard} from "@/lib/domain/schemas";

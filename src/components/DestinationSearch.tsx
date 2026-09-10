@@ -1,7 +1,6 @@
 import { useId, useState, type RefObject } from "react";
 import { Button, ComboBox, ComboBoxStateContext, Input, Label, ListBox, ListBoxItem, Popover } from "react-aria-components";
-import type { LocationSummary, SelectionOrigin } from "@/lib/ui-presentation";
-import { locationTypeLabels, normalizeSearchTerm, publicAccessibleLabels, publicLabels, publicSymbols } from "@/lib/ui-presentation";
+import { locationTypeLabels, normalizeSearchTerm, publicAccessibleLabels, publicLabels, publicSymbols, type LocationSummary, type SelectionOrigin } from "@/lib/ui-presentation";
 import { UiIcon } from "./UiIcon";
 import styles from "./DestinationSearch.module.css";
 

@@ -27,14 +27,22 @@ describe("native self-host setup", () => {
   it("keeps Docker on loopback with one image and one shared named volume", async () => {
     const compose = await import("node:fs/promises").then(({ readFile }) => readFile("compose.yaml", "utf8"));
     const dockerfile = await import("node:fs/promises").then(({ readFile }) => readFile("Dockerfile", "utf8"));
+    const cli = await import("node:fs/promises").then(({ readFile }) => readFile("bin/travelcanary", "utf8"));
+    const [innerCli, collector] = await import("node:fs/promises").then(({ readFile }) => Promise.all(["scripts/travelcanary-cli.ts", "scripts/collector.ts"].map((path) => readFile(path, "utf8"))));
     const packageJson = JSON.parse(await import("node:fs/promises").then(({ readFile }) => readFile("package.json", "utf8")));
     expect(compose).toContain('"127.0.0.1:${TRAVELCANARY_PORT:-3000}:3000"');
     expect(compose).toContain("command: npm run start:container");
+    expect(compose).toContain('command: ["node", "--import", "tsx", "scripts/collector.ts"]');
+    expect(compose).toContain("stop_grace_period: 60s");
     expect(compose.match(/image: travelcanary:local/g)).toHaveLength(2);
     expect(compose.match(/travelcanary-data:\/data/g)).toHaveLength(2);
     expect(compose).not.toMatch(/network_mode:\s*host|privileged:\s*true/);
     expect(packageJson.scripts["start:container"]).toBe("next start --hostname 0.0.0.0");
     expect(dockerfile).toContain("node:24.19.0-bookworm-slim");
     expect(dockerfile).toContain('CMD ["npm", "run", "start:container"]');
+    expect(cli).toMatch(/plugin\.status === 0[\s\S]+docker-compose/);
+    expect(cli).toContain('current?.runtime === "docker" && !process.env.TRAVELCANARY_DATA_DIR');
+    expect(innerCli.match(/install\?\.runtime === "docker" && !process\.env\.TRAVELCANARY_DATA_DIR/g)).toHaveLength(3);
+    expect(collector).toContain('void scheduler.start(completedAt); status("idle");');
   });
 });

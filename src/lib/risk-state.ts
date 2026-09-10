@@ -1,7 +1,6 @@
 import { aggregatePartitionHealth } from "./partition-health";
-import type { NormalizedEventV13 as NormalizedEvent } from "./domain/catalog-state";
 import catalogV2 from "../../data/catalog-releases/2.json";
-import { expandedReceiptLocationIds, IngestionStateV14Schema, parseCatalogState, type IngestionStateV14 as IngestionState } from "./domain/catalog-state";
+import { expandedReceiptLocationIds, IngestionStateV14Schema, parseCatalogState, type IngestionStateV14 as IngestionState, type NormalizedEventV13 as NormalizedEvent } from "./domain/catalog-state";
 import { createHash } from "node:crypto";
 import {
   countryCodes,

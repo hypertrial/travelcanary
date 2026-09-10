@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { Button, Dialog, DialogTrigger, Heading, Modal, ModalOverlay, Popover } from "react-aria-components";
-import type { AttentionPresentation, SelectionOrigin } from "@/lib/ui-presentation";
-import { publicLabels, publicSymbols } from "@/lib/ui-presentation";
+import { publicLabels, publicSymbols, type AttentionPresentation, type SelectionOrigin } from "@/lib/ui-presentation";
 import { UiIcon } from "./UiIcon";
 import styles from "./AttentionTray.module.css";
 

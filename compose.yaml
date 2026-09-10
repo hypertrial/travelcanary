@@ -24,9 +24,10 @@ services:
       start_period: 30s
   collector:
     image: travelcanary:local
-    command: npm run collector
+    command: ["node", "--import", "tsx", "scripts/collector.ts"]
     init: true
     restart: unless-stopped
+    stop_grace_period: 60s
     environment:
       TRAVELCANARY_RUNTIME: local
       TRAVELCANARY_DATA_DIR: /data
