@@ -1,5 +1,6 @@
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, readFileSync, statSync } from "node:fs";
+import { DatabaseSync } from "node:sqlite";
+import { copyFileSync, mkdtempSync, readFileSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -8,9 +9,10 @@ import { catalogV3Paths } from "@/lib/catalog-paths";
 import { SnapshotV11Schema } from "@/lib/domain/catalog-public";
 import { catalogV3CountryCodes } from "@/lib/domain/contract-identities";
 import { collectorEnvironment, disabledLocalPolicy, restrictedSourceManifestDigest, restrictedSourcesActive } from "@/lib/local-policy";
+import { conditionAttribution } from "@/lib/conditions/sources";
 import {
   initializeLocalRuntime, LocalCatalog3SnapshotStore, LocalDatabase, localStores,
-  readLocalPolicy, writeLocalPolicy,
+  publicObjectLimit, readLocalPolicy, writeLocalPolicy,
 } from "@/lib/local-storage";
 import { localPluginSummary } from "@/lib/local-status";
 
@@ -93,6 +95,22 @@ describe("local SQLite runtime", () => {
     database.close();
   });
 
+  it("keeps the disclosure active while published restricted data remains", () => {
+    const { database } = temporaryDatabase(); initializeLocalRuntime(database);
+    const key = "catalogs/3/conditions/v3/PT.json";
+    const row = database.readPublic(key)!;
+    const conditions = JSON.parse(row.value);
+    conditions.sources["ipma-observations"] = conditionAttribution("ipma-observations");
+    conditions.sourceHealth["ipma-observations"] = { status: "ok", checkedAt: conditions.generatedAt, limitationCode: null };
+    database.compareAndSwap("public", key, JSON.stringify(conditions), row.revision, publicObjectLimit(key));
+
+    const summary = localPluginSummary(database);
+    expect(readLocalPolicy(database).policy).toEqual(disabledLocalPolicy());
+    expect(summary.restrictedSources.active).toBe(true);
+    expect(summary.restrictedSources.disclosure).toMatch(/published data still includes restricted/i);
+    database.close();
+  });
+
   it("rejects partial initialization and incomplete catalog-3 conditions generations", async () => {
     const partial = temporaryDatabase().database;
     partial.compareAndSwap("private", "test/partial", "{}", null, 10);
@@ -124,6 +142,24 @@ describe("local SQLite runtime", () => {
     expect(readLocalPolicy(restored).policy).toEqual(disabledLocalPolicy());
     expect(readFileSync(backupPath).byteLength).toBeGreaterThan(0);
     restored.close();
+  }, 20_000);
+
+  it("rejects an integrity-valid backup missing required public objects", () => {
+    const { directory, path, database } = temporaryDatabase(); initializeLocalRuntime(database); database.close();
+    const incompleteBackup = join(directory, "incomplete-backup.db");
+    copyFileSync(path, incompleteBackup);
+    const candidate = new DatabaseSync(incompleteBackup);
+    candidate.prepare("DELETE FROM objects WHERE namespace='public' AND key='catalogs/3/conditions/v3/PT.json'").run();
+    candidate.close();
+    const environment = { ...process.env, TRAVELCANARY_DATA_DIR: directory };
+    const command = join(process.cwd(), "scripts", "travelcanary-cli.ts");
+
+    expect(() => execFileSync(process.execPath, ["--import", "tsx", command, "restore", incompleteBackup], {
+      cwd: process.cwd(), env: environment, stdio: "pipe",
+    })).toThrow();
+    const original = new LocalDatabase(path);
+    expect(original.readPublic("catalogs/3/conditions/v3/PT.json")).toBeDefined();
+    original.close();
   }, 20_000);
 });
 

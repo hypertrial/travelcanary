@@ -33,7 +33,7 @@ Local collection does not call these routes. The long-running collector imports 
 
 ## 4. Backups and recovery
 
-Use `bin/travelcanary backup` and `bin/travelcanary restore`. Backups include private ingestion state and must be handled as private data. Restore validates catalog 3 and required public/private objects, preserves the replaced database with a timestamp, and restarts services managed by setup.
+Use `bin/travelcanary backup` and `bin/travelcanary restore`. Backups include private ingestion state and must be handled as private data. Restore validates catalog 3, both required snapshots, all 45 conditions files, and required private objects before replacing anything; it preserves the replaced database with a timestamp and restarts services managed by setup.
 
 If collection is unhealthy, check `bin/travelcanary status` and service logs. Do not delete leases, cursors, reservations, or the database to force a refresh. A restart preserves state and an expired collector lease can be acquired by exactly one replacement process.
 

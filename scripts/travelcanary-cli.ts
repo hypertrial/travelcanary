@@ -4,13 +4,16 @@ import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSy
 import { homedir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { initializeLocalRuntime, localDatabasePath, LocalDatabase, readLocalPolicy, writeLocalPolicy } from "../src/lib/local-storage";
+import { initializeLocalRuntime, localDatabasePath, LocalDatabase, publicObjectLimit, readLocalPolicy, writeLocalPolicy } from "../src/lib/local-storage";
 import { disabledLocalPolicy, restrictedSourceManifestDigest } from "../src/lib/local-policy";
 import { localHealth } from "../src/lib/local-status";
 import { writeNativeFiles } from "../src/lib/native-setup";
 import { parseCatalogState } from "../src/lib/domain/catalog-state";
-import { SnapshotV11Schema } from "../src/lib/domain/catalog-public";
+import { ConditionsV3Schema, SnapshotV11Schema } from "../src/lib/domain/catalog-public";
 import { LocalRuntimePolicySchema } from "../src/lib/local-policy";
+import { catalogV3Paths } from "../src/lib/catalog-paths";
+import { catalogV3CountryCodes } from "../src/lib/domain/contract-identities";
+import { PRIVATE_STATE_HARD_LIMIT_BYTES } from "../src/lib/ingestion/limits";
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const controlDirectory = join(repository, ".travelcanary");
@@ -150,14 +153,25 @@ function validateBackup(path: string) {
   try {
     const integrity = candidate.prepare("PRAGMA quick_check").all() as Array<{ quick_check: string }>;
     if (integrity.length !== 1 || integrity[0].quick_check !== "ok") throw new Error("Backup failed SQLite integrity validation");
-    const state = candidate.prepare("SELECT value FROM objects WHERE namespace='private' AND key='ingestion/state.json'").get() as { value?: Uint8Array | string } | undefined;
-    const snapshot = candidate.prepare("SELECT value FROM objects WHERE namespace='public' AND key='catalogs/3/latest.json'").get() as { value?: Uint8Array | string } | undefined;
-    const policy = candidate.prepare("SELECT value FROM objects WHERE namespace='private' AND key='runtime/policy.json'").get() as { value?: Uint8Array | string } | undefined;
-    if (!state?.value || !snapshot?.value || !policy?.value) throw new Error("Backup is not a complete TravelCanary database");
     const decode = (value: Uint8Array | string) => typeof value === "string" ? value : Buffer.from(value).toString("utf8");
-    if (parseCatalogState(JSON.parse(decode(state.value))).collection.catalogVersion !== 3) throw new Error("Backup catalog is not supported");
-    SnapshotV11Schema.parse(JSON.parse(decode(snapshot.value)));
-    LocalRuntimePolicySchema.parse(JSON.parse(decode(policy.value)));
+    const select = candidate.prepare("SELECT value FROM objects WHERE namespace=? AND key=?");
+    const required = <T>(scope: "private" | "public", key: string, maxBytes: number, parse: (value: unknown) => T) => {
+      const row = select.get(scope, key) as { value?: Uint8Array | string } | undefined;
+      if (!row?.value) throw new Error(`Backup is missing required ${scope} object ${key}`);
+      const raw = decode(row.value);
+      if (Buffer.byteLength(raw) > maxBytes) throw new Error(`Backup object ${key} exceeds its size limit`);
+      return parse(JSON.parse(raw));
+    };
+    const state = required("private", "ingestion/state.json", PRIVATE_STATE_HARD_LIMIT_BYTES, parseCatalogState);
+    if (state.collection.catalogVersion !== 3) throw new Error("Backup catalog is not supported");
+    required("private", "runtime/policy.json", 4096, LocalRuntimePolicySchema.parse);
+    required("public", catalogV3Paths.snapshot, publicObjectLimit(catalogV3Paths.snapshot), SnapshotV11Schema.parse);
+    required("public", catalogV3Paths.previousSnapshot, publicObjectLimit(catalogV3Paths.previousSnapshot), SnapshotV11Schema.parse);
+    for (const countryCode of catalogV3CountryCodes) {
+      const key = `${catalogV3Paths.conditions}${countryCode}.json`;
+      const conditions = required("public", key, publicObjectLimit(key), ConditionsV3Schema.parse);
+      if (conditions.countryCode !== countryCode) throw new Error(`Backup conditions object ${key} has the wrong country`);
+    }
   } finally { candidate.close(); }
 }
 

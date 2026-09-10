@@ -19,6 +19,7 @@ const restrictedManifest = {
 
 export const restrictedSourceCount = restrictedManifest.localConditions.length
   + restrictedManifest.providers.length + restrictedManifest.nationalWarningSystems.length;
+export const restrictedConditionSourceIds = new Set(restrictedManifest.localConditions.map(({ id }) => id));
 export const restrictedSourceManifestDigest = createHash("sha256")
   .update(JSON.stringify(restrictedManifest)).digest("hex");
 

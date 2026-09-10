@@ -35,6 +35,8 @@ bin/travelcanary policy disable-restricted
 
 Acceptance records the exact manifest digest and timestamp. Any manifest change disables restricted sources until they are accepted again. The web UI and Omarchy panel disclose when restricted sources are active. Gated and blocked sources remain unable to make requests.
 
+Disabling acceptance stops new restricted collection immediately. If a previously published conditions generation still contains restricted-source data, the disclosure remains visible until the collector publishes the next conditions generation without it.
+
 ## Backup and restore
 
 ```bash
