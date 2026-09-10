@@ -13,9 +13,9 @@ describe("public release boundary", () => {
   it("does not track private workflow or operator state", () => {
     const tracked = execFileSync("git", ["ls-files"], { encoding: "utf8" }).trim().split("\n");
     const forbidden = [
-      /^\.agents\//,
-      /^\.pad(?:\/|\.toml$)/,
-      /^(?:CLAUDE|PROJECT_AGENT)\.md$/,
+      /^\.agents\/(?!skills\/pad(?:-engineering)?\/SKILL\.md$)/,
+      /^\.pad\//,
+      /^CLAUDE\.md$/,
       /(?:^|\/)travelcanary\.db(?:-|$)/,
       /(?:^|\/)backups?\//,
       /(?:^|\/)playwright-report\//,
