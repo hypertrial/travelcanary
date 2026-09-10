@@ -1,0 +1,5 @@
+# CLI deployments run repository verification, including the Git ignore contract.
+!.gitignore
+# Never upload local credentials; keep the documented, empty configuration sample.
+.env*
+!.env.example

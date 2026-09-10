@@ -1,0 +1,22 @@
+{
+  "idArea": 7,
+  "owner": "IPMA",
+  "updateDate": "2026-08-31T17:30:00",
+  "data": [
+    {
+      "sismoId": "pt-test",
+      "time": "2026-08-31T16:00:00",
+      "lat": "38.72",
+      "lon": "-9.15",
+      "magnitud": "3.4",
+      "dataUpdate": "2099-12-31T00:00:00"
+    },
+    {
+      "sismoId": "small",
+      "time": "2026-08-31T16:00:00",
+      "lat": "38.72",
+      "lon": "-9.15",
+      "magnitud": "2.9"
+    }
+  ]
+}

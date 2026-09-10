@@ -1,0 +1,24 @@
+[
+  {
+    "identifiant": "FR-ALERT.20260828.1",
+    "status": "Réel",
+    "dateEmission": "28/08/2026 06:00:00",
+    "fuseauHoraire": { "utc": "UTC+02" },
+    "infos": [
+      {
+        "titre": "Public safety alert for Paris",
+        "description": "<p>Follow the official safety instructions.</p>",
+        "catégorie": "Sécurité",
+        "sévérité": "Extrême",
+        "dateEffective": "28/08/2026 05:30:00",
+        "dateExpiré": "28/08/2026 10:00:00",
+        "areas": [
+          {
+            "descriptionZone": "Paris",
+            "polygone": [["48.75,2.20 48.95,2.20 48.95,2.50 48.75,2.50 48.75,2.20"]]
+          }
+        ]
+      }
+    ]
+  }
+]

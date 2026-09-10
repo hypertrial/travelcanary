@@ -1,0 +1,57 @@
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
+.brand { display: flex; align-items: center; flex: 0 1 auto; gap: 8px; min-width: 0; min-height: 46px; color: var(--ink); text-decoration: none; }
+.brandMarkWrap { display: grid; place-items: center; flex: 0 0 auto; width: 40px; height: 40px; background: var(--brand-navy); border-radius: 12px; }
+.brandMark { width: 30px; height: 30px; object-fit: contain; }
+.wordmark strong, .wordmark small { display: block; }
+.wordmark { min-width: 0; }
+.wordmark strong { font-size: 16px; font-weight: 850; line-height: 1.05; letter-spacing: -.035em; white-space: nowrap; }
+.travel { color: var(--brand-navy); }
+.canary { color: var(--brand-gold-ink); }
+.wordmark small { margin-top: 4px; color: var(--muted); font-size: 7.5px; font-weight: 750; line-height: 1; letter-spacing: .07em; white-space: nowrap; }
+.headerActions { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.liveStatus { display: inline-flex; align-items: center; flex: 0 0 auto; gap: 6px; min-height: 36px; padding: 0 8px; color: var(--ink-soft); background: color-mix(in srgb, var(--surface) 72%, transparent); border: 1px solid color-mix(in srgb, var(--ink) 11%, transparent); border-radius: var(--control-radius); font-size: 9.5px; font-weight: 800; line-height: 1; }
+.desktopLiveLabel { white-space: nowrap; }
+.compactLiveCopy { display: none; }
+.liveLabel, .liveDetail { white-space: nowrap; }
+.liveDot { flex: 0 0 auto; width: 7px; height: 7px; background: var(--normal); border-radius: 50%; box-shadow: 0 0 0 3px color-mix(in srgb, var(--normal) 12%, transparent); }
+.liveStatus[data-tone="loading"] .liveDot { background: var(--brand-deep); animation: livePulse 1s ease-in-out infinite alternate; }
+.liveStatus[data-tone="demo"] { color: var(--brand-gold-ink); background: var(--brand-soft); border-color: color-mix(in srgb, var(--brand-gold) 55%, var(--line)); }
+.liveStatus[data-tone="demo"] .liveDot { background: var(--brand-deep); }
+.liveStatus[data-tone="delayed"] .liveDot { background: var(--elevated); }
+.liveStatus[data-tone="unavailable"] .liveDot { background: var(--unknown); }
+@keyframes livePulse { to { opacity: .35; transform: scale(.72); } }
+
+.healthBanner,
+.offlineBanner { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: 8px; min-height: 42px; padding: 7px 7px 7px 10px; color: var(--brand-gold-ink); background: color-mix(in srgb, var(--brand-soft) 72%, transparent); border: 1px solid color-mix(in srgb, var(--brand-gold) 38%, var(--line)); border-radius: var(--control-radius); }
+.offlineBanner { grid-template-columns: 18px minmax(0, 1fr); color: #65332d; background: #fff0eb; border-color: #ddb5ac; }
+.healthBanner_snapshot-unavailable, .healthBanner_catalog-unavailable { color: #622d32; background: #fff0eb; border-color: #ddb5ac; }
+.healthBanner > svg, .offlineBanner > svg { width: 17px; height: 17px; }
+.healthBanner p, .offlineBanner p { margin: 0; font-size: 10.5px; line-height: 1.4; text-wrap: pretty; }
+.healthBanner button { min-width: 58px; min-height: 36px; padding: 5px 9px; color: inherit; background: var(--surface); border: 1px solid currentColor; border-radius: 10px; font-size: 10.5px; font-weight: 850; cursor: pointer; }
+
+@media (max-width: 1023px) {
+  .topbar { min-height: 46px; align-items: center; }
+  .brand { min-height: 44px; }
+  .liveStatus { max-width: min(260px, 36vw); }
+}
+
+@media (max-width: 767px), (max-height: 500px) and (pointer: coarse) {
+  .topbar { min-height: 54px; }
+  .brandMarkWrap { width: 38px; height: 38px; border-radius: 11px; }
+  .brandMark { width: 28px; height: 28px; }
+  .wordmark strong { font-size: 15px; }
+  .wordmark small { display: none; }
+  .liveStatus { min-height: 36px; max-width: 132px; padding: 6px 8px; background: transparent; border: 0; font-size: 10px; }
+  .desktopLiveLabel { display: none; }
+  .compactLiveCopy { display: grid; gap: 2px; text-align: right; }
+  .healthBanner, .offlineBanner { position: fixed; z-index: 190; top: calc(178px + env(safe-area-inset-top)); right: 10px; left: 10px; box-shadow: var(--shadow-md); }
+}
+
+@media (max-height: 500px) and (pointer: coarse) {
+  .healthBanner, .offlineBanner { top: auto; bottom: calc(70px + env(safe-area-inset-bottom)); right: 62px; left: 10px; }
+}
+
+@media (max-width: 359px) {
+  .wordmark strong { font-size: 13px; }
+  .liveStatus { max-width: 105px; font-size: 9px; }
+}

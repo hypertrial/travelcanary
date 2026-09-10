@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-08-29",
+  "policy": "Links and transient fingerprints only; publisher text and images are never persisted or published.",
+  "publishers": [
+    { "domain": "reuters.com", "parentGroup": "Thomson Reuters", "sourceName": "Reuters" },
+    { "domain": "apnews.com", "parentGroup": "Associated Press", "sourceName": "Associated Press" },
+    { "domain": "bbc.com", "parentGroup": "BBC", "sourceName": "BBC" },
+    { "domain": "bbc.co.uk", "parentGroup": "BBC", "sourceName": "BBC" },
+    { "domain": "dw.com", "parentGroup": "Deutsche Welle", "sourceName": "Deutsche Welle" },
+    { "domain": "france24.com", "parentGroup": "France Médias Monde", "sourceName": "France 24" },
+    { "domain": "euronews.com", "parentGroup": "Euronews", "sourceName": "Euronews" }
+  ]
+}

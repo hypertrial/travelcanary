@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>2.49.0.0.688.0.20260908120005.549526</identifier>
+  <sender>prognoza@hidmet.gov.rs</sender>
+  <sent>2026-09-08T12:00:05+02:00</sent>
+  <status>Actual</status>
+  <msgType>Update</msgType>
+  <scope>Public</scope>
+  <references>prognoza@hidmet.gov.rs,2.49.0.0.688.0.20260906203054.181098,2026-09-06T20:30:54+02:00</references>
+  <info>
+    <language>en-GB</language>
+    <category>Met</category>
+    <event>High temperature orange</event>
+    <responseType>None</responseType>
+    <urgency>Future</urgency>
+    <severity>Severe</severity>
+    <certainty>Likely</certainty>
+    <audience>Private</audience>
+    <effective>2026-09-09T00:00:00+02:00</effective>
+    <onset>2026-09-09T00:00:00+02:00</onset>
+    <expires>2026-09-09T23:59:59+02:00</expires>
+    <senderName>RHMS Serbia</senderName>
+    <headline>High temperature Belgrade orange</headline>
+    <description>Maximum temperature ≥ 35°C</description>
+    <instruction>Very dangerous weather condition, especially when persisting for several consecutive days. Unfavourable weather conditions for people suffering from chronic illnesses, those under medical treatment or supervision, as well as meteoropaths. Animals are also at risk. Unfavourable conditions for electricity supply. Traffic disruptions are possible.</instruction>
+    <web>https://www.meteoalarm.rs/eng/meteo_alarm.php</web>
+    <contact>prognoza@hidmet.gov.rs</contact>
+    <parameter>
+      <valueName>awareness_level</valueName>
+      <value>3; orange; Severe</value>
+    </parameter>
+    <parameter>
+      <valueName>awareness_type</valueName>
+      <value>5; high-temperature</value>
+    </parameter>
+    <area>
+      <areaDesc>Belgrade</areaDesc>
+      <geocode>
+        <valueName>EMMA_ID</valueName>
+        <value>RS003</value>
+      </geocode>
+    </area>
+  </info>
+  <info>
+    <language>sr</language>
+    <category>Met</category>
+    <event>Висока температура Значајан ниво</event>
+    <responseType>None</responseType>
+    <urgency>Future</urgency>
+    <severity>Severe</severity>
+    <certainty>Likely</certainty>
+    <audience>Private</audience>
+    <effective>2026-09-09T00:00:00+02:00</effective>
+    <onset>2026-09-09T00:00:00+02:00</onset>
+    <expires>2026-09-09T23:59:59+02:00</expires>
+    <senderName>РХМЗ Србија</senderName>
+    <headline>Висока температура Београд Значајан ниво</headline>
+    <description>Максимална температура ≥ 35°C</description>
+    <instruction>Веома опасна временска ситуација, нарочито када траје неколико узастопних дана. Угрожени су хронични болесници, лица под терапијом, медицинском контролом и метеоропате. Угрожене су и животиње. Веома повољни временски услови за појаву шумских или других пожара. Неповољни услови за снабдевање електричном енергијом. Проблеми у саобраћају.</instruction>
+    <web>https://www.meteoalarm.rs/ciril/meteo_alarm.php</web>
+    <contact>prognoza@hidmet.gov.rs</contact>
+    <parameter>
+      <valueName>awareness_level</valueName>
+      <value>3; orange; Severe</value>
+    </parameter>
+    <parameter>
+      <valueName>awareness_type</valueName>
+      <value>5; high-temperature</value>
+    </parameter>
+    <area>
+      <areaDesc>Београд</areaDesc>
+      <geocode>
+        <valueName>EMMA_ID</valueName>
+        <value>RS003</value>
+      </geocode>
+    </area>
+  </info>
+  <info>
+    <language>sr-Latn</language>
+    <category>Met</category>
+    <event>Visoka temperatura Značajan nivo</event>
+    <responseType>None</responseType>
+    <urgency>Future</urgency>
+    <severity>Severe</severity>
+    <certainty>Likely</certainty>
+    <audience>Private</audience>
+    <effective>2026-09-09T00:00:00+02:00</effective>
+    <onset>2026-09-09T00:00:00+02:00</onset>
+    <expires>2026-09-09T23:59:59+02:00</expires>
+    <senderName>RHMZ Srbija</senderName>
+    <headline>Visoka temperatura Beograd Značajan nivo</headline>
+    <description>Maksimalna temperatura ≥ 35°C</description>
+    <instruction>Veoma opasna vremenska situacija, naročito kada traje nekoliko uzastopnih dana. Ugroženi su hronični bolesnici, lica pod terapijom, medicinskom kontrolom i meteoropate. Ugrožene su i životinje. Veoma povoljni vremenski uslovi za pojavu šumskih ili drugih požara.  Nepovoljni uslovi za snabdevanje električnom energijom. Problemi u saobraćaju.</instruction>
+    <web>https://www.meteoalarm.rs/latin/meteo_alarm.php</web>
+    <contact>prognoza@hidmet.gov.rs</contact>
+    <parameter>
+      <valueName>awareness_level</valueName>
+      <value>3; orange; Severe</value>
+    </parameter>
+    <parameter>
+      <valueName>awareness_type</valueName>
+      <value>5; high-temperature</value>
+    </parameter>
+    <area>
+      <areaDesc>Beograd</areaDesc>
+      <geocode>
+        <valueName>EMMA_ID</valueName>
+        <value>RS003</value>
+      </geocode>
+    </area>
+  </info>
+</alert>

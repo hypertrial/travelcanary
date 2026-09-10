@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>2.49.0.0.70.1.BA.260908105324.58201063</identifier>
+  <sender>sinoptika@rhmzrs.com</sender>
+  <sent>2026-09-08T10:53:24+02:00</sent>
+  <status>Actual</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <info>
+    <language>en</language>
+    <category>Met</category>
+    <event>High-temperature Yellow Warning</event>
+    <responseType>Monitor</responseType>
+    <urgency>Future</urgency>
+    <severity>Moderate</severity>
+    <certainty>Likely</certainty>
+    <effective>2026-09-08T10:53:24+02:00</effective>
+    <onset>2026-09-09T12:00:00+02:00</onset>
+    <expires>2026-09-09T18:00:59+02:00</expires>
+    <senderName>Republic Hydrometeorological Service of the Republic of Srpska</senderName>
+    <headline>High-temperature Yellow Warning for Bosnia and Herzegovina - region Foca</headline>
+    <description>Tmax around 34°C.</description>
+    <instruction>Be aware that you should expect high temperature. There are possible health risks among vulnerable people, for example older and very young people.</instruction>
+    <web>https://rhmzrs.com/</web>
+    <parameter>
+      <valueName>awareness_level</valueName>
+      <value>2; yellow; Moderate</value>
+    </parameter>
+    <parameter>
+      <valueName>awareness_type</valueName>
+      <value>5; high-temperature</value>
+    </parameter>
+    <area>
+      <areaDesc>Foca</areaDesc>
+      <geocode>
+        <valueName>EMMA_ID</valueName>
+        <value>BA009</value>
+      </geocode>
+    </area>
+  </info>
+  <info>
+    <language>bs</language>
+    <category>Met</category>
+    <event>Visoka temperatura žuto Upozorenje</event>
+    <responseType>Monitor</responseType>
+    <urgency>Future</urgency>
+    <severity>Moderate</severity>
+    <certainty>Likely</certainty>
+    <effective>2026-09-08T10:53:24+02:00</effective>
+    <onset>2026-09-09T12:00:00+02:00</onset>
+    <expires>2026-09-09T18:00:59+02:00</expires>
+    <senderName>Republički hidrometeorološki zavod Republike Srpske</senderName>
+    <headline>Visoka temperatura žuto Upozorenje za Bosnu i Hercegovinu - region Foca</headline>
+    <description>Maksimalna temperatura vazduha oko 34°C.</description>
+    <instruction>Budite svjesni da se očekuju visoke temperature zraka. Mogući su  zdravstveni rizici među ugroženim osobama, na primjer starije vrlo mlade osobe.</instruction>
+    <web>https://rhmzrs.com/</web>
+    <parameter>
+      <valueName>awareness_level</valueName>
+      <value>2; yellow; Moderate</value>
+    </parameter>
+    <parameter>
+      <valueName>awareness_type</valueName>
+      <value>5; high-temperature</value>
+    </parameter>
+    <area>
+      <areaDesc>Foca</areaDesc>
+      <geocode>
+        <valueName>EMMA_ID</valueName>
+        <value>BA009</value>
+      </geocode>
+    </area>
+  </info>
+</alert>

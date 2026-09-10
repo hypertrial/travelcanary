@@ -1,0 +1,232 @@
+{
+  "AL": [
+    {
+      "label": "Institute of Geosciences",
+      "url": "https://geo.edu.al/"
+    },
+    {
+      "label": "National Civil Protection Agency",
+      "url": "https://akmc.gov.al/"
+    },
+    {
+      "label": "Hydrological and meteorological bulletins — check issue dates",
+      "url": "https://www.geo.edu.al/Monitorim_Parashikim/Parashikimi_Hidrologjik_dhe_Meteorologjik/"
+    },
+    {
+      "label": "Albanian Road Authority notices — check issue dates",
+      "url": "https://www.arrsh.gov.al/situata-ne-akset-rrugore.html"
+    }
+  ],
+  "AD": [
+    {
+      "label": "Andorra weather alerts",
+      "url": "https://www.meteo.ad/en/Alerts"
+    },
+    {
+      "label": "Andorra seasonal avalanche bulletins — check validity",
+      "url": "https://www.meteo.ad/estatneu/general"
+    }
+  ],
+  "BY": [
+    {
+      "label": "Belhydromet weather information",
+      "url": "https://pogoda.by/"
+    }
+  ],
+  "BA": [
+    {
+      "label": "Federal Hydrometeorological Institute",
+      "url": "https://www.fhmzbih.gov.ba/"
+    },
+    {
+      "label": "Republika Srpska Hydrometeorological Institute",
+      "url": "https://rhmzrs.com/"
+    },
+    {
+      "label": "Republika Srpska hydrological information",
+      "url": "https://rhmzrs.com/index.php/page/hidrologija-saradnja"
+    }
+  ],
+  "IS": [
+    {
+      "label": "Icelandic Met Office",
+      "url": "https://en.vedur.is/"
+    },
+    {
+      "label": "Iceland avalanche forecasts",
+      "url": "https://en.vedur.is/avalanches/forecast/"
+    },
+    {
+      "label": "Iceland road conditions",
+      "url": "https://umferdin.is/en"
+    },
+    {
+      "label": "Veitur utility outages — Veitur service networks only",
+      "url": "https://www.veitur.is/en/outages"
+    }
+  ],
+  "XK": [
+    {
+      "label": "Kosovo Hydrometeorological Institute",
+      "url": "https://ihmk-rks.net/"
+    },
+    {
+      "label": "Emergency Management Agency",
+      "url": "https://ame.rks-gov.net/"
+    }
+  ],
+  "LI": [
+    {
+      "label": "Liechtenstein government information",
+      "url": "https://www.llv.li/"
+    },
+    {
+      "label": "Liechtenstein natural hazard information",
+      "url": "https://www.llv.li/de/privatpersonen/notfall-und-katastrophenfall/katastrophen-und-notfall/naturgefahren"
+    }
+  ],
+  "MD": [
+    {
+      "label": "Moldova weather warnings",
+      "url": "https://www.meteo.md/index.php/ro/weather/current-warnings/"
+    },
+    {
+      "label": "Moldova emergency publications — check issue dates",
+      "url": "https://igsu.gov.md/ro?page=0"
+    }
+  ],
+  "MC": [
+    {
+      "label": "Monaco government information",
+      "url": "https://www.gouv.mc/"
+    },
+    {
+      "label": "Monaco official journal — check notice dates and later updates",
+      "url": "https://journaldemonaco.gouv.mc/"
+    }
+  ],
+  "ME": [
+    {
+      "label": "Montenegro Hydrometeorological and Seismological Service",
+      "url": "https://www.meteo.co.me/"
+    },
+    {
+      "label": "Montenegro government information",
+      "url": "https://www.gov.me/"
+    },
+    {
+      "label": "Montenegro warning bulletin archive — check issue dates",
+      "url": "https://www.meteo.co.me/page.php?id=164"
+    },
+    {
+      "label": "Montenegro emergency management information",
+      "url": "https://www.gov.me/mup/vanredne-situacije"
+    }
+  ],
+  "MK": [
+    {
+      "label": "North Macedonia Hydrometeorological Service",
+      "url": "https://uhmr.gov.mk/"
+    },
+    {
+      "label": "Crisis Management Center",
+      "url": "https://cuk.gov.mk/"
+    },
+    {
+      "label": "North Macedonia crisis bulletins — check issue dates",
+      "url": "https://cuk.gov.mk/?page_id=23136"
+    }
+  ],
+  "NO": [
+    {
+      "label": "Varsom natural hazard warnings",
+      "url": "https://www.varsom.no/en/"
+    },
+    {
+      "label": "Norway road traffic information",
+      "url": "https://www.vegvesen.no/trafikk/"
+    },
+    {
+      "label": "Elvia electricity outages — Elvia service area only",
+      "url": "https://www.elvia.no/strombruddskart/"
+    }
+  ],
+  "SM": [
+    {
+      "label": "San Marino civil protection orders",
+      "url": "https://www.gov.sm/pub1/GovSM/Circolari-e-Ordinanze/Ordinanze-Protezione-Civile.html"
+    }
+  ],
+  "RS": [
+    {
+      "label": "Serbia hydrometeorological warnings",
+      "url": "https://www.hidmet.gov.rs/latin/upozorenja/index.php"
+    },
+    {
+      "label": "Serbia public warnings",
+      "url": "https://upozorenje.mup.gov.rs/"
+    }
+  ],
+  "GB": [
+    {
+      "label": "Met Office UK weather warnings",
+      "url": "https://weather.metoffice.gov.uk/warnings-and-advice/uk-warnings"
+    },
+    {
+      "label": "England flood warnings",
+      "url": "https://check-for-flooding.service.gov.uk/"
+    },
+    {
+      "label": "Scotland flood information",
+      "url": "https://floodline.sepa.org.uk/live-flood-information/"
+    },
+    {
+      "label": "Wales flood warnings",
+      "url": "https://naturalresourceswales.gov.uk/evidence-and-data/maps/check-flood-warnings/?lang=en"
+    },
+    {
+      "label": "Northern Ireland infrastructure information",
+      "url": "https://www.infrastructure-ni.gov.uk/"
+    },
+    {
+      "label": "England National Highways travel updates",
+      "url": "https://nationalhighways.co.uk/roads-and-travel/live-travel-updates/"
+    },
+    {
+      "label": "Scotland trunk-road traffic updates",
+      "url": "https://www.traffic.gov.scot/"
+    },
+    {
+      "label": "Wales traffic information",
+      "url": "https://traffic.wales/"
+    },
+    {
+      "label": "Northern Ireland traffic information",
+      "url": "https://www.trafficwatchni.com/twni/"
+    },
+    {
+      "label": "Great Britain electricity operator directory",
+      "url": "https://www.powercut105.com/"
+    },
+    {
+      "label": "Northern Ireland electricity outages — NIE Networks",
+      "url": "https://powercheck.nienetworks.co.uk/index.html"
+    }
+  ],
+  "VA": [
+    {
+      "label": "Vatican City State information",
+      "url": "https://www.vaticanstate.va/en/"
+    }
+  ],
+  "TR": [
+    {
+      "label": "Türkiye meteorological information",
+      "url": "https://www.mgm.gov.tr/"
+    },
+    {
+      "label": "AFAD disaster and emergency information",
+      "url": "https://www.afad.gov.tr/"
+    }
+  ]
+}

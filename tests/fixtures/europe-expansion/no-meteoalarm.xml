@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:cap="urn:oasis:names:tc:emergency:cap:1.2">
+  <link rel="hub" href="https://pubsubhubbub.appspot.com/"/>
+  <link type="application/atom+xml" rel="self" href="https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-norway"/>
+  <link type="text/html" rel="alternate" href="https://meteoalarm.org"/>
+  <rights>Copyright © 2026 MeteoAlarm.Org. Licensed under terms equivalent to CC BY 4.0, with additional requirements for redistributing outlined in our Terms and Conditions.</rights>
+  <generator>MeteoAlarm Producer Server</generator>
+  <logo>https://feeds.meteoalarm.org/images/logo.svg</logo>
+  <author>
+    <name>meteoalarm.org</name>
+    <uri>https://meteoalarm.org</uri>
+    <email>meteoalarm@geosphere.at</email>
+  </author>
+  <id>tag:meteoalarm.org,2021-02-19:NO</id>
+  <title>MeteoAlarm - Alerting Europe for Extreme Weather</title>
+  <updated>2026-09-08T15:36:18.207065Z</updated>
+  <entry>
+    <cap:polygon>70.3497,30.0332 70.4225,31.1445 70.7112,30.1582 71.1057,28.2377 70.7442,27.6212 70.7332,28.1832 70.6832,28.7167 70.55,29.4667 70.3497,30.0332 70.3497,30.0332</cap:polygon>
+    <link title="Slettnes lighthouse - Vardoe" href="https://meteoalarm.org?polygon=cd890629-29f5-4530-9463-ca0592d57dab,1,0,0" hreflang="en"/>
+    <cap:areaDesc>Slettnes lighthouse - Vardoe</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-08T06:47:11+00:00</cap:sent>
+    <cap:expires>2026-09-08T10:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-07T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Update</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260908064314.069</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/cd890629-29f5-4530-9463-ca0592d57dab"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T06:47:11Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/cd890629-29f5-4530-9463-ca0592d57dab?index_info=1&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Wind Warning issued for Norway - Slettnes lighthouse - Vardoe</title>
+    <updated>2026-09-08T06:47:11Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>69.6832,30.9167 69.7667,30.85 69.8167,30.8832 70.1667,31.5332 70.4225,31.1445 70.3497,30.0332 70.1167,30.1332 69.9,30.2 69.7832,30.2667 69.6997,30.6 69.6832,30.9167 69.6832,30.9167</cap:polygon>
+    <link title="Vardoe - Russian border" href="https://meteoalarm.org?polygon=57a58173-3e5b-4c78-b326-1ed009c04221,1,0,0" hreflang="en"/>
+    <cap:areaDesc>Vardoe - Russian border</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-08T06:43:10+00:00</cap:sent>
+    <cap:expires>2026-09-08T16:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-08T07:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260908063939.084</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/57a58173-3e5b-4c78-b326-1ed009c04221"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T06:43:10Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/57a58173-3e5b-4c78-b326-1ed009c04221?index_info=1&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Wind Warning issued for Norway - Vardoe - Russian border</title>
+    <updated>2026-09-08T06:43:10Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>70.3127,19.2152 70.2062,18.617 70.1092,18.4057 69.9057,18.0077 69.6872,17.7597 69.65,17.7997 69.5167,18.1 69.9157,19.1797 70.039,19.9602 70.3127,19.2152 70.3127,19.2152</cap:polygon>
+    <link title="Skomvaer - Torsvaag" href="https://meteoalarm.org?polygon=b15300d7-6e27-47e0-928b-6015889aeb99,1,0,3" hreflang="en"/>
+    <cap:areaDesc>Skomvaer - Torsvaag</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-07T14:11:48+00:00</cap:sent>
+    <cap:expires>2026-09-08T04:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-07T19:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Update</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260907140042.084</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/b15300d7-6e27-47e0-928b-6015889aeb99"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T14:11:48Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/b15300d7-6e27-47e0-928b-6015889aeb99?index_info=1&amp;index_area=0&amp;index_polygon=3</id>
+    <title>Yellow Wind Warning issued for Norway - Skomvaer - Torsvaag</title>
+    <updated>2026-09-07T14:11:48Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>69.3322,16.0627 69.233,16.333 69.3163,16.8645 69.5167,18.0997 69.6502,17.7997 69.6872,17.7597 69.4257,16.4587 69.3322,16.0627 69.3322,16.0627</cap:polygon>
+    <link title="Skomvaer - Torsvaag" href="https://meteoalarm.org?polygon=b15300d7-6e27-47e0-928b-6015889aeb99,1,0,2" hreflang="en"/>
+    <cap:areaDesc>Skomvaer - Torsvaag</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-07T14:11:48+00:00</cap:sent>
+    <cap:expires>2026-09-08T04:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-07T19:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Update</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260907140042.084</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/b15300d7-6e27-47e0-928b-6015889aeb99"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T14:11:48Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/b15300d7-6e27-47e0-928b-6015889aeb99?index_info=1&amp;index_area=0&amp;index_polygon=2</id>
+    <title>Yellow Wind Warning issued for Norway - Skomvaer - Torsvaag</title>
+    <updated>2026-09-07T14:11:48Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>68.3667,15.1332 68.4167,15.2667 68.4667,15.4332 68.5167,15.4332 68.5332,15.6167 68.6832,15.7332 68.7667,15.7167 68.8332,15.7667 68.9497,15.8667 69.0332,16.0497 69.2332,16.3332 69.3322,16.0627 69.0717,15.1637 68.8397,14.5487 68.535,13.9117 68.4832,14.1332 68.4497,14.1832 68.4497,14.3667 68.4167,14.4332 68.4167,14.5332 68.3667,14.55 68.3497,14.6167 68.3832,14.6832 68.3667,14.8167 68.3332,14.8332 68.3167,14.9332 68.3332,15.05 68.3667,15.1332 68.3667,15.1332</cap:polygon>
+    <link title="Skomvaer - Torsvaag" href="https://meteoalarm.org?polygon=b15300d7-6e27-47e0-928b-6015889aeb99,1,0,1" hreflang="en"/>
+    <cap:areaDesc>Skomvaer - Torsvaag</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-07T14:11:48+00:00</cap:sent>
+    <cap:expires>2026-09-08T04:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-07T19:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Update</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260907140042.084</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/b15300d7-6e27-47e0-928b-6015889aeb99"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T14:11:48Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/b15300d7-6e27-47e0-928b-6015889aeb99?index_info=1&amp;index_area=0&amp;index_polygon=1</id>
+    <title>Yellow Wind Warning issued for Norway - Skomvaer - Torsvaag</title>
+    <updated>2026-09-07T14:11:48Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>68.1667,15.2167 68.2667,15.1832 68.3,15.1167 68.3497,15.2667 68.3667,15.1332 68.3332,15.05 68.3167,14.9332 68.3332,14.8332 68.3667,14.8167 68.3832,14.6832 68.3497,14.6167 68.3667,14.55 68.4167,14.5332 68.4167,14.4332 68.4497,14.3667 68.4497,14.1832 68.4832,14.1332 68.535,13.9117 68.0297,12.9082 67.6462,12.5072 67.484,11.7717 67.4048,11.8843 67.5572,12.6037 67.9767,13.2532 68.1135,13.9092 68.1512,14.6232 68.0987,14.7422 68.1667,15.2167 68.1667,15.2167</cap:polygon>
+    <link title="Skomvaer - Torsvaag" href="https://meteoalarm.org?polygon=b15300d7-6e27-47e0-928b-6015889aeb99,1,0,0" hreflang="en"/>
+    <cap:areaDesc>Skomvaer - Torsvaag</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-07T14:11:48+00:00</cap:sent>
+    <cap:expires>2026-09-08T04:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-07T19:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Update</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260907140042.084</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/b15300d7-6e27-47e0-928b-6015889aeb99"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T14:11:48Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/b15300d7-6e27-47e0-928b-6015889aeb99?index_info=1&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Wind Warning issued for Norway - Skomvaer - Torsvaag</title>
+    <updated>2026-09-07T14:11:48Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>71.1167,26.7832 71.1942,25.8142 70.7332,25.3332 70.6997,25.6 70.7167,25.8832 70.6667,26.0332 70.6667,26.25 70.75,26.75 70.75,27.2167 70.7442,27.6212 71.1057,28.2377 71.1502,27.6432 71.1167,26.7832 71.1167,26.7832</cap:polygon>
+    <link title="Torsvaag - Slettnes lighthouse" href="https://meteoalarm.org?polygon=43bba7e6-98b0-47e8-aeb2-4718caad7b06,1,0,3" hreflang="en"/>
+    <cap:areaDesc>Torsvaag - Slettnes lighthouse</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-07T06:54:01+00:00</cap:sent>
+    <cap:expires>2026-09-08T07:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-07T18:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260907065155.034</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/43bba7e6-98b0-47e8-aeb2-4718caad7b06"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T06:54:01Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/43bba7e6-98b0-47e8-aeb2-4718caad7b06?index_info=1&amp;index_area=0&amp;index_polygon=3</id>
+    <title>Yellow Wind Warning issued for Norway - Torsvaag - Slettnes lighthouse</title>
+    <updated>2026-09-07T06:54:01Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>70.7332,25.3332 71.1942,25.8142 71.1042,23.9885 70.7167,24.3832 70.6332,24.95 70.7332,25.3332 70.7332,25.3332</cap:polygon>
+    <link title="Torsvaag - Slettnes lighthouse" href="https://meteoalarm.org?polygon=43bba7e6-98b0-47e8-aeb2-4718caad7b06,1,0,2" hreflang="en"/>
+    <cap:areaDesc>Torsvaag - Slettnes lighthouse</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-07T06:54:01+00:00</cap:sent>
+    <cap:expires>2026-09-08T07:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-07T18:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260907065155.034</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/43bba7e6-98b0-47e8-aeb2-4718caad7b06"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T06:54:01Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/43bba7e6-98b0-47e8-aeb2-4718caad7b06?index_info=1&amp;index_area=0&amp;index_polygon=2</id>
+    <title>Yellow Wind Warning issued for Norway - Torsvaag - Slettnes lighthouse</title>
+    <updated>2026-09-07T06:54:01Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>70.7167,24.3832 71.1042,23.9885 70.6807,21.9412 70.4627,21.3347 70.1832,21.6 70.0997,21.7832 70.1667,22.0832 70.0667,22.2167 70.1167,22.5167 70.25,22.3832 70.3332,22.6167 70.4,22.7332 70.4167,23.0332 70.4332,23.2832 70.5,23.5832 70.5832,23.6832 70.5997,23.9167 70.65,24.0332 70.7167,24.1667 70.7167,24.3832 70.7167,24.3832</cap:polygon>
+    <link title="Torsvaag - Slettnes lighthouse" href="https://meteoalarm.org?polygon=43bba7e6-98b0-47e8-aeb2-4718caad7b06,1,0,1" hreflang="en"/>
+    <cap:areaDesc>Torsvaag - Slettnes lighthouse</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-07T06:54:01+00:00</cap:sent>
+    <cap:expires>2026-09-08T07:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-07T18:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260907065155.034</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/43bba7e6-98b0-47e8-aeb2-4718caad7b06"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T06:54:01Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/43bba7e6-98b0-47e8-aeb2-4718caad7b06?index_info=1&amp;index_area=0&amp;index_polygon=1</id>
+    <title>Yellow Wind Warning issued for Norway - Torsvaag - Slettnes lighthouse</title>
+    <updated>2026-09-07T06:54:01Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>70.1832,21.6 70.4627,21.3347 70.4112,20.8072 70.342,20.1677 70.3127,19.2152 70.039,19.9602 70.1832,21.6 70.1832,21.6</cap:polygon>
+    <link title="Torsvaag - Slettnes lighthouse" href="https://meteoalarm.org?polygon=43bba7e6-98b0-47e8-aeb2-4718caad7b06,1,0,0" hreflang="en"/>
+    <cap:areaDesc>Torsvaag - Slettnes lighthouse</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-07T06:54:01+00:00</cap:sent>
+    <cap:expires>2026-09-08T07:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-07T18:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260907065155.034</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/43bba7e6-98b0-47e8-aeb2-4718caad7b06"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T06:54:01Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/43bba7e6-98b0-47e8-aeb2-4718caad7b06?index_info=1&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Wind Warning issued for Norway - Torsvaag - Slettnes lighthouse</title>
+    <updated>2026-09-07T06:54:01Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>68.1667,15.2167 68.0987,14.7422 68.0307,14.894 67.7667,14.3832 67.6163,14.4208 67.4538,14.2413 67.3015,13.9162 67.2505,14.6128 67.5158,15.017 67.6167,14.8832 67.9635,15.3273 68.1832,15.9667 68.2167,16 68.305,16.225 68.5667,16.0332 68.5998,15.9498 68.5332,15.8667 68.5,15.7667 68.4498,15.6498 68.4667,15.6167 68.5,15.6832 68.5332,15.6167 68.5167,15.4332 68.4667,15.4332 68.4167,15.2667 68.3667,15.1332 68.3498,15.2667 68.3,15.1167 68.2667,15.1832 68.1667,15.2167 68.1667,15.2167</cap:polygon>
+    <link title="Stoett - Loedingen" href="https://meteoalarm.org?polygon=60291776-23a9-4552-9006-535a29959bed,1,0,1" hreflang="en"/>
+    <cap:areaDesc>Stoett - Loedingen</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-07T06:44:26+00:00</cap:sent>
+    <cap:expires>2026-09-08T02:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-07T15:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260907064051.009</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/60291776-23a9-4552-9006-535a29959bed"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T06:44:26Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/60291776-23a9-4552-9006-535a29959bed?index_info=1&amp;index_area=0&amp;index_polygon=1</id>
+    <title>Yellow Wind Warning issued for Norway - Stoett - Loedingen</title>
+    <updated>2026-09-07T06:44:26Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>66.9133,13.7607 67.2505,14.6128 67.3015,13.9162 67.2,13.7 67.0485,13.3535 66.9498,13.5832 66.9133,13.7607 66.9133,13.7607</cap:polygon>
+    <link title="Stoett - Loedingen" href="https://meteoalarm.org?polygon=60291776-23a9-4552-9006-535a29959bed,1,0,0" hreflang="en"/>
+    <cap:areaDesc>Stoett - Loedingen</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-07T06:44:26+00:00</cap:sent>
+    <cap:expires>2026-09-08T02:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-07T15:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260907064051.009</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/60291776-23a9-4552-9006-535a29959bed"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T06:44:26Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/60291776-23a9-4552-9006-535a29959bed?index_info=1&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Wind Warning issued for Norway - Stoett - Loedingen</title>
+    <updated>2026-09-07T06:44:26Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>62.201,5.0323 62.1837,5.1408 62.2653,5.446 62.351,5.2447 62.3473,5.2375 62.3465,5.236 62.345,5.2337 62.201,5.0323 62.201,5.0323</cap:polygon>
+    <link title="Maaloey - Svinoey" href="https://meteoalarm.org?polygon=8402c368-2736-4624-8a60-b8c66cc1c744,1,0,1" hreflang="en"/>
+    <cap:areaDesc>Maaloey - Svinoey</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-06T06:29:22+00:00</cap:sent>
+    <cap:expires>2026-09-07T09:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-06T19:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260906062633.046</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/8402c368-2736-4624-8a60-b8c66cc1c744"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T06:29:22Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/8402c368-2736-4624-8a60-b8c66cc1c744?index_info=1&amp;index_area=0&amp;index_polygon=1</id>
+    <title>Yellow Wind Warning issued for Norway - Maaloey - Svinoey</title>
+    <updated>2026-09-06T06:29:22Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>62.034,4.8643 62.0217,5.0192 62.1837,5.1408 62.201,5.0323 62.196,5.025 62.1955,5.0243 62.194,5.0227 62.0362,4.8663 62.0357,4.8658 62.034,4.8643 62.034,4.8643</cap:polygon>
+    <link title="Maaloey - Svinoey" href="https://meteoalarm.org?polygon=8402c368-2736-4624-8a60-b8c66cc1c744,1,0,0" hreflang="en"/>
+    <cap:areaDesc>Maaloey - Svinoey</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-06T06:29:22+00:00</cap:sent>
+    <cap:expires>2026-09-07T09:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-06T19:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260906062633.046</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/8402c368-2736-4624-8a60-b8c66cc1c744"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T06:29:22Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/8402c368-2736-4624-8a60-b8c66cc1c744?index_info=1&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Wind Warning issued for Norway - Maaloey - Svinoey</title>
+    <updated>2026-09-06T06:29:22Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>60.7737,4.605 60.7867,4.6945 60.8532,4.7027 60.949,4.6967 61.0522,4.6747 61.1565,4.6952 61.3027,4.6917 61.298,4.4903 61.2533,4.4853 61.0742,4.4648 61.0732,4.4648 61.034,4.4655 61.0333,4.4655 61.0277,4.4662 61.0258,4.4665 61.0242,4.4673 61.0035,4.4787 60.8302,4.5743 60.7737,4.605 60.7737,4.605</cap:polygon>
+    <link title="Slaatteroey - Bulandet" href="https://meteoalarm.org?polygon=a245412b-5072-4d1b-835d-1e6661728d36,1,0,1" hreflang="en"/>
+    <cap:areaDesc>Slaatteroey - Bulandet</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-06T06:24:40+00:00</cap:sent>
+    <cap:expires>2026-09-07T06:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-06T17:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260906062300.032</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/a245412b-5072-4d1b-835d-1e6661728d36"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T06:24:40Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/a245412b-5072-4d1b-835d-1e6661728d36?index_info=1&amp;index_area=0&amp;index_polygon=1</id>
+    <title>Yellow Wind Warning issued for Norway - Slaatteroey - Bulandet</title>
+    <updated>2026-09-06T06:24:40Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>59.921,4.9727 59.9242,5.0788 60.0142,5.0677 60.1237,5.0572 60.2232,5.0228 60.3472,4.9843 60.4473,4.9607 60.5707,4.8495 60.6612,4.7957 60.7867,4.6945 60.7738,4.605 60.6568,4.6688 60.4833,4.7623 60.3097,4.8548 60.153,4.9027 59.9755,4.9562 59.921,4.9727 59.921,4.9727</cap:polygon>
+    <link title="Slaatteroey - Bulandet" href="https://meteoalarm.org?polygon=a245412b-5072-4d1b-835d-1e6661728d36,1,0,0" hreflang="en"/>
+    <cap:areaDesc>Slaatteroey - Bulandet</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-06T06:24:40+00:00</cap:sent>
+    <cap:expires>2026-09-07T06:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-06T17:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260906062300.032</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/a245412b-5072-4d1b-835d-1e6661728d36"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T06:24:40Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/a245412b-5072-4d1b-835d-1e6661728d36?index_info=1&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Wind Warning issued for Norway - Slaatteroey - Bulandet</title>
+    <updated>2026-09-06T06:24:40Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>61.298,4.4903 61.3027,4.6917 61.4032,4.7402 61.5632,4.7767 61.7027,4.8447 62.0217,5.0192 62.034,4.8643 61.9435,4.7838 61.9433,4.7838 61.8233,4.6783 61.6573,4.534 61.6572,4.534 61.6555,4.5327 61.6537,4.532 61.652,4.5315 61.6118,4.5268 61.4327,4.5058 61.298,4.4903 61.298,4.4903</cap:polygon>
+    <link title="Bulandet - Maaloey" href="https://meteoalarm.org?polygon=9c596d48-cfa3-4e5c-bc18-50fe4e4b51d7,1,0,0" hreflang="en"/>
+    <cap:areaDesc>Bulandet - Maaloey</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-06T06:26:26+00:00</cap:sent>
+    <cap:expires>2026-09-07T07:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-06T19:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260906062444.055</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/9c596d48-cfa3-4e5c-bc18-50fe4e4b51d7"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T06:26:26Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/9c596d48-cfa3-4e5c-bc18-50fe4e4b51d7?index_info=1&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Wind Warning issued for Norway - Bulandet - Maaloey</title>
+    <updated>2026-09-06T06:26:26Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>59.3467,5.1937 59.581,5.1982 59.6838,5.1683 59.7672,5.1293 59.9242,5.0788 59.921,4.9727 59.7978,5.009 59.6448,5.0393 59.4828,4.9338 59.3123,4.8238 59.311,4.8232 59.298,4.8173 59.3467,5.1937 59.3467,5.1937</cap:polygon>
+    <link title="Karmoey - Slaatteroey" href="https://meteoalarm.org?polygon=86d4085d-d82a-4c3a-83b1-bf9310069297,1,0,0" hreflang="en"/>
+    <cap:areaDesc>Karmoey - Slaatteroey</cap:areaDesc>
+    <cap:event>Gale</cap:event>
+    <cap:sent>2026-09-06T06:22:57+00:00</cap:sent>
+    <cap:expires>2026-09-07T02:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-06T20:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.578.0.20260906062117.067</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/86d4085d-d82a-4c3a-83b1-bf9310069297"/>
+    <link title="Norway" rel="related" href="https://meteoalarm.org?region=NO" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T06:22:57Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-norway/86d4085d-d82a-4c3a-83b1-bf9310069297?index_info=1&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Wind Warning issued for Norway - Karmoey - Slaatteroey</title>
+    <updated>2026-09-06T06:22:57Z</updated>
+  </entry>
+</feed>

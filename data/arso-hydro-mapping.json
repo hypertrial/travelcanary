@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-02",
+  "source": "https://www.arso.gov.si/xml/vode/hidro_podatki_zadnji.xml",
+  "documentation": "https://www.arso.gov.si/vode/podatki/opis_hidro_xml.pdf",
+  "licenseUrl": "https://eionet.arso.gov.si/pravna-podlaga",
+  "rule": "Named ARSO surface-water stations whose river, lake, or coastal gauge is inside the reviewed destination geometry. Values are provisional local observations, not destination-wide conditions or official flood warnings.",
+  "mappings": [
+    {
+      "locationId": "si-celje",
+      "stationId": "6140",
+      "stationName": "Savinja - Celje II - brv",
+      "waterBody": "Savinja",
+      "coordinates": [15.26066, 46.22771],
+      "distanceKm": 0.4,
+      "rationale": "Savinja gauge inside the Celje destination radius."
+    },
+    {
+      "locationId": "si-celje",
+      "stationId": "6720",
+      "stationName": "Voglajna - Celje II",
+      "waterBody": "Voglajna",
+      "coordinates": [15.28326, 46.23205],
+      "distanceKm": 1.8,
+      "rationale": "Voglajna gauge inside the Celje destination radius."
+    },
+    {
+      "locationId": "si-julian-alps",
+      "stationId": "3014",
+      "stationName": "Sava Dolinka - Kranjska Gora I",
+      "waterBody": "Sava Dolinka",
+      "coordinates": [13.78542, 46.48927],
+      "distanceKm": 16.3,
+      "rationale": "Upper Sava Dolinka gauge inside the reviewed Julian Alps polygon."
+    },
+    {
+      "locationId": "si-julian-alps",
+      "stationId": "3260",
+      "stationName": "Savica - Ukanc",
+      "waterBody": "Savica",
+      "coordinates": [13.82955, 46.28097],
+      "distanceKm": 7.8,
+      "rationale": "Savica gauge inside the reviewed Julian Alps polygon."
+    },
+    {
+      "locationId": "si-julian-alps",
+      "stationId": "8240",
+      "stationName": "Koritnica - Kal-Koritnica",
+      "waterBody": "Koritnica",
+      "coordinates": [13.57553, 46.34144],
+      "distanceKm": 21.1,
+      "rationale": "Koritnica gauge inside the western Julian Alps polygon."
+    },
+    {
+      "locationId": "si-koper",
+      "stationId": "9350",
+      "stationName": "Adriatic Sea - Koper harbour",
+      "waterBody": "Jadransko morje",
+      "coordinates": [13.72446, 45.54811],
+      "distanceKm": 0.4,
+      "rationale": "Official coastal water-level gauge inside the Koper destination radius."
+    },
+    {
+      "locationId": "si-koper",
+      "stationId": "9275",
+      "stationName": "Badaševica - Šalara",
+      "waterBody": "Badaševica",
+      "coordinates": [13.74646, 45.52498],
+      "distanceKm": 2.9,
+      "rationale": "Urban Badaševica gauge inside the Koper destination radius."
+    },
+    {
+      "locationId": "si-koper",
+      "stationId": "9240",
+      "stationName": "Rižana - Dekani",
+      "waterBody": "Rižana",
+      "coordinates": [13.81323, 45.54293],
+      "distanceKm": 6.5,
+      "rationale": "Rižana gauge inside the Koper destination radius."
+    },
+    {
+      "locationId": "si-kranj",
+      "stationId": "4155",
+      "stationName": "Kokra - Kranj II",
+      "waterBody": "Kokra",
+      "coordinates": [14.35961, 46.24319],
+      "distanceKm": 0.6,
+      "rationale": "Kokra gauge inside the Kranj destination radius."
+    },
+    {
+      "locationId": "si-kranj",
+      "stationId": "3465",
+      "stationName": "Sava - Okroglo",
+      "waterBody": "Sava",
+      "coordinates": [14.3196, 46.25588],
+      "distanceKm": 3.4,
+      "rationale": "Sava gauge inside the Kranj destination radius."
+    },
+    {
+      "locationId": "si-lake-bled",
+      "stationId": "3350",
+      "stationName": "Lake Bled - Mlino",
+      "waterBody": "Blejsko jezero",
+      "coordinates": [14.09926, 46.35999],
+      "distanceKm": 4.4,
+      "rationale": "Official lake-level gauge inside the Lake Bled polygon."
+    },
+    {
+      "locationId": "si-lake-bled",
+      "stationId": "3400",
+      "stationName": "Jezernica - Mlino I",
+      "waterBody": "Jezernica",
+      "coordinates": [14.09998, 46.35713],
+      "distanceKm": 4.8,
+      "rationale": "Lake Bled outflow gauge inside the reviewed polygon."
+    },
+    {
+      "locationId": "si-lake-bled",
+      "stationId": "3180",
+      "stationName": "Radovna - Podhom",
+      "waterBody": "Radovna",
+      "coordinates": [14.08573, 46.3935],
+      "distanceKm": 1.3,
+      "rationale": "Radovna gauge inside the reviewed Lake Bled polygon."
+    },
+    {
+      "locationId": "si-ljubljana",
+      "stationId": "5078",
+      "stationName": "Ljubljanica - Moste I",
+      "waterBody": "Ljubljanica",
+      "coordinates": [14.54443, 46.05542],
+      "distanceKm": 3.1,
+      "rationale": "Ljubljanica gauge inside the Ljubljana destination radius."
+    },
+    {
+      "locationId": "si-ljubljana",
+      "stationId": "5479",
+      "stationName": "Gradaščica - Bokalce",
+      "waterBody": "Gradaščica",
+      "coordinates": [14.44643, 46.04514],
+      "distanceKm": 4.6,
+      "rationale": "Gradaščica gauge inside the Ljubljana destination radius."
+    },
+    {
+      "locationId": "si-ljubljana",
+      "stationId": "3570",
+      "stationName": "Sava - Šentjakob",
+      "waterBody": "Sava",
+      "coordinates": [14.58251, 46.08396],
+      "distanceKm": 7,
+      "rationale": "Sava gauge inside the Ljubljana destination radius."
+    },
+    {
+      "locationId": "si-maribor",
+      "stationId": "2830",
+      "stationName": "Pesnica - Ranca",
+      "waterBody": "Pesnica",
+      "coordinates": [15.68138, 46.59953],
+      "distanceKm": 5.6,
+      "rationale": "Pesnica gauge inside the Maribor destination radius; no reviewed current Drava gauge lies inside it."
+    }
+  ]
+}

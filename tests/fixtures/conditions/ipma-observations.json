@@ -1,0 +1,17 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-9.14972222, 38.71907778] },
+      "properties": {
+        "idEstacao": 1200535,
+        "localEstacao": "Lisboa (Geofísico)",
+        "time": "2026-08-31T17:00:00",
+      "temperatura": 22.5,
+      "intensidadeVento": -99,
+      "precAcumulada": 1.2
+      }
+    }
+  ]
+}

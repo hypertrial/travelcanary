@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:cap="urn:oasis:names:tc:emergency:cap:1.2">
+  <link rel="hub" href="https://pubsubhubbub.appspot.com/"/>
+  <link type="application/atom+xml" rel="self" href="https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-iceland"/>
+  <link type="text/html" rel="alternate" href="https://meteoalarm.org"/>
+  <rights>Copyright © 2026 MeteoAlarm.Org. Licensed under terms equivalent to CC BY 4.0, with additional requirements for redistributing outlined in our Terms and Conditions.</rights>
+  <generator>MeteoAlarm Producer Server</generator>
+  <logo>https://feeds.meteoalarm.org/images/logo.svg</logo>
+  <author>
+    <name>meteoalarm.org</name>
+    <uri>https://meteoalarm.org</uri>
+    <email>meteoalarm@geosphere.at</email>
+  </author>
+  <id>tag:meteoalarm.org,2021-02-19:IS</id>
+  <title>MeteoAlarm - Alerting Europe for Extreme Weather</title>
+  <updated>2026-09-08T15:35:56.543673Z</updated>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>IS010</value>
+    </cap:geocode>
+    <link title="Southeast Iceland" href="https://meteoalarm.org?geocode=EMMA_ID:IS010" hreflang="en"/>
+    <cap:areaDesc>Southeast Iceland</cap:areaDesc>
+    <cap:event>Weather Warning: Wind</cap:event>
+    <cap:sent>2026-09-06T09:46:38+00:00</cap:sent>
+    <cap:expires>2026-09-07T16:00:00+00:00</cap:expires>
+    <cap:effective>2026-09-06T09:46:38+00:00</cap:effective>
+    <cap:onset>2026-09-06T21:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.352.0.IS.260906094638.10890</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-iceland/567213de-eb31-4616-a642-2ccf39c20ab5"/>
+    <link title="Iceland" rel="related" href="https://meteoalarm.org?region=IS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T09:46:38Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-iceland/567213de-eb31-4616-a642-2ccf39c20ab5?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Wind Warning issued for Iceland - Southeast Iceland</title>
+    <updated>2026-09-06T09:46:38Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>64.47,-14.35 64.21,-14.95 64.17,-15.66 63.98,-16.24 63.76,-16.61 63.7,-17.61 63.41,-18.1 63.37,-18.74 63.38,-19.1 63.53,-19.1 63.54,-18.77 64.19,-18.04 64.26,-17.82 64.3,-16.71 64.4,-15.8 64.59,-14.77 64.47,-14.35</cap:polygon>
+    <link title="Southeast Iceland" href="https://meteoalarm.org?polygon=567213de-eb31-4616-a642-2ccf39c20ab5,1,0,0" hreflang="en"/>
+    <cap:areaDesc>Southeast Iceland</cap:areaDesc>
+    <cap:event>Weather Warning: Wind</cap:event>
+    <cap:sent>2026-09-06T09:46:38+00:00</cap:sent>
+    <cap:expires>2026-09-07T16:00:00+00:00</cap:expires>
+    <cap:effective>2026-09-06T09:46:38+00:00</cap:effective>
+    <cap:onset>2026-09-06T21:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.352.0.IS.260906094638.10890</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-iceland/567213de-eb31-4616-a642-2ccf39c20ab5"/>
+    <link title="Iceland" rel="related" href="https://meteoalarm.org?region=IS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T09:46:38Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-iceland/567213de-eb31-4616-a642-2ccf39c20ab5?index_info=1&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Wind Warning issued for Iceland - Southeast Iceland</title>
+    <updated>2026-09-06T09:46:38Z</updated>
+  </entry>
+</feed>

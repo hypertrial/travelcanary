@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-07",
+  "method": "Exact intersections of official WGS84 land and sea warning polygons with catalog matching areas; sea regions restricted to coastal destinations. Shapefile outer rings and holes preserved.",
+  "sources": [
+    {
+      "url": "https://meteo.hr/upozorenja/CroatiaRegions.tar",
+      "sha256": "7e780e43de8bb008fd640d527960100c59c606d33f1261c0aa6c73ef0af6c977"
+    },
+    {
+      "url": "https://meteo.hr/upozorenja/Croatia_Sea_Regions.tar",
+      "sha256": "b148a8b93f6045b0aae38d12b5a46c3f3badf7e8c3a63372887c3c5dc341c364"
+    }
+  ],
+  "mappings": [
+    {
+      "name": "Osijek region",
+      "kind": "land",
+      "aliases": [
+        "Osjecka regija"
+      ],
+      "locationIds": [
+        "hr-osijek"
+      ]
+    },
+    {
+      "name": "Zagreb region",
+      "kind": "land",
+      "aliases": [
+        "Zagrebacka regija"
+      ],
+      "locationIds": [
+        "hr-zagreb"
+      ]
+    },
+    {
+      "name": "Karlovac region",
+      "kind": "land",
+      "aliases": [
+        "Karlovacka regija"
+      ],
+      "locationIds": [
+        "hr-plitvice-lakes"
+      ]
+    },
+    {
+      "name": "Gospic region",
+      "kind": "land",
+      "aliases": [
+        "Gospicka regija"
+      ],
+      "locationIds": [
+        "hr-dalmatian-coast",
+        "hr-plitvice-lakes",
+        "hr-rijeka"
+      ]
+    },
+    {
+      "name": "Knin region",
+      "kind": "land",
+      "aliases": [
+        "Kninska regija"
+      ],
+      "locationIds": [
+        "hr-dalmatian-coast",
+        "hr-split",
+        "hr-zadar"
+      ]
+    },
+    {
+      "name": "Rijeka region",
+      "kind": "land",
+      "aliases": [
+        "Rijecka regija",
+        "Riječka regija"
+      ],
+      "locationIds": [
+        "hr-dalmatian-coast",
+        "hr-rijeka",
+        "hr-zadar"
+      ]
+    },
+    {
+      "name": "Split region",
+      "kind": "land",
+      "aliases": [
+        "Splitska regija"
+      ],
+      "locationIds": [
+        "hr-dalmatian-coast",
+        "hr-split",
+        "hr-zadar"
+      ]
+    },
+    {
+      "name": "Dubrovnik region",
+      "kind": "land",
+      "aliases": [
+        "Dubrovacka regija",
+        "Dubrovačka regija"
+      ],
+      "locationIds": [
+        "hr-dalmatian-coast"
+      ]
+    },
+    {
+      "name": "West Istrian coast region",
+      "kind": "sea",
+      "aliases": [],
+      "locationIds": []
+    },
+    {
+      "name": "Kvarner and Kvarneric region",
+      "kind": "sea",
+      "aliases": [
+        "Kvarner i Kvarneric",
+        "Kvarner i Kvarnerić"
+      ],
+      "locationIds": [
+        "hr-dalmatian-coast",
+        "hr-rijeka",
+        "hr-zadar"
+      ]
+    },
+    {
+      "name": "Velebit channel region",
+      "kind": "sea",
+      "aliases": [
+        "Velebitski kanal",
+        "Velebit channel"
+      ],
+      "locationIds": [
+        "hr-dalmatian-coast"
+      ]
+    },
+    {
+      "name": "North Dalmatia region",
+      "kind": "sea",
+      "aliases": [],
+      "locationIds": [
+        "hr-dalmatian-coast",
+        "hr-zadar"
+      ]
+    },
+    {
+      "name": "Middle Dalmatia region",
+      "kind": "sea",
+      "aliases": [],
+      "locationIds": [
+        "hr-dalmatian-coast",
+        "hr-split"
+      ]
+    },
+    {
+      "name": "South Dalmatia region",
+      "kind": "sea",
+      "aliases": [],
+      "locationIds": [
+        "hr-dalmatian-coast"
+      ]
+    }
+  ]
+}

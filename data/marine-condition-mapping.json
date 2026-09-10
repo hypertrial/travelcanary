@@ -1,0 +1,1445 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-03",
+  "source": "https://marine-api.open-meteo.com/v1/marine",
+  "documentation": "https://open-meteo.com/en/docs/marine-weather-api",
+  "rule": "Current offshore sea-grid cell with a non-empty wave series and no more than 25 km from the committed destination centroid.",
+  "mappings": [
+    {
+      "locationId": "be-belgian-coast",
+      "status": "mapped",
+      "queryCoordinates": [
+        2.9583435,
+        51.375008
+      ],
+      "distanceKm": 19.5,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "be-ostend",
+      "status": "mapped",
+      "queryCoordinates": [
+        2.9583435,
+        51.375008
+      ],
+      "distanceKm": 17.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "bg-bulgarian-black-sea-coast",
+      "status": "mapped",
+      "queryCoordinates": [
+        28.125015,
+        42.875
+      ],
+      "distanceKm": 6.7,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "bg-burgas",
+      "status": "mapped",
+      "queryCoordinates": [
+        27.458344,
+        42.541664
+      ],
+      "distanceKm": 4,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "bg-varna",
+      "status": "mapped",
+      "queryCoordinates": [
+        27.958344,
+        43.125
+      ],
+      "distanceKm": 11.2,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "cy-ayia-napa-coast",
+      "status": "mapped",
+      "queryCoordinates": [
+        33.958344,
+        34.958336
+      ],
+      "distanceKm": 3.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "cy-famagusta",
+      "status": "mapped",
+      "queryCoordinates": [
+        33.958344,
+        34.958336
+      ],
+      "distanceKm": 18.6,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "cy-larnaca",
+      "status": "mapped",
+      "queryCoordinates": [
+        33.708344,
+        34.875
+      ],
+      "distanceKm": 9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "cy-limassol",
+      "status": "mapped",
+      "queryCoordinates": [
+        33.04167,
+        34.625
+      ],
+      "distanceKm": 6.6,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "dk-aalborg",
+      "status": "unsupported",
+      "distanceKm": 2.5,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "dk-arhus",
+      "status": "mapped",
+      "queryCoordinates": [
+        10.375015,
+        55.958336
+      ],
+      "distanceKm": 24.3,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "dk-bornholm",
+      "status": "mapped",
+      "queryCoordinates": [
+        14.875015,
+        54.958336
+      ],
+      "distanceKm": 15.8,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "dk-copenhagen",
+      "status": "mapped",
+      "queryCoordinates": [
+        12.541672,
+        55.625008
+      ],
+      "distanceKm": 5.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "dk-esbjerg",
+      "status": "mapped",
+      "queryCoordinates": [
+        8.4583435,
+        55.458336
+      ],
+      "distanceKm": 1.4,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "dk-frederiksberg",
+      "status": "mapped",
+      "queryCoordinates": [
+        12.541672,
+        55.625008
+      ],
+      "distanceKm": 6.1,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "dk-horsens",
+      "status": "mapped",
+      "queryCoordinates": [
+        9.9583435,
+        55.791664
+      ],
+      "distanceKm": 10.2,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "dk-kolding",
+      "status": "unsupported",
+      "distanceKm": 3.7,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "dk-north-zealand-coast",
+      "status": "mapped",
+      "queryCoordinates": [
+        12.041672,
+        55.958336
+      ],
+      "distanceKm": 13.8,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "dk-odense",
+      "status": "unsupported",
+      "distanceKm": 2.5,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "dk-randers",
+      "status": "unsupported",
+      "distanceKm": 0.4,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "dk-vejle",
+      "status": "unsupported",
+      "distanceKm": 0.4,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "ee-kohtla-jaerve",
+      "status": "mapped",
+      "queryCoordinates": [
+        27.291672,
+        59.541664
+      ],
+      "distanceKm": 15.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "ee-lahemaa-national-park",
+      "status": "mapped",
+      "queryCoordinates": [
+        25.875015,
+        59.708336
+      ],
+      "distanceKm": 18.1,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "ee-narva",
+      "status": "mapped",
+      "queryCoordinates": [
+        28.041672,
+        59.541664
+      ],
+      "distanceKm": 20.1,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "ee-paernu",
+      "status": "mapped",
+      "queryCoordinates": [
+        24.458344,
+        58.375008
+      ],
+      "distanceKm": 2.6,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "ee-saaremaa",
+      "status": "mapped",
+      "queryCoordinates": [
+        22.625015,
+        58.208336
+      ],
+      "distanceKm": 4.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "ee-tallinn",
+      "status": "mapped",
+      "queryCoordinates": [
+        24.791672,
+        59.541664
+      ],
+      "distanceKm": 11.8,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-a-coruna",
+      "status": "mapped",
+      "queryCoordinates": [
+        -8.458328,
+        43.375
+      ],
+      "distanceKm": 5.1,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-alicante",
+      "status": "mapped",
+      "queryCoordinates": [
+        -0.37498474,
+        38.291664
+      ],
+      "distanceKm": 11,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-badalona",
+      "status": "mapped",
+      "queryCoordinates": [
+        2.2916718,
+        41.375
+      ],
+      "distanceKm": 9.1,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-barcelona",
+      "status": "mapped",
+      "queryCoordinates": [
+        2.2083435,
+        41.291664
+      ],
+      "distanceKm": 11.6,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-bilbao",
+      "status": "mapped",
+      "queryCoordinates": [
+        -2.9583282,
+        43.458336
+      ],
+      "distanceKm": 21.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-cartagena",
+      "status": "mapped",
+      "queryCoordinates": [
+        -0.95832825,
+        37.625
+      ],
+      "distanceKm": 3.4,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-costa-del-sol",
+      "status": "mapped",
+      "queryCoordinates": [
+        -4.6249847,
+        36.458336
+      ],
+      "distanceKm": 15.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-gijon",
+      "status": "mapped",
+      "queryCoordinates": [
+        -5.6249847,
+        43.708336
+      ],
+      "distanceKm": 19.4,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-l-hospitalet-de-llobregat",
+      "status": "mapped",
+      "queryCoordinates": [
+        2.2083435,
+        41.291664
+      ],
+      "distanceKm": 11.8,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-las-palmas-de-gran-canaria",
+      "status": "mapped",
+      "queryCoordinates": [
+        -15.2916565,
+        28.125
+      ],
+      "distanceKm": 12.4,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-malaga",
+      "status": "mapped",
+      "queryCoordinates": [
+        -4.3749847,
+        36.708336
+      ],
+      "distanceKm": 4.3,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-mallorca",
+      "status": "mapped",
+      "queryCoordinates": [
+        2.7083435,
+        39.458336
+      ],
+      "distanceKm": 19.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-palma",
+      "status": "mapped",
+      "queryCoordinates": [
+        2.6250153,
+        39.458336
+      ],
+      "distanceKm": 12.5,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-santa-cruz-de-tenerife",
+      "status": "mapped",
+      "queryCoordinates": [
+        -16.208328,
+        28.375
+      ],
+      "distanceKm": 11.3,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-valencia",
+      "status": "mapped",
+      "queryCoordinates": [
+        -0.20832825,
+        39.458336
+      ],
+      "distanceKm": 14.8,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "es-vigo",
+      "status": "mapped",
+      "queryCoordinates": [
+        -8.7916565,
+        42.291664
+      ],
+      "distanceKm": 8.7,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "fi-espoo",
+      "status": "mapped",
+      "queryCoordinates": [
+        24.708344,
+        60.125008
+      ],
+      "distanceKm": 9.4,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "fi-helsinki",
+      "status": "mapped",
+      "queryCoordinates": [
+        24.958344,
+        60.208336
+      ],
+      "distanceKm": 4.5,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "fi-oulu",
+      "status": "mapped",
+      "queryCoordinates": [
+        25.458344,
+        65.041664
+      ],
+      "distanceKm": 3.3,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "fi-pori",
+      "status": "mapped",
+      "queryCoordinates": [
+        21.625015,
+        61.458336
+      ],
+      "distanceKm": 8.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "fi-turku",
+      "status": "mapped",
+      "queryCoordinates": [
+        22.208344,
+        60.458336
+      ],
+      "distanceKm": 3.4,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "fi-vaasa",
+      "status": "mapped",
+      "queryCoordinates": [
+        21.541672,
+        63.208336
+      ],
+      "distanceKm": 13,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "fr-french-riviera",
+      "status": "mapped",
+      "queryCoordinates": [
+        6.7916718,
+        43.375
+      ],
+      "distanceKm": 11.2,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "fr-le-havre",
+      "status": "mapped",
+      "queryCoordinates": [
+        0.12501526,
+        49.458336
+      ],
+      "distanceKm": 4.1,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "fr-marseille",
+      "status": "mapped",
+      "queryCoordinates": [
+        5.3750153,
+        43.291664
+      ],
+      "distanceKm": 0.8,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "fr-montpellier",
+      "status": "mapped",
+      "queryCoordinates": [
+        3.8750153,
+        43.458336
+      ],
+      "distanceKm": 17,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "fr-nice",
+      "status": "mapped",
+      "queryCoordinates": [
+        7.2916718,
+        43.708336
+      ],
+      "distanceKm": 2.1,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "fr-toulon",
+      "status": "mapped",
+      "queryCoordinates": [
+        5.9583435,
+        43.125
+      ],
+      "distanceKm": 2.4,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "gr-athens",
+      "status": "mapped",
+      "queryCoordinates": [
+        23.625015,
+        37.958336
+      ],
+      "distanceKm": 9.4,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "gr-crete",
+      "status": "mapped",
+      "queryCoordinates": [
+        24.708344,
+        35.125
+      ],
+      "distanceKm": 19.3,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "gr-cyclades",
+      "status": "mapped",
+      "queryCoordinates": [
+        24.958344,
+        37.041664
+      ],
+      "distanceKm": 5.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "gr-glyfada",
+      "status": "mapped",
+      "queryCoordinates": [
+        23.708344,
+        37.875
+      ],
+      "distanceKm": 4.6,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "gr-irakleion",
+      "status": "mapped",
+      "queryCoordinates": [
+        25.125015,
+        35.458336
+      ],
+      "distanceKm": 14.6,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "gr-kalamaria",
+      "status": "mapped",
+      "queryCoordinates": [
+        22.875015,
+        40.541664
+      ],
+      "distanceKm": 7.8,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "gr-kallithea",
+      "status": "mapped",
+      "queryCoordinates": [
+        23.625015,
+        37.958336
+      ],
+      "distanceKm": 6.6,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "gr-keratsini",
+      "status": "mapped",
+      "queryCoordinates": [
+        23.625015,
+        37.958336
+      ],
+      "distanceKm": 0.7,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "gr-palaio-faliro",
+      "status": "mapped",
+      "queryCoordinates": [
+        23.708344,
+        37.875
+      ],
+      "distanceKm": 5.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "gr-patra",
+      "status": "mapped",
+      "queryCoordinates": [
+        21.708344,
+        38.208336
+      ],
+      "distanceKm": 4.8,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "gr-piraeus",
+      "status": "mapped",
+      "queryCoordinates": [
+        23.625015,
+        37.958336
+      ],
+      "distanceKm": 2.6,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "gr-thessaloniki",
+      "status": "mapped",
+      "queryCoordinates": [
+        22.875015,
+        40.625
+      ],
+      "distanceKm": 5.3,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "gr-volos",
+      "status": "mapped",
+      "queryCoordinates": [
+        23.125015,
+        39.291664
+      ],
+      "distanceKm": 17.5,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "hr-dalmatian-coast",
+      "status": "mapped",
+      "queryCoordinates": [
+        16.625015,
+        43.458336
+      ],
+      "distanceKm": 8.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "hr-rijeka",
+      "status": "mapped",
+      "queryCoordinates": [
+        14.4583435,
+        45.291664
+      ],
+      "distanceKm": 4.1,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "hr-split",
+      "status": "mapped",
+      "queryCoordinates": [
+        16.458344,
+        43.458336
+      ],
+      "distanceKm": 5.8,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "hr-zadar",
+      "status": "mapped",
+      "queryCoordinates": [
+        15.2083435,
+        44.125
+      ],
+      "distanceKm": 1.7,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "ie-cork",
+      "status": "mapped",
+      "queryCoordinates": [
+        -8.458328,
+        51.708336
+      ],
+      "distanceKm": 21.1,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "ie-dublin",
+      "status": "mapped",
+      "queryCoordinates": [
+        -6.0416565,
+        53.375008
+      ],
+      "distanceKm": 14.5,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "ie-galway",
+      "status": "mapped",
+      "queryCoordinates": [
+        -9.2916565,
+        53.208336
+      ],
+      "distanceKm": 17.5,
+      "provenance": "The 2026-09-03 live review returned 24 wave-height, wave-period, and sea-temperature samples from an offshore grid cell within 25 km of Galway."
+    },
+    {
+      "locationId": "ie-limerick",
+      "status": "unsupported",
+      "distanceKm": 4.4,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "ie-waterford",
+      "status": "mapped",
+      "queryCoordinates": [
+        -7.1249847,
+        52.125008
+      ],
+      "distanceKm": 14.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "ie-wild-atlantic-way",
+      "status": "mapped",
+      "queryCoordinates": [
+        -9.708328,
+        53.291664
+      ],
+      "distanceKm": 12.1,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "it-acilia-castel-fusano-ostia-antica",
+      "status": "mapped",
+      "queryCoordinates": [
+        12.291672,
+        41.708336
+      ],
+      "distanceKm": 6.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "it-amalfi-coast",
+      "status": "mapped",
+      "queryCoordinates": [
+        14.625015,
+        40.625
+      ],
+      "distanceKm": 3.5,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "it-bari",
+      "status": "mapped",
+      "queryCoordinates": [
+        16.875015,
+        41.291664
+      ],
+      "distanceKm": 19,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "it-cagliari",
+      "status": "mapped",
+      "queryCoordinates": [
+        9.125015,
+        39.208336
+      ],
+      "distanceKm": 2.5,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "it-catania",
+      "status": "mapped",
+      "queryCoordinates": [
+        15.2083435,
+        37.458336
+      ],
+      "distanceKm": 12.7,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "it-genoa",
+      "status": "mapped",
+      "queryCoordinates": [
+        8.9583435,
+        44.375
+      ],
+      "distanceKm": 3.5,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "it-livorno",
+      "status": "mapped",
+      "queryCoordinates": [
+        10.291672,
+        43.541664
+      ],
+      "distanceKm": 2.8,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "it-messina",
+      "status": "mapped",
+      "queryCoordinates": [
+        15.625015,
+        38.125
+      ],
+      "distanceKm": 9.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "it-mestre",
+      "status": "mapped",
+      "queryCoordinates": [
+        12.291672,
+        45.375
+      ],
+      "distanceKm": 13.5,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "it-naples",
+      "status": "mapped",
+      "queryCoordinates": [
+        14.291672,
+        40.791664
+      ],
+      "distanceKm": 7,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "it-palermo",
+      "status": "mapped",
+      "queryCoordinates": [
+        13.375015,
+        38.291664
+      ],
+      "distanceKm": 19.5,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "it-reggio-calabria",
+      "status": "mapped",
+      "queryCoordinates": [
+        15.625015,
+        38.125
+      ],
+      "distanceKm": 3.6,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "it-rimini",
+      "status": "mapped",
+      "queryCoordinates": [
+        12.7083435,
+        44.208336
+      ],
+      "distanceKm": 20.3,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "it-taranto",
+      "status": "mapped",
+      "queryCoordinates": [
+        17.208344,
+        40.458336
+      ],
+      "distanceKm": 3.3,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "it-trieste",
+      "status": "mapped",
+      "queryCoordinates": [
+        13.7083435,
+        45.708336
+      ],
+      "distanceKm": 8.4,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "lt-curonian-spit",
+      "status": "mapped",
+      "queryCoordinates": [
+        21.041672,
+        55.375008
+      ],
+      "distanceKm": 2.8,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "lt-klaipeda",
+      "status": "mapped",
+      "queryCoordinates": [
+        21.125015,
+        55.708336
+      ],
+      "distanceKm": 0.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "lv-jurmala",
+      "status": "mapped",
+      "queryCoordinates": [
+        23.791672,
+        57.041664
+      ],
+      "distanceKm": 8.3,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "lv-jurmala-coast",
+      "status": "mapped",
+      "queryCoordinates": [
+        23.708344,
+        57.041664
+      ],
+      "distanceKm": 10.5,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "lv-liepaja",
+      "status": "mapped",
+      "queryCoordinates": [
+        21.041672,
+        56.458336
+      ],
+      "distanceKm": 5.5,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "lv-riga",
+      "status": "unsupported",
+      "distanceKm": 1.8,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "mt-birkirkara",
+      "status": "mapped",
+      "queryCoordinates": [
+        14.4583435,
+        35.791664
+      ],
+      "distanceKm": 11.7,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "mt-comino",
+      "status": "mapped",
+      "queryCoordinates": [
+        14.291672,
+        36.041664
+      ],
+      "distanceKm": 4.2,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "mt-gozo",
+      "status": "mapped",
+      "queryCoordinates": [
+        14.2083435,
+        36.041664
+      ],
+      "distanceKm": 3.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "mt-mosta",
+      "status": "mapped",
+      "queryCoordinates": [
+        14.4583435,
+        35.791664
+      ],
+      "distanceKm": 13.4,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "mt-qormi",
+      "status": "mapped",
+      "queryCoordinates": [
+        14.4583435,
+        35.791664
+      ],
+      "distanceKm": 9.5,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "mt-san-pawl-il-bahar",
+      "status": "mapped",
+      "queryCoordinates": [
+        14.375015,
+        36.041664
+      ],
+      "distanceKm": 10.8,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "mt-sliema",
+      "status": "mapped",
+      "queryCoordinates": [
+        14.541672,
+        35.791664
+      ],
+      "distanceKm": 13.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "mt-valletta",
+      "status": "mapped",
+      "queryCoordinates": [
+        14.541672,
+        35.791664
+      ],
+      "distanceKm": 12.3,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "nl-alkmaar",
+      "status": "mapped",
+      "queryCoordinates": [
+        4.7083435,
+        52.708336
+      ],
+      "distanceKm": 8.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "nl-almere-stad",
+      "status": "mapped",
+      "queryCoordinates": [
+        5.2083435,
+        52.375008
+      ],
+      "distanceKm": 0.7,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "nl-amsterdam",
+      "status": "unsupported",
+      "distanceKm": 1,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "nl-delft",
+      "status": "unsupported",
+      "distanceKm": 4.1,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "nl-dordrecht",
+      "status": "unsupported",
+      "distanceKm": 3.1,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "nl-haarlem",
+      "status": "mapped",
+      "queryCoordinates": [
+        4.6250153,
+        52.375008
+      ],
+      "distanceKm": 1,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "nl-hoofddorp",
+      "status": "unsupported",
+      "distanceKm": 1.8,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "nl-leiden",
+      "status": "unsupported",
+      "distanceKm": 4.4,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "nl-rotterdam",
+      "status": "unsupported",
+      "distanceKm": 4.2,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "nl-wadden-islands",
+      "status": "unsupported",
+      "distanceKm": 1.1,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "nl-zaanstad",
+      "status": "unsupported",
+      "distanceKm": 1.6,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "nl-zeeland-coast",
+      "status": "mapped",
+      "queryCoordinates": [
+        3.6250153,
+        51.458336
+      ],
+      "distanceKm": 13,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "pl-gdansk",
+      "status": "mapped",
+      "queryCoordinates": [
+        18.791672,
+        54.458336
+      ],
+      "distanceKm": 15,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "pl-gdynia",
+      "status": "mapped",
+      "queryCoordinates": [
+        18.708344,
+        54.541664
+      ],
+      "distanceKm": 11.7,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "pl-szczecin",
+      "status": "unsupported",
+      "distanceKm": 3.4,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "pt-algarve",
+      "status": "mapped",
+      "queryCoordinates": [
+        -8.208328,
+        37.125
+      ],
+      "distanceKm": 8.4,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "pt-aveiro",
+      "status": "mapped",
+      "queryCoordinates": [
+        -8.7916565,
+        40.625
+      ],
+      "distanceKm": 12.5,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "pt-faro",
+      "status": "mapped",
+      "queryCoordinates": [
+        -7.9583282,
+        36.958336
+      ],
+      "distanceKm": 7.3,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "pt-funchal",
+      "status": "mapped",
+      "queryCoordinates": [
+        -16.958328,
+        32.625
+      ],
+      "distanceKm": 5.5,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "pt-horta",
+      "status": "mapped",
+      "queryCoordinates": [
+        -28.624985,
+        38.541664
+      ],
+      "distanceKm": 0.8,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "pt-lisbon",
+      "status": "mapped",
+      "queryCoordinates": [
+        -9.208328,
+        38.708336
+      ],
+      "distanceKm": 5.4,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "pt-madeira",
+      "status": "mapped",
+      "queryCoordinates": [
+        -16.958328,
+        32.708336
+      ],
+      "distanceKm": 1.2,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "pt-ponta-delgada",
+      "status": "mapped",
+      "queryCoordinates": [
+        -25.624985,
+        37.708336
+      ],
+      "distanceKm": 5.2,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "pt-porto",
+      "status": "mapped",
+      "queryCoordinates": [
+        -8.624985,
+        41.125
+      ],
+      "distanceKm": 2.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "pt-santa-cruz-das-flores",
+      "status": "mapped",
+      "queryCoordinates": [
+        -31.124985,
+        39.458336
+      ],
+      "distanceKm": 0.3,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "pt-setubal",
+      "status": "mapped",
+      "queryCoordinates": [
+        -8.874985,
+        38.458336
+      ],
+      "distanceKm": 7.4,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "pt-vila-nova-de-gaia",
+      "status": "mapped",
+      "queryCoordinates": [
+        -8.624985,
+        41.125
+      ],
+      "distanceKm": 1.1,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "ro-constanta",
+      "status": "mapped",
+      "queryCoordinates": [
+        28.791672,
+        44.208336
+      ],
+      "distanceKm": 12.9,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "ro-danube-delta",
+      "status": "mapped",
+      "queryCoordinates": [
+        29.125015,
+        44.875
+      ],
+      "distanceKm": 14,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "se-gaevle",
+      "status": "unsupported",
+      "distanceKm": 3.9,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "se-gothenburg",
+      "status": "mapped",
+      "queryCoordinates": [
+        11.9583435,
+        57.625008
+      ],
+      "distanceKm": 9.1,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "se-gotland",
+      "status": "mapped",
+      "queryCoordinates": [
+        18.875015,
+        57.541664
+      ],
+      "distanceKm": 12.6,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "se-halmstad",
+      "status": "mapped",
+      "queryCoordinates": [
+        12.875015,
+        56.625008
+      ],
+      "distanceKm": 5.6,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "se-haninge",
+      "status": "mapped",
+      "queryCoordinates": [
+        18.208344,
+        59.125008
+      ],
+      "distanceKm": 6,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "se-helsingborg",
+      "status": "mapped",
+      "queryCoordinates": [
+        12.7083435,
+        55.875008
+      ],
+      "distanceKm": 19.1,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "se-karlskrona",
+      "status": "mapped",
+      "queryCoordinates": [
+        15.625015,
+        56.125008
+      ],
+      "distanceKm": 4.7,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "se-lulea",
+      "status": "unsupported",
+      "distanceKm": 4.7,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "se-malmoe",
+      "status": "mapped",
+      "queryCoordinates": [
+        13.041672,
+        55.708336
+      ],
+      "distanceKm": 11.7,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "se-moelndal",
+      "status": "mapped",
+      "queryCoordinates": [
+        12.041672,
+        57.625008
+      ],
+      "distanceKm": 3.8,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "se-norrkoeping",
+      "status": "unsupported",
+      "distanceKm": 3.7,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "se-soedertaelje",
+      "status": "unsupported",
+      "distanceKm": 1.4,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "se-stockholm",
+      "status": "mapped",
+      "queryCoordinates": [
+        18.208344,
+        59.125008
+      ],
+      "distanceKm": 24.1,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "se-sundsvall",
+      "status": "unsupported",
+      "distanceKm": 2,
+      "provenance": "Current marine product returned no usable wave series."
+    },
+    {
+      "locationId": "se-umea",
+      "status": "mapped",
+      "queryCoordinates": [
+        20.291672,
+        63.708336
+      ],
+      "distanceKm": 13.4,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    },
+    {
+      "locationId": "si-koper",
+      "status": "mapped",
+      "queryCoordinates": [
+        13.625015,
+        45.541664
+      ],
+      "distanceKm": 8.2,
+      "provenance": "Open-Meteo cell_selection=sea returned a current offshore grid cell with wave data within 25 km of the destination centroid."
+    }
+  ]
+}

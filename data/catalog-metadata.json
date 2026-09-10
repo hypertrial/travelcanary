@@ -1,0 +1,72 @@
+{
+  "provenance": {
+    "coastalClassification": "Curated against Eurostat coastal-area definitions and destination geography; reviewed 2026-08-26.",
+    "airQualitySampling": "Destination centroids with reviewed on-land replacements for coastal or island centroids; reviewed 2026-08-28.",
+    "airQualityCoverage": "EEA AQMobile 2025 GLOBAL_AQI raster coverage verified by official ImageServer sampling; reviewed 2026-08-28.",
+    "meteoalarmRegions": "Eurostat GISCO NUTS 2024 level-2 geometry, https://gisco-services.ec.europa.eu/distribution/v2/nuts/nuts-2024-files.html"
+  },
+  "coastalLocationIds": [
+    "be-belgian-coast", "be-ostend",
+    "bg-bulgarian-black-sea-coast", "bg-burgas", "bg-varna",
+    "cy-ayia-napa-coast", "cy-famagusta", "cy-larnaca", "cy-limassol",
+    "dk-aalborg", "dk-arhus", "dk-bornholm", "dk-copenhagen", "dk-esbjerg", "dk-frederiksberg", "dk-horsens", "dk-kolding", "dk-north-zealand-coast", "dk-odense", "dk-randers", "dk-vejle",
+    "ee-kohtla-jaerve", "ee-lahemaa-national-park", "ee-narva", "ee-paernu", "ee-saaremaa", "ee-tallinn",
+    "es-a-coruna", "es-alicante", "es-badalona", "es-barcelona", "es-bilbao", "es-cartagena", "es-costa-del-sol", "es-gijon", "es-l-hospitalet-de-llobregat", "es-las-palmas-de-gran-canaria", "es-malaga", "es-mallorca", "es-palma", "es-santa-cruz-de-tenerife", "es-valencia", "es-vigo",
+    "fi-espoo", "fi-helsinki", "fi-oulu", "fi-pori", "fi-turku", "fi-vaasa",
+    "fr-french-riviera", "fr-le-havre", "fr-marseille", "fr-montpellier", "fr-nice", "fr-toulon",
+    "gr-athens", "gr-crete", "gr-cyclades", "gr-glyfada", "gr-irakleion", "gr-kalamaria", "gr-kallithea", "gr-keratsini", "gr-palaio-faliro", "gr-patra", "gr-piraeus", "gr-thessaloniki", "gr-volos",
+    "hr-dalmatian-coast", "hr-rijeka", "hr-split", "hr-zadar",
+    "ie-cork", "ie-dublin", "ie-galway", "ie-limerick", "ie-waterford", "ie-wild-atlantic-way",
+    "it-acilia-castel-fusano-ostia-antica", "it-amalfi-coast", "it-bari", "it-cagliari", "it-catania", "it-genoa", "it-livorno", "it-messina", "it-mestre", "it-naples", "it-palermo", "it-reggio-calabria", "it-rimini", "it-taranto", "it-trieste",
+    "lt-curonian-spit", "lt-klaipeda",
+    "lv-jurmala", "lv-jurmala-coast", "lv-liepaja", "lv-riga",
+    "mt-birkirkara", "mt-comino", "mt-gozo", "mt-mosta", "mt-qormi", "mt-san-pawl-il-bahar", "mt-sliema", "mt-valletta",
+    "nl-alkmaar", "nl-almere-stad", "nl-amsterdam", "nl-delft", "nl-dordrecht", "nl-haarlem", "nl-hoofddorp", "nl-leiden", "nl-rotterdam", "nl-wadden-islands", "nl-zaanstad", "nl-zeeland-coast",
+    "pl-gdansk", "pl-gdynia", "pl-szczecin",
+    "pt-algarve", "pt-aveiro", "pt-faro", "pt-funchal", "pt-horta", "pt-lisbon", "pt-madeira", "pt-ponta-delgada", "pt-porto", "pt-santa-cruz-das-flores", "pt-setubal", "pt-vila-nova-de-gaia",
+    "ro-constanta", "ro-danube-delta",
+    "se-gaevle", "se-gothenburg", "se-gotland", "se-halmstad", "se-haninge", "se-helsingborg", "se-karlskrona", "se-lulea", "se-malmoe", "se-moelndal", "se-norrkoeping", "se-soedertaelje", "se-stockholm", "se-sundsvall", "se-umea",
+    "si-koper"
+  ],
+  "airQualitySamplePointOverrides": {
+    "bg-bulgarian-black-sea-coast": [[28.05, 42.9], [27.9147, 43.2141]],
+    "cy-ayia-napa-coast": [[34, 34.95], [33.9857, 34.988]],
+    "gr-cyclades": [[25, 37], [25.328, 37.446]],
+    "hr-dalmatian-coast": [[16.7, 43.4], [16.4402, 43.5081]],
+    "lv-jurmala": [[23.75, 56.95], [23.79, 56.95], [23.85, 56.96]],
+    "lv-jurmala-coast": [[23.75, 56.95], [23.7704, 56.968]]
+  },
+  "airQualityUnsupportedLocationIds": [
+    "es-las-palmas-de-gran-canaria",
+    "es-santa-cruz-de-tenerife",
+    "pt-horta",
+    "pt-ponta-delgada",
+    "pt-santa-cruz-das-flores"
+  ],
+  "sourceRegionCodeOverrides": {
+    "bg-bulgarian-black-sea-coast": { "meteoalarm": ["BG33"] },
+    "cy-ayia-napa-coast": { "meteoalarm": ["CY00"] },
+    "cy-famagusta": { "meteoalarm": ["CY00"] },
+    "ee-narva": { "meteoalarm": ["EE00"] },
+    "es-a-coruna": { "meteoalarm": ["ES11"] },
+    "es-las-palmas-de-gran-canaria": { "meteoalarm": ["ES70"] },
+    "gr-cyclades": { "meteoalarm": ["EL42"] },
+    "gr-kalamaria": { "meteoalarm": ["EL52"] },
+    "gr-patra": { "meteoalarm": ["EL63"] },
+    "hr-dalmatian-coast": { "meteoalarm": ["HR03"] },
+    "hr-split": { "meteoalarm": ["HR03"] },
+    "hr-zadar": { "meteoalarm": ["HR03"] },
+    "it-messina": { "meteoalarm": ["ITG1"] },
+    "it-rome": { "meteoalarm": ["ITI4"] },
+    "lu-dudelange": { "meteoalarm": ["LU00"] },
+    "pt-horta": { "meteoalarm": ["PT20"], "nationalCivilAlerts": ["azores:central"] },
+    "pt-ponta-delgada": { "meteoalarm": ["PT20"], "nationalCivilAlerts": ["azores:oriental"] },
+    "pt-santa-cruz-das-flores": { "meteoalarm": ["PT20"], "nationalCivilAlerts": ["azores:ocidental"] },
+    "se-helsingborg": { "meteoalarm": ["SE22"] },
+    "se-karlskrona": { "meteoalarm": ["SE22"] },
+    "ch-swiss-alps": { "slf": [] },
+    "ch-bernese-oberland": { "slf": [] },
+    "at-austrian-alps": { "euregio": [] },
+    "it-dolomites": { "euregio": [] }
+  }
+}

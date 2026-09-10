@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 2,
+  "generatedFrom": "https://eaws.gitlab.io/eaws-regions/micro-regions.geojson",
+  "reviewedAt": "2026-08-29",
+  "license": "EAWS region geometry CC0-1.0; aggregated bulletins CC BY 4.0",
+  "officialAttribution": "European Avalanche Warning Services and the named national bulletin provider",
+  "urlTemplate": "https://static.avalanche.report/eaws_bulletins/{date}/{date}-{feedCode}.json",
+  "partitions": [
+    { "feedCode": "AT-02", "enabled": true }, { "feedCode": "AT-03", "enabled": true },
+    { "feedCode": "AT-04", "enabled": true }, { "feedCode": "AT-05", "enabled": true },
+    { "feedCode": "AT-06", "enabled": true }, { "feedCode": "AT-07", "enabled": true },
+    { "feedCode": "AT-08", "enabled": true }, { "feedCode": "CZ", "enabled": true },
+    { "feedCode": "DE-BY", "enabled": true }, { "feedCode": "FI", "enabled": false },
+    { "feedCode": "FR", "enabled": true }, { "feedCode": "IT-32-BZ", "enabled": true },
+    { "feedCode": "IT-32-TN", "enabled": true }, { "feedCode": "PL-12", "enabled": true },
+    { "feedCode": "RO", "enabled": true }, { "feedCode": "SE", "enabled": true },
+    { "feedCode": "SI", "enabled": true }, { "feedCode": "SK", "enabled": true }
+  ],
+  "mappings": [
+    { "locationId": "at-austrian-alps", "feedCodes": ["AT-02", "AT-03", "AT-04", "AT-05", "AT-06", "AT-07", "AT-08"], "regionPrefixes": ["AT-"] },
+    { "locationId": "at-salzkammergut", "feedCodes": ["AT-04", "AT-05", "AT-06"], "regionPrefixes": ["AT-04", "AT-05", "AT-06"] },
+    { "locationId": "cz-krkonose-mountains", "feedCodes": ["CZ"], "regionPrefixes": ["CZ-04", "PL-01"] },
+    { "locationId": "de-bavarian-alps", "feedCodes": ["DE-BY"], "regionPrefixes": ["DE-BY-"] },
+    { "locationId": "fi-finnish-lapland", "feedCodes": ["FI"], "regionPrefixes": ["FI-"] },
+    { "locationId": "fr-french-alps", "feedCodes": ["FR"], "regionPrefixes": ["FR-"] },
+    { "locationId": "it-dolomites", "feedCodes": ["IT-32-BZ", "IT-32-TN"], "regionPrefixes": ["IT-32-BZ-", "IT-32-TN-"] },
+    { "locationId": "pl-tatra-mountains", "feedCodes": ["PL-12"], "regionPrefixes": ["PL-12-"] },
+    { "locationId": "ro-romanian-carpathians", "feedCodes": ["RO"], "regionPrefixes": ["RO-"] },
+    { "locationId": "se-swedish-lapland", "feedCodes": ["SE"], "regionPrefixes": ["SE-"] },
+    { "locationId": "si-julian-alps", "feedCodes": ["SI"], "regionPrefixes": ["SI"] },
+    { "locationId": "si-lake-bled", "feedCodes": ["SI"], "regionPrefixes": ["SI"] },
+    { "locationId": "sk-high-tatras", "feedCodes": ["SK"], "regionPrefixes": ["SK-01", "SK-02", "SK-03"] }
+  ]
+}

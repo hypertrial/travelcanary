@@ -1,0 +1,39 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "pegel_aktuell.207241",
+      "geometry": { "type": "Point", "coordinates": [16.372, 48.208] },
+      "properties": {
+        "hzbnr": 207241,
+        "messstelle": "Wien Reichsbruecke",
+        "wert": 4200,
+        "einheit": "m3/s",
+        "zeitpunkt": "2026-08-27T13:50:00+02:00",
+        "hydrodienst": "Wien",
+        "gewaesser": "Donau",
+        "parameter": "Q",
+        "gesamtcode": 600,
+        "internet": "https://ehyd.gv.at/"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "pegel_aktuell.208157",
+      "geometry": { "type": "Point", "coordinates": [16.38, 48.21] },
+      "properties": {
+        "hzbnr": 208157,
+        "messstelle": "Wien Nußdorf",
+        "wert": 1800,
+        "einheit": "m3/s",
+        "zeitpunkt": "2026-08-27T13:45:00+02:00",
+        "hydrodienst": "Wien",
+        "gewaesser": "Donaukanal",
+        "parameter": "Q",
+        "gesamtcode": 400,
+        "internet": "https://ehyd.gv.at/"
+      }
+    }
+  ]
+}

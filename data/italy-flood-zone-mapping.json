@@ -1,0 +1,252 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-08-30",
+  "source": {
+    "url": "https://github.com/pcm-dpc/DPC-Bollettini-Criticita-Idrogeologica-Idraulica",
+    "sha256": "544d92f6f9a08bd3a97dd92d1ab7d7868852e6e48677259ef09045d8e61e6059",
+    "featureCount": 187
+  },
+  "mappings": [
+    {
+      "locationId": "it-acilia-castel-fusano-ostia-antica",
+      "zoneNames": [
+        "Bacini Costieri Nord",
+        "Bacini di Roma"
+      ]
+    },
+    {
+      "locationId": "it-amalfi-coast",
+      "zoneNames": [
+        "Penisola sorrentino-amalfitana, Monti di Sarno e Monti Picentini",
+        "Piana campana, Napoli, Isole e Area vesuviana"
+      ]
+    },
+    {
+      "locationId": "it-bari",
+      "zoneNames": [
+        "Puglia Centrale Adriatica"
+      ]
+    },
+    {
+      "locationId": "it-bologna",
+      "zoneNames": [
+        "Collina bolognese",
+        "Pianura bolognese"
+      ]
+    },
+    {
+      "locationId": "it-brescia",
+      "zoneNames": [
+        "Alta pianura orientale",
+        "Laghi e Prealpi orientali"
+      ]
+    },
+    {
+      "locationId": "it-cagliari",
+      "zoneNames": [
+        "Campidano",
+        "Iglesiente"
+      ]
+    },
+    {
+      "locationId": "it-catania",
+      "zoneNames": [
+        "Bacino del Fiume Simeto",
+        "Nord-Orientale, versante ionico",
+        "Sud-Orientale, versante ionico"
+      ]
+    },
+    {
+      "locationId": "it-dolomites",
+      "zoneNames": [
+        "Alpago Cansiglio - Bacino Piave",
+        "Alta pianura trevigiana occidentale - Bacini Piave, Sile, Scolante in Laguna",
+        "Alta pianura trevigiana orientale - Bacino Livenza",
+        "Bacino del Livenza e del Lemene",
+        "Bacino montano del Tagliamento e del Torre",
+        "Dolomiti Occidentali: Agordino, Zoldano, alta Val Boite",
+        "Dolomiti orientali: Cadore, Comelico",
+        "Feltrino - Bacino Cismon",
+        "Pianura orientale - Bacini Livenza, Lemene, Pianura tra Livenza e Piave",
+        "Prealpi bellunesi Valbelluna/Feltrino - Bacino Piave",
+        "Prealpi trevigiane - Bacino Livenza",
+        "Prealpi trevigiane - Bacino Piave",
+        "Prealpi vicentine Altopiano dei Sette Comuni - Bacini Brenta Bacchiglione Agno",
+        "Provincia Autonoma di Bolzano",
+        "Provincia Autonoma di Trento"
+      ]
+    },
+    {
+      "locationId": "it-ferrara",
+      "zoneNames": [
+        "Pianura bolognese",
+        "Pianura ferrarese",
+        "Polesine occidentale, Bassa Veronese e Valli Grandi Veronesi - Bacini Fissero Tartaro Canalbianco, Po, Adige"
+      ]
+    },
+    {
+      "locationId": "it-florence",
+      "zoneNames": [
+        "Arno-Firenze",
+        "Arno-Valdarno Sup.",
+        "Bisenzio e Ombrone Pt",
+        "Mugello-Val di Sieve",
+        "Valdelsa-Valdera"
+      ]
+    },
+    {
+      "locationId": "it-foggia",
+      "zoneNames": [
+        "Sub-Appennino Dauno",
+        "Tavoliere - bassi bacini del Candelaro, Cervaro e Carapelle"
+      ]
+    },
+    {
+      "locationId": "it-genoa",
+      "zoneNames": [
+        "Bacini Liguri Marittimi di Centro",
+        "Bacini Liguri Marittimi di Levante",
+        "Bacini Liguri Padani di Levante"
+      ]
+    },
+    {
+      "locationId": "it-livorno",
+      "zoneNames": [
+        "Arno-Costa",
+        "Etruria",
+        "Valdarno Inf."
+      ]
+    },
+    {
+      "locationId": "it-messina",
+      "zoneNames": [
+        "Nord-Orientale, versante ionico",
+        "Nord-Orientale, versante tirrenico e isole Eolie",
+        "Versante Tirrenico Meridionale"
+      ]
+    },
+    {
+      "locationId": "it-mestre",
+      "zoneNames": [
+        "Costa centro-orientale - Bacini del Piave, Sile, Scolante in Laguna, Pianura tra Livenza e Piave",
+        "Pianura centro-orientale - Bacini del Piave, Sile, Scolante in Laguna, Pianura tra Livenza e Piave"
+      ]
+    },
+    {
+      "locationId": "it-milan",
+      "zoneNames": [
+        "Bassa pianura centro-occidentale",
+        "Bassa pianura occidentale",
+        "Nodo Idraulico di Milano"
+      ]
+    },
+    {
+      "locationId": "it-modena",
+      "zoneNames": [
+        "Collina emiliana centrale",
+        "Pianura bolognese",
+        "Pianura modenese",
+        "Pianura reggiana"
+      ]
+    },
+    {
+      "locationId": "it-naples",
+      "zoneNames": [
+        "Piana campana, Napoli, Isole e Area vesuviana"
+      ]
+    },
+    {
+      "locationId": "it-padua",
+      "zoneNames": [
+        "Colli Euganei e Colli Berici - Bacini Bacchiglione Fratta-Gorzone",
+        "Pianura centrale - Bacini Brenta Bacchiglione, Muson, Scolante in Laguna",
+        "Pianura centro-orientale - Bacini del Piave, Sile, Scolante in Laguna, Pianura tra Livenza e Piave"
+      ]
+    },
+    {
+      "locationId": "it-palermo",
+      "zoneNames": [
+        "Centro-Settentrionale, versante tirrenico",
+        "Nord-Occidentale e isole Egadi e Ustica",
+        "Sud-Occidentale e isola di Pantelleria"
+      ]
+    },
+    {
+      "locationId": "it-parma",
+      "zoneNames": [
+        "Bassa collina piacentino-parmense",
+        "Collina emiliana centrale",
+        "Montagna piacentino-parmense",
+        "Pianura piacentino-parmense",
+        "Pianura reggiana",
+        "Pianura reggiana di Po"
+      ]
+    },
+    {
+      "locationId": "it-prato",
+      "zoneNames": [
+        "Arno-Firenze",
+        "Bisenzio e Ombrone Pt",
+        "Mugello-Val di Sieve",
+        "Reno",
+        "Valdarno Inf."
+      ]
+    },
+    {
+      "locationId": "it-reggio-calabria",
+      "zoneNames": [
+        "Nord-Orientale, versante ionico",
+        "Versante Jonico Meridionale",
+        "Versante Tirrenico Meridionale"
+      ]
+    },
+    {
+      "locationId": "it-reggio-nell-emilia",
+      "zoneNames": [
+        "Collina emiliana centrale",
+        "Pianura modenese",
+        "Pianura reggiana"
+      ]
+    },
+    {
+      "locationId": "it-rimini",
+      "zoneNames": [
+        "Bassa collina e pianura romagnola",
+        "Costa romagnola"
+      ]
+    },
+    {
+      "locationId": "it-rome",
+      "zoneNames": [
+        "Aniene",
+        "Bacini di Roma"
+      ]
+    },
+    {
+      "locationId": "it-taranto",
+      "zoneNames": [
+        "Bacini del Lato e del Lenne"
+      ]
+    },
+    {
+      "locationId": "it-trieste",
+      "zoneNames": [
+        "Bacino di Levante / Carso"
+      ]
+    },
+    {
+      "locationId": "it-turin",
+      "zoneNames": [
+        "Pianura Torinese e Colline"
+      ]
+    },
+    {
+      "locationId": "it-verona",
+      "zoneNames": [
+        "Lessinia meridionale e alta pianura veronese - Bacino Adige",
+        "Polesine occidentale, Bassa Veronese e Valli Grandi Veronesi - Bacini Fissero Tartaro Canalbianco, Po, Adige",
+        "Prealpi orientali, Baldo e Lessinia settentrionale - Bacino Adige"
+      ]
+    }
+  ]
+}

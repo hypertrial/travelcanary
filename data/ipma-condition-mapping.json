@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-01",
+  "source": "https://api.ipma.pt/open-data/observation/meteorology/stations/stations.json",
+  "documentation": "https://api.ipma.pt/",
+  "rule": "Nearest named IPMA station within 25 km of a city, capital, coastal destination, or resort centroid. Broad island and regional destinations are excluded.",
+  "mappings": [
+    { "locationId": "pt-algueirao", "stationId": "1210752", "stationName": "Sintra/Tapada do Mouco", "coordinates": [-9.400398, 38.781669], "distanceKm": 5.2 },
+    { "locationId": "pt-amadora", "stationId": "1240935", "stationName": "Amadora", "coordinates": [-9.24244, 38.757579], "distanceKm": 1.1 },
+    { "locationId": "pt-aveiro", "stationId": "1210702", "stationName": "Aveiro (Universidade)", "coordinates": [-8.65958333, 40.63529722], "distanceKm": 1.6 },
+    { "locationId": "pt-braga", "stationId": "6212124", "stationName": "Braga (CIM)", "coordinates": [-8.42514722, 41.53568333], "distanceKm": 1.8 },
+    { "locationId": "pt-cacem", "stationId": "6215360", "stationName": "Oeiras / Vila Fria (CMO)", "coordinates": [-9.2939255, 38.7239536], "distanceKm": 4.8 },
+    { "locationId": "pt-coimbra", "stationId": "1210707", "stationName": "Coimbra, Bencanta", "coordinates": [-8.45515277, 40.2134694], "distanceKm": 3.1 },
+    { "locationId": "pt-faro", "stationId": "1200554", "stationName": "Faro (Aeródromo)", "coordinates": [-7.971953, 37.016579], "distanceKm": 4.0 },
+    { "locationId": "pt-felgueiras", "stationId": "1210625", "stationName": "Guimarães", "coordinates": [-8.3178, 41.4289], "distanceKm": 12.3 },
+    { "locationId": "pt-funchal", "stationId": "1210976", "stationName": "Madeira, Monte", "coordinates": [-16.906944, 32.675833], "distanceKm": 2.1 },
+    { "locationId": "pt-horta", "stationId": "1200506", "stationName": "Horta (Obs. Principe Alberto)", "coordinates": [-28.63225, 38.540781], "distanceKm": 0.8 },
+    { "locationId": "pt-leiria", "stationId": "1240916", "stationName": "Leiria", "coordinates": [-8.810466, 39.744764], "distanceKm": 0.3 },
+    { "locationId": "pt-lisbon", "stationId": "1200535", "stationName": "Lisboa (Geofísico)", "coordinates": [-9.14972222, 38.71907778], "distanceKm": 0.7 },
+    { "locationId": "pt-loures", "stationId": "6215302", "stationName": "Lisboa, Carnide (CML)", "coordinates": [-9.1855, 38.7751], "distanceKm": 6.4 },
+    { "locationId": "pt-ponta-delgada", "stationId": "1210513", "stationName": "P. Delgada (Obs. A. Chaves)", "coordinates": [-25.662283, 37.7464], "distanceKm": 0.7 },
+    { "locationId": "pt-porto", "stationId": "1240546", "stationName": "Porto, Serra do Pilar", "coordinates": [-8.6025, 41.1385194], "distanceKm": 1.3 },
+    { "locationId": "pt-queluz", "stationId": "1240935", "stationName": "Amadora", "coordinates": [-9.24244, 38.757579], "distanceKm": 1.1 },
+    { "locationId": "pt-santa-cruz-das-flores", "stationId": "1200501", "stationName": "Flores (Aeródromo)", "coordinates": [-31.1301, 39.45819], "distanceKm": 0.4 },
+    { "locationId": "pt-setubal", "stationId": "1240929", "stationName": "Setúbal, Areias", "coordinates": [-8.89066111, 38.54846667], "distanceKm": 2.7 },
+    { "locationId": "pt-vila-nova-de-gaia", "stationId": "1240546", "stationName": "Porto, Serra do Pilar", "coordinates": [-8.6025, 41.1385194], "distanceKm": 1.8 },
+    { "locationId": "pt-viseu", "stationId": "1240675", "stationName": "Viseu (Cidade)", "coordinates": [-7.9039694, 40.662738], "distanceKm": 0.4 }
+  ]
+}

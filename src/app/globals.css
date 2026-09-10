@@ -1,0 +1,108 @@
+:root {
+  --font-ui: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --ink: #153b3e;
+  --ink-soft: #37585a;
+  --muted: #596f6c;
+  --paper: #f1eee4;
+  --surface: #fffdf6;
+  --surface-soft: #f7f3e8;
+  --surface-strong: #e9eee7;
+  --line: #d9ded4;
+  --line-strong: #bbc8bf;
+  --brand-navy: #012f62;
+  --brand-gold: #fdca03;
+  --brand-gold-ink: #785800;
+  --brand: var(--brand-gold);
+  --brand-soft: #fff6cc;
+  --brand-deep: var(--brand-navy);
+  --normal: #627771;
+  --elevated: #986100;
+  --high: #b64318;
+  --severe: #a3253b;
+  --unknown: #53657c;
+  --focus: #0d4d7a;
+  --map-background: #c6c2b8;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --control-radius: 13px;
+  --panel-radius: 16px;
+  --rail-divider: color-mix(in srgb, var(--ink) 10%, transparent);
+  --shadow-sm: 0 4px 18px rgba(20, 53, 54, .09);
+  --shadow-md: 0 16px 44px rgba(20, 53, 54, .14);
+  --shadow-lg: 0 28px 80px rgba(20, 53, 54, .19);
+  --shadow-overlay: 0 20px 56px rgba(20, 53, 54, .17);
+  --motion-fast: 160ms;
+  --motion-medium: 220ms;
+  --ease-out: cubic-bezier(.2, .8, .2, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  overflow: hidden;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: var(--font-ui);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+summary:focus-visible,
+[tabindex="0"]:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--focus) 40%, transparent);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+@media (forced-colors: active) {
+  button,
+  input,
+  a,
+  summary {
+    forced-color-adjust: auto;
+  }
+}

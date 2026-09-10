@@ -1,0 +1,113 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.230909186299616,
+          53.32788126403148
+        ]
+      },
+      "properties": {
+        "station_ref": "0000009369",
+        "station_name": "Anglesea Road",
+        "sensor_ref": "0001",
+        "datetime": "2026-09-08T07:15:00Z",
+        "value": "0.436",
+        "err_code": 99
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.102433,
+          52.259666
+        ]
+      },
+      "properties": {
+        "station_ref": "0000016160",
+        "station_name": "Adelphi Quay",
+        "sensor_ref": "0001",
+        "datetime": "2026-09-08T07:15:00Z",
+        "value": "2.146",
+        "err_code": 99
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.473466592403028,
+          51.90102505152169
+        ]
+      },
+      "properties": {
+        "station_ref": "0000019163",
+        "station_name": "Pope’s Quay",
+        "sensor_ref": "0001",
+        "datetime": "2026-09-08T07:15:00Z",
+        "value": "2.019",
+        "err_code": 99
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.50622,
+          52.000977
+        ]
+      },
+      "properties": {
+        "station_ref": "0000022005",
+        "station_name": "Torc Weir",
+        "sensor_ref": "0001",
+        "datetime": "2026-09-08T07:15:00Z",
+        "value": "0.411",
+        "err_code": 99
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.619052770500227,
+          52.66642872053617
+        ]
+      },
+      "properties": {
+        "station_ref": "0000025061",
+        "station_name": "Ball's Bridge",
+        "sensor_ref": "0001",
+        "datetime": "2026-09-08T07:15:00Z",
+        "value": "0.440",
+        "err_code": 99
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.056272,
+          53.277994
+        ]
+      },
+      "properties": {
+        "station_ref": "0000030099",
+        "station_name": "Galway Barrage",
+        "sensor_ref": "0001",
+        "datetime": "2026-09-08T07:15:00Z",
+        "value": "0.278",
+        "err_code": 99
+      }
+    }
+  ]
+}

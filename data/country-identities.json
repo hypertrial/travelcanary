@@ -1,0 +1,424 @@
+{
+  "schemaVersion": 1,
+  "countries": {
+    "AD": "Andorra",
+    "AL": "Albania",
+    "AT": "Austria",
+    "BA": "Bosnia and Herzegovina",
+    "BE": "Belgium",
+    "BG": "Bulgaria",
+    "BY": "Belarus",
+    "CH": "Switzerland",
+    "CY": "Cyprus",
+    "CZ": "Czechia",
+    "DE": "Germany",
+    "DK": "Denmark",
+    "EE": "Estonia",
+    "ES": "Spain",
+    "FI": "Finland",
+    "FR": "France",
+    "GB": "United Kingdom",
+    "GR": "Greece",
+    "HR": "Croatia",
+    "HU": "Hungary",
+    "IE": "Ireland",
+    "IS": "Iceland",
+    "IT": "Italy",
+    "LI": "Liechtenstein",
+    "LT": "Lithuania",
+    "LU": "Luxembourg",
+    "LV": "Latvia",
+    "MC": "Monaco",
+    "MD": "Moldova",
+    "ME": "Montenegro",
+    "MK": "North Macedonia",
+    "MT": "Malta",
+    "NL": "Netherlands",
+    "NO": "Norway",
+    "PL": "Poland",
+    "PT": "Portugal",
+    "RO": "Romania",
+    "RS": "Serbia",
+    "SE": "Sweden",
+    "SI": "Slovenia",
+    "SK": "Slovakia",
+    "SM": "San Marino",
+    "TR": "Türkiye",
+    "VA": "Vatican City",
+    "XK": "Kosovo"
+  },
+  "aliases": {
+    "GB": [
+      "UK"
+    ],
+    "TR": [
+      "Turkey"
+    ],
+    "XK": [
+      "Kosova",
+      "Kosovë"
+    ]
+  },
+  "upstreamCodes": {
+    "AD": {
+      "geonames": "AD",
+      "naturalEarth": {
+        "ISO_A2_EH": "AD",
+        "ISO_A2": "AD",
+        "WB_A2": "AD"
+      }
+    },
+    "AL": {
+      "geonames": "AL",
+      "naturalEarth": {
+        "ISO_A2_EH": "AL",
+        "ISO_A2": "AL",
+        "WB_A2": "AL"
+      }
+    },
+    "AT": {
+      "geonames": "AT",
+      "naturalEarth": {
+        "ISO_A2_EH": "AT",
+        "ISO_A2": "AT",
+        "WB_A2": "AT"
+      }
+    },
+    "BA": {
+      "geonames": "BA",
+      "naturalEarth": {
+        "ISO_A2_EH": "BA",
+        "ISO_A2": "BA",
+        "WB_A2": "BA"
+      }
+    },
+    "BE": {
+      "geonames": "BE",
+      "naturalEarth": {
+        "ISO_A2_EH": "BE",
+        "ISO_A2": "BE",
+        "WB_A2": "BE"
+      }
+    },
+    "BG": {
+      "geonames": "BG",
+      "naturalEarth": {
+        "ISO_A2_EH": "BG",
+        "ISO_A2": "BG",
+        "WB_A2": "BG"
+      }
+    },
+    "BY": {
+      "geonames": "BY",
+      "naturalEarth": {
+        "ISO_A2_EH": "BY",
+        "ISO_A2": "BY",
+        "WB_A2": "BY"
+      }
+    },
+    "CH": {
+      "geonames": "CH",
+      "naturalEarth": {
+        "ISO_A2_EH": "CH",
+        "ISO_A2": "CH",
+        "WB_A2": "CH"
+      }
+    },
+    "CY": {
+      "geonames": "CY",
+      "naturalEarth": {
+        "ISO_A2_EH": "CY",
+        "ISO_A2": "CY",
+        "WB_A2": "CY"
+      }
+    },
+    "CZ": {
+      "geonames": "CZ",
+      "naturalEarth": {
+        "ISO_A2_EH": "CZ",
+        "ISO_A2": "CZ",
+        "WB_A2": "CZ"
+      }
+    },
+    "DE": {
+      "geonames": "DE",
+      "naturalEarth": {
+        "ISO_A2_EH": "DE",
+        "ISO_A2": "DE",
+        "WB_A2": "DE"
+      }
+    },
+    "DK": {
+      "geonames": "DK",
+      "naturalEarth": {
+        "ISO_A2_EH": "DK",
+        "ISO_A2": "DK",
+        "WB_A2": "DK"
+      }
+    },
+    "EE": {
+      "geonames": "EE",
+      "naturalEarth": {
+        "ISO_A2_EH": "EE",
+        "ISO_A2": "EE",
+        "WB_A2": "EE"
+      }
+    },
+    "ES": {
+      "geonames": "ES",
+      "naturalEarth": {
+        "ISO_A2_EH": "ES",
+        "ISO_A2": "ES",
+        "WB_A2": "ES"
+      }
+    },
+    "FI": {
+      "geonames": "FI",
+      "naturalEarth": {
+        "ISO_A2_EH": "FI",
+        "ISO_A2": "FI",
+        "WB_A2": "FI"
+      }
+    },
+    "FR": {
+      "geonames": "FR",
+      "naturalEarth": {
+        "ISO_A2_EH": "FR",
+        "ISO_A2": "-99",
+        "WB_A2": "-99"
+      }
+    },
+    "GB": {
+      "geonames": "GB",
+      "naturalEarth": {
+        "ISO_A2_EH": "GB",
+        "ISO_A2": "GB",
+        "WB_A2": "GB"
+      }
+    },
+    "GR": {
+      "geonames": "GR",
+      "naturalEarth": {
+        "ISO_A2_EH": "GR",
+        "ISO_A2": "GR",
+        "WB_A2": "GR"
+      }
+    },
+    "HR": {
+      "geonames": "HR",
+      "naturalEarth": {
+        "ISO_A2_EH": "HR",
+        "ISO_A2": "HR",
+        "WB_A2": "HR"
+      }
+    },
+    "HU": {
+      "geonames": "HU",
+      "naturalEarth": {
+        "ISO_A2_EH": "HU",
+        "ISO_A2": "HU",
+        "WB_A2": "HU"
+      }
+    },
+    "IE": {
+      "geonames": "IE",
+      "naturalEarth": {
+        "ISO_A2_EH": "IE",
+        "ISO_A2": "IE",
+        "WB_A2": "IE"
+      }
+    },
+    "IS": {
+      "geonames": "IS",
+      "naturalEarth": {
+        "ISO_A2_EH": "IS",
+        "ISO_A2": "IS",
+        "WB_A2": "IS"
+      }
+    },
+    "IT": {
+      "geonames": "IT",
+      "naturalEarth": {
+        "ISO_A2_EH": "IT",
+        "ISO_A2": "IT",
+        "WB_A2": "IT"
+      }
+    },
+    "LI": {
+      "geonames": "LI",
+      "naturalEarth": {
+        "ISO_A2_EH": "LI",
+        "ISO_A2": "LI",
+        "WB_A2": "LI"
+      }
+    },
+    "LT": {
+      "geonames": "LT",
+      "naturalEarth": {
+        "ISO_A2_EH": "LT",
+        "ISO_A2": "LT",
+        "WB_A2": "LT"
+      }
+    },
+    "LU": {
+      "geonames": "LU",
+      "naturalEarth": {
+        "ISO_A2_EH": "LU",
+        "ISO_A2": "LU",
+        "WB_A2": "LU"
+      }
+    },
+    "LV": {
+      "geonames": "LV",
+      "naturalEarth": {
+        "ISO_A2_EH": "LV",
+        "ISO_A2": "LV",
+        "WB_A2": "LV"
+      }
+    },
+    "MC": {
+      "geonames": "MC",
+      "naturalEarth": {
+        "ISO_A2_EH": "MC",
+        "ISO_A2": "MC",
+        "WB_A2": "MC"
+      }
+    },
+    "MD": {
+      "geonames": "MD",
+      "naturalEarth": {
+        "ISO_A2_EH": "MD",
+        "ISO_A2": "MD",
+        "WB_A2": "MD"
+      }
+    },
+    "ME": {
+      "geonames": "ME",
+      "naturalEarth": {
+        "ISO_A2_EH": "ME",
+        "ISO_A2": "ME",
+        "WB_A2": "ME"
+      }
+    },
+    "MK": {
+      "geonames": "MK",
+      "naturalEarth": {
+        "ISO_A2_EH": "MK",
+        "ISO_A2": "MK",
+        "WB_A2": "MK"
+      }
+    },
+    "MT": {
+      "geonames": "MT",
+      "naturalEarth": {
+        "ISO_A2_EH": "MT",
+        "ISO_A2": "MT",
+        "WB_A2": "MT"
+      }
+    },
+    "NL": {
+      "geonames": "NL",
+      "naturalEarth": {
+        "ISO_A2_EH": "NL",
+        "ISO_A2": "NL",
+        "WB_A2": "NL"
+      }
+    },
+    "NO": {
+      "geonames": "NO",
+      "naturalEarth": {
+        "ISO_A2_EH": "NO",
+        "ISO_A2": "-99",
+        "WB_A2": "-99"
+      }
+    },
+    "PL": {
+      "geonames": "PL",
+      "naturalEarth": {
+        "ISO_A2_EH": "PL",
+        "ISO_A2": "PL",
+        "WB_A2": "PL"
+      }
+    },
+    "PT": {
+      "geonames": "PT",
+      "naturalEarth": {
+        "ISO_A2_EH": "PT",
+        "ISO_A2": "PT",
+        "WB_A2": "PT"
+      }
+    },
+    "RO": {
+      "geonames": "RO",
+      "naturalEarth": {
+        "ISO_A2_EH": "RO",
+        "ISO_A2": "RO",
+        "WB_A2": "RO"
+      }
+    },
+    "RS": {
+      "geonames": "RS",
+      "naturalEarth": {
+        "ISO_A2_EH": "RS",
+        "ISO_A2": "RS",
+        "WB_A2": "YF"
+      }
+    },
+    "SE": {
+      "geonames": "SE",
+      "naturalEarth": {
+        "ISO_A2_EH": "SE",
+        "ISO_A2": "SE",
+        "WB_A2": "SE"
+      }
+    },
+    "SI": {
+      "geonames": "SI",
+      "naturalEarth": {
+        "ISO_A2_EH": "SI",
+        "ISO_A2": "SI",
+        "WB_A2": "SI"
+      }
+    },
+    "SK": {
+      "geonames": "SK",
+      "naturalEarth": {
+        "ISO_A2_EH": "SK",
+        "ISO_A2": "SK",
+        "WB_A2": "SK"
+      }
+    },
+    "SM": {
+      "geonames": "SM",
+      "naturalEarth": {
+        "ISO_A2_EH": "SM",
+        "ISO_A2": "SM",
+        "WB_A2": "SM"
+      }
+    },
+    "TR": {
+      "geonames": "TR",
+      "naturalEarth": {
+        "ISO_A2_EH": "TR",
+        "ISO_A2": "TR",
+        "WB_A2": "TR"
+      }
+    },
+    "VA": {
+      "geonames": "VA",
+      "naturalEarth": {
+        "ISO_A2_EH": "VA",
+        "ISO_A2": "VA",
+        "WB_A2": "-99"
+      }
+    },
+    "XK": {
+      "geonames": "XK",
+      "naturalEarth": {
+        "ISO_A2_EH": "XK",
+        "ISO_A2": "-99",
+        "WB_A2": "KV"
+      }
+    }
+  }
+}

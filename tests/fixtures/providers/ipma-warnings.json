@@ -1,0 +1,17 @@
+[
+  {
+    "idAreaAviso": "AOR",
+    "awarenessLevelID": "yellow",
+    "awarenessTypeName": "Precipitação",
+    "startTime": "2026-08-30T09:00:00",
+    "endTime": "2026-08-30T18:00:00",
+    "text": "Removed from normalized output"
+  },
+  {
+    "idAreaAviso": "LSB",
+    "awarenessLevelID": "green",
+    "awarenessTypeName": "Vento",
+    "startTime": "2026-08-30T09:00:00",
+    "endTime": "2026-08-30T18:00:00"
+  }
+]

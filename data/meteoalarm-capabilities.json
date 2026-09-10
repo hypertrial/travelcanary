@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-08-27",
+  "evidence": {
+    "feedDirectory": "https://feeds.meteoalarm.org/",
+    "regionGeometry": "https://gisco-services.ec.europa.eu/distribution/v2/nuts/nuts-2024-files.html"
+  },
+  "verifiedCoreHazards": ["severe-weather", "extreme-heat", "extreme-cold", "snow-ice"],
+  "limitedHazards": ["flood", "wildfire", "avalanche", "coastal"],
+  "countries": {
+    "AT": { "feedSlug": "austria", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "BE": { "feedSlug": "belgium", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "BG": { "feedSlug": "bulgaria", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "HR": { "feedSlug": "croatia", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "CY": { "feedSlug": "cyprus", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "CZ": { "feedSlug": "czechia", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "DK": { "feedSlug": "denmark", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "EE": { "feedSlug": "estonia", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "FI": { "feedSlug": "finland", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "FR": { "feedSlug": "france", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "DE": { "feedSlug": "germany", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "GR": { "feedSlug": "greece", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "HU": { "feedSlug": "hungary", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "IE": { "feedSlug": "ireland", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "IT": { "feedSlug": "italy", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "LV": { "feedSlug": "latvia", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "LT": { "feedSlug": "lithuania", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "LU": { "feedSlug": "luxembourg", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "MT": { "feedSlug": "malta", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "NL": { "feedSlug": "netherlands", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "PL": { "feedSlug": "poland", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "PT": { "feedSlug": "portugal", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "RO": { "feedSlug": "romania", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "SK": { "feedSlug": "slovakia", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "SI": { "feedSlug": "slovenia", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "ES": { "feedSlug": "spain", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "SE": { "feedSlug": "sweden", "regionalCodesVerified": true, "unsupportedCoreHazards": [] },
+    "CH": { "feedSlug": "switzerland", "regionalCodesVerified": true, "unsupportedCoreHazards": [] }
+  }
+}

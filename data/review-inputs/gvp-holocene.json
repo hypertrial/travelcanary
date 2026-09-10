@@ -1,0 +1,1463 @@
+{
+  "type": "FeatureCollection",
+  "sourceUrl": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GVP-VOTW%3ASmithsonian_VOTW_Holocene_Volcanoes&outputFormat=application%2Fjson&bbox=-36,20,50,76",
+  "originalSha256": "542db54fc3b55da6e4f4c92452aa3c3d48e9464b0917ecc57d09a116c965c2f0",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.85,
+          50.17
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 210010,
+        "Volcano_Name": "West Eifel Volcanic Field"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.981,
+          45.786
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 210020,
+        "Volcano_Name": "Chaine des Puys"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.53,
+          42.17
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 210030,
+        "Volcano_Name": "Olot Volcanic Field"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.02,
+          38.87
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 210040,
+        "Volcano_Name": "Calatrava Volcanic Field"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.7251,
+          41.7569
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 211004,
+        "Volcano_Name": "Colli Albani"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.139,
+          40.827
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 211010,
+        "Volcano_Name": "Campi Flegrei"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.426,
+          40.821
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 211020,
+        "Volcano_Name": "Vesuvius"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.83,
+          39.48
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 211031,
+        "Volcano_Name": "Palinuro"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.897,
+          40.73
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 211030,
+        "Volcano_Name": "Ischia"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.064,
+          38.638
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 211041,
+        "Volcano_Name": "Panarea"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.933,
+          38.49
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 211042,
+        "Volcano_Name": "Lipari"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          15.213,
+          38.789
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 211040,
+        "Volcano_Name": "Stromboli"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.962,
+          38.404
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 211050,
+        "Volcano_Name": "Vulcano"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.999,
+          37.748
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 211060,
+        "Volcano_Name": "Etna"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.02,
+          36.77
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 211071,
+        "Volcano_Name": "Pantelleria"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.7,
+          37.1
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 211070,
+        "Volcano_Name": "Campi Flegrei del Mar di Sicilia"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          23.3331,
+          37.6186
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 212020,
+        "Volcano_Name": "Methana"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          24.439,
+          36.699
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 212030,
+        "Volcano_Name": "Milos"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.396,
+          36.404
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 212040,
+        "Volcano_Name": "Santorini"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.1553,
+          36.5888
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 212050,
+        "Volcano_Name": "Nisyros"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.52,
+          38.58
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 213000,
+        "Volcano_Name": "Kula"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.17,
+          38.13
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 213002,
+        "Volcano_Name": "Hasandag-Keciboyduran Volcanic Complex"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          39.83,
+          37.67
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 213011,
+        "Volcano_Name": "Karaca Dag"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.447,
+          38.531
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 213010,
+        "Volcano_Name": "Erciyes Volcanic Complex"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.229,
+          38.654
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 213020,
+        "Volcano_Name": "Nemrut Dagi"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.874,
+          39.356
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 213030,
+        "Volcano_Name": "Tenduruk Dagi"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          44.3,
+          39.7
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 213040,
+        "Volcano_Name": "Ararat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          42.442,
+          43.351
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 214010,
+        "Volcano_Name": "Elbrus"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          44.5184,
+          42.697
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 214020,
+        "Volcano_Name": "Kazbek"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.7,
+          41.542
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 214050,
+        "Volcano_Name": "Samsari Volcanic Center"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          44.2,
+          40.53
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 214060,
+        "Volcano_Name": "Aragats"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          45,
+          40.283
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 214070,
+        "Volcano_Name": "Ghegham Volcanic Ridge"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          45.497,
+          39.797
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 214080,
+        "Volcano_Name": "Vaiyots-Sar"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          45.74,
+          40.028
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 214090,
+        "Volcano_Name": "Porak"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          45.992,
+          39.742
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 214100,
+        "Volcano_Name": "Tskhouk-Karckar"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5,
+          22.67
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 225004,
+        "Volcano_Name": "Tahalra Volcanic Field"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.83,
+          23.33
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 225005,
+        "Volcano_Name": "Atakor Volcanic Field"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.83,
+          23.92
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 225006,
+        "Volcano_Name": "Manzaz Volcanic Field"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.33,
+          21.33
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 225009,
+        "Volcano_Name": "Toh, Tarso"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          16.473,
+          21.0408
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 225010,
+        "Volcano_Name": "Tousside, Tarso"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.28,
+          20.92
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 225020,
+        "Volcano_Name": "Voon, Tarso"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          37.583,
+          32.333
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 231001,
+        "Volcano_Name": "Ash Shaam, Harrat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          37.75,
+          25.17
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 231040,
+        "Volcano_Name": "Lunayyir, Harrat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          40.2,
+          26.58
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 231050,
+        "Volcano_Name": "Ithnayn, Harrat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          40,
+          25.5
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 231060,
+        "Volcano_Name": "Khaybar, Harrat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          41.38,
+          22.8
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 231071,
+        "Volcano_Name": "Kishb, Harrat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          39.78,
+          23.08
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 231070,
+        "Volcano_Name": "Rahat, Harrat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -23.783,
+          64.8
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 370010,
+        "Volcano_Name": "Snaefellsjokull"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -23.283,
+          64.866
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 370020,
+        "Volcano_Name": "Helgrindur"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -22.483,
+          64.9
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 370030,
+        "Volcano_Name": "Ljosufjoll"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -22.717,
+          63.817
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 371020,
+        "Volcano_Name": "Reykjanes"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -22.067,
+          63.917
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 371030,
+        "Volcano_Name": "Krysuvik-Trolladyngja"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -21.783,
+          63.933
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 371040,
+        "Volcano_Name": "Brennisteinsfjoll"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -21.333,
+          64.083
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 371051,
+        "Volcano_Name": "Hromundartindur"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -21.416,
+          64.083
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 371050,
+        "Volcano_Name": "Hengill"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -20.883,
+          64.05
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 371060,
+        "Volcano_Name": "Grimsnes"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -20.666,
+          64.583
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 371070,
+        "Volcano_Name": "Prestahnukur"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -19.7,
+          64.85
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 371080,
+        "Volcano_Name": "Oddnyjarhnjukur-Langjokull"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -18.766,
+          64.833
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 371090,
+        "Volcano_Name": "Hofsjokull"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -20.266,
+          63.416
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 372010,
+        "Volcano_Name": "Vestmannaeyjar"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -19.633,
+          63.633
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 372020,
+        "Volcano_Name": "Eyjafjallajokull"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -19.083,
+          63.633
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 372030,
+        "Volcano_Name": "Katla"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -19.716,
+          63.783
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 372040,
+        "Volcano_Name": "Tindfjallajokull"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -19.122,
+          63.892
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 372050,
+        "Volcano_Name": "Torfajokull"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -19.666,
+          63.983
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 372070,
+        "Volcano_Name": "Hekla"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -17.316,
+          64.416
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 373010,
+        "Volcano_Name": "Grimsvotn"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -17.516,
+          64.633
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 373030,
+        "Volcano_Name": "Bardarbunga"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -17.916,
+          64.75
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 373040,
+        "Volcano_Name": "Tungnafellsjokull"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.647,
+          64.653
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 373050,
+        "Volcano_Name": "Kverkfjoll"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.783,
+          65.033
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 373060,
+        "Volcano_Name": "Askja"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.666,
+          65.416
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 373070,
+        "Volcano_Name": "Fremrinamar"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.728,
+          65.715
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 373080,
+        "Volcano_Name": "Krafla"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.967,
+          65.883
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 373090,
+        "Volcano_Name": "Theistareykir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -17.118,
+          66.309
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 373100,
+        "Volcano_Name": "Tjornes Fracture Zone"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.65,
+          64
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 374010,
+        "Volcano_Name": "Oraefajokull"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.583,
+          64.25
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 374020,
+        "Volcano_Name": "Esjufjoll"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -15.56,
+          64.798
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 374801,
+        "Volcano_Name": "Snaefell"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -18.5,
+          66.67
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 375010,
+        "Volcano_Name": "Kolbeinsey Ridge"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -8.155,
+          71.082
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 376010,
+        "Volcano_Name": "Jan Mayen"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -31.216,
+          39.462
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 382001,
+        "Volcano_Name": "Flores"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -28.713,
+          38.576
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 382010,
+        "Volcano_Name": "Fayal"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -28.4,
+          38.47
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 382020,
+        "Volcano_Name": "Pico"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -28.08,
+          38.65
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 382030,
+        "Volcano_Name": "Sao Jorge"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -27.97,
+          39.02
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 382040,
+        "Volcano_Name": "Graciosa"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -27.32,
+          38.73
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 382050,
+        "Volcano_Name": "Terceira"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -26.63,
+          38.23
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 382070,
+        "Volcano_Name": "Don Joao de Castro Bank"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -25.67,
+          37.78
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 382081,
+        "Volcano_Name": "Picos Fissural Volcanic System"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -25.785,
+          37.865
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 382080,
+        "Volcano_Name": "Sete Cidades"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -25.47,
+          37.77
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 382090,
+        "Volcano_Name": "Agua de Pau"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -25.32,
+          37.77
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 382100,
+        "Volcano_Name": "Furnas"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -25.88,
+          37.6
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 382110,
+        "Volcano_Name": "Monaco Bank"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.97,
+          32.73
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 382120,
+        "Volcano_Name": "Madeira"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -17.83,
+          28.57
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 383010,
+        "Volcano_Name": "La Palma"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -18.03,
+          27.73
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 383020,
+        "Volcano_Name": "Hierro"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.641,
+          28.271
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 383030,
+        "Volcano_Name": "Tenerife"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -15.58,
+          28
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 383040,
+        "Volcano_Name": "Gran Canaria"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -14.02,
+          28.358
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 383050,
+        "Volcano_Name": "Fuerteventura"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -13.63,
+          29.03
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 383060,
+        "Volcano_Name": "Lanzarote"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.399,
+          39.284
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 211080,
+        "Volcano_Name": "Marsili"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -16.817,
+          65.583
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 373082,
+        "Volcano_Name": "Heidarspordar"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -23,
+          63.733
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 371022,
+        "Volcano_Name": "Eldey"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -17.617,
+          64.267
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 373012,
+        "Volcano_Name": "Thordarhyrna"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -22.258,
+          63.895
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 371032,
+        "Volcano_Name": "Fagradalsfjall"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          25.483,
+          36.524
+        ]
+      },
+      "properties": {
+        "Volcano_Number": 212042,
+        "Volcano_Name": "Kolumbo"
+      }
+    }
+  ]
+}

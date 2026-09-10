@@ -1,0 +1,1827 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-08-31",
+  "source": {
+    "publisher": "Smithsonian Global Volcanism Program",
+    "dataset": "Volcanoes of the World — Holocene Volcanoes",
+    "version": "5.4.0",
+    "citationUrl": "https://doi.org/10.5479/si.GVP.VOTW5-2026.5.4",
+    "wfsUrl": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GVP-VOTW%3ASmithsonian_VOTW_Holocene_Volcanoes&outputFormat=application%2Fjson",
+    "sha256": "a267a87dcf5589ea3266bf2e963d91bc0ac51e2038f73ee58ee43bc1e8a04bab"
+  },
+  "rule": {
+    "maximumDistanceKm": 200,
+    "aviationAshExcluded": true
+  },
+  "overrides": [],
+  "locations": [
+    {
+      "locationId": "be-anderlecht",
+      "minimumDistanceKm": 179,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 179
+        }
+      ]
+    },
+    {
+      "locationId": "be-antwerp",
+      "minimumDistanceKm": 193.4,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 193.4
+        }
+      ]
+    },
+    {
+      "locationId": "be-ardennes",
+      "minimumDistanceKm": 32.1,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 32.1
+        }
+      ]
+    },
+    {
+      "locationId": "be-brussels",
+      "minimumDistanceKm": 177.4,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 177.4
+        }
+      ]
+    },
+    {
+      "locationId": "be-charleroi",
+      "minimumDistanceKm": 158,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 158
+        }
+      ]
+    },
+    {
+      "locationId": "be-deurne",
+      "minimumDistanceKm": 189.6,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 189.6
+        }
+      ]
+    },
+    {
+      "locationId": "be-forest",
+      "minimumDistanceKm": 177.4,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 177.4
+        }
+      ]
+    },
+    {
+      "locationId": "be-genk",
+      "minimumDistanceKm": 115,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 115
+        }
+      ]
+    },
+    {
+      "locationId": "be-hasselt",
+      "minimumDistanceKm": 121.3,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 121.3
+        }
+      ]
+    },
+    {
+      "locationId": "be-ixelles",
+      "minimumDistanceKm": 175.5,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 175.5
+        }
+      ]
+    },
+    {
+      "locationId": "be-la-louviere",
+      "minimumDistanceKm": 177.2,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 177.2
+        }
+      ]
+    },
+    {
+      "locationId": "be-leuven",
+      "minimumDistanceKm": 156.2,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 156.2
+        }
+      ]
+    },
+    {
+      "locationId": "be-liege",
+      "minimumDistanceKm": 89.5,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 89.5
+        }
+      ]
+    },
+    {
+      "locationId": "be-mechelen",
+      "minimumDistanceKm": 177.6,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 177.6
+        }
+      ]
+    },
+    {
+      "locationId": "be-molenbeek-saint-jean",
+      "minimumDistanceKm": 179.7,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 179.7
+        }
+      ]
+    },
+    {
+      "locationId": "be-mons",
+      "minimumDistanceKm": 193.2,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 193.2
+        }
+      ]
+    },
+    {
+      "locationId": "be-namur",
+      "minimumDistanceKm": 129.6,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 129.6
+        }
+      ]
+    },
+    {
+      "locationId": "be-schaerbeek",
+      "minimumDistanceKm": 176.3,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 176.3
+        }
+      ]
+    },
+    {
+      "locationId": "be-seraing",
+      "minimumDistanceKm": 91.1,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 91.1
+        }
+      ]
+    },
+    {
+      "locationId": "be-uccle",
+      "minimumDistanceKm": 176,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 176
+        }
+      ]
+    },
+    {
+      "locationId": "be-woluwe-saint-lambert",
+      "minimumDistanceKm": 171.9,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 171.9
+        }
+      ]
+    },
+    {
+      "locationId": "de-aachen",
+      "minimumDistanceKm": 71.6,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 71.6
+        }
+      ]
+    },
+    {
+      "locationId": "de-black-forest",
+      "minimumDistanceKm": 137.4,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 137.4
+        }
+      ]
+    },
+    {
+      "locationId": "de-bochum",
+      "minimumDistanceKm": 133.1,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 133.1
+        }
+      ]
+    },
+    {
+      "locationId": "de-bonn",
+      "minimumDistanceKm": 50.1,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 50.1
+        }
+      ]
+    },
+    {
+      "locationId": "de-dortmund",
+      "minimumDistanceKm": 140.7,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 140.7
+        }
+      ]
+    },
+    {
+      "locationId": "de-duisburg",
+      "minimumDistanceKm": 125.5,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 125.5
+        }
+      ]
+    },
+    {
+      "locationId": "de-duesseldorf",
+      "minimumDistanceKm": 102.2,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 102.2
+        }
+      ]
+    },
+    {
+      "locationId": "de-essen",
+      "minimumDistanceKm": 128.5,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 128.5
+        }
+      ]
+    },
+    {
+      "locationId": "de-frankfurt-am-main",
+      "minimumDistanceKm": 115.8,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 115.8
+        }
+      ]
+    },
+    {
+      "locationId": "de-gelsenkirchen",
+      "minimumDistanceKm": 134.5,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 134.5
+        }
+      ]
+    },
+    {
+      "locationId": "de-karlsruhe",
+      "minimumDistanceKm": 155.9,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 155.9
+        }
+      ]
+    },
+    {
+      "locationId": "de-koeln",
+      "minimumDistanceKm": 70.2,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 70.2
+        }
+      ]
+    },
+    {
+      "locationId": "de-mannheim",
+      "minimumDistanceKm": 123.5,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 123.5
+        }
+      ]
+    },
+    {
+      "locationId": "de-moenchengladbach",
+      "minimumDistanceKm": 101.5,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 101.5
+        }
+      ]
+    },
+    {
+      "locationId": "de-muenster",
+      "minimumDistanceKm": 191.5,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 191.5
+        }
+      ]
+    },
+    {
+      "locationId": "de-wiesbaden",
+      "minimumDistanceKm": 84.8,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 84.8
+        }
+      ]
+    },
+    {
+      "locationId": "de-wuppertal",
+      "minimumDistanceKm": 107.6,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 107.6
+        }
+      ]
+    },
+    {
+      "locationId": "es-badalona",
+      "minimumDistanceKm": 68.4,
+      "volcanoes": [
+        {
+          "volcanoId": "210030",
+          "name": "Olot Volcanic Field",
+          "distanceKm": 68.4
+        }
+      ]
+    },
+    {
+      "locationId": "es-barcelona",
+      "minimumDistanceKm": 77.2,
+      "volcanoes": [
+        {
+          "volcanoId": "210030",
+          "name": "Olot Volcanic Field",
+          "distanceKm": 77.2
+        }
+      ]
+    },
+    {
+      "locationId": "es-ciudad-lineal",
+      "minimumDistanceKm": 163,
+      "volcanoes": [
+        {
+          "volcanoId": "210040",
+          "name": "Calatrava Volcanic Field",
+          "distanceKm": 163
+        }
+      ]
+    },
+    {
+      "locationId": "es-cordoba",
+      "minimumDistanceKm": 112.1,
+      "volcanoes": [
+        {
+          "volcanoId": "210040",
+          "name": "Calatrava Volcanic Field",
+          "distanceKm": 112.1
+        }
+      ]
+    },
+    {
+      "locationId": "es-granada",
+      "minimumDistanceKm": 175.5,
+      "volcanoes": [
+        {
+          "volcanoId": "210040",
+          "name": "Calatrava Volcanic Field",
+          "distanceKm": 175.5
+        }
+      ]
+    },
+    {
+      "locationId": "es-l-hospitalet-de-llobregat",
+      "minimumDistanceKm": 81.9,
+      "volcanoes": [
+        {
+          "volcanoId": "210030",
+          "name": "Olot Volcanic Field",
+          "distanceKm": 81.9
+        }
+      ]
+    },
+    {
+      "locationId": "es-las-palmas-de-gran-canaria",
+      "minimumDistanceKm": 4.7,
+      "volcanoes": [
+        {
+          "volcanoId": "383040",
+          "name": "Gran Canaria",
+          "distanceKm": 4.7
+        },
+        {
+          "volcanoId": "383030",
+          "name": "Tenerife",
+          "distanceKm": 106.6
+        },
+        {
+          "volcanoId": "383050",
+          "name": "Fuerteventura",
+          "distanceKm": 124.7
+        },
+        {
+          "volcanoId": "383060",
+          "name": "Lanzarote",
+          "distanceKm": 187.6
+        }
+      ]
+    },
+    {
+      "locationId": "es-madrid",
+      "minimumDistanceKm": 159.1,
+      "volcanoes": [
+        {
+          "volcanoId": "210040",
+          "name": "Calatrava Volcanic Field",
+          "distanceKm": 159.1
+        }
+      ]
+    },
+    {
+      "locationId": "es-sabadell",
+      "minimumDistanceKm": 62.9,
+      "volcanoes": [
+        {
+          "volcanoId": "210030",
+          "name": "Olot Volcanic Field",
+          "distanceKm": 62.9
+        }
+      ]
+    },
+    {
+      "locationId": "es-santa-cruz-de-tenerife",
+      "minimumDistanceKm": 28.7,
+      "volcanoes": [
+        {
+          "volcanoId": "383030",
+          "name": "Tenerife",
+          "distanceKm": 28.7
+        },
+        {
+          "volcanoId": "383040",
+          "name": "Gran Canaria",
+          "distanceKm": 69.1
+        },
+        {
+          "volcanoId": "383010",
+          "name": "La Palma",
+          "distanceKm": 139.3
+        },
+        {
+          "volcanoId": "383020",
+          "name": "Hierro",
+          "distanceKm": 177.5
+        }
+      ]
+    },
+    {
+      "locationId": "es-terrassa",
+      "minimumDistanceKm": 64.4,
+      "volcanoes": [
+        {
+          "volcanoId": "210030",
+          "name": "Olot Volcanic Field",
+          "distanceKm": 64.4
+        }
+      ]
+    },
+    {
+      "locationId": "fr-clermont-ferrand",
+      "minimumDistanceKm": 0,
+      "volcanoes": [
+        {
+          "volcanoId": "210020",
+          "name": "Chaine des Puys",
+          "distanceKm": 0
+        }
+      ]
+    },
+    {
+      "locationId": "fr-french-alps",
+      "minimumDistanceKm": 195.5,
+      "volcanoes": [
+        {
+          "volcanoId": "210020",
+          "name": "Chaine des Puys",
+          "distanceKm": 195.5
+        }
+      ]
+    },
+    {
+      "locationId": "fr-lyon",
+      "minimumDistanceKm": 129.9,
+      "volcanoes": [
+        {
+          "volcanoId": "210020",
+          "name": "Chaine des Puys",
+          "distanceKm": 129.9
+        }
+      ]
+    },
+    {
+      "locationId": "fr-montpellier",
+      "minimumDistanceKm": 179.2,
+      "volcanoes": [
+        {
+          "volcanoId": "210030",
+          "name": "Olot Volcanic Field",
+          "distanceKm": 179.2
+        }
+      ]
+    },
+    {
+      "locationId": "fr-saint-etienne",
+      "minimumDistanceKm": 101.4,
+      "volcanoes": [
+        {
+          "volcanoId": "210020",
+          "name": "Chaine des Puys",
+          "distanceKm": 101.4
+        }
+      ]
+    },
+    {
+      "locationId": "fr-strasbourg",
+      "minimumDistanceKm": 172.9,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 172.9
+        }
+      ]
+    },
+    {
+      "locationId": "fr-toulouse",
+      "minimumDistanceKm": 167.4,
+      "volcanoes": [
+        {
+          "volcanoId": "210030",
+          "name": "Olot Volcanic Field",
+          "distanceKm": 167.4
+        }
+      ]
+    },
+    {
+      "locationId": "gr-acharnes",
+      "minimumDistanceKm": 47.5,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 47.5
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 151.1
+        }
+      ]
+    },
+    {
+      "locationId": "gr-agios-dimitrios",
+      "minimumDistanceKm": 34.6,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 34.6
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 135.8
+        }
+      ]
+    },
+    {
+      "locationId": "gr-aigaleo",
+      "minimumDistanceKm": 35.9,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 35.9
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 142.7
+        }
+      ]
+    },
+    {
+      "locationId": "gr-athens",
+      "minimumDistanceKm": 38.4,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 38.4
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 141.1
+        }
+      ]
+    },
+    {
+      "locationId": "gr-crete",
+      "minimumDistanceKm": 77.8,
+      "volcanoes": [
+        {
+          "volcanoId": "212040",
+          "name": "Santorini",
+          "distanceKm": 77.8
+        },
+        {
+          "volcanoId": "212042",
+          "name": "Kolumbo",
+          "distanceKm": 91.1
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 110.5
+        },
+        {
+          "volcanoId": "212050",
+          "name": "Nisyros",
+          "distanceKm": 119.2
+        }
+      ]
+    },
+    {
+      "locationId": "gr-cyclades",
+      "minimumDistanceKm": 0,
+      "volcanoes": [
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 0
+        },
+        {
+          "volcanoId": "212040",
+          "name": "Santorini",
+          "distanceKm": 0
+        },
+        {
+          "volcanoId": "212042",
+          "name": "Kolumbo",
+          "distanceKm": 0
+        },
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 58.8
+        },
+        {
+          "volcanoId": "212050",
+          "name": "Nisyros",
+          "distanceKm": 103.3
+        }
+      ]
+    },
+    {
+      "locationId": "gr-glyfada",
+      "minimumDistanceKm": 31.2,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 31.2
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 127.8
+        },
+        {
+          "volcanoId": "212042",
+          "name": "Kolumbo",
+          "distanceKm": 198.3
+        }
+      ]
+    },
+    {
+      "locationId": "gr-ilion",
+      "minimumDistanceKm": 41.3,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 41.3
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 147.1
+        }
+      ]
+    },
+    {
+      "locationId": "gr-ilioupoli",
+      "minimumDistanceKm": 36.7,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 36.7
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 134.3
+        }
+      ]
+    },
+    {
+      "locationId": "gr-irakleion",
+      "minimumDistanceKm": 106.8,
+      "volcanoes": [
+        {
+          "volcanoId": "212040",
+          "name": "Santorini",
+          "distanceKm": 106.8
+        },
+        {
+          "volcanoId": "212042",
+          "name": "Kolumbo",
+          "distanceKm": 121.5
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 150.1
+        }
+      ]
+    },
+    {
+      "locationId": "gr-kallithea",
+      "minimumDistanceKm": 34,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 34
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 138.7
+        }
+      ]
+    },
+    {
+      "locationId": "gr-keratsini",
+      "minimumDistanceKm": 30.8,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 30.8
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 143.1
+        }
+      ]
+    },
+    {
+      "locationId": "gr-khalandrion",
+      "minimumDistanceKm": 46,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 46
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 142.7
+        }
+      ]
+    },
+    {
+      "locationId": "gr-korydallos",
+      "minimumDistanceKm": 34.2,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 34.2
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 144.2
+        }
+      ]
+    },
+    {
+      "locationId": "gr-marousi",
+      "minimumDistanceKm": 48.1,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 48.1
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 145.5
+        }
+      ]
+    },
+    {
+      "locationId": "gr-nea-ionia",
+      "minimumDistanceKm": 44.5,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 44.5
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 145.4
+        }
+      ]
+    },
+    {
+      "locationId": "gr-nea-smyrni",
+      "minimumDistanceKm": 34.4,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 34.4
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 137.7
+        }
+      ]
+    },
+    {
+      "locationId": "gr-nikaia",
+      "minimumDistanceKm": 32.7,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 32.7
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 142.3
+        }
+      ]
+    },
+    {
+      "locationId": "gr-palaio-faliro",
+      "minimumDistanceKm": 32.2,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 32.2
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 136.5
+        }
+      ]
+    },
+    {
+      "locationId": "gr-patra",
+      "minimumDistanceKm": 141.6,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 141.6
+        }
+      ]
+    },
+    {
+      "locationId": "gr-peristeri",
+      "minimumDistanceKm": 39.2,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 39.2
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 145.6
+        }
+      ]
+    },
+    {
+      "locationId": "gr-piraeus",
+      "minimumDistanceKm": 30.3,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 30.3
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 140
+        }
+      ]
+    },
+    {
+      "locationId": "gr-volos",
+      "minimumDistanceKm": 182.5,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 182.5
+        }
+      ]
+    },
+    {
+      "locationId": "gr-zografos",
+      "minimumDistanceKm": 40.2,
+      "volcanoes": [
+        {
+          "volcanoId": "212020",
+          "name": "Methana",
+          "distanceKm": 40.2
+        },
+        {
+          "volcanoId": "212030",
+          "name": "Milos",
+          "distanceKm": 138.8
+        }
+      ]
+    },
+    {
+      "locationId": "hr-dalmatian-coast",
+      "minimumDistanceKm": 179.1,
+      "volcanoes": [
+        {
+          "volcanoId": "211020",
+          "name": "Vesuvius",
+          "distanceKm": 179.1
+        },
+        {
+          "volcanoId": "211010",
+          "name": "Campi Flegrei",
+          "distanceKm": 185.4
+        },
+        {
+          "volcanoId": "211004",
+          "name": "Colli Albani",
+          "distanceKm": 194.1
+        }
+      ]
+    },
+    {
+      "locationId": "it-acilia-castel-fusano-ostia-antica",
+      "minimumDistanceKm": 17.7,
+      "volcanoes": [
+        {
+          "volcanoId": "211004",
+          "name": "Colli Albani",
+          "distanceKm": 17.7
+        },
+        {
+          "volcanoId": "211030",
+          "name": "Ischia",
+          "distanceKm": 159.2
+        },
+        {
+          "volcanoId": "211010",
+          "name": "Campi Flegrei",
+          "distanceKm": 168.5
+        },
+        {
+          "volcanoId": "211020",
+          "name": "Vesuvius",
+          "distanceKm": 189
+        }
+      ]
+    },
+    {
+      "locationId": "it-amalfi-coast",
+      "minimumDistanceKm": 2.3,
+      "volcanoes": [
+        {
+          "volcanoId": "211020",
+          "name": "Vesuvius",
+          "distanceKm": 2.3
+        },
+        {
+          "volcanoId": "211010",
+          "name": "Campi Flegrei",
+          "distanceKm": 22.2
+        },
+        {
+          "volcanoId": "211030",
+          "name": "Ischia",
+          "distanceKm": 42.4
+        },
+        {
+          "volcanoId": "211031",
+          "name": "Palinuro",
+          "distanceKm": 112.8
+        },
+        {
+          "volcanoId": "211080",
+          "name": "Marsili",
+          "distanceKm": 134.5
+        },
+        {
+          "volcanoId": "211004",
+          "name": "Colli Albani",
+          "distanceKm": 174.8
+        },
+        {
+          "volcanoId": "211040",
+          "name": "Stromboli",
+          "distanceKm": 192.6
+        }
+      ]
+    },
+    {
+      "locationId": "it-bari",
+      "minimumDistanceKm": 192.9,
+      "volcanoes": [
+        {
+          "volcanoId": "211020",
+          "name": "Vesuvius",
+          "distanceKm": 192.9
+        }
+      ]
+    },
+    {
+      "locationId": "it-catania",
+      "minimumDistanceKm": 14.1,
+      "volcanoes": [
+        {
+          "volcanoId": "211060",
+          "name": "Etna",
+          "distanceKm": 14.1
+        },
+        {
+          "volcanoId": "211050",
+          "name": "Vulcano",
+          "distanceKm": 86.8
+        },
+        {
+          "volcanoId": "211042",
+          "name": "Lipari",
+          "distanceKm": 96.6
+        },
+        {
+          "volcanoId": "211041",
+          "name": "Panarea",
+          "distanceKm": 112.4
+        },
+        {
+          "volcanoId": "211040",
+          "name": "Stromboli",
+          "distanceKm": 129.7
+        },
+        {
+          "volcanoId": "211080",
+          "name": "Marsili",
+          "distanceKm": 192.7
+        },
+        {
+          "volcanoId": "211070",
+          "name": "Campi Flegrei del Mar di Sicilia",
+          "distanceKm": 199.2
+        }
+      ]
+    },
+    {
+      "locationId": "it-foggia",
+      "minimumDistanceKm": 103,
+      "volcanoes": [
+        {
+          "volcanoId": "211020",
+          "name": "Vesuvius",
+          "distanceKm": 103
+        },
+        {
+          "volcanoId": "211010",
+          "name": "Campi Flegrei",
+          "distanceKm": 122.6
+        },
+        {
+          "volcanoId": "211030",
+          "name": "Ischia",
+          "distanceKm": 145.6
+        }
+      ]
+    },
+    {
+      "locationId": "it-messina",
+      "minimumDistanceKm": 41.6,
+      "volcanoes": [
+        {
+          "volcanoId": "211050",
+          "name": "Vulcano",
+          "distanceKm": 41.6
+        },
+        {
+          "volcanoId": "211042",
+          "name": "Lipari",
+          "distanceKm": 48.3
+        },
+        {
+          "volcanoId": "211041",
+          "name": "Panarea",
+          "distanceKm": 50.2
+        },
+        {
+          "volcanoId": "211060",
+          "name": "Etna",
+          "distanceKm": 54.4
+        },
+        {
+          "volcanoId": "211040",
+          "name": "Stromboli",
+          "distanceKm": 57.5
+        },
+        {
+          "volcanoId": "211031",
+          "name": "Palinuro",
+          "distanceKm": 141.1
+        },
+        {
+          "volcanoId": "211080",
+          "name": "Marsili",
+          "distanceKm": 142.2
+        }
+      ]
+    },
+    {
+      "locationId": "it-naples",
+      "minimumDistanceKm": 0,
+      "volcanoes": [
+        {
+          "volcanoId": "211010",
+          "name": "Campi Flegrei",
+          "distanceKm": 0
+        },
+        {
+          "volcanoId": "211020",
+          "name": "Vesuvius",
+          "distanceKm": 0
+        },
+        {
+          "volcanoId": "211030",
+          "name": "Ischia",
+          "distanceKm": 19.1
+        },
+        {
+          "volcanoId": "211031",
+          "name": "Palinuro",
+          "distanceKm": 144.9
+        },
+        {
+          "volcanoId": "211004",
+          "name": "Colli Albani",
+          "distanceKm": 148.5
+        },
+        {
+          "volcanoId": "211080",
+          "name": "Marsili",
+          "distanceKm": 159.7
+        }
+      ]
+    },
+    {
+      "locationId": "it-palermo",
+      "minimumDistanceKm": 112.3,
+      "volcanoes": [
+        {
+          "volcanoId": "211070",
+          "name": "Campi Flegrei del Mar di Sicilia",
+          "distanceKm": 112.3
+        },
+        {
+          "volcanoId": "211042",
+          "name": "Lipari",
+          "distanceKm": 128.1
+        },
+        {
+          "volcanoId": "211050",
+          "name": "Vulcano",
+          "distanceKm": 128.2
+        },
+        {
+          "volcanoId": "211060",
+          "name": "Etna",
+          "distanceKm": 134.2
+        },
+        {
+          "volcanoId": "211080",
+          "name": "Marsili",
+          "distanceKm": 142.9
+        },
+        {
+          "volcanoId": "211041",
+          "name": "Panarea",
+          "distanceKm": 144.2
+        },
+        {
+          "volcanoId": "211040",
+          "name": "Stromboli",
+          "distanceKm": 162.5
+        },
+        {
+          "volcanoId": "211071",
+          "name": "Pantelleria",
+          "distanceKm": 176
+        },
+        {
+          "volcanoId": "211031",
+          "name": "Palinuro",
+          "distanceKm": 182.8
+        }
+      ]
+    },
+    {
+      "locationId": "it-reggio-calabria",
+      "minimumDistanceKm": 54.2,
+      "volcanoes": [
+        {
+          "volcanoId": "211050",
+          "name": "Vulcano",
+          "distanceKm": 54.2
+        },
+        {
+          "volcanoId": "211060",
+          "name": "Etna",
+          "distanceKm": 55.7
+        },
+        {
+          "volcanoId": "211042",
+          "name": "Lipari",
+          "distanceKm": 61.3
+        },
+        {
+          "volcanoId": "211041",
+          "name": "Panarea",
+          "distanceKm": 63.4
+        },
+        {
+          "volcanoId": "211040",
+          "name": "Stromboli",
+          "distanceKm": 70
+        },
+        {
+          "volcanoId": "211031",
+          "name": "Palinuro",
+          "distanceKm": 153.5
+        },
+        {
+          "volcanoId": "211080",
+          "name": "Marsili",
+          "distanceKm": 155.4
+        }
+      ]
+    },
+    {
+      "locationId": "it-rome",
+      "minimumDistanceKm": 8.2,
+      "volcanoes": [
+        {
+          "volcanoId": "211004",
+          "name": "Colli Albani",
+          "distanceKm": 8.2
+        },
+        {
+          "volcanoId": "211030",
+          "name": "Ischia",
+          "distanceKm": 158.5
+        },
+        {
+          "volcanoId": "211010",
+          "name": "Campi Flegrei",
+          "distanceKm": 165.2
+        },
+        {
+          "volcanoId": "211020",
+          "name": "Vesuvius",
+          "distanceKm": 184.3
+        }
+      ]
+    },
+    {
+      "locationId": "lu-dudelange",
+      "minimumDistanceKm": 79.2,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 79.2
+        }
+      ]
+    },
+    {
+      "locationId": "lu-esch-sur-alzette",
+      "minimumDistanceKm": 82.5,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 82.5
+        }
+      ]
+    },
+    {
+      "locationId": "lu-luxembourg",
+      "minimumDistanceKm": 65.7,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 65.7
+        }
+      ]
+    },
+    {
+      "locationId": "lu-luxembourg-moselle",
+      "minimumDistanceKm": 57.7,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 57.7
+        }
+      ]
+    },
+    {
+      "locationId": "lu-mullerthal",
+      "minimumDistanceKm": 38.9,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 38.9
+        }
+      ]
+    },
+    {
+      "locationId": "mt-birkirkara",
+      "minimumDistanceKm": 191.6,
+      "volcanoes": [
+        {
+          "volcanoId": "211070",
+          "name": "Campi Flegrei del Mar di Sicilia",
+          "distanceKm": 191.6
+        },
+        {
+          "volcanoId": "211060",
+          "name": "Etna",
+          "distanceKm": 196.3
+        }
+      ]
+    },
+    {
+      "locationId": "mt-comino",
+      "minimumDistanceKm": 184.9,
+      "volcanoes": [
+        {
+          "volcanoId": "211070",
+          "name": "Campi Flegrei del Mar di Sicilia",
+          "distanceKm": 184.9
+        },
+        {
+          "volcanoId": "211060",
+          "name": "Etna",
+          "distanceKm": 198.4
+        }
+      ]
+    },
+    {
+      "locationId": "mt-gozo",
+      "minimumDistanceKm": 166.4,
+      "volcanoes": [
+        {
+          "volcanoId": "211070",
+          "name": "Campi Flegrei del Mar di Sicilia",
+          "distanceKm": 166.4
+        },
+        {
+          "volcanoId": "211060",
+          "name": "Etna",
+          "distanceKm": 189.7
+        },
+        {
+          "volcanoId": "211071",
+          "name": "Pantelleria",
+          "distanceKm": 199.7
+        }
+      ]
+    },
+    {
+      "locationId": "mt-mosta",
+      "minimumDistanceKm": 188.3,
+      "volcanoes": [
+        {
+          "volcanoId": "211070",
+          "name": "Campi Flegrei del Mar di Sicilia",
+          "distanceKm": 188.3
+        },
+        {
+          "volcanoId": "211060",
+          "name": "Etna",
+          "distanceKm": 195.7
+        }
+      ]
+    },
+    {
+      "locationId": "mt-qormi",
+      "minimumDistanceKm": 193.8,
+      "volcanoes": [
+        {
+          "volcanoId": "211070",
+          "name": "Campi Flegrei del Mar di Sicilia",
+          "distanceKm": 193.8
+        },
+        {
+          "volcanoId": "211060",
+          "name": "Etna",
+          "distanceKm": 198.4
+        }
+      ]
+    },
+    {
+      "locationId": "mt-san-pawl-il-bahar",
+      "minimumDistanceKm": 184.6,
+      "volcanoes": [
+        {
+          "volcanoId": "211070",
+          "name": "Campi Flegrei del Mar di Sicilia",
+          "distanceKm": 184.6
+        },
+        {
+          "volcanoId": "211060",
+          "name": "Etna",
+          "distanceKm": 191.5
+        }
+      ]
+    },
+    {
+      "locationId": "mt-sliema",
+      "minimumDistanceKm": 193.2,
+      "volcanoes": [
+        {
+          "volcanoId": "211070",
+          "name": "Campi Flegrei del Mar di Sicilia",
+          "distanceKm": 193.2
+        },
+        {
+          "volcanoId": "211060",
+          "name": "Etna",
+          "distanceKm": 193.8
+        }
+      ]
+    },
+    {
+      "locationId": "mt-valletta",
+      "minimumDistanceKm": 195,
+      "volcanoes": [
+        {
+          "volcanoId": "211060",
+          "name": "Etna",
+          "distanceKm": 195
+        },
+        {
+          "volcanoId": "211070",
+          "name": "Campi Flegrei del Mar di Sicilia",
+          "distanceKm": 195.1
+        }
+      ]
+    },
+    {
+      "locationId": "nl-s-hertogenbosch",
+      "minimumDistanceKm": 186.6,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 186.6
+        }
+      ]
+    },
+    {
+      "locationId": "nl-arnhem",
+      "minimumDistanceKm": 196.7,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 196.7
+        }
+      ]
+    },
+    {
+      "locationId": "nl-breda",
+      "minimumDistanceKm": 199.4,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 199.4
+        }
+      ]
+    },
+    {
+      "locationId": "nl-eindhoven",
+      "minimumDistanceKm": 156.1,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 156.1
+        }
+      ]
+    },
+    {
+      "locationId": "nl-heerlen",
+      "minimumDistanceKm": 85.3,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 85.3
+        }
+      ]
+    },
+    {
+      "locationId": "nl-maastricht",
+      "minimumDistanceKm": 96.5,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 96.5
+        }
+      ]
+    },
+    {
+      "locationId": "nl-nijmegen",
+      "minimumDistanceKm": 183.6,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 183.6
+        }
+      ]
+    },
+    {
+      "locationId": "nl-tilburg",
+      "minimumDistanceKm": 182.4,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 182.4
+        }
+      ]
+    },
+    {
+      "locationId": "nl-venlo",
+      "minimumDistanceKm": 126.8,
+      "volcanoes": [
+        {
+          "volcanoId": "210010",
+          "name": "West Eifel Volcanic Field",
+          "distanceKm": 126.8
+        }
+      ]
+    },
+    {
+      "locationId": "pt-funchal",
+      "minimumDistanceKm": 0,
+      "volcanoes": [
+        {
+          "volcanoId": "382120",
+          "name": "Madeira",
+          "distanceKm": 0
+        }
+      ]
+    },
+    {
+      "locationId": "pt-horta",
+      "minimumDistanceKm": 0,
+      "volcanoes": [
+        {
+          "volcanoId": "382010",
+          "name": "Fayal",
+          "distanceKm": 0
+        },
+        {
+          "volcanoId": "382020",
+          "name": "Pico",
+          "distanceKm": 6
+        },
+        {
+          "volcanoId": "382030",
+          "name": "Sao Jorge",
+          "distanceKm": 34.2
+        },
+        {
+          "volcanoId": "382040",
+          "name": "Graciosa",
+          "distanceKm": 63.4
+        },
+        {
+          "volcanoId": "382050",
+          "name": "Terceira",
+          "distanceKm": 100.5
+        },
+        {
+          "volcanoId": "382070",
+          "name": "Don Joao de Castro Bank",
+          "distanceKm": 162.3
+        }
+      ]
+    },
+    {
+      "locationId": "pt-madeira",
+      "minimumDistanceKm": 0,
+      "volcanoes": [
+        {
+          "volcanoId": "382120",
+          "name": "Madeira",
+          "distanceKm": 0
+        }
+      ]
+    },
+    {
+      "locationId": "pt-ponta-delgada",
+      "minimumDistanceKm": 0,
+      "volcanoes": [
+        {
+          "volcanoId": "382081",
+          "name": "Picos Fissural Volcanic System",
+          "distanceKm": 0
+        },
+        {
+          "volcanoId": "382080",
+          "name": "Sete Cidades",
+          "distanceKm": 2.3
+        },
+        {
+          "volcanoId": "382090",
+          "name": "Agua de Pau",
+          "distanceKm": 2.6
+        },
+        {
+          "volcanoId": "382110",
+          "name": "Monaco Bank",
+          "distanceKm": 9.5
+        },
+        {
+          "volcanoId": "382100",
+          "name": "Furnas",
+          "distanceKm": 15.6
+        },
+        {
+          "volcanoId": "382070",
+          "name": "Don Joao de Castro Bank",
+          "distanceKm": 85.4
+        },
+        {
+          "volcanoId": "382050",
+          "name": "Terceira",
+          "distanceKm": 166.5
+        }
+      ]
+    },
+    {
+      "locationId": "pt-santa-cruz-das-flores",
+      "minimumDistanceKm": 0,
+      "volcanoes": [
+        {
+          "volcanoId": "382001",
+          "name": "Flores",
+          "distanceKm": 0
+        }
+      ]
+    }
+  ]
+}

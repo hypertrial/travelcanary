@@ -1,0 +1,24 @@
+{
+  "zaznamID": "fixture-reviewed-from-chmi-contract",
+  "datovyZdrojID": "hydrologie",
+  "datovyTokID": "povodne_orp_risk_ff",
+  "datumVytvoreni": "2026-08-29T18:55:00.000Z",
+  "verzeDat": "1.0",
+  "data": {
+    "report": {
+      "creator": "ČHMÚ",
+      "creation_date_utc": "202608291855 UTC",
+      "name": "Riziko přívalových povodní"
+    },
+    "risks": [
+      {
+        "name": "Brno",
+        "kod_orp_ruian": "1317",
+        "riziko_grid": 2,
+        "riziko_povodi": 3,
+        "riziko_vysledne": 3,
+        "riziko_popis": "fixture omits upstream narrative"
+      }
+    ]
+  }
+}

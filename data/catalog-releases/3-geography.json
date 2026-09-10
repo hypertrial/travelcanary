@@ -1,0 +1,29 @@
+{
+  "catalogVersion": 3,
+  "source": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson",
+  "sourceSha256": "239eec57ac17f100a11e2536cffc56752c318b50ae765b0918ff7aab4ce8f255",
+  "inputSha256": "101bf7751d73378a469f573cc8a9450311360ce4e64ec960e4af5f0bd018c018",
+  "input": "data/review-inputs/catalog3-country-boundaries.json",
+  "extraction": "Select exact45 catalog countries using ISO_A2_EH, ISO_A2 then WB_A2; retain those3 properties and original geometry in source order. No coordinate transformation.",
+  "license": "Public domain — Natural Earth",
+  "envelope": [
+    -32,
+    27,
+    45,
+    72
+  ],
+  "countryEnvelopes": {
+    "NO": [
+      4,
+      57,
+      32,
+      72
+    ]
+  },
+  "preservePrecision": [
+    "VA",
+    "MC",
+    "SM"
+  ],
+  "notice": "Display component filters, not clipping or warning jurisdiction. Preserve all legacy destinations including Azores."
+}

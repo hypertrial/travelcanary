@@ -1,0 +1,35 @@
+.trigger { display: grid; place-items: center; flex: 0 0 auto; width: 44px; height: 44px; padding: 0; color: var(--ink-soft); background: color-mix(in srgb, var(--surface) 72%, transparent); border: 1px solid color-mix(in srgb, var(--ink) 11%, transparent); border-radius: var(--control-radius); box-shadow: none; cursor: pointer; transition: color var(--motion-fast), background var(--motion-fast), border-color var(--motion-fast); }
+.trigger:hover { color: var(--ink); background: var(--surface); border-color: var(--line-strong); }
+.trigger svg { width: 20px; height: 20px; }
+.popover { z-index: 180; width: min(340px, calc(100vw - 28px)); max-height: min(620px, calc(100dvh - 32px)); overflow: auto; background: var(--surface); border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); border-radius: var(--panel-radius); box-shadow: var(--shadow-overlay); }
+.dialog { outline: none; }
+.menuBody, .detail { padding: 17px; }
+.menuHeading { display: flex; gap: 11px; align-items: center; margin-bottom: 14px; }
+.menuHeading > span { display: grid; place-items: center; width: 38px; height: 38px; color: var(--brand-navy); background: var(--brand); border-radius: 12px; }
+.menuHeading svg { width: 20px; height: 20px; }
+.menuHeading h2, .detail h2 { margin: 0; font-family: var(--font-display); font-size: 21px; font-weight: 600; letter-spacing: -.025em; text-wrap: balance; }
+.menuHeading p { margin: 3px 0 0; color: var(--muted); font-size: 11px; }
+.menuItems { display: grid; overflow: hidden; border: 1px solid var(--line); border-radius: var(--control-radius); }
+.menuItems button { display: grid; grid-template-columns: 28px minmax(0,1fr) 16px; align-items: center; gap: 10px; width: 100%; min-height: 60px; padding: 9px 10px; color: var(--ink); background: transparent; border: 0; border-bottom: 1px solid var(--rail-divider); border-radius: 0; text-align: left; cursor: pointer; }
+.menuItems button:last-child { border-bottom: 0; }
+.menuItems button:hover, .menuItems button:focus-visible { background: var(--surface-soft); }
+.menuItems button > svg:first-child { width: 20px; height: 20px; color: var(--brand-navy); }
+.menuItems button > svg:last-child { width: 15px; height: 15px; color: var(--muted); transform: rotate(-90deg); }
+.menuItems strong, .menuItems small { display: block; }
+.menuItems strong { font-size: 13px; line-height: 1.25; }
+.menuItems small { margin-top: 3px; color: var(--muted); font-size: 11px; line-height: 1.35; text-wrap: pretty; }
+.detail p { color: var(--ink-soft); font-size: 13px; line-height: 1.6; text-wrap: pretty; }
+.detail .note { color: var(--muted); font-size: 12px; }
+.back { min-height: 44px; margin: -8px 0 4px -8px; padding: 8px; color: var(--brand-navy); background: transparent; border: 0; font-weight: 800; cursor: pointer; }
+.keyList { display: grid; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
+.keyList li { display: grid; grid-template-columns: 28px 1fr; align-items: center; gap: 9px; font-size: 12px; }
+.keyList span { display: grid; place-items: center; width: 26px; height: 26px; color: #fff; background: var(--unknown); border-radius: 50%; font-size: 8px; font-weight: 900; }
+.keyList span[data-level="ELEVATED"] { background: var(--elevated); }
+.keyList span[data-level="HIGH"] { background: var(--high); }
+.keyList span[data-level="SEVERE"] { background: var(--severe); }
+.keyList svg { width: 12px; height: 12px; }
+.done { width: 100%; min-height: 46px; margin-top: 14px; color: var(--surface); background: var(--brand-navy); border: 0; border-radius: var(--radius-sm); font-weight: 850; }
+.overlay { position: fixed; z-index: 260; inset: 0; display: flex; align-items: flex-end; padding-top: max(14px, env(safe-area-inset-top)); background: color-mix(in srgb, var(--brand-navy) 38%, transparent); backdrop-filter: blur(3px); }
+.modal { width: 100%; max-height: 84dvh; padding-bottom: env(safe-area-inset-bottom); overflow-y: auto; background: var(--surface); border-radius: 24px 24px 0 0; box-shadow: var(--shadow-lg); }
+.modal .menuBody, .modal .detail { padding: 20px; }
+@media (max-width: 767px), (max-height: 500px) and (pointer: coarse) { .trigger { width: 44px; height: 44px; border-radius: 13px; box-shadow: none; } }

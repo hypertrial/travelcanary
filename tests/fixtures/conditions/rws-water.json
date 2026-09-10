@@ -1,0 +1,51 @@
+{
+  "Succesvol": true,
+  "WaarnemingenLijst": [
+    {
+      "AquoMetadata": {
+        "Compartiment": { "Code": "OW" },
+        "Eenheid": { "Code": "cm" },
+        "Grootheid": { "Code": "WATHTE" },
+        "Hoedanigheid": { "Code": "NAP" },
+        "ProcesType": "meting"
+      },
+      "Locatie": {
+        "Code": "rotterdam.nieuwemaas.boerengat",
+        "Coordinatenstelsel": "ETRS89",
+        "Lat": 51.9184,
+        "Lon": 4.5003,
+        "Naam": "Rotterdam, Nieuwe Maas, Boerengat"
+      },
+      "MetingenLijst": [
+        {
+          "Meetwaarde": { "Waarde_Numeriek": -4 },
+          "Tijdstip": "2026-09-01T13:50:00.000+01:00",
+          "WaarnemingMetadata": { "Kwaliteitswaardecode": "00", "Statuswaarde": "Ongecontroleerd" }
+        }
+      ]
+    },
+    {
+      "AquoMetadata": {
+        "Compartiment": { "Code": "OW" },
+        "Eenheid": { "Code": "cm" },
+        "Grootheid": { "Code": "WATHTE" },
+        "Hoedanigheid": { "Code": "NAP" },
+        "ProcesType": "meting"
+      },
+      "Locatie": {
+        "Code": "rotterdam.nieuwemaas.boerengat",
+        "Coordinatenstelsel": "ETRS89",
+        "Lat": 51.9184,
+        "Lon": 4.5003,
+        "Naam": "Rotterdam, Nieuwe Maas, Boerengat"
+      },
+      "MetingenLijst": [
+        {
+          "Meetwaarde": { "Waarde_Numeriek": 12 },
+          "Tijdstip": "2025-09-01T13:50:00.000+01:00",
+          "WaarnemingMetadata": { "Kwaliteitswaardecode": "25", "Statuswaarde": "Gecontroleerd" }
+        }
+      ]
+    }
+  ]
+}

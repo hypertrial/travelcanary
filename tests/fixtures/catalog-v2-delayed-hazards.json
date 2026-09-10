@@ -1,0 +1,50 @@
+{
+  "sourceRevision": "35958ea0515d77cce19e6dc2a191430733a77cf4",
+  "scenarios": [
+    {
+      "name": "all-healthy",
+      "providers": {},
+      "delayedHazardsSha256": "fe3225571602302627407be0908cd8e6e5ac8dcfb4c45a1405463723035ed9d8"
+    },
+    {
+      "name": "earthquake",
+      "providers": {
+        "usgs": "failed"
+      },
+      "delayedHazardsSha256": "2d62830974c23dd6fd455d58c89c7b3c877be70c91263f8f8d65208a882b5166"
+    },
+    {
+      "name": "weather",
+      "providers": {
+        "meteoalarm": "failed"
+      },
+      "delayedHazardsSha256": "bbc963ee9008506441e6f821309ed2f6de363422ba8ac374026a1b4e54c35aae"
+    },
+    {
+      "name": "national-disabled",
+      "providers": {
+        "national-civil-alerts": "disabled"
+      },
+      "delayedHazardsSha256": "e5cd15f82a3e519c149d1c407172cb34610f9bbbea56d92a5483d7b7d50f46e3"
+    },
+    {
+      "name": "mixed",
+      "providers": {
+        "meteoalarm": "partial",
+        "usgs": "delayed",
+        "eea-aqi": "failed",
+        "national-civil-alerts": "disabled"
+      },
+      "delayedHazardsSha256": "a61365f3bef94ac89dbf502142bd17d8fc18fa5e2e9360a5e36292257e76501f"
+    },
+    {
+      "name": "partition-precedence",
+      "providers": {
+        "meteoalarm": "failed",
+        "eea-aqi": "failed"
+      },
+      "healthyPartitions": true,
+      "delayedHazardsSha256": "fe3225571602302627407be0908cd8e6e5ac8dcfb4c45a1405463723035ed9d8"
+    }
+  ]
+}

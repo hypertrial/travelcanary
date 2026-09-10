@@ -1,0 +1,9 @@
+{
+  "sourceUrl": "https://www.gov.uk/api/content/foreign-travel-advice/belarus",
+  "retrievedAt": "2026-09-08T20:55:00.196259+00:00",
+  "originalBytes": 68147,
+  "originalSha256": "281f33333196a396b5f85da12368e486d2c11fd2e41c1851b063792b83590383",
+  "fixtureScope": "Unmodified selected JSON fields only; full HTML-containing content body omitted.",
+  "reuse": "Open Government Licence; https://www.gov.uk/help/reuse-govuk-content",
+  "timestampMeaning": "updated_at is the content-store record update; public_updated_at is retained separately and is not synthesized from the collection clock."
+}

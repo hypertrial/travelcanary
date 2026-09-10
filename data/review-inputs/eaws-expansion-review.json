@@ -1,0 +1,200 @@
+{
+  "reviewedAt": "2026-09-07",
+  "source": "https://eaws.gitlab.io/eaws-regions/micro-regions.geojson",
+  "sourceSha256": "2a05f7c344c51c9087be6bc8660be57faadfeef2720e787292463479741f0eda",
+  "featureCount": 751,
+  "method": "Exact intersections with catalog matching areas; only currently enabled feed prefixes; existing EAWS mappings and SLF-covered Swiss destinations excluded. Duplicate region IDs collapsed.",
+  "status": "geometry_candidates_only",
+  "blocker": "Verify each candidate against current bulletin region IDs, geometry editions and seasonal/altitude applicability before expanding configured monitoring. A region intersection alone does not prove a currently served bulletin or complete destination-wide avalanche monitoring.",
+  "candidates": [
+    {
+      "id": "at-graz",
+      "type": "city",
+      "regions": [
+        "AT-06-14",
+        "AT-06-15"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter AT-06-15 present, AT-06-14 absent; terrain/altitude scope unresolved."
+    },
+    {
+      "id": "at-innsbruck",
+      "type": "city",
+      "regions": [
+        "AT-07-04",
+        "AT-07-04-01",
+        "AT-07-09",
+        "AT-07-14",
+        "AT-07-14-04",
+        "AT-07-14-05",
+        "AT-07-15"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter leaf IDs AT-07-04-01, AT-07-09, AT-07-14-04/05, AT-07-15 present; parent prefixes would admit other slopes."
+    },
+    {
+      "id": "at-klagenfurt-am-woerthersee",
+      "type": "city",
+      "regions": [
+        "AT-02-17",
+        "AT-02-18",
+        "AT-02-19"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter AT-02-17/18/19 present; terrain/altitude scope unresolved."
+    },
+    {
+      "id": "at-salzburg",
+      "type": "city",
+      "regions": [
+        "AT-05-19",
+        "AT-05-20",
+        "DE-BY-50",
+        "DE-BY-52",
+        "DE-BY-60"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter AT-05-19/20 and DE-BY-52/60 present; DE-BY-50 absent."
+    },
+    {
+      "id": "at-villach",
+      "type": "city",
+      "regions": [
+        "AT-02-04",
+        "AT-02-04-02",
+        "AT-02-12",
+        "AT-02-12-01",
+        "AT-02-13",
+        "AT-02-16",
+        "AT-02-17",
+        "SI-1",
+        "SI-7"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter relevant AT-02 leaves and SI-1/7 present; exact terrain scope unresolved."
+    },
+    {
+      "id": "fr-grenoble",
+      "type": "city",
+      "regions": [
+        "FR-07",
+        "FR-08",
+        "FR-14",
+        "FR-15"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter FR-07/08/14/15 present; city versus mountain elevation scope unresolved."
+    },
+    {
+      "id": "it-trieste",
+      "type": "city",
+      "regions": [
+        "SI-15"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter SI-15 absent; do not activate from geometry alone."
+    },
+    {
+      "id": "ro-bistrita",
+      "type": "city",
+      "regions": [
+        "RO-2"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter RO-2 present; city terrain scope unresolved."
+    },
+    {
+      "id": "si-celje",
+      "type": "city",
+      "regions": [
+        "SI-12",
+        "SI-5"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter SI-12/5 absent; do not activate from geometry alone."
+    },
+    {
+      "id": "si-koper",
+      "type": "city",
+      "regions": [
+        "SI-15"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter SI-15 absent; do not activate from geometry alone."
+    },
+    {
+      "id": "si-kranj",
+      "type": "city",
+      "regions": [
+        "SI-11",
+        "SI-2",
+        "SI-3",
+        "SI-8"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter SI-11/2/3/8 present; altitude and terrain scope unresolved."
+    },
+    {
+      "id": "si-ljubljana",
+      "type": "capital",
+      "regions": [
+        "SI-11",
+        "SI-12",
+        "SI-14"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter SI-11 present; SI-12/14 absent. Preserve elevation bands, including below/above 1800m."
+    },
+    {
+      "id": "si-maribor",
+      "type": "city",
+      "regions": [
+        "SI-5"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter SI-5 absent; do not activate from geometry alone."
+    },
+    {
+      "id": "sk-banska-bystrica",
+      "type": "city",
+      "regions": [
+        "SK-05",
+        "SK-06"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter SK-05/06 present; city terrain scope unresolved."
+    },
+    {
+      "id": "sk-slovak-paradise",
+      "type": "park",
+      "regions": [
+        "SK-04"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter SK-04 present but named eastern Low Tatras (Nízke Tatry - východ); intersection does not establish park-terrain coverage."
+    },
+    {
+      "id": "sk-zilina",
+      "type": "city",
+      "regions": [
+        "SK-07",
+        "SK-08"
+      ],
+      "bulletinDecision": "gated",
+      "bulletinEvidence": "Winter SK-07/08 present; city terrain scope unresolved."
+    }
+  ],
+  "bulletinReview": {
+    "reviewedAt": "2026-09-08",
+    "currentEdition": "2026-09-08",
+    "currentOutcome": "All nine candidate feed partitions returned HTTP 404; absence out of season does not establish missing geography.",
+    "sampledWinterEdition": "2026-02-15",
+    "sourcePattern": "https://static.avalanche.report/eaws_bulletins/{date}/{date}-{feedCode}.json",
+    "activation": "none",
+    "invariants": [
+      "Preserve elevation bands and terrain scope before city activation.",
+      "Exact reviewed leaf IDs must not match unreviewed siblings via parent prefixes.",
+      "An intersecting region is not proof that the relevant destination terrain is served."
+    ]
+  }
+}

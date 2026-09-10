@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:cap="urn:oasis:names:tc:emergency:cap:1.2">
+  <link rel="hub" href="https://pubsubhubbub.appspot.com/"/>
+  <link type="application/atom+xml" rel="self" href="https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-andorra"/>
+  <link type="text/html" rel="alternate" href="https://meteoalarm.org"/>
+  <rights>Copyright © 2026 MeteoAlarm.Org. Licensed under terms equivalent to CC BY 4.0, with additional requirements for redistributing outlined in our Terms and Conditions.</rights>
+  <generator>MeteoAlarm Producer Server</generator>
+  <logo>https://feeds.meteoalarm.org/images/logo.svg</logo>
+  <author>
+    <name>meteoalarm.org</name>
+    <uri>https://meteoalarm.org</uri>
+    <email>meteoalarm@geosphere.at</email>
+  </author>
+  <id>tag:meteoalarm.org,2025-05-08:AD</id>
+  <title>MeteoAlarm - Alerting Europe for Extreme Weather</title>
+  <updated>2026-09-08T15:35:50.360142Z</updated>
+  <entry>
+    <cap:polygon>42.51178,1.46776 42.52613,1.47712 42.52696,1.48686 42.53027,1.49547 42.53165,1.51082 42.52834,1.52055 42.52586,1.53066 42.52448,1.54489 42.50102,1.55500 42.50682,1.58458 42.49716,1.61790 42.49467,1.62239 42.48915,1.61939 42.48252,1.62613 42.48611,1.64485 42.48114,1.64935 42.47921,1.65945 42.47396,1.66432 42.46816,1.65608 42.46761,1.64860 42.47010,1.64485 42.46789,1.64036 42.46402,1.62875 42.46678,1.62201 42.46513,1.60666 42.46706,1.60030 42.46457,1.59019 42.45877,1.58458 42.45075,1.58070 42.45821,1.56872 42.45711,1.55973 42.44523,1.56085 42.44219,1.55374 42.43335,1.55224 42.42593,1.51256 42.43280,1.50095 42.43252,1.48298 42.43777,1.46314 42.43777,1.44854 42.45490,1.44105 42.45517,1.44067 42.45987,1.44704 42.46374,1.43918 42.46401,1.43918 42.47598,1.44105 42.48662,1.43094 42.48334,1.41933 42.49439,1.42308 42.49853,1.44928 42.51178,1.46776</cap:polygon>
+    <link title="South zone" href="https://meteoalarm.org?polygon=cb782ae3-0ed4-45cd-ae62-582e0dcb0541,3,0,0" hreflang="en"/>
+    <cap:areaDesc>South zone</cap:areaDesc>
+    <cap:event>Moderate storms warning</cap:event>
+    <cap:sent>2026-09-08T07:42:43+00:00</cap:sent>
+    <cap:expires>2026-09-08T22:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-08T16:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.20.0.20260908094243.1c6a0601-8760-44f3-87fc-d790ecd18662</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/cb782ae3-0ed4-45cd-ae62-582e0dcb0541"/>
+    <link title="Andorra" rel="related" href="https://meteoalarm.org?region=AD" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T07:42:43Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/cb782ae3-0ed4-45cd-ae62-582e0dcb0541?index_info=3&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Thunderstorm Warning issued for Andorra - South zone</title>
+    <updated>2026-09-08T07:42:43Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>42.56934,1.44042 42.55884,1.47348 42.57223,1.51822 42.57967,1.58231 42.55820,1.57365 42.55565,1.62302 42.53884,1.61205 42.53842,1.63515 42.53693,1.65709 42.52565,1.64785 42.52289,1.66228 42.50693,1.65622 42.49723,1.66976 42.49329,1.66208 42.47949,1.65908 42.48114,1.64935 42.48611,1.64485 42.48252,1.62613 42.48915,1.61939 42.49467,1.62239 42.49716,1.61790 42.50682,1.58458 42.50102,1.55500 42.52448,1.54489 42.52586,1.53066 42.52834,1.52055 42.53165,1.51082 42.53027,1.49547 42.52696,1.48686 42.52613,1.47712 42.51178,1.46776 42.52420,1.46028 42.52641,1.45578 42.53745,1.45092 42.54379,1.44156 42.54186,1.43070 42.53579,1.41310 42.54682,1.41834 42.55648,1.42171 42.56227,1.43107 42.56778,1.44418 42.56934,1.44042</cap:polygon>
+    <link title="Centre zone" href="https://meteoalarm.org?polygon=0d2a7761-6f81-44d7-8e81-0301ed52f466,3,0,0" hreflang="en"/>
+    <cap:areaDesc>Centre zone</cap:areaDesc>
+    <cap:event>Moderate storms warning</cap:event>
+    <cap:sent>2026-09-08T07:42:43+00:00</cap:sent>
+    <cap:expires>2026-09-08T22:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-08T16:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.20.0.20260908094243.c339b379-ed41-4006-9fa0-f62567276dbc</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/0d2a7761-6f81-44d7-8e81-0301ed52f466"/>
+    <link title="Andorra" rel="related" href="https://meteoalarm.org?region=AD" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T07:42:43Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/0d2a7761-6f81-44d7-8e81-0301ed52f466?index_info=3&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Thunderstorm Warning issued for Andorra - Centre zone</title>
+    <updated>2026-09-08T07:42:43Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>42.56934,1.44042 42.58703,1.42532 42.59411,1.43768 42.60422,1.43836 42.60523,1.45622 42.61433,1.47682 42.63353,1.46583 42.64312,1.47476 42.65423,1.47682 42.65625,1.48986 42.64969,1.49810 42.64817,1.51390 42.65575,1.55029 42.64464,1.57913 42.62898,1.59698 42.63201,1.63543 42.62746,1.64710 42.62191,1.66290 42.62797,1.68899 42.61736,1.70753 42.61988,1.73294 42.59108,1.72264 42.59007,1.74049 42.58299,1.76315 42.58552,1.77757 42.57642,1.78443 42.56529,1.76658 42.56377,1.75079 42.55315,1.73774 42.53696,1.73362 42.50533,1.72538 42.49065,1.70616 42.49825,1.69036 42.49723,1.66976 42.50693,1.65622 42.52289,1.66228 42.52565,1.64785 42.53693,1.65709 42.53842,1.63515 42.53884,1.61205 42.55565,1.62302 42.55820,1.57365 42.57967,1.58231 42.57223,1.51822 42.55884,1.47348 42.56934,1.44042</cap:polygon>
+    <link title="North zone" href="https://meteoalarm.org?polygon=5774a3b5-fcbf-420a-b0dc-6fa80a81d81d,3,0,0" hreflang="en"/>
+    <cap:areaDesc>North zone</cap:areaDesc>
+    <cap:event>Moderate storms warning</cap:event>
+    <cap:sent>2026-09-08T07:42:43+00:00</cap:sent>
+    <cap:expires>2026-09-08T22:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-08T16:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.20.0.20260908094243.32f9a8e1-4764-404d-b11f-5a88aa9c93fc</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/5774a3b5-fcbf-420a-b0dc-6fa80a81d81d"/>
+    <link title="Andorra" rel="related" href="https://meteoalarm.org?region=AD" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T07:42:43Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/5774a3b5-fcbf-420a-b0dc-6fa80a81d81d?index_info=3&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Thunderstorm Warning issued for Andorra - North zone</title>
+    <updated>2026-09-08T07:42:43Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>42.51178,1.46776 42.52613,1.47712 42.52696,1.48686 42.53027,1.49547 42.53165,1.51082 42.52834,1.52055 42.52586,1.53066 42.52448,1.54489 42.50102,1.55500 42.50682,1.58458 42.49716,1.61790 42.49467,1.62239 42.48915,1.61939 42.48252,1.62613 42.48611,1.64485 42.48114,1.64935 42.47921,1.65945 42.47396,1.66432 42.46816,1.65608 42.46761,1.64860 42.47010,1.64485 42.46789,1.64036 42.46402,1.62875 42.46678,1.62201 42.46513,1.60666 42.46706,1.60030 42.46457,1.59019 42.45877,1.58458 42.45075,1.58070 42.45821,1.56872 42.45711,1.55973 42.44523,1.56085 42.44219,1.55374 42.43335,1.55224 42.42593,1.51256 42.43280,1.50095 42.43252,1.48298 42.43777,1.46314 42.43777,1.44854 42.45490,1.44105 42.45517,1.44067 42.45987,1.44704 42.46374,1.43918 42.46401,1.43918 42.47598,1.44105 42.48662,1.43094 42.48334,1.41933 42.49439,1.42308 42.49853,1.44928 42.51178,1.46776</cap:polygon>
+    <link title="South zone" href="https://meteoalarm.org?polygon=8d93bbc0-c586-4455-a6f1-0a78124fdb93,3,0,0" hreflang="en"/>
+    <cap:areaDesc>South zone</cap:areaDesc>
+    <cap:event>Moderate storms warning</cap:event>
+    <cap:sent>2026-09-08T07:42:35+00:00</cap:sent>
+    <cap:expires>2026-09-08T22:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-08T16:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.20.0.20260908094235.99cb0af7-0b4f-45e4-971e-55a525b6d078</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/8d93bbc0-c586-4455-a6f1-0a78124fdb93"/>
+    <link title="Andorra" rel="related" href="https://meteoalarm.org?region=AD" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T07:42:35Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/8d93bbc0-c586-4455-a6f1-0a78124fdb93?index_info=3&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Thunderstorm Warning issued for Andorra - South zone</title>
+    <updated>2026-09-08T07:42:35Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>42.56934,1.44042 42.55884,1.47348 42.57223,1.51822 42.57967,1.58231 42.55820,1.57365 42.55565,1.62302 42.53884,1.61205 42.53842,1.63515 42.53693,1.65709 42.52565,1.64785 42.52289,1.66228 42.50693,1.65622 42.49723,1.66976 42.49329,1.66208 42.47949,1.65908 42.48114,1.64935 42.48611,1.64485 42.48252,1.62613 42.48915,1.61939 42.49467,1.62239 42.49716,1.61790 42.50682,1.58458 42.50102,1.55500 42.52448,1.54489 42.52586,1.53066 42.52834,1.52055 42.53165,1.51082 42.53027,1.49547 42.52696,1.48686 42.52613,1.47712 42.51178,1.46776 42.52420,1.46028 42.52641,1.45578 42.53745,1.45092 42.54379,1.44156 42.54186,1.43070 42.53579,1.41310 42.54682,1.41834 42.55648,1.42171 42.56227,1.43107 42.56778,1.44418 42.56934,1.44042</cap:polygon>
+    <link title="Centre zone" href="https://meteoalarm.org?polygon=4b1e9abb-cdd1-4387-9b2a-cd968b7f31e2,3,0,0" hreflang="en"/>
+    <cap:areaDesc>Centre zone</cap:areaDesc>
+    <cap:event>Moderate storms warning</cap:event>
+    <cap:sent>2026-09-08T07:42:35+00:00</cap:sent>
+    <cap:expires>2026-09-08T22:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-08T16:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.20.0.20260908094235.03ffabf6-dcad-4700-8903-09961caded7c</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/4b1e9abb-cdd1-4387-9b2a-cd968b7f31e2"/>
+    <link title="Andorra" rel="related" href="https://meteoalarm.org?region=AD" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T07:42:35Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/4b1e9abb-cdd1-4387-9b2a-cd968b7f31e2?index_info=3&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Thunderstorm Warning issued for Andorra - Centre zone</title>
+    <updated>2026-09-08T07:42:35Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>42.56934,1.44042 42.58703,1.42532 42.59411,1.43768 42.60422,1.43836 42.60523,1.45622 42.61433,1.47682 42.63353,1.46583 42.64312,1.47476 42.65423,1.47682 42.65625,1.48986 42.64969,1.49810 42.64817,1.51390 42.65575,1.55029 42.64464,1.57913 42.62898,1.59698 42.63201,1.63543 42.62746,1.64710 42.62191,1.66290 42.62797,1.68899 42.61736,1.70753 42.61988,1.73294 42.59108,1.72264 42.59007,1.74049 42.58299,1.76315 42.58552,1.77757 42.57642,1.78443 42.56529,1.76658 42.56377,1.75079 42.55315,1.73774 42.53696,1.73362 42.50533,1.72538 42.49065,1.70616 42.49825,1.69036 42.49723,1.66976 42.50693,1.65622 42.52289,1.66228 42.52565,1.64785 42.53693,1.65709 42.53842,1.63515 42.53884,1.61205 42.55565,1.62302 42.55820,1.57365 42.57967,1.58231 42.57223,1.51822 42.55884,1.47348 42.56934,1.44042</cap:polygon>
+    <link title="North zone" href="https://meteoalarm.org?polygon=5aa47bd0-7db1-458e-9ceb-74d04388a1f8,3,0,0" hreflang="en"/>
+    <cap:areaDesc>North zone</cap:areaDesc>
+    <cap:event>Moderate storms warning</cap:event>
+    <cap:sent>2026-09-08T07:42:35+00:00</cap:sent>
+    <cap:expires>2026-09-08T22:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-08T16:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.20.0.20260908094235.3ebefaf1-07ff-4bd2-83dc-c3149e7babfa</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/5aa47bd0-7db1-458e-9ceb-74d04388a1f8"/>
+    <link title="Andorra" rel="related" href="https://meteoalarm.org?region=AD" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T07:42:35Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/5aa47bd0-7db1-458e-9ceb-74d04388a1f8?index_info=3&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow Thunderstorm Warning issued for Andorra - North zone</title>
+    <updated>2026-09-08T07:42:35Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>42.51178,1.46776 42.52613,1.47712 42.52696,1.48686 42.53027,1.49547 42.53165,1.51082 42.52834,1.52055 42.52586,1.53066 42.52448,1.54489 42.50102,1.55500 42.50682,1.58458 42.49716,1.61790 42.49467,1.62239 42.48915,1.61939 42.48252,1.62613 42.48611,1.64485 42.48114,1.64935 42.47921,1.65945 42.47396,1.66432 42.46816,1.65608 42.46761,1.64860 42.47010,1.64485 42.46789,1.64036 42.46402,1.62875 42.46678,1.62201 42.46513,1.60666 42.46706,1.60030 42.46457,1.59019 42.45877,1.58458 42.45075,1.58070 42.45821,1.56872 42.45711,1.55973 42.44523,1.56085 42.44219,1.55374 42.43335,1.55224 42.42593,1.51256 42.43280,1.50095 42.43252,1.48298 42.43777,1.46314 42.43777,1.44854 42.45490,1.44105 42.45517,1.44067 42.45987,1.44704 42.46374,1.43918 42.46401,1.43918 42.47598,1.44105 42.48662,1.43094 42.48334,1.41933 42.49439,1.42308 42.49853,1.44928 42.51178,1.46776</cap:polygon>
+    <link title="South zone" href="https://meteoalarm.org?polygon=c3ad6896-d18c-45ec-a4b3-7cb7b7230fad,3,0,0" hreflang="en"/>
+    <cap:areaDesc>South zone</cap:areaDesc>
+    <cap:event>Moderate high temperature</cap:event>
+    <cap:sent>2026-09-04T07:43:12+00:00</cap:sent>
+    <cap:expires>2026-09-07T19:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-05T19:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.20.0.20260904094312.ad50bf58-55f6-4246-a554-4fe14452c146</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/c3ad6896-d18c-45ec-a4b3-7cb7b7230fad"/>
+    <link title="Andorra" rel="related" href="https://meteoalarm.org?region=AD" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-04T07:43:12Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/c3ad6896-d18c-45ec-a4b3-7cb7b7230fad?index_info=3&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow High-temperature Warning issued for Andorra - South zone</title>
+    <updated>2026-09-04T07:43:12Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>42.56934,1.44042 42.55884,1.47348 42.57223,1.51822 42.57967,1.58231 42.55820,1.57365 42.55565,1.62302 42.53884,1.61205 42.53842,1.63515 42.53693,1.65709 42.52565,1.64785 42.52289,1.66228 42.50693,1.65622 42.49723,1.66976 42.49329,1.66208 42.47949,1.65908 42.48114,1.64935 42.48611,1.64485 42.48252,1.62613 42.48915,1.61939 42.49467,1.62239 42.49716,1.61790 42.50682,1.58458 42.50102,1.55500 42.52448,1.54489 42.52586,1.53066 42.52834,1.52055 42.53165,1.51082 42.53027,1.49547 42.52696,1.48686 42.52613,1.47712 42.51178,1.46776 42.52420,1.46028 42.52641,1.45578 42.53745,1.45092 42.54379,1.44156 42.54186,1.43070 42.53579,1.41310 42.54682,1.41834 42.55648,1.42171 42.56227,1.43107 42.56778,1.44418 42.56934,1.44042</cap:polygon>
+    <link title="Centre zone" href="https://meteoalarm.org?polygon=52464607-8e84-4b5f-aad0-7daf2fa728b7,3,0,0" hreflang="en"/>
+    <cap:areaDesc>Centre zone</cap:areaDesc>
+    <cap:event>Moderate high temperature</cap:event>
+    <cap:sent>2026-09-04T07:43:12+00:00</cap:sent>
+    <cap:expires>2026-09-07T19:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-05T19:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.20.0.20260904094312.962f9dde-6bf5-4b15-8b98-dd9f9f34f407</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/52464607-8e84-4b5f-aad0-7daf2fa728b7"/>
+    <link title="Andorra" rel="related" href="https://meteoalarm.org?region=AD" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-04T07:43:12Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/52464607-8e84-4b5f-aad0-7daf2fa728b7?index_info=3&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow High-temperature Warning issued for Andorra - Centre zone</title>
+    <updated>2026-09-04T07:43:12Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>42.56934,1.44042 42.58703,1.42532 42.59411,1.43768 42.60422,1.43836 42.60523,1.45622 42.61433,1.47682 42.63353,1.46583 42.64312,1.47476 42.65423,1.47682 42.65625,1.48986 42.64969,1.49810 42.64817,1.51390 42.65575,1.55029 42.64464,1.57913 42.62898,1.59698 42.63201,1.63543 42.62746,1.64710 42.62191,1.66290 42.62797,1.68899 42.61736,1.70753 42.61988,1.73294 42.59108,1.72264 42.59007,1.74049 42.58299,1.76315 42.58552,1.77757 42.57642,1.78443 42.56529,1.76658 42.56377,1.75079 42.55315,1.73774 42.53696,1.73362 42.50533,1.72538 42.49065,1.70616 42.49825,1.69036 42.49723,1.66976 42.50693,1.65622 42.52289,1.66228 42.52565,1.64785 42.53693,1.65709 42.53842,1.63515 42.53884,1.61205 42.55565,1.62302 42.55820,1.57365 42.57967,1.58231 42.57223,1.51822 42.55884,1.47348 42.56934,1.44042</cap:polygon>
+    <link title="North zone" href="https://meteoalarm.org?polygon=fc9ab93d-58e2-4e52-91d9-f2ef8a3df195,3,0,0" hreflang="en"/>
+    <cap:areaDesc>North zone</cap:areaDesc>
+    <cap:event>Moderate high temperature</cap:event>
+    <cap:sent>2026-09-04T07:43:11+00:00</cap:sent>
+    <cap:expires>2026-09-07T19:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-04T04:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Expected</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.20.0.20260904094311.d71f6988-1451-4fe6-8f76-6248a65eb3d9</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/fc9ab93d-58e2-4e52-91d9-f2ef8a3df195"/>
+    <link title="Andorra" rel="related" href="https://meteoalarm.org?region=AD" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-04T07:43:11Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/fc9ab93d-58e2-4e52-91d9-f2ef8a3df195?index_info=3&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow High-temperature Warning issued for Andorra - North zone</title>
+    <updated>2026-09-04T07:43:11Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>42.51178,1.46776 42.52613,1.47712 42.52696,1.48686 42.53027,1.49547 42.53165,1.51082 42.52834,1.52055 42.52586,1.53066 42.52448,1.54489 42.50102,1.55500 42.50682,1.58458 42.49716,1.61790 42.49467,1.62239 42.48915,1.61939 42.48252,1.62613 42.48611,1.64485 42.48114,1.64935 42.47921,1.65945 42.47396,1.66432 42.46816,1.65608 42.46761,1.64860 42.47010,1.64485 42.46789,1.64036 42.46402,1.62875 42.46678,1.62201 42.46513,1.60666 42.46706,1.60030 42.46457,1.59019 42.45877,1.58458 42.45075,1.58070 42.45821,1.56872 42.45711,1.55973 42.44523,1.56085 42.44219,1.55374 42.43335,1.55224 42.42593,1.51256 42.43280,1.50095 42.43252,1.48298 42.43777,1.46314 42.43777,1.44854 42.45490,1.44105 42.45517,1.44067 42.45987,1.44704 42.46374,1.43918 42.46401,1.43918 42.47598,1.44105 42.48662,1.43094 42.48334,1.41933 42.49439,1.42308 42.49853,1.44928 42.51178,1.46776</cap:polygon>
+    <link title="South zone" href="https://meteoalarm.org?polygon=805d34d2-dd46-4afc-8165-c96603031f94,3,0,0" hreflang="en"/>
+    <cap:areaDesc>South zone</cap:areaDesc>
+    <cap:event>Moderate high temperature</cap:event>
+    <cap:sent>2026-09-04T07:42:35+00:00</cap:sent>
+    <cap:expires>2026-09-07T19:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-05T19:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.20.0.20260904094235.469546b3-5ed3-4663-9975-31e8d2ebb879</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/805d34d2-dd46-4afc-8165-c96603031f94"/>
+    <link title="Andorra" rel="related" href="https://meteoalarm.org?region=AD" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-04T07:42:35Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/805d34d2-dd46-4afc-8165-c96603031f94?index_info=3&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow High-temperature Warning issued for Andorra - South zone</title>
+    <updated>2026-09-04T07:42:35Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>42.56934,1.44042 42.55884,1.47348 42.57223,1.51822 42.57967,1.58231 42.55820,1.57365 42.55565,1.62302 42.53884,1.61205 42.53842,1.63515 42.53693,1.65709 42.52565,1.64785 42.52289,1.66228 42.50693,1.65622 42.49723,1.66976 42.49329,1.66208 42.47949,1.65908 42.48114,1.64935 42.48611,1.64485 42.48252,1.62613 42.48915,1.61939 42.49467,1.62239 42.49716,1.61790 42.50682,1.58458 42.50102,1.55500 42.52448,1.54489 42.52586,1.53066 42.52834,1.52055 42.53165,1.51082 42.53027,1.49547 42.52696,1.48686 42.52613,1.47712 42.51178,1.46776 42.52420,1.46028 42.52641,1.45578 42.53745,1.45092 42.54379,1.44156 42.54186,1.43070 42.53579,1.41310 42.54682,1.41834 42.55648,1.42171 42.56227,1.43107 42.56778,1.44418 42.56934,1.44042</cap:polygon>
+    <link title="Centre zone" href="https://meteoalarm.org?polygon=bd0c5940-be8b-4e3d-abfd-6836cd9a21b0,3,0,0" hreflang="en"/>
+    <cap:areaDesc>Centre zone</cap:areaDesc>
+    <cap:event>Moderate high temperature</cap:event>
+    <cap:sent>2026-09-04T07:42:35+00:00</cap:sent>
+    <cap:expires>2026-09-07T19:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-05T19:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.20.0.20260904094235.c398c9d1-5a65-4991-9b20-6ad4f9986a1c</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/bd0c5940-be8b-4e3d-abfd-6836cd9a21b0"/>
+    <link title="Andorra" rel="related" href="https://meteoalarm.org?region=AD" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-04T07:42:35Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/bd0c5940-be8b-4e3d-abfd-6836cd9a21b0?index_info=3&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow High-temperature Warning issued for Andorra - Centre zone</title>
+    <updated>2026-09-04T07:42:35Z</updated>
+  </entry>
+  <entry>
+    <cap:polygon>42.56934,1.44042 42.58703,1.42532 42.59411,1.43768 42.60422,1.43836 42.60523,1.45622 42.61433,1.47682 42.63353,1.46583 42.64312,1.47476 42.65423,1.47682 42.65625,1.48986 42.64969,1.49810 42.64817,1.51390 42.65575,1.55029 42.64464,1.57913 42.62898,1.59698 42.63201,1.63543 42.62746,1.64710 42.62191,1.66290 42.62797,1.68899 42.61736,1.70753 42.61988,1.73294 42.59108,1.72264 42.59007,1.74049 42.58299,1.76315 42.58552,1.77757 42.57642,1.78443 42.56529,1.76658 42.56377,1.75079 42.55315,1.73774 42.53696,1.73362 42.50533,1.72538 42.49065,1.70616 42.49825,1.69036 42.49723,1.66976 42.50693,1.65622 42.52289,1.66228 42.52565,1.64785 42.53693,1.65709 42.53842,1.63515 42.53884,1.61205 42.55565,1.62302 42.55820,1.57365 42.57967,1.58231 42.57223,1.51822 42.55884,1.47348 42.56934,1.44042</cap:polygon>
+    <link title="North zone" href="https://meteoalarm.org?polygon=fd118c4e-8661-4481-9a4e-43f4a5cc9429,3,0,0" hreflang="en"/>
+    <cap:areaDesc>North zone</cap:areaDesc>
+    <cap:event>Moderate high temperature</cap:event>
+    <cap:sent>2026-09-04T07:42:34+00:00</cap:sent>
+    <cap:expires>2026-09-07T19:00:00+00:00</cap:expires>
+    <cap:onset>2026-09-04T04:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Expected</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.20.0.20260904094234.379a4c06-15b2-4667-bcb2-928df439911d</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/fd118c4e-8661-4481-9a4e-43f4a5cc9429"/>
+    <link title="Andorra" rel="related" href="https://meteoalarm.org?region=AD" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-04T07:42:34Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-andorra/fd118c4e-8661-4481-9a4e-43f4a5cc9429?index_info=3&amp;index_area=0&amp;index_polygon=0</id>
+    <title>Yellow High-temperature Warning issued for Andorra - North zone</title>
+    <updated>2026-09-04T07:42:34Z</updated>
+  </entry>
+</feed>

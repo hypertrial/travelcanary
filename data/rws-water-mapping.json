@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-01",
+  "source": "https://ddapi20-waterwebservices.rijkswaterstaat.nl/METADATASERVICES/OphalenCatalogus",
+  "documentation": "https://rijkswaterstaatdata.nl/projecten/waterwebservices-overschakeling/",
+  "catalogSha256": "70165d0cf698fd5ef7c757896ec001edf3216ebf2b1bfc5787234782c4b3b785",
+  "inputSha256": "87dc728d6cccde5c57fa0627b0117364f41afa454bba2a8cace043fc937f5ec7",
+  "datum": "NAP",
+  "qualityCodes": [
+    "00",
+    "10",
+    "20",
+    "25",
+    "30",
+    "40"
+  ],
+  "mappings": [
+    {
+      "stationId": "amsterdam.surinamekade",
+      "stationName": "Amsterdam, Surinamekade",
+      "coordinates": [
+        4.949568,
+        52.37726
+      ],
+      "locationId": "nl-amsterdam",
+      "waterBody": "IJ",
+      "rationale": "Named Amsterdam station on the IJ, 4.1 km from the configured city centre.",
+      "distanceKm": 4.1
+    },
+    {
+      "stationId": "arnhem.nederrijn",
+      "stationName": "Arnhem, Nederrijn",
+      "coordinates": [
+        5.912023,
+        51.975408
+      ],
+      "locationId": "nl-arnhem",
+      "waterBody": "Nederrijn",
+      "rationale": "Named Arnhem station on the Nederrijn, 0.5 km from the configured city centre.",
+      "distanceKm": 0.5
+    },
+    {
+      "stationId": "deventer",
+      "stationName": "Deventer",
+      "coordinates": [
+        6.153247,
+        52.251194
+      ],
+      "locationId": "nl-deventer",
+      "waterBody": "IJssel",
+      "rationale": "Named Deventer station on the IJssel, 0.8 km from the configured city centre.",
+      "distanceKm": 0.8
+    },
+    {
+      "stationId": "dordrecht.oudemaas.benedenmerwede",
+      "stationName": "Dordrecht Oude Maas, Beneden Merwede",
+      "coordinates": [
+        4.671,
+        51.82
+      ],
+      "locationId": "nl-dordrecht",
+      "waterBody": "Oude Maas / Beneden Merwede",
+      "rationale": "Named Dordrecht station at the Oude Maas and Beneden Merwede, 1.1 km from the configured city centre.",
+      "distanceKm": 1.1
+    },
+    {
+      "stationId": "nijmegen.waal",
+      "stationName": "Nijmegen, Waal",
+      "coordinates": [
+        5.854,
+        51.853
+      ],
+      "locationId": "nl-nijmegen",
+      "waterBody": "Waal",
+      "rationale": "Named Nijmegen station on the Waal, 1.2 km from the configured city centre.",
+      "distanceKm": 1.2
+    },
+    {
+      "stationId": "rotterdam.nieuwemaas.boerengat",
+      "stationName": "Rotterdam, Nieuwe Maas, Boerengat",
+      "coordinates": [
+        4.5003,
+        51.9184
+      ],
+      "locationId": "nl-rotterdam",
+      "waterBody": "Nieuwe Maas",
+      "rationale": "Named central Rotterdam station on the Nieuwe Maas, 1.5 km from the configured city centre.",
+      "distanceKm": 1.5
+    },
+    {
+      "stationId": "zwolle.ijssel",
+      "stationName": "Zwolle, IJssel",
+      "coordinates": [
+        6.053,
+        52.5086
+      ],
+      "locationId": "nl-zwolle",
+      "waterBody": "IJssel",
+      "rationale": "Named Zwolle station on the IJssel, 2.8 km from the configured city centre.",
+      "distanceKm": 2.8
+    }
+  ]
+}

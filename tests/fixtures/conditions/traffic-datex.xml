@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Minimized official DATEX 3.7 situation GUID50469906, retrieved 2026-08-31.
+     Namespaces, comments, contacts and unused location references removed. -->
+<payload>
+  <publicationTime>2026-08-31T16:58:10.881Z</publicationTime>
+  <publicationCreator><country>FI</country><nationalIdentifier>Fintraffic</nationalIdentifier></publicationCreator>
+  <situation id="GUID50469906">
+    <headerInformation><confidentiality>noRestriction</confidentiality><informationStatus>real</informationStatus></headerInformation>
+    <situationRecord type="sit:Accident" id="GUID5047271201" version="1">
+      <situationRecordVersionTime>2026-08-31T16:52:06.720Z</situationRecordVersionTime>
+      <probabilityOfOccurrence>certain</probabilityOfOccurrence>
+      <validity><validityStatus>active</validityStatus><validityTimeSpecification><overallStartTime>2026-08-31T16:50:00.000Z</overallStartTime></validityTimeSpecification></validity>
+      <accidentType>accident</accidentType>
+    </situationRecord>
+    <situationRecord type="sit:RoadOrCarriagewayOrLaneManagement" id="GUID5047271203" version="1">
+      <situationRecordVersionTime>2026-08-31T16:52:06.720Z</situationRecordVersionTime>
+      <probabilityOfOccurrence>certain</probabilityOfOccurrence>
+      <validity><validityStatus>active</validityStatus><validityTimeSpecification><overallStartTime>2026-08-31T16:50:00.000Z</overallStartTime></validityTimeSpecification></validity>
+      <roadOrCarriagewayOrLaneManagementType>roadClosed</roadOrCarriagewayOrLaneManagementType>
+    </situationRecord>
+  </situation>
+</payload>

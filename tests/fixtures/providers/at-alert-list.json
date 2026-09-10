@@ -1,0 +1,42 @@
+{
+  "json": {
+    "totalCount": 2,
+    "alerts": [
+      {
+        "consolidation_identifier": "ATALERT.20260827.1",
+        "alert_level": "AlertLevel2",
+        "title": "Official public warning for Vienna",
+        "description": "Authorities have issued an AT-Alert for the capital area.",
+        "begin_date": "2026-08-28T03:00:00.000Z",
+        "end_date": "2026-08-28T18:00:00.000Z",
+        "sender": "BMI",
+        "polygons": [
+          [
+            [16.2, 48.1],
+            [16.6, 48.1],
+            [16.6, 48.35],
+            [16.2, 48.35],
+            [16.2, 48.1]
+          ]
+        ]
+      },
+      {
+        "consolidation_identifier": "ATALERT.20260827.TEST",
+        "alert_level": "Test",
+        "title": "Monthly AT-Alert test",
+        "description": "This is a test message.",
+        "begin_date": "2026-08-28T03:00:00.000Z",
+        "end_date": "2026-08-28T18:00:00.000Z",
+        "polygons": [
+          [
+            [16.2, 48.1],
+            [16.6, 48.1],
+            [16.6, 48.35],
+            [16.2, 48.35],
+            [16.2, 48.1]
+          ]
+        ]
+      }
+    ]
+  }
+}

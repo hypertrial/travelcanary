@@ -1,0 +1,300 @@
+.mapAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  max-width: min(380px, calc(100vw - 150px));
+  padding: 5px 12px 5px 6px;
+  overflow: hidden;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  border-radius: 999px;
+  box-shadow: var(--shadow-md);
+  font-size: 12px;
+  font-weight: 850;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  backdrop-filter: blur(18px);
+  transition: transform var(--motion-fast) var(--ease-out), box-shadow var(--motion-fast);
+}
+
+.mapAction:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
+.mapAction[data-disabled] { cursor: wait; }
+.mapAction[data-disabled]:hover { box-shadow: var(--shadow-md); transform: none; }
+
+.mapActionCopy,
+.mapActionLabel,
+.mapActionDetail,
+.compactMapActionLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mapActionCopy { display: grid; gap: 3px; }
+.mapActionLabel { line-height: 1.2; white-space: nowrap; }
+.mapActionDetail { color: var(--muted); font-size: 10px; font-weight: 700; line-height: 1.25; white-space: nowrap; }
+.compactMapActionLabel { display: none; }
+
+.railAttentionAction {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 14px;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: none;
+  min-height: 66px;
+  margin-top: auto;
+  padding: 8px 11px 8px 8px;
+  background: var(--surface);
+  border-color: color-mix(in srgb, var(--ink) 12%, transparent);
+  border-radius: var(--panel-radius);
+  box-shadow: none;
+}
+
+.railAttentionAction:hover { background: color-mix(in srgb, var(--brand-soft) 42%, var(--surface)); box-shadow: none; }
+.railAttentionAction .mapActionIcon { width: 38px; height: 38px; }
+.railAttentionAction .mapActionLabel { color: var(--brand-navy); font-size: 12.5px; }
+.railAttentionAction .mapActionChevron { transform: rotate(-90deg); }
+
+.mapActionIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  color: var(--brand-navy);
+  background: var(--brand);
+  border-radius: 50%;
+}
+
+.mapActionIcon svg { width: 17px; height: 17px; }
+.mapActionChevron { flex: 0 0 auto; width: 14px; height: 14px; color: var(--muted); transform: rotate(180deg); }
+.mapKeyAction { padding-right: 12px; }
+.mapKeyAction .mapActionIcon { color: var(--ink); background: var(--surface-strong); }
+
+.attentionPopover,
+.legendPopover {
+  z-index: 160;
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  border-radius: var(--panel-radius);
+  box-shadow: var(--shadow-overlay);
+}
+
+.attentionPopover {
+  width: min(400px, calc(100vw - 32px));
+  max-height: min(640px, calc(100dvh - 104px));
+  overflow: hidden;
+}
+
+.attentionPopover .overlayDialog { max-height: inherit; }
+
+.overlayDialog,
+.legendDialog { outline: none; }
+
+.attentionContent {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: inherit;
+}
+
+.overlayHeading {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 17px 17px 14px;
+}
+
+.overlayIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  color: var(--brand-navy);
+  background: var(--brand-soft);
+  border-radius: 50%;
+}
+
+.overlayIcon svg { width: 20px; height: 20px; }
+.overlayHeading h2 { margin: 0; font-size: 16px; line-height: 1.25; letter-spacing: -.025em; text-wrap: balance; }
+.overlayHeading p { margin: 4px 0 0; color: var(--muted); font-size: 11.5px; line-height: 1.45; text-wrap: pretty; }
+
+.attentionGroups { min-height: 0; overflow-y: auto; border-top: 1px solid var(--line); }
+.attentionGroups section h3 {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  padding: 9px 14px;
+  color: var(--ink-soft);
+  background: color-mix(in srgb, var(--surface-soft) 95%, transparent);
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+}
+
+.attentionList { margin: 0; padding: 0; list-style: none; }
+.attentionList li + li { border-top: 1px solid var(--line); }
+.attentionList button {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 58px;
+  padding: 8px 14px;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+.attentionList button:hover, .attentionList button:focus-visible { background: var(--surface-soft); }
+
+.attentionStatus,
+.legendSymbol {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  color: #fff;
+  background: var(--unknown);
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 900;
+}
+.attentionStatus[data-level="NORMAL"], .legendSymbol[data-level="NORMAL"] { background: var(--unknown); }
+.attentionStatus[data-level="ELEVATED"], .legendSymbol[data-level="ELEVATED"] { background: var(--elevated); }
+.attentionStatus[data-level="HIGH"], .legendSymbol[data-level="HIGH"] { background: var(--high); }
+.attentionStatus[data-level="SEVERE"], .legendSymbol[data-level="SEVERE"] { background: var(--severe); }
+.attentionStatus[data-level="UNKNOWN"], .legendSymbol[data-level="UNKNOWN"] { background: var(--unknown); }
+
+.attentionPlace { min-width: 0; }
+.attentionPlace strong, .attentionPlace small { display: block; }
+.attentionPlace strong { display: -webkit-box; overflow: hidden; font-size: 13px; font-weight: 850; line-height: 1.25; overflow-wrap: normal; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.attentionPlace small { margin-top: 3px; color: var(--muted); font-size: 12px; font-weight: 650; }
+
+.attentionEmpty { padding: 30px 22px; text-align: center; border-top: 1px solid var(--line); }
+.attentionEmpty > span { display: grid; place-items: center; width: 48px; height: 48px; margin: 0 auto 12px; color: #fff; background: var(--normal); border-radius: 50%; font-weight: 900; }
+.attentionEmpty[data-tone="unavailable"] > span { background: var(--unknown); }
+.attentionEmpty strong,
+.attentionEmpty h3 { display: block; margin: 0; font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+.attentionEmpty p { max-width: 280px; margin: 6px auto 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+
+.legendPopover { width: min(320px, calc(100vw - 32px)); padding: 17px; }
+.legendDialog h2 { margin: 0 0 8px; font-size: 15px; }
+.legendIntro { margin: 0 0 13px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.legendDialog ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.legendDialog li { display: grid; grid-template-columns: 28px minmax(0, 1fr); align-items: center; gap: 9px; }
+.legendSymbol { width: 26px; height: 26px; }
+.legendSymbol svg { width: 12px; height: 12px; }
+.legendLand {
+  width: 26px;
+  height: 26px;
+  border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  border-radius: 6px;
+}
+.legendLand[data-coverage="covered"] { background: #f1eee5; }
+.legendLand[data-coverage="outside"] { background: #c6c2b8; }
+.legendDialog strong, .legendDialog small { display: block; }
+.legendDialog strong { font-size: 12px; }
+.legendDialog small { margin-top: 2px; color: var(--muted); font-size: 11px; }
+
+.legendModal {
+  position: relative;
+  width: 100%;
+  max-height: 78dvh;
+  padding: 18px 18px max(18px, env(safe-area-inset-bottom));
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  border-bottom: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow-lg);
+  animation: sheetEnter var(--motion-medium) var(--ease-out);
+}
+.legendModal .legendDialog { padding-right: 52px; }
+.legendModal h2 { padding-right: 8px; }
+
+.modalOverlay {
+  position: fixed;
+  z-index: 200;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-top: max(18px, env(safe-area-inset-top));
+  background: color-mix(in srgb, var(--brand-navy) 42%, transparent);
+  backdrop-filter: blur(3px);
+}
+
+.attentionModal {
+  position: relative;
+  width: 100%;
+  max-height: 78dvh;
+  padding-bottom: env(safe-area-inset-bottom);
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--ink) 14%, transparent);
+  border-bottom: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow-lg);
+  animation: sheetEnter var(--motion-medium) var(--ease-out);
+}
+
+@keyframes sheetEnter { from { transform: translateY(24px); } }
+.attentionModal .overlayDialog, .attentionModal .attentionContent { max-height: inherit; }
+
+.overlayClose {
+  position: absolute;
+  z-index: 3;
+  top: 13px;
+  right: 13px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: var(--muted);
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.overlayClose svg { width: 19px; height: 19px; }
+.attentionModal .overlayHeading { padding-right: 68px; }
+
+@media (max-width: 640px) {
+  .mapAction { max-width: calc(100vw - 122px); padding: 5px 9px 5px 5px; font-size: 11px; }
+  .mapActionIcon { width: 32px; height: 32px; }
+  .mapKeyAction { flex: 0 0 44px; width: 44px; padding: 5px; }
+  .mapKeyAction > span:last-child { display: none; }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .railAttentionAction { min-height: 54px; margin-top: 0; border-radius: var(--control-radius); box-shadow: var(--shadow-sm); }
+  .railAttentionAction .mapActionDetail { display: none; }
+}
+
+@media (max-width: 359px) {
+  .mapAction { max-width: calc(100vw - 142px); }
+  .mapActionLabel { display: none; }
+  .compactMapActionLabel { display: inline; }
+  .attentionPlace strong { white-space: normal; }
+}
+
+@media (forced-colors: active) {
+  .attentionStatus, .legendSymbol, .legendLand, .mapActionIcon { forced-color-adjust: none; border: 1px solid CanvasText; }
+}

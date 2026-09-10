@@ -1,0 +1,149 @@
+[
+  {
+    "icaoId": "GCLP",
+    "receiptTime": "2026-08-31T17:34:35.291Z",
+    "obsTime": 1788197400,
+    "reportTime": "2026-08-31T17:30:00.000Z",
+    "temp": 27,
+    "dewp": 20,
+    "wdir": 10,
+    "wspd": 23,
+    "visib": "6+",
+    "altim": 1016,
+    "qcField": 16,
+    "metarType": "METAR",
+    "rawOb": "METAR GCLP 311730Z 01023KT 9999 FEW030 27/20 Q1016 NOSIG",
+    "lat": 27.923,
+    "lon": -15.389,
+    "elev": 16,
+    "name": "Grand Canaria Arpt, CR, ES",
+    "cover": "FEW",
+    "clouds": [
+      {
+        "cover": "FEW",
+        "base": 3000
+      }
+    ],
+    "fltCat": "VFR"
+  },
+  {
+    "icaoId": "GCXO",
+    "receiptTime": "2026-08-31T17:34:35.577Z",
+    "obsTime": 1788197400,
+    "reportTime": "2026-08-31T17:30:00.000Z",
+    "temp": 24,
+    "dewp": 19,
+    "wdir": 290,
+    "wspd": 14,
+    "visib": "6+",
+    "altim": 1020,
+    "qcField": 16,
+    "metarType": "METAR",
+    "rawOb": "METAR GCXO 311730Z 29014KT 9999 FEW008 SCT010 24/19 Q1020 NOSIG",
+    "lat": 28.483,
+    "lon": -16.342,
+    "elev": 623,
+    "name": "Tenerife/North Arpt, CR, ES",
+    "cover": "SCT",
+    "clouds": [
+      {
+        "cover": "FEW",
+        "base": 800
+      },
+      {
+        "cover": "SCT",
+        "base": 1000
+      }
+    ],
+    "fltCat": "VFR"
+  },
+  {
+    "icaoId": "LPFL",
+    "receiptTime": "2026-08-31T17:34:54.606Z",
+    "obsTime": 1788197400,
+    "reportTime": "2026-08-31T17:30:00.000Z",
+    "temp": 27,
+    "dewp": 21,
+    "wdir": "VRB",
+    "wspd": 6,
+    "visib": "6+",
+    "altim": 1020,
+    "qcField": 0,
+    "metarType": "METAR",
+    "rawOb": "METAR LPFL 311730Z VRB06KT 9999 FEW007 27/21 Q1020",
+    "lat": 39.455,
+    "lon": -31.131,
+    "elev": 35,
+    "name": "Azores/Flores Arpt, AZ, PT",
+    "cover": "FEW",
+    "clouds": [
+      {
+        "cover": "FEW",
+        "base": 700
+      }
+    ],
+    "fltCat": "VFR"
+  },
+  {
+    "icaoId": "LPHR",
+    "receiptTime": "2026-08-31T17:34:54.568Z",
+    "obsTime": 1788197400,
+    "reportTime": "2026-08-31T17:30:00.000Z",
+    "temp": 25,
+    "dewp": 23,
+    "wdir": 250,
+    "wspd": 8,
+    "visib": "6+",
+    "altim": 1022,
+    "qcField": 0,
+    "metarType": "METAR",
+    "rawOb": "METAR LPHR 311730Z 25008KT 9999 SCT007 SCT012 BKN020 25/23 Q1022",
+    "lat": 38.521,
+    "lon": -28.714,
+    "elev": 39,
+    "name": "Horta Arpt, AZ, PT",
+    "cover": "BKN",
+    "clouds": [
+      {
+        "cover": "SCT",
+        "base": 700
+      },
+      {
+        "cover": "SCT",
+        "base": 1200
+      },
+      {
+        "cover": "BKN",
+        "base": 2000
+      }
+    ],
+    "fltCat": "MVFR"
+  },
+  {
+    "icaoId": "LPPD",
+    "receiptTime": "2026-08-31T17:34:39.954Z",
+    "obsTime": 1788197400,
+    "reportTime": "2026-08-31T17:30:00.000Z",
+    "temp": 25,
+    "dewp": 22,
+    "wdir": 250,
+    "wspd": 12,
+    "visib": "6+",
+    "altim": 1023,
+    "qcField": 0,
+    "metarType": "METAR",
+    "rawOb": "METAR LPPD 311730Z 25012KT 9999 FEW014 25/22 Q1023",
+    "lat": 37.741,
+    "lon": -25.698,
+    "elev": 62,
+    "name": "Ponta Delgada/Paulo II Arpt, AZ, PT",
+    "cover": "FEW",
+    "clouds": [
+      {
+        "cover": "FEW",
+        "base": 1400
+      }
+    ],
+    "fltCat": "VFR"
+  }
+]

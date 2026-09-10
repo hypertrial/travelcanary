@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title>MeteoAlert</title>
+  <link rel="self" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/atom.xml" />
+  <generator>Hydrometcenter of Russia</generator>
+  <author>
+    <name>Belgidromet</name>
+    <uri>https://belgidromet.by</uri>
+    <email>sin@hmc.by</email>
+  </author>
+  <subtitle>Official Warnings</subtitle>
+  <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/atom.xml</id>
+  <rights>public domain</rights>
+  <updated>2026-09-08T08:07:01Z</updated>
+  <dc:date>2026-09-08T08:07:01Z</dc:date>
+  <dc:rights>public domain</dc:rights>
+  <entry>
+    <title>Wind</title>
+    <link rel="alternate" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023396-00-EN.xml" />
+    <link rel="related" type="application/cap+xml" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023396-00-EN.xml" />
+    <author>
+      <name>Belgidromet</name>
+      <uri>https://belgidromet.by</uri>
+      <email>sin@hmc.by</email>
+    </author>
+    <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023396-00-EN.xml</id>
+    <updated>2026-09-08T08:07:01Z</updated>
+    <published>2026-09-08T08:07:01Z</published>
+    <summary type="text">Affected areas: Vitebsk Region
+Wind (level 1 of 3)</summary>
+    <dc:date>2026-09-08T08:07:01Z</dc:date>
+  </entry>
+  <entry>
+    <title>Thunderstorms</title>
+    <link rel="alternate" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023392-00-EN.xml" />
+    <link rel="related" type="application/cap+xml" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023392-00-EN.xml" />
+    <author>
+      <name>Belgidromet</name>
+      <uri>https://belgidromet.by</uri>
+      <email>sin@hmc.by</email>
+    </author>
+    <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023392-00-EN.xml</id>
+    <updated>2026-09-08T08:07:01Z</updated>
+    <published>2026-09-08T08:07:01Z</published>
+    <summary type="text">Affected areas: Brest Region
+Thunderstorms (level 1 of 3)</summary>
+    <dc:date>2026-09-08T08:07:01Z</dc:date>
+  </entry>
+  <entry>
+    <title>Wind</title>
+    <link rel="alternate" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023393-00-EN.xml" />
+    <link rel="related" type="application/cap+xml" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023393-00-EN.xml" />
+    <author>
+      <name>Belgidromet</name>
+      <uri>https://belgidromet.by</uri>
+      <email>sin@hmc.by</email>
+    </author>
+    <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023393-00-EN.xml</id>
+    <updated>2026-09-08T08:07:01Z</updated>
+    <published>2026-09-08T08:07:01Z</published>
+    <summary type="text">Affected areas: Vitebsk Region
+Wind (level 1 of 3)</summary>
+    <dc:date>2026-09-08T08:07:01Z</dc:date>
+  </entry>
+  <entry>
+    <title>Wind</title>
+    <link rel="alternate" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023394-00-EN.xml" />
+    <link rel="related" type="application/cap+xml" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023394-00-EN.xml" />
+    <author>
+      <name>Belgidromet</name>
+      <uri>https://belgidromet.by</uri>
+      <email>sin@hmc.by</email>
+    </author>
+    <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023394-00-EN.xml</id>
+    <updated>2026-09-08T08:07:01Z</updated>
+    <published>2026-09-08T08:07:01Z</published>
+    <summary type="text">Affected areas: Brest Region
+Wind (level 1 of 3)</summary>
+    <dc:date>2026-09-08T08:07:01Z</dc:date>
+  </entry>
+  <entry>
+    <title>Wind</title>
+    <link rel="alternate" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023397-00-EN.xml" />
+    <link rel="related" type="application/cap+xml" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023397-00-EN.xml" />
+    <author>
+      <name>Belgidromet</name>
+      <uri>https://belgidromet.by</uri>
+      <email>sin@hmc.by</email>
+    </author>
+    <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023397-00-EN.xml</id>
+    <updated>2026-09-08T08:07:01Z</updated>
+    <published>2026-09-08T08:07:01Z</published>
+    <summary type="text">Affected areas: Gomel Region
+Wind (level 1 of 3)</summary>
+    <dc:date>2026-09-08T08:07:01Z</dc:date>
+  </entry>
+  <entry>
+    <title>Thunderstorms</title>
+    <link rel="alternate" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023400-00-EN.xml" />
+    <link rel="related" type="application/cap+xml" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023400-00-EN.xml" />
+    <author>
+      <name>Belgidromet</name>
+      <uri>https://belgidromet.by</uri>
+      <email>sin@hmc.by</email>
+    </author>
+    <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023400-00-EN.xml</id>
+    <updated>2026-09-08T08:07:01Z</updated>
+    <published>2026-09-08T08:07:01Z</published>
+    <summary type="text">Affected areas: Grodno Region
+Thunderstorms (level 1 of 3)</summary>
+    <dc:date>2026-09-08T08:07:01Z</dc:date>
+  </entry>
+  <entry>
+    <title>Wind</title>
+    <link rel="alternate" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023401-00-EN.xml" />
+    <link rel="related" type="application/cap+xml" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023401-00-EN.xml" />
+    <author>
+      <name>Belgidromet</name>
+      <uri>https://belgidromet.by</uri>
+      <email>sin@hmc.by</email>
+    </author>
+    <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023401-00-EN.xml</id>
+    <updated>2026-09-08T08:07:01Z</updated>
+    <published>2026-09-08T08:07:01Z</published>
+    <summary type="text">Affected areas: Grodno Region
+Wind (level 1 of 3)</summary>
+    <dc:date>2026-09-08T08:07:01Z</dc:date>
+  </entry>
+  <entry>
+    <title>Thunderstorms</title>
+    <link rel="alternate" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023404-00-EN.xml" />
+    <link rel="related" type="application/cap+xml" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023404-00-EN.xml" />
+    <author>
+      <name>Belgidromet</name>
+      <uri>https://belgidromet.by</uri>
+      <email>sin@hmc.by</email>
+    </author>
+    <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023404-00-EN.xml</id>
+    <updated>2026-09-08T08:07:01Z</updated>
+    <published>2026-09-08T08:07:01Z</published>
+    <summary type="text">Affected areas: Minsk Region
+Thunderstorms (level 1 of 3)</summary>
+    <dc:date>2026-09-08T08:07:01Z</dc:date>
+  </entry>
+  <entry>
+    <title>Wind</title>
+    <link rel="alternate" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023405-00-EN.xml" />
+    <link rel="related" type="application/cap+xml" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023405-00-EN.xml" />
+    <author>
+      <name>Belgidromet</name>
+      <uri>https://belgidromet.by</uri>
+      <email>sin@hmc.by</email>
+    </author>
+    <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023405-00-EN.xml</id>
+    <updated>2026-09-08T08:07:01Z</updated>
+    <published>2026-09-08T08:07:01Z</published>
+    <summary type="text">Affected areas: Minsk Region
+Wind (level 1 of 3)</summary>
+    <dc:date>2026-09-08T08:07:01Z</dc:date>
+  </entry>
+  <entry>
+    <title>Wind</title>
+    <link rel="alternate" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023407-00-EN.xml" />
+    <link rel="related" type="application/cap+xml" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023407-00-EN.xml" />
+    <author>
+      <name>Belgidromet</name>
+      <uri>https://belgidromet.by</uri>
+      <email>sin@hmc.by</email>
+    </author>
+    <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-080701-0023407-00-EN.xml</id>
+    <updated>2026-09-08T08:07:01Z</updated>
+    <published>2026-09-08T08:07:01Z</published>
+    <summary type="text">Affected areas: Mogilev Region
+Wind (level 1 of 3)</summary>
+    <dc:date>2026-09-08T08:07:01Z</dc:date>
+  </entry>
+  <entry>
+    <title>High temperature</title>
+    <link rel="alternate" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-075701-0023389-00-EN.xml" />
+    <link rel="related" type="application/cap+xml" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-075701-0023389-00-EN.xml" />
+    <author>
+      <name>Belgidromet</name>
+      <uri>https://belgidromet.by</uri>
+      <email>sin@hmc.by</email>
+    </author>
+    <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260908-075701-0023389-00-EN.xml</id>
+    <updated>2026-09-08T07:57:01Z</updated>
+    <published>2026-09-08T07:57:01Z</published>
+    <summary type="text">Affected areas: Brest Region
+High temperature (level 2 of 3)</summary>
+    <dc:date>2026-09-08T07:57:01Z</dc:date>
+  </entry>
+  <entry>
+    <title>Thunderstorms</title>
+    <link rel="alternate" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260907-082701-0023373-00-EN.xml" />
+    <link rel="related" type="application/cap+xml" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260907-082701-0023373-00-EN.xml" />
+    <author>
+      <name>Belgidromet</name>
+      <uri>https://belgidromet.by</uri>
+      <email>sin@hmc.by</email>
+    </author>
+    <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260907-082701-0023373-00-EN.xml</id>
+    <updated>2026-09-07T08:27:01Z</updated>
+    <published>2026-09-07T08:27:01Z</published>
+    <summary type="text">Affected areas: Vitebsk Region
+Thunderstorms (level 1 of 3)</summary>
+    <dc:date>2026-09-07T08:27:01Z</dc:date>
+  </entry>
+  <entry>
+    <title>Thunderstorms</title>
+    <link rel="alternate" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260907-082701-0023376-00-EN.xml" />
+    <link rel="related" type="application/cap+xml" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260907-082701-0023376-00-EN.xml" />
+    <author>
+      <name>Belgidromet</name>
+      <uri>https://belgidromet.by</uri>
+      <email>sin@hmc.by</email>
+    </author>
+    <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260907-082701-0023376-00-EN.xml</id>
+    <updated>2026-09-07T08:27:01Z</updated>
+    <published>2026-09-07T08:27:01Z</published>
+    <summary type="text">Affected areas: Gomel Region
+Thunderstorms (level 1 of 3)</summary>
+    <dc:date>2026-09-07T08:27:01Z</dc:date>
+  </entry>
+  <entry>
+    <title>High temperature</title>
+    <link rel="alternate" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260907-082701-0023380-00-EN.xml" />
+    <link rel="related" type="application/cap+xml" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260907-082701-0023380-00-EN.xml" />
+    <author>
+      <name>Belgidromet</name>
+      <uri>https://belgidromet.by</uri>
+      <email>sin@hmc.by</email>
+    </author>
+    <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260907-082701-0023380-00-EN.xml</id>
+    <updated>2026-09-07T08:27:01Z</updated>
+    <published>2026-09-07T08:27:01Z</published>
+    <summary type="text">Affected areas: Grodno Region
+High temperature (level 1 of 3)</summary>
+    <dc:date>2026-09-07T08:27:01Z</dc:date>
+  </entry>
+  <entry>
+    <title>Thunderstorms</title>
+    <link rel="alternate" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260907-082701-0023387-00-EN.xml" />
+    <link rel="related" type="application/cap+xml" href="https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260907-082701-0023387-00-EN.xml" />
+    <author>
+      <name>Belgidromet</name>
+      <uri>https://belgidromet.by</uri>
+      <email>sin@hmc.by</email>
+    </author>
+    <id>https://meteoalert.meteoinfo.ru/belarus/cap-feed/en/2.49.0.0.112.0-20260907-082701-0023387-00-EN.xml</id>
+    <updated>2026-09-07T08:27:01Z</updated>
+    <published>2026-09-07T08:27:01Z</published>
+    <summary type="text">Affected areas: Mogilev Region
+Thunderstorms (level 1 of 3)</summary>
+    <dc:date>2026-09-07T08:27:01Z</dc:date>
+  </entry>
+</feed>

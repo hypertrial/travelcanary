@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alert xmlns = "urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>2.49.0.0.724.0.ES.20260907065221.701003ATTA07191788763941</identifier>
+  <sender>http://www.aemet.es</sender>
+  <sent>2026-09-07T06:52:21-00:00</sent>
+  <status>Actual</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <info>
+    <language>es-ES</language>
+    <category>Met</category>
+    <event>Aviso de temperaturas máximas de nivel amarillo</event>
+    <responseType>Monitor</responseType>
+    <urgency>Future</urgency>
+    <severity>Moderate</severity>
+    <certainty>Likely</certainty>
+    <eventCode>
+      <valueName>AEMET-Meteoalerta fenomeno</valueName>
+      <value>AT;Temperaturas máximas</value>
+    </eventCode>
+    <effective>2026-09-07T08:52:21+02:00</effective>
+    <onset>2026-09-07T13:00:00+02:00</onset>
+    <expires>2026-09-07T20:59:59+02:00</expires>
+    <senderName>AEMET. Agencia Estatal de Meteorología</senderName>
+    <headline>Aviso de temperaturas máximas de nivel amarillo. Meseta cacereña</headline>
+    <description>Temperatura máxima: 38 ºC.</description>
+    <instruction>Esté atento. Manténgase informado de la predicción meteorológica más actualizada. Se pueden producir daños moderados a personas y bienes, especialmente a aquellos vulnerables o en zonas expuestas al fenómeno.</instruction>
+    <web>https://www.aemet.es/es/eltiempo/prediccion/avisos</web>
+    <contact>AEMET</contact>
+    <parameter>
+      <valueName>AEMET-Meteoalerta nivel</valueName>
+      <value>amarillo</value>
+    </parameter>
+    <parameter>
+      <valueName>AEMET-Meteoalerta parametro</valueName>
+      <value>TA;Temperatura máxima;38 ºC</value>
+    </parameter>
+    <parameter>
+      <valueName>AEMET-Meteoalerta probabilidad</valueName>
+      <value>40%-70%</value>
+    </parameter>
+    <area>
+      <areaDesc>Meseta cacereña</areaDesc>
+      <polygon>39.86,-6.91 39.83,-6.83 39.79,-6.84 39.76,-6.81 39.76,-6.67 39.74,-6.63 39.73,-6.58 39.76,-6.52 39.76,-6.45 39.72,-6.43 39.74,-6.35 39.75,-6.27 39.76,-6.23 39.72,-6.2 39.72,-6.17 39.74,-6.14 39.66,-6.12 39.68,-6.07 39.71,-6.04 39.66,-6.0 39.66,-5.94 39.65,-5.83 39.59,-5.83 39.54,-5.8 39.51,-5.76 39.47,-5.8 39.45,-5.79 39.41,-5.82 39.38,-5.78 39.37,-5.85 39.4,-5.91 39.36,-5.95 39.3,-5.95 39.27,-6.01 39.28,-6.09 39.27,-6.14 39.23,-6.2 39.24,-6.25 39.21,-6.27 39.18,-6.32 39.16,-6.37 39.18,-6.43 39.17,-6.49 39.18,-6.58 39.2,-6.66 39.18,-6.68 39.19,-6.75 39.19,-6.77 39.24,-6.8 39.28,-6.76 39.32,-6.75 39.34,-6.8 39.39,-6.81 39.38,-6.87 39.39,-6.91 39.42,-6.99 39.44,-7.05 39.41,-7.07 39.39,-7.01 39.32,-7.05 39.34,-7.08 39.38,-7.07 39.38,-7.14 39.34,-7.18 39.31,-7.15 39.27,-7.2 39.28,-7.23 39.34,-7.31 39.38,-7.32 39.4,-7.31 39.46,-7.3 39.49,-7.35 39.49,-7.38 39.53,-7.39 39.53,-7.43 39.57,-7.46 39.59,-7.5 39.63,-7.53 39.67,-7.53 39.66,-7.45 39.65,-7.4 39.64,-7.33 39.67,-7.25 39.65,-7.15 39.66,-7.12 39.66,-7.06 39.67,-7.01 39.76,-6.99 39.81,-6.99 39.83,-6.95 39.86,-6.91</polygon>
+      <geocode>
+        <valueName>AEMET-Meteoalerta zona</valueName>
+        <value>701003</value>
+      </geocode>
+    </area>
+  </info>
+  <info>
+    <language>en-GB</language>
+    <category>Met</category>
+    <event>Moderate high-temperature warning</event>
+    <responseType>Monitor</responseType>
+    <urgency>Future</urgency>
+    <severity>Moderate</severity>
+    <certainty>Likely</certainty>
+    <eventCode>
+      <valueName>AEMET-Meteoalerta fenomeno</valueName>
+      <value>AT;Temperaturas máximas</value>
+    </eventCode>
+    <effective>2026-09-07T08:52:21+02:00</effective>
+    <onset>2026-09-07T13:00:00+02:00</onset>
+    <expires>2026-09-07T20:59:59+02:00</expires>
+    <senderName>AEMET. State Meteorological Agency</senderName>
+    <headline>Moderate high-temperature warning. Meseta cacereña</headline>
+    <description>Maximum temperature: 38 ºC.</description>
+    <instruction>Be aware, keep up to date with the latest weather forecast. Moderate damages to people and properties may occur, especially to those vulnerable or in exposed areas.</instruction>
+    <web>https://www.aemet.es/en/eltiempo/prediccion/avisos</web>
+    <contact>AEMET</contact>
+    <parameter>
+      <valueName>AEMET-Meteoalerta nivel</valueName>
+      <value>amarillo</value>
+    </parameter>
+    <parameter>
+      <valueName>AEMET-Meteoalerta parametro</valueName>
+      <value>TA;Maximum temperature;38 ºC</value>
+    </parameter>
+    <parameter>
+      <valueName>AEMET-Meteoalerta probabilidad</valueName>
+      <value>40%-70%</value>
+    </parameter>
+    <area>
+      <areaDesc>Meseta cacereña</areaDesc>
+      <polygon>39.86,-6.91 39.83,-6.83 39.79,-6.84 39.76,-6.81 39.76,-6.67 39.74,-6.63 39.73,-6.58 39.76,-6.52 39.76,-6.45 39.72,-6.43 39.74,-6.35 39.75,-6.27 39.76,-6.23 39.72,-6.2 39.72,-6.17 39.74,-6.14 39.66,-6.12 39.68,-6.07 39.71,-6.04 39.66,-6.0 39.66,-5.94 39.65,-5.83 39.59,-5.83 39.54,-5.8 39.51,-5.76 39.47,-5.8 39.45,-5.79 39.41,-5.82 39.38,-5.78 39.37,-5.85 39.4,-5.91 39.36,-5.95 39.3,-5.95 39.27,-6.01 39.28,-6.09 39.27,-6.14 39.23,-6.2 39.24,-6.25 39.21,-6.27 39.18,-6.32 39.16,-6.37 39.18,-6.43 39.17,-6.49 39.18,-6.58 39.2,-6.66 39.18,-6.68 39.19,-6.75 39.19,-6.77 39.24,-6.8 39.28,-6.76 39.32,-6.75 39.34,-6.8 39.39,-6.81 39.38,-6.87 39.39,-6.91 39.42,-6.99 39.44,-7.05 39.41,-7.07 39.39,-7.01 39.32,-7.05 39.34,-7.08 39.38,-7.07 39.38,-7.14 39.34,-7.18 39.31,-7.15 39.27,-7.2 39.28,-7.23 39.34,-7.31 39.38,-7.32 39.4,-7.31 39.46,-7.3 39.49,-7.35 39.49,-7.38 39.53,-7.39 39.53,-7.43 39.57,-7.46 39.59,-7.5 39.63,-7.53 39.67,-7.53 39.66,-7.45 39.65,-7.4 39.64,-7.33 39.67,-7.25 39.65,-7.15 39.66,-7.12 39.66,-7.06 39.67,-7.01 39.76,-6.99 39.81,-6.99 39.83,-6.95 39.86,-6.91</polygon>
+      <geocode>
+        <valueName>AEMET-Meteoalerta zona</valueName>
+        <value>701003</value>
+      </geocode>
+    </area>
+  </info>
+</alert>

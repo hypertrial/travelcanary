@@ -1,0 +1,39 @@
+{
+  "catalogVersion": 2,
+  "countryOrder": [
+    "AT",
+    "BE",
+    "BG",
+    "HR",
+    "CY",
+    "CZ",
+    "DK",
+    "EE",
+    "FI",
+    "FR",
+    "DE",
+    "GR",
+    "HU",
+    "IE",
+    "IT",
+    "LV",
+    "LT",
+    "LU",
+    "MT",
+    "NL",
+    "PL",
+    "PT",
+    "RO",
+    "SK",
+    "SI",
+    "ES",
+    "SE",
+    "CH"
+  ],
+  "envelope": [
+    -20,
+    27,
+    36,
+    72
+  ]
+}

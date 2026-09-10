@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-08",
+  "source": "https://waterlevel.ie/geojson/latest/",
+  "sourceSha256": "e99c993fd25cfa6cc0468a61bd6763e9f08bf1afb01b5b1d8e7fe22c188b895c",
+  "evidence": [
+    "https://waterlevel.ie/page/api/",
+    "https://waterlevel.ie/disclaimer/",
+    "https://waterlevel.ie/",
+    "https://waterlevel.ie/error/",
+    "https://waterlevel.ie/0000030099/0001/"
+  ],
+  "qualityDecision": "Accept observed normal-display code 99 only, retain the raw code and provisional/unchecked status. The official station headline/graph displays the same primary-sensor readings; the current error listing separately contains code 0. This is behavioral evidence, not a claim that code 99 means validated quality. Re-review on new codes or display divergence.",
+  "mappings": [
+    {
+      "locationId": "ie-cork",
+      "stationId": "19163",
+      "stationName": "Pope’s Quay",
+      "waterBody": "Lee",
+      "coordinates": [
+        -8.473466592403028,
+        51.90102505152169
+      ],
+      "stationUrl": "https://waterlevel.ie/0000019163/",
+      "gaugeZeroMalinHeadMetres": -2.943,
+      "rationale": "Official named Lee station located inside the reviewed destination matching area; local gauge stage only."
+    },
+    {
+      "locationId": "ie-dublin",
+      "stationId": "09369",
+      "stationName": "Anglesea Road",
+      "waterBody": "Dodder",
+      "coordinates": [
+        -6.230909186299616,
+        53.32788126403148
+      ],
+      "stationUrl": "https://waterlevel.ie/0000009369/",
+      "gaugeZeroMalinHeadMetres": 2.004,
+      "rationale": "Official named Dodder station located inside the reviewed destination matching area; local gauge stage only."
+    },
+    {
+      "locationId": "ie-galway",
+      "stationId": "30099",
+      "stationName": "Galway Barrage",
+      "waterBody": "Corrib",
+      "coordinates": [
+        -9.056272,
+        53.277994
+      ],
+      "stationUrl": "https://waterlevel.ie/0000030099/",
+      "gaugeZeroMalinHeadMetres": 5.518,
+      "rationale": "Official named Corrib station located inside the reviewed destination matching area; local gauge stage only."
+    },
+    {
+      "locationId": "ie-killarney-national-park",
+      "stationId": "22005",
+      "stationName": "Torc Weir",
+      "waterBody": "Owengarriff",
+      "coordinates": [
+        -9.50622,
+        52.000977
+      ],
+      "stationUrl": "https://waterlevel.ie/0000022005/",
+      "gaugeZeroMalinHeadMetres": 123.812,
+      "rationale": "Official named Owengarriff station located inside the reviewed destination matching area; local gauge stage only."
+    },
+    {
+      "locationId": "ie-limerick",
+      "stationId": "25061",
+      "stationName": "Ball's Bridge",
+      "waterBody": "Abbey Esty",
+      "coordinates": [
+        -8.619052770500227,
+        52.66642872053617
+      ],
+      "stationUrl": "https://waterlevel.ie/0000025061/",
+      "gaugeZeroMalinHeadMetres": 0.014,
+      "rationale": "Official named Abbey Esty station located inside the reviewed destination matching area; local gauge stage only."
+    },
+    {
+      "locationId": "ie-waterford",
+      "stationId": "16160",
+      "stationName": "Adelphi Quay",
+      "waterBody": "John’s River",
+      "coordinates": [
+        -7.102433,
+        52.259666
+      ],
+      "stationUrl": "https://waterlevel.ie/0000016160/",
+      "gaugeZeroMalinHeadMetres": -2.74,
+      "rationale": "Official named John’s River station located inside the reviewed destination matching area; local gauge stage only."
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>2.49.0.1.499.0.1788871873931</identifier>
+  <sender>prognoza@meteo.co.me</sender>
+  <sent>2026-09-08T14:51:13+02:00</sent>
+  <status>Actual</status>
+  <msgType>Alert</msgType>
+  <source>PEWS</source>
+  <scope>Public</scope>
+  <info>
+    <language>cnr</language>
+    <category>Met</category>
+    <event>Thunderstorm</event>
+    <responseType>Monitor</responseType>
+    <urgency>Future</urgency>
+    <severity>Moderate</severity>
+    <certainty>Possible</certainty>
+    <effective>2026-09-09T13:00:00+02:00</effective>
+    <onset>2026-09-09T13:00:00+02:00</onset>
+    <expires>2026-09-09T21:00:00+02:00</expires>
+    <senderName>Zavod za hidrometeorologiju i seizmologiju</senderName>
+    <headline>Upozorenje na nepogode</headline>
+    <description>Moguće vremenske nepogode i grad.</description>
+    <instruction/>
+    <web>https://www.meteo.co.me/</web>
+    <parameter>
+      <valueName>awareness_level</valueName>
+      <value>2; yellow; Moderate</value>
+    </parameter>
+    <parameter>
+      <valueName>awareness_type</valueName>
+      <value>3; Thunderstorm</value>
+    </parameter>
+    <area>
+      <areaDesc>Continental and Mountains</areaDesc>
+      <geocode>
+        <valueName>EMMA_ID</valueName>
+        <value>ME001</value>
+      </geocode>
+    </area>
+  </info>
+  <info>
+    <language>en-GB</language>
+    <category>Met</category>
+    <event>Thunderstorm</event>
+    <responseType>Monitor</responseType>
+    <urgency>Future</urgency>
+    <severity>Moderate</severity>
+    <certainty>Possible</certainty>
+    <effective>2026-09-09T13:00:00+02:00</effective>
+    <onset>2026-09-09T13:00:00+02:00</onset>
+    <expires>2026-09-09T21:00:00+02:00</expires>
+    <senderName>Zavod za hidrometeorologiju i seizmologiju</senderName>
+    <headline>Thunderstorm Warning</headline>
+    <description>There is a possibility for storms and hail.</description>
+    <instruction/>
+    <web>https://www.meteo.co.me/</web>
+    <parameter>
+      <valueName>awareness_level</valueName>
+      <value>2; yellow; Moderate</value>
+    </parameter>
+    <parameter>
+      <valueName>awareness_type</valueName>
+      <value>3; Thunderstorm</value>
+    </parameter>
+    <area>
+      <areaDesc>Continental and Mountains</areaDesc>
+      <geocode>
+        <valueName>EMMA_ID</valueName>
+        <value>ME001</value>
+      </geocode>
+    </area>
+  </info>
+</alert>

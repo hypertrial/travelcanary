@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<arsopodatki verzija="1.5">
+  <vir>Agencija RS za okolje</vir>
+  <postaja sifra="6140" wgs84_dolzina="15.26066" wgs84_sirina="46.22771" kota_0="232.11">
+    <reka>Savinja</reka>
+    <merilno_mesto>Celje II - brv</merilno_mesto>
+    <datum_cet>2026-09-02 08:00</datum_cet>
+    <vodostaj>90</vodostaj>
+    <pretok>6.55</pretok>
+    <temp_vode>21.0</temp_vode>
+    <prvi_vv_vodostaj>250</prvi_vv_vodostaj>
+    <prvi_vv_pretok>200</prvi_vv_pretok>
+  </postaja>
+  <postaja sifra="6720" wgs84_dolzina="15.28326" wgs84_sirina="46.23205" kota_0="231.20">
+    <reka>Voglajna</reka>
+    <merilno_mesto>Celje II</merilno_mesto>
+    <datum_cet>2026-09-02 08:00</datum_cet>
+    <vodostaj>57</vodostaj>
+    <pretok>2.20</pretok>
+    <temp_vode>20.5</temp_vode>
+    <prvi_vv_vodostaj>50</prvi_vv_vodostaj>
+    <prvi_vv_pretok>40</prvi_vv_pretok>
+  </postaja>
+  <postaja sifra="5479" wgs84_dolzina="14.44643" wgs84_sirina="46.04514" kota_0="296.75">
+    <reka>Grada&amp;#x0161;&amp;#x010D;ica</reka>
+    <merilno_mesto>Bokalce</merilno_mesto>
+    <datum_cet>2026-09-02 08:00</datum_cet>
+    <vodostaj>53</vodostaj>
+    <pretok>1.02</pretok>
+    <temp_vode>17</temp_vode>
+    <prvi_vv_pretok>80</prvi_vv_pretok>
+  </postaja>
+  <postaja sifra="9999" wgs84_dolzina="14.00000" wgs84_sirina="46.00000">
+    <reka>Unmapped</reka>
+    <merilno_mesto>Ignored</merilno_mesto>
+    <datum_cet>2026-09-02 08:00</datum_cet>
+    <vodostaj>10</vodostaj>
+  </postaja>
+</arsopodatki>

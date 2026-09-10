@@ -1,0 +1,3760 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-08-31",
+  "source": "https://aviationweather.gov/data/cache/stations.cache.json.gz",
+  "inputSha256": "20f92792427602388b79de8457ba87670ac58b1429a3ef17087b9b01a6bb31cf",
+  "rule": "Named airport within 25 km of city/capital/coastal/resort centroid; airport observation only, not destination-wide weather. Mountain, park and large-island areas excluded.",
+  "mappings": [
+    {
+      "locationId": "at-graz",
+      "stationId": "LOWG",
+      "name": "Graz Arpt",
+      "coordinates": [
+        15.447,
+        46.997
+      ],
+      "elevationM": 337,
+      "distanceKm": 7.8
+    },
+    {
+      "locationId": "at-innsbruck",
+      "stationId": "LOWI",
+      "name": "Innsbruck Arpt",
+      "coordinates": [
+        11.344,
+        47.26
+      ],
+      "elevationM": 570,
+      "distanceKm": 3.8
+    },
+    {
+      "locationId": "at-klagenfurt-am-woerthersee",
+      "stationId": "LOWK",
+      "name": "Klagenfurt Arpt",
+      "coordinates": [
+        14.318,
+        46.648
+      ],
+      "elevationM": 450,
+      "distanceKm": 2.8
+    },
+    {
+      "locationId": "at-linz",
+      "stationId": "LOWL",
+      "name": "Linz Arpt",
+      "coordinates": [
+        14.188,
+        48.233
+      ],
+      "elevationM": 290,
+      "distanceKm": 10.9
+    },
+    {
+      "locationId": "at-salzburg",
+      "stationId": "LOWS",
+      "name": "Salzburg/Mozart Arpt",
+      "coordinates": [
+        13.009,
+        47.789
+      ],
+      "elevationM": 427,
+      "distanceKm": 2.9
+    },
+    {
+      "locationId": "at-vienna",
+      "stationId": "LOWW",
+      "name": "Vienna Intl",
+      "coordinates": [
+        16.582,
+        48.117
+      ],
+      "elevationM": 179,
+      "distanceKm": 18.6
+    },
+    {
+      "locationId": "be-anderlecht",
+      "stationId": "EBBR",
+      "name": "Brussels Intl",
+      "coordinates": [
+        4.526,
+        50.896
+      ],
+      "elevationM": 49,
+      "distanceKm": 16.3
+    },
+    {
+      "locationId": "be-antwerp",
+      "stationId": "EBAW",
+      "name": "Antwerp Intl",
+      "coordinates": [
+        4.46,
+        51.189
+      ],
+      "elevationM": 7,
+      "distanceKm": 5.4
+    },
+    {
+      "locationId": "be-belgian-coast",
+      "stationId": "EBOS",
+      "name": "Oostende-Bruges Intl",
+      "coordinates": [
+        2.862,
+        51.199
+      ],
+      "elevationM": 5,
+      "distanceKm": 6.1
+    },
+    {
+      "locationId": "be-brussels",
+      "stationId": "EBBR",
+      "name": "Brussels Intl",
+      "coordinates": [
+        4.526,
+        50.896
+      ],
+      "elevationM": 49,
+      "distanceKm": 13.4
+    },
+    {
+      "locationId": "be-charleroi",
+      "stationId": "EBCI",
+      "name": "Charleroi Arpt",
+      "coordinates": [
+        4.454,
+        50.459
+      ],
+      "elevationM": 176,
+      "distanceKm": 5.3
+    },
+    {
+      "locationId": "be-deurne",
+      "stationId": "EBAW",
+      "name": "Antwerp Intl",
+      "coordinates": [
+        4.46,
+        51.189
+      ],
+      "elevationM": 7,
+      "distanceKm": 3.6
+    },
+    {
+      "locationId": "be-forest",
+      "stationId": "EBBR",
+      "name": "Brussels Intl",
+      "coordinates": [
+        4.526,
+        50.896
+      ],
+      "elevationM": 49,
+      "distanceKm": 16.5
+    },
+    {
+      "locationId": "be-genk",
+      "stationId": "EBZW",
+      "name": "Genk/Zwartberg Arpt",
+      "coordinates": [
+        5.524,
+        51.014
+      ],
+      "elevationM": 84,
+      "distanceKm": 5.7
+    },
+    {
+      "locationId": "be-hasselt",
+      "stationId": "EBZW",
+      "name": "Genk/Zwartberg Arpt",
+      "coordinates": [
+        5.524,
+        51.014
+      ],
+      "elevationM": 84,
+      "distanceKm": 16
+    },
+    {
+      "locationId": "be-ixelles",
+      "stationId": "EBBR",
+      "name": "Brussels Intl",
+      "coordinates": [
+        4.526,
+        50.896
+      ],
+      "elevationM": 49,
+      "distanceKm": 13.2
+    },
+    {
+      "locationId": "be-la-louviere",
+      "stationId": "EBCI",
+      "name": "Charleroi Arpt",
+      "coordinates": [
+        4.454,
+        50.459
+      ],
+      "elevationM": 176,
+      "distanceKm": 19.1
+    },
+    {
+      "locationId": "be-leuven",
+      "stationId": "EBBR",
+      "name": "Brussels Intl",
+      "coordinates": [
+        4.526,
+        50.896
+      ],
+      "elevationM": 49,
+      "distanceKm": 12.4
+    },
+    {
+      "locationId": "be-liege",
+      "stationId": "EBLG",
+      "name": "Bierset/Liège Arpt",
+      "coordinates": [
+        5.443,
+        50.637
+      ],
+      "elevationM": 187,
+      "distanceKm": 8.8
+    },
+    {
+      "locationId": "be-mechelen",
+      "stationId": "EBBR",
+      "name": "Brussels Intl",
+      "coordinates": [
+        4.526,
+        50.896
+      ],
+      "elevationM": 49,
+      "distanceKm": 14.8
+    },
+    {
+      "locationId": "be-molenbeek-saint-jean",
+      "stationId": "EBBR",
+      "name": "Brussels Intl",
+      "coordinates": [
+        4.526,
+        50.896
+      ],
+      "elevationM": 49,
+      "distanceKm": 15.8
+    },
+    {
+      "locationId": "be-mons",
+      "stationId": "EBCV",
+      "name": "Chièvres Arpt",
+      "coordinates": [
+        3.831,
+        50.576
+      ],
+      "elevationM": 56,
+      "distanceKm": 16
+    },
+    {
+      "locationId": "be-ostend",
+      "stationId": "EBOS",
+      "name": "Oostende-Bruges Intl",
+      "coordinates": [
+        2.862,
+        51.199
+      ],
+      "elevationM": 5,
+      "distanceKm": 4.9
+    },
+    {
+      "locationId": "be-schaerbeek",
+      "stationId": "EBBR",
+      "name": "Brussels Intl",
+      "coordinates": [
+        4.526,
+        50.896
+      ],
+      "elevationM": 49,
+      "distanceKm": 10.8
+    },
+    {
+      "locationId": "be-seraing",
+      "stationId": "EBLG",
+      "name": "Bierset/Liège Arpt",
+      "coordinates": [
+        5.443,
+        50.637
+      ],
+      "elevationM": 187,
+      "distanceKm": 7.2
+    },
+    {
+      "locationId": "be-sint-niklaas",
+      "stationId": "EBAW",
+      "name": "Antwerp Intl",
+      "coordinates": [
+        4.46,
+        51.189
+      ],
+      "elevationM": 7,
+      "distanceKm": 22.2
+    },
+    {
+      "locationId": "be-tournai",
+      "stationId": "LFQQ",
+      "name": "Lille/Lesquin Arpt",
+      "coordinates": [
+        3.089,
+        50.562
+      ],
+      "elevationM": 43,
+      "distanceKm": 21.8
+    },
+    {
+      "locationId": "be-uccle",
+      "stationId": "EBBR",
+      "name": "Brussels Intl",
+      "coordinates": [
+        4.526,
+        50.896
+      ],
+      "elevationM": 49,
+      "distanceKm": 16.7
+    },
+    {
+      "locationId": "be-woluwe-saint-lambert",
+      "stationId": "EBBR",
+      "name": "Brussels Intl",
+      "coordinates": [
+        4.526,
+        50.896
+      ],
+      "elevationM": 49,
+      "distanceKm": 8.9
+    },
+    {
+      "locationId": "bg-burgas",
+      "stationId": "LBBG",
+      "name": "Burgas Arpt",
+      "coordinates": [
+        27.514,
+        42.569
+      ],
+      "elevationM": 41,
+      "distanceKm": 7.9
+    },
+    {
+      "locationId": "bg-plovdiv",
+      "stationId": "LBPD",
+      "name": "Plovdiv Arpt",
+      "coordinates": [
+        24.86,
+        42.064
+      ],
+      "elevationM": 182,
+      "distanceKm": 13.5
+    },
+    {
+      "locationId": "bg-ruse",
+      "stationId": "LBRS",
+      "name": "Rousse/Ruse Arpt",
+      "coordinates": [
+        26.051,
+        43.692
+      ],
+      "elevationM": 179,
+      "distanceKm": 19.1
+    },
+    {
+      "locationId": "bg-sofia",
+      "stationId": "LBSF",
+      "name": "Sofia Intl",
+      "coordinates": [
+        23.414,
+        42.694
+      ],
+      "elevationM": 531,
+      "distanceKm": 7.4
+    },
+    {
+      "locationId": "bg-varna",
+      "stationId": "LBWN",
+      "name": "Varna Intl",
+      "coordinates": [
+        27.825,
+        43.232
+      ],
+      "elevationM": 74,
+      "distanceKm": 7.1
+    },
+    {
+      "locationId": "bg-veliko-turnovo",
+      "stationId": "LBGO",
+      "name": "Gorna Orechovista Arpt",
+      "coordinates": [
+        25.713,
+        43.151
+      ],
+      "elevationM": 84,
+      "distanceKm": 10.3
+    },
+    {
+      "locationId": "ch-basel",
+      "stationId": "LFSB",
+      "name": "Basel/Euro Arpt",
+      "coordinates": [
+        7.51,
+        47.614
+      ],
+      "elevationM": 262,
+      "distanceKm": 7.8
+    },
+    {
+      "locationId": "ch-bern",
+      "stationId": "LSZB",
+      "name": "Bern Arpt",
+      "coordinates": [
+        7.497,
+        46.914
+      ],
+      "elevationM": 510,
+      "distanceKm": 5.3
+    },
+    {
+      "locationId": "ch-geneva",
+      "stationId": "LSGG",
+      "name": "Geneva/Cointrin Arpt",
+      "coordinates": [
+        6.128,
+        46.248
+      ],
+      "elevationM": 411,
+      "distanceKm": 5.3
+    },
+    {
+      "locationId": "ch-lausanne",
+      "stationId": "LSGL",
+      "name": "Lausanne Arpt",
+      "coordinates": [
+        6.617,
+        46.546
+      ],
+      "elevationM": 613,
+      "distanceKm": 3.5
+    },
+    {
+      "locationId": "ch-lugano",
+      "stationId": "LSZA",
+      "name": "Lugano Arpt",
+      "coordinates": [
+        8.91,
+        46.004
+      ],
+      "elevationM": 276,
+      "distanceKm": 3.9
+    },
+    {
+      "locationId": "ch-luzern",
+      "stationId": "LSME",
+      "name": "Emmen Arpt",
+      "coordinates": [
+        8.305,
+        47.092
+      ],
+      "elevationM": 427,
+      "distanceKm": 4.6
+    },
+    {
+      "locationId": "ch-sankt-gallen",
+      "stationId": "LOIH",
+      "name": "Dornbirn Arpt",
+      "coordinates": [
+        9.701,
+        47.385
+      ],
+      "elevationM": 410,
+      "distanceKm": 24.9
+    },
+    {
+      "locationId": "ch-winterthur",
+      "stationId": "LSMD",
+      "name": "Dübendorf Arpt",
+      "coordinates": [
+        8.648,
+        47.399
+      ],
+      "elevationM": 436,
+      "distanceKm": 13.2
+    },
+    {
+      "locationId": "ch-zuerich",
+      "stationId": "LSMD",
+      "name": "Dübendorf Arpt",
+      "coordinates": [
+        8.648,
+        47.399
+      ],
+      "elevationM": 436,
+      "distanceKm": 8.2
+    },
+    {
+      "locationId": "cy-larnaca",
+      "stationId": "LCLK",
+      "name": "Larnaca Intl",
+      "coordinates": [
+        33.617,
+        34.874
+      ],
+      "elevationM": 2,
+      "distanceKm": 5.4
+    },
+    {
+      "locationId": "cy-limassol",
+      "stationId": "LCRA",
+      "name": "Akrotiri Arpt",
+      "coordinates": [
+        32.988,
+        34.59
+      ],
+      "elevationM": 23,
+      "distanceKm": 11.4
+    },
+    {
+      "locationId": "cy-nicosia",
+      "stationId": "LCEN",
+      "name": "Ercan Arpt",
+      "coordinates": [
+        33.496,
+        35.155
+      ],
+      "elevationM": 91,
+      "distanceKm": 13.1
+    },
+    {
+      "locationId": "cy-strovolos",
+      "stationId": "LCEN",
+      "name": "Ercan Arpt",
+      "coordinates": [
+        33.496,
+        35.155
+      ],
+      "elevationM": 91,
+      "distanceKm": 14.8
+    },
+    {
+      "locationId": "cz-brno",
+      "stationId": "LKTB",
+      "name": "Brno/Tuřany Arpt",
+      "coordinates": [
+        16.694,
+        49.151
+      ],
+      "elevationM": 233,
+      "distanceKm": 8
+    },
+    {
+      "locationId": "cz-brno-stred",
+      "stationId": "LKTB",
+      "name": "Brno/Tuřany Arpt",
+      "coordinates": [
+        16.694,
+        49.151
+      ],
+      "elevationM": 233,
+      "distanceKm": 7.9
+    },
+    {
+      "locationId": "cz-hradec-kralove",
+      "stationId": "LKPD",
+      "name": "Pardubice Arpt",
+      "coordinates": [
+        15.74,
+        50.016
+      ],
+      "elevationM": 226,
+      "distanceKm": 22.5
+    },
+    {
+      "locationId": "cz-kladno",
+      "stationId": "LKPR",
+      "name": "Prague/Havel Arpt",
+      "coordinates": [
+        14.26,
+        50.101
+      ],
+      "elevationM": 364,
+      "distanceKm": 12.3
+    },
+    {
+      "locationId": "cz-liberec",
+      "stationId": "LKLB",
+      "name": "Liberec Arpt",
+      "coordinates": [
+        15.024,
+        50.77
+      ],
+      "elevationM": 397,
+      "distanceKm": 2.3
+    },
+    {
+      "locationId": "cz-olomouc",
+      "stationId": "LKPO",
+      "name": "Prerov Arpt",
+      "coordinates": [
+        17.406,
+        49.424
+      ],
+      "elevationM": 201,
+      "distanceKm": 22.1
+    },
+    {
+      "locationId": "cz-ostrava",
+      "stationId": "LKMT",
+      "name": "Ostrava/Janáček Arpt",
+      "coordinates": [
+        18.111,
+        49.696
+      ],
+      "elevationM": 251,
+      "distanceKm": 19.7
+    },
+    {
+      "locationId": "cz-pardubice",
+      "stationId": "LKPD",
+      "name": "Pardubice Arpt",
+      "coordinates": [
+        15.74,
+        50.016
+      ],
+      "elevationM": 226,
+      "distanceKm": 3.8
+    },
+    {
+      "locationId": "cz-pilsen",
+      "stationId": "LKLN",
+      "name": "Plzeň-Líně Arpt",
+      "coordinates": [
+        13.275,
+        49.675
+      ],
+      "elevationM": 353,
+      "distanceKm": 10.9
+    },
+    {
+      "locationId": "cz-prague",
+      "stationId": "LKKB",
+      "name": "Prague/Kbely Arpt",
+      "coordinates": [
+        14.538,
+        50.123
+      ],
+      "elevationM": 281,
+      "distanceKm": 9.2
+    },
+    {
+      "locationId": "cz-stodulky",
+      "stationId": "LKPR",
+      "name": "Prague/Havel Arpt",
+      "coordinates": [
+        14.26,
+        50.101
+      ],
+      "elevationM": 364,
+      "distanceKm": 7
+    },
+    {
+      "locationId": "de-augsburg",
+      "stationId": "EDMA",
+      "name": "Augsberg Arpt",
+      "coordinates": [
+        10.932,
+        48.425
+      ],
+      "elevationM": 462,
+      "distanceKm": 6.4
+    },
+    {
+      "locationId": "de-berlin",
+      "stationId": "EDDB",
+      "name": "Berlin/Brandenburg Intl",
+      "coordinates": [
+        13.53064,
+        52.38068
+      ],
+      "elevationM": 48,
+      "distanceKm": 17.9
+    },
+    {
+      "locationId": "de-bonn",
+      "stationId": "EDDK",
+      "name": "Koln-Bonn Arpt",
+      "coordinates": [
+        7.157,
+        50.865
+      ],
+      "elevationM": 92,
+      "distanceKm": 15.2
+    },
+    {
+      "locationId": "de-bremen",
+      "stationId": "EDDW",
+      "name": "Bremen Arpt",
+      "coordinates": [
+        8.787,
+        53.047
+      ],
+      "elevationM": 5,
+      "distanceKm": 3.5
+    },
+    {
+      "locationId": "de-dortmund",
+      "stationId": "EDLW",
+      "name": "Dortmund Arpt",
+      "coordinates": [
+        7.612,
+        51.518
+      ],
+      "elevationM": 122,
+      "distanceKm": 10.1
+    },
+    {
+      "locationId": "de-dresden",
+      "stationId": "EDDC",
+      "name": "Dresden Arpt",
+      "coordinates": [
+        13.7543,
+        51.12797
+      ],
+      "elevationM": 227,
+      "distanceKm": 8.6
+    },
+    {
+      "locationId": "de-duisburg",
+      "stationId": "EDDL",
+      "name": "Düsseldorf Intl",
+      "coordinates": [
+        6.769,
+        51.296
+      ],
+      "elevationM": 37,
+      "distanceKm": 15.2
+    },
+    {
+      "locationId": "de-duesseldorf",
+      "stationId": "EDDL",
+      "name": "Düsseldorf Intl",
+      "coordinates": [
+        6.769,
+        51.296
+      ],
+      "elevationM": 37,
+      "distanceKm": 8.1
+    },
+    {
+      "locationId": "de-essen",
+      "stationId": "EDDL",
+      "name": "Düsseldorf Intl",
+      "coordinates": [
+        6.769,
+        51.296
+      ],
+      "elevationM": 37,
+      "distanceKm": 24.6
+    },
+    {
+      "locationId": "de-frankfurt-am-main",
+      "stationId": "EDDF",
+      "name": "Frankfurt/Main Arpt",
+      "coordinates": [
+        8.598,
+        50.045
+      ],
+      "elevationM": 113,
+      "distanceKm": 10
+    },
+    {
+      "locationId": "de-hamburg",
+      "stationId": "EDDH",
+      "name": "Hamburg Arpt",
+      "coordinates": [
+        9.988,
+        53.633
+      ],
+      "elevationM": 8,
+      "distanceKm": 9.2
+    },
+    {
+      "locationId": "de-hannover",
+      "stationId": "EDDV",
+      "name": "Hannover Arpt",
+      "coordinates": [
+        9.68,
+        52.466
+      ],
+      "elevationM": 53,
+      "distanceKm": 11.2
+    },
+    {
+      "locationId": "de-kiel",
+      "stationId": "EDHK",
+      "name": "Kiel/Holtenau Arpt",
+      "coordinates": [
+        10.143,
+        54.376
+      ],
+      "elevationM": 24,
+      "distanceKm": 6.1
+    },
+    {
+      "locationId": "de-koeln",
+      "stationId": "EDDK",
+      "name": "Koln-Bonn Arpt",
+      "coordinates": [
+        7.157,
+        50.865
+      ],
+      "elevationM": 92,
+      "distanceKm": 16.4
+    },
+    {
+      "locationId": "de-leipzig",
+      "stationId": "EDDP",
+      "name": "Leipzig/Halle Arpt",
+      "coordinates": [
+        12.24,
+        51.435
+      ],
+      "elevationM": 129,
+      "distanceKm": 14
+    },
+    {
+      "locationId": "de-mannheim",
+      "stationId": "EDFM",
+      "name": "Mannheim City Arpt",
+      "coordinates": [
+        8.515,
+        49.474
+      ],
+      "elevationM": 94,
+      "distanceKm": 3.9
+    },
+    {
+      "locationId": "de-moenchengladbach",
+      "stationId": "EDLN",
+      "name": "Monchengladbach Arpt",
+      "coordinates": [
+        6.504,
+        51.23
+      ],
+      "elevationM": 38,
+      "distanceKm": 6.6
+    },
+    {
+      "locationId": "de-munich",
+      "stationId": "EDMO",
+      "name": "Oberpfaffenhofe Arpt",
+      "coordinates": [
+        11.283,
+        48.081
+      ],
+      "elevationM": 587,
+      "distanceKm": 22.6
+    },
+    {
+      "locationId": "de-muenster",
+      "stationId": "EDDG",
+      "name": "Münster/Osnabrück Arpt",
+      "coordinates": [
+        7.697,
+        52.135
+      ],
+      "elevationM": 46,
+      "distanceKm": 19.8
+    },
+    {
+      "locationId": "de-nuremberg",
+      "stationId": "EDDN",
+      "name": "Nurnberg Arpt",
+      "coordinates": [
+        11.055,
+        49.503
+      ],
+      "elevationM": 312,
+      "distanceKm": 5.7
+    },
+    {
+      "locationId": "de-stuttgart",
+      "stationId": "EDDS",
+      "name": "Stuttgart Arpt",
+      "coordinates": [
+        9.222,
+        48.69
+      ],
+      "elevationM": 374,
+      "distanceKm": 10.8
+    },
+    {
+      "locationId": "dk-aalborg",
+      "stationId": "EKYT",
+      "name": "Aalborg Arpt",
+      "coordinates": [
+        9.879,
+        57.093
+      ],
+      "elevationM": 2,
+      "distanceKm": 5.5
+    },
+    {
+      "locationId": "dk-copenhagen",
+      "stationId": "EKCH",
+      "name": "Kobenhavn Intl",
+      "coordinates": [
+        12.656,
+        55.618
+      ],
+      "elevationM": 4,
+      "distanceKm": 8.6
+    },
+    {
+      "locationId": "dk-esbjerg",
+      "stationId": "EKEB",
+      "name": "Esbjerg Arpt",
+      "coordinates": [
+        8.563,
+        55.528
+      ],
+      "elevationM": 29,
+      "distanceKm": 9.5
+    },
+    {
+      "locationId": "dk-frederiksberg",
+      "stationId": "EKCH",
+      "name": "Kobenhavn Intl",
+      "coordinates": [
+        12.656,
+        55.618
+      ],
+      "elevationM": 4,
+      "distanceKm": 10.2
+    },
+    {
+      "locationId": "dk-kolding",
+      "stationId": "EKVD",
+      "name": "Vamdrup Arpt",
+      "coordinates": [
+        9.329,
+        55.436
+      ],
+      "elevationM": 41,
+      "distanceKm": 10.9
+    },
+    {
+      "locationId": "dk-odense",
+      "stationId": "EKOD",
+      "name": "Odense Arpt",
+      "coordinates": [
+        10.331,
+        55.475
+      ],
+      "elevationM": 13,
+      "distanceKm": 9.5
+    },
+    {
+      "locationId": "dk-vejle",
+      "stationId": "EKBI",
+      "name": "Billund Arpt",
+      "coordinates": [
+        9.152,
+        55.74
+      ],
+      "elevationM": 67,
+      "distanceKm": 24.3
+    },
+    {
+      "locationId": "ee-paernu",
+      "stationId": "EEPU",
+      "name": "Pärnu Arpt",
+      "coordinates": [
+        24.473,
+        58.419
+      ],
+      "elevationM": 13,
+      "distanceKm": 3.9
+    },
+    {
+      "locationId": "ee-tallinn",
+      "stationId": "EETN",
+      "name": "Tallin Arpt",
+      "coordinates": [
+        24.801,
+        59.413
+      ],
+      "elevationM": 41,
+      "distanceKm": 3.8
+    },
+    {
+      "locationId": "ee-tartu",
+      "stationId": "EETU",
+      "name": "Tartu Arpt",
+      "coordinates": [
+        26.691,
+        58.307
+      ],
+      "elevationM": 67,
+      "distanceKm": 8.4
+    },
+    {
+      "locationId": "es-a-coruna",
+      "stationId": "LECO",
+      "name": "A Coruña Arpt",
+      "coordinates": [
+        -8.372,
+        43.307
+      ],
+      "elevationM": 80,
+      "distanceKm": 7.4
+    },
+    {
+      "locationId": "es-alicante",
+      "stationId": "LEAL",
+      "name": "Alicante Arpt",
+      "coordinates": [
+        -0.558,
+        38.282
+      ],
+      "elevationM": 26,
+      "distanceKm": 9.7
+    },
+    {
+      "locationId": "es-badalona",
+      "stationId": "LELL",
+      "name": "Sabadell Arpt",
+      "coordinates": [
+        2.105,
+        41.521
+      ],
+      "elevationM": 136,
+      "distanceKm": 14.2
+    },
+    {
+      "locationId": "es-barcelona",
+      "stationId": "LEBL",
+      "name": "Barcelona/Prat Arpt",
+      "coordinates": [
+        2.07,
+        41.293
+      ],
+      "elevationM": 2,
+      "distanceKm": 13
+    },
+    {
+      "locationId": "es-bilbao",
+      "stationId": "LEBB",
+      "name": "Bilbao Arpt",
+      "coordinates": [
+        -2.906,
+        43.298
+      ],
+      "elevationM": 38,
+      "distanceKm": 4.2
+    },
+    {
+      "locationId": "es-cartagena",
+      "stationId": "LELC",
+      "name": "San Javier Arpt",
+      "coordinates": [
+        -0.812,
+        37.775
+      ],
+      "elevationM": 3,
+      "distanceKm": 24.5
+    },
+    {
+      "locationId": "es-ciudad-lineal",
+      "stationId": "LEMD",
+      "name": "Madrid/Barajas Arpt",
+      "coordinates": [
+        -3.555,
+        40.466
+      ],
+      "elevationM": 589,
+      "distanceKm": 8.5
+    },
+    {
+      "locationId": "es-cordoba",
+      "stationId": "LEBA",
+      "name": "Córdoba Arpt",
+      "coordinates": [
+        -4.849,
+        37.842
+      ],
+      "elevationM": 88,
+      "distanceKm": 8.7
+    },
+    {
+      "locationId": "es-costa-del-sol",
+      "stationId": "LEMG",
+      "name": "Málaga Arpt",
+      "coordinates": [
+        -4.482,
+        36.666
+      ],
+      "elevationM": 5,
+      "distanceKm": 12.8
+    },
+    {
+      "locationId": "es-elche",
+      "stationId": "LEAL",
+      "name": "Alicante Arpt",
+      "coordinates": [
+        -0.558,
+        38.282
+      ],
+      "elevationM": 26,
+      "distanceKm": 12.7
+    },
+    {
+      "locationId": "es-gasteiz-vitoria",
+      "stationId": "LEVT",
+      "name": "Vitoria Arpt",
+      "coordinates": [
+        -2.733,
+        42.872
+      ],
+      "elevationM": 501,
+      "distanceKm": 5.5
+    },
+    {
+      "locationId": "es-granada",
+      "stationId": "LEGR",
+      "name": "Granada/Lorca Arpt",
+      "coordinates": [
+        -3.789,
+        37.19
+      ],
+      "elevationM": 560,
+      "distanceKm": 16.2
+    },
+    {
+      "locationId": "es-jerez-de-la-frontera",
+      "stationId": "LEJR",
+      "name": "Jerez Arpt",
+      "coordinates": [
+        -6.056,
+        36.751
+      ],
+      "elevationM": 25,
+      "distanceKm": 10.1
+    },
+    {
+      "locationId": "es-l-hospitalet-de-llobregat",
+      "stationId": "LEBL",
+      "name": "Barcelona/Prat Arpt",
+      "coordinates": [
+        2.07,
+        41.293
+      ],
+      "elevationM": 2,
+      "distanceKm": 7.8
+    },
+    {
+      "locationId": "es-las-palmas-de-gran-canaria",
+      "stationId": "GCLP",
+      "name": "Grand Canaria Arpt",
+      "coordinates": [
+        -15.389,
+        27.923
+      ],
+      "elevationM": 16,
+      "distanceKm": 20.1
+    },
+    {
+      "locationId": "es-madrid",
+      "stationId": "LEVS",
+      "name": "Madrid/Vientos Arpt",
+      "coordinates": [
+        -3.785,
+        40.371
+      ],
+      "elevationM": 683,
+      "distanceKm": 8.6
+    },
+    {
+      "locationId": "es-malaga",
+      "stationId": "LEMG",
+      "name": "Málaga Arpt",
+      "coordinates": [
+        -4.482,
+        36.666
+      ],
+      "elevationM": 5,
+      "distanceKm": 8.2
+    },
+    {
+      "locationId": "es-murcia",
+      "stationId": "LEMI",
+      "name": "Murcia Intl",
+      "coordinates": [
+        -1.125,
+        37.803
+      ],
+      "elevationM": 193,
+      "distanceKm": 20.5
+    },
+    {
+      "locationId": "es-palma",
+      "stationId": "LESB",
+      "name": "Mallorca/Son Bonet Arpt",
+      "coordinates": [
+        2.703,
+        39.599
+      ],
+      "elevationM": 48,
+      "distanceKm": 5.6
+    },
+    {
+      "locationId": "es-sabadell",
+      "stationId": "LELL",
+      "name": "Sabadell Arpt",
+      "coordinates": [
+        2.105,
+        41.521
+      ],
+      "elevationM": 136,
+      "distanceKm": 2.5
+    },
+    {
+      "locationId": "es-santa-cruz-de-tenerife",
+      "stationId": "GCXO",
+      "name": "Tenerife/North Arpt",
+      "coordinates": [
+        -16.342,
+        28.483
+      ],
+      "elevationM": 623,
+      "distanceKm": 8.7
+    },
+    {
+      "locationId": "es-sevilla",
+      "stationId": "LEZL",
+      "name": "Seville/San Pablo Arpt",
+      "coordinates": [
+        -5.893,
+        37.418
+      ],
+      "elevationM": 26,
+      "distanceKm": 8.1
+    },
+    {
+      "locationId": "es-terrassa",
+      "stationId": "LELL",
+      "name": "Sabadell Arpt",
+      "coordinates": [
+        2.105,
+        41.521
+      ],
+      "elevationM": 136,
+      "distanceKm": 8.9
+    },
+    {
+      "locationId": "es-valencia",
+      "stationId": "LEVC",
+      "name": "Valencia Arpt",
+      "coordinates": [
+        -0.482,
+        39.489
+      ],
+      "elevationM": 58,
+      "distanceKm": 8.9
+    },
+    {
+      "locationId": "es-valladolid",
+      "stationId": "LEVD",
+      "name": "Valladolid Arpt",
+      "coordinates": [
+        -4.852,
+        41.706
+      ],
+      "elevationM": 844,
+      "distanceKm": 12.1
+    },
+    {
+      "locationId": "es-vigo",
+      "stationId": "LEVX",
+      "name": "Vigo/Peinador Arpt",
+      "coordinates": [
+        -8.624,
+        42.239
+      ],
+      "elevationM": 253,
+      "distanceKm": 8.1
+    },
+    {
+      "locationId": "es-zaragoza",
+      "stationId": "LEZG",
+      "name": "Zaragoza Arpt",
+      "coordinates": [
+        -1.004,
+        41.661
+      ],
+      "elevationM": 245,
+      "distanceKm": 10.5
+    },
+    {
+      "locationId": "fi-espoo",
+      "stationId": "EFHK",
+      "name": "Helsinki/Vantaa Arpt",
+      "coordinates": [
+        24.957,
+        60.327
+      ],
+      "elevationM": 56,
+      "distanceKm": 21.6
+    },
+    {
+      "locationId": "fi-finnish-lakeland",
+      "stationId": "EFVR",
+      "name": "Varkaus Arpt",
+      "coordinates": [
+        27.86,
+        62.174
+      ],
+      "elevationM": 79,
+      "distanceKm": 7.7
+    },
+    {
+      "locationId": "fi-helsinki",
+      "stationId": "EFHK",
+      "name": "Helsinki/Vantaa Arpt",
+      "coordinates": [
+        24.957,
+        60.327
+      ],
+      "elevationM": 56,
+      "distanceKm": 17.6
+    },
+    {
+      "locationId": "fi-joensuu",
+      "stationId": "EFJO",
+      "name": "Joensuu Arpt",
+      "coordinates": [
+        29.611,
+        62.66
+      ],
+      "elevationM": 118,
+      "distanceKm": 10.2
+    },
+    {
+      "locationId": "fi-jyvaeskylae",
+      "stationId": "EFJY",
+      "name": "Jyväskylä Arpt",
+      "coordinates": [
+        25.675,
+        62.404
+      ],
+      "elevationM": 139,
+      "distanceKm": 18.2
+    },
+    {
+      "locationId": "fi-kouvola",
+      "stationId": "EFUT",
+      "name": "Utti Arpt",
+      "coordinates": [
+        26.938,
+        60.896
+      ],
+      "elevationM": 104,
+      "distanceKm": 13.3
+    },
+    {
+      "locationId": "fi-kuopio",
+      "stationId": "EFKU",
+      "name": "Kuopio Arpt",
+      "coordinates": [
+        27.799,
+        63.008
+      ],
+      "elevationM": 92,
+      "distanceKm": 14.3
+    },
+    {
+      "locationId": "fi-lappeenranta",
+      "stationId": "EFLP",
+      "name": "Lappeenranta Arpt",
+      "coordinates": [
+        28.151,
+        61.044
+      ],
+      "elevationM": 102,
+      "distanceKm": 2.6
+    },
+    {
+      "locationId": "fi-oulu",
+      "stationId": "EFOU",
+      "name": "Oulu Arpt",
+      "coordinates": [
+        25.355,
+        64.93
+      ],
+      "elevationM": 15,
+      "distanceKm": 10.6
+    },
+    {
+      "locationId": "fi-pori",
+      "stationId": "EFPO",
+      "name": "Pori Arpt",
+      "coordinates": [
+        21.8,
+        61.462
+      ],
+      "elevationM": 10,
+      "distanceKm": 2.2
+    },
+    {
+      "locationId": "fi-rovaniemi",
+      "stationId": "EFRO",
+      "name": "Rovaniemi Arpt",
+      "coordinates": [
+        25.829,
+        66.562
+      ],
+      "elevationM": 201,
+      "distanceKm": 9.4
+    },
+    {
+      "locationId": "fi-seinaejoki",
+      "stationId": "EFSI",
+      "name": "Seinajoki/Ilmajoki Arpt",
+      "coordinates": [
+        22.83,
+        62.693
+      ],
+      "elevationM": 90,
+      "distanceKm": 11.3
+    },
+    {
+      "locationId": "fi-tampere",
+      "stationId": "EFTP",
+      "name": "Tampere/Pirkkala Arpt",
+      "coordinates": [
+        23.616,
+        61.419
+      ],
+      "elevationM": 111,
+      "distanceKm": 12.7
+    },
+    {
+      "locationId": "fi-turku",
+      "stationId": "EFTU",
+      "name": "Turku Arpt",
+      "coordinates": [
+        22.263,
+        60.514
+      ],
+      "elevationM": 47,
+      "distanceKm": 7
+    },
+    {
+      "locationId": "fi-vaasa",
+      "stationId": "EFVA",
+      "name": "Vaasa Arpt",
+      "coordinates": [
+        21.762,
+        63.051
+      ],
+      "elevationM": 4,
+      "distanceKm": 8.9
+    },
+    {
+      "locationId": "fi-vantaa",
+      "stationId": "EFHK",
+      "name": "Helsinki/Vantaa Arpt",
+      "coordinates": [
+        24.957,
+        60.327
+      ],
+      "elevationM": 56,
+      "distanceKm": 5.9
+    },
+    {
+      "locationId": "fr-angers",
+      "stationId": "LFJR",
+      "name": "Anger/Loire Arpt",
+      "coordinates": [
+        -0.317,
+        47.562
+      ],
+      "elevationM": 50,
+      "distanceKm": 20.3
+    },
+    {
+      "locationId": "fr-bordeaux",
+      "stationId": "LFBD",
+      "name": "Bordeaux/Mérignac Arpt",
+      "coordinates": [
+        -0.691,
+        44.831
+      ],
+      "elevationM": 48,
+      "distanceKm": 8.8
+    },
+    {
+      "locationId": "fr-clermont-ferrand",
+      "stationId": "LFLC",
+      "name": "Clermont-Ferrand/Auvergne Arpt",
+      "coordinates": [
+        3.169,
+        45.787
+      ],
+      "elevationM": 325,
+      "distanceKm": 6.4
+    },
+    {
+      "locationId": "fr-dijon",
+      "stationId": "LFSD",
+      "name": "Dijon-Bourgogne Arpt",
+      "coordinates": [
+        5.09,
+        47.269
+      ],
+      "elevationM": 218,
+      "distanceKm": 7.6
+    },
+    {
+      "locationId": "fr-french-riviera",
+      "stationId": "LFMD",
+      "name": "Cannes/Mandelieu Arpt",
+      "coordinates": [
+        6.953,
+        43.544
+      ],
+      "elevationM": 2,
+      "distanceKm": 22.9
+    },
+    {
+      "locationId": "fr-le-havre",
+      "stationId": "LFOH",
+      "name": "Le Havre/Octeville Arpt",
+      "coordinates": [
+        0.091,
+        49.533
+      ],
+      "elevationM": 87,
+      "distanceKm": 4.6
+    },
+    {
+      "locationId": "fr-lille",
+      "stationId": "LFQQ",
+      "name": "Lille/Lesquin Arpt",
+      "coordinates": [
+        3.089,
+        50.562
+      ],
+      "elevationM": 43,
+      "distanceKm": 8.3
+    },
+    {
+      "locationId": "fr-lyon",
+      "stationId": "LFLY",
+      "name": "Lyon/Bron Arpt",
+      "coordinates": [
+        4.938,
+        45.726
+      ],
+      "elevationM": 197,
+      "distanceKm": 7.4
+    },
+    {
+      "locationId": "fr-marne-la-vallee",
+      "stationId": "LFPB",
+      "name": "Paris/Le Bourge Arpt",
+      "coordinates": [
+        2.428,
+        48.967
+      ],
+      "elevationM": 50,
+      "distanceKm": 21.4
+    },
+    {
+      "locationId": "fr-marseille",
+      "stationId": "LFML",
+      "name": "Marseille Arpt",
+      "coordinates": [
+        5.216,
+        43.438
+      ],
+      "elevationM": 20,
+      "distanceKm": 20.6
+    },
+    {
+      "locationId": "fr-montpellier",
+      "stationId": "LFMT",
+      "name": "Montpellier/Méditerranee Arpt",
+      "coordinates": [
+        3.963,
+        43.577
+      ],
+      "elevationM": 1,
+      "distanceKm": 7.9
+    },
+    {
+      "locationId": "fr-nantes",
+      "stationId": "LFRS",
+      "name": "Nantes/Atlantique Arpt",
+      "coordinates": [
+        -1.609,
+        47.15
+      ],
+      "elevationM": 26,
+      "distanceKm": 8.6
+    },
+    {
+      "locationId": "fr-nice",
+      "stationId": "LFMN",
+      "name": "Nice/Côte d'Azur Arpt",
+      "coordinates": [
+        7.216,
+        43.658
+      ],
+      "elevationM": 4,
+      "distanceKm": 6.4
+    },
+    {
+      "locationId": "fr-nimes",
+      "stationId": "LFTW",
+      "name": "Nimes/Garons Arpt",
+      "coordinates": [
+        4.416,
+        43.757
+      ],
+      "elevationM": 91,
+      "distanceKm": 10
+    },
+    {
+      "locationId": "fr-paris",
+      "stationId": "LFPB",
+      "name": "Paris/Le Bourge Arpt",
+      "coordinates": [
+        2.428,
+        48.967
+      ],
+      "elevationM": 50,
+      "distanceKm": 13.9
+    },
+    {
+      "locationId": "fr-paris-13-gobelins",
+      "stationId": "LFPB",
+      "name": "Paris/Le Bourge Arpt",
+      "coordinates": [
+        2.428,
+        48.967
+      ],
+      "elevationM": 50,
+      "distanceKm": 15.9
+    },
+    {
+      "locationId": "fr-paris-15-vaugirard",
+      "stationId": "LFPB",
+      "name": "Paris/Le Bourge Arpt",
+      "coordinates": [
+        2.428,
+        48.967
+      ],
+      "elevationM": 50,
+      "distanceKm": 16.8
+    },
+    {
+      "locationId": "fr-paris-16-passy",
+      "stationId": "LFPB",
+      "name": "Paris/Le Bourge Arpt",
+      "coordinates": [
+        2.428,
+        48.967
+      ],
+      "elevationM": 50,
+      "distanceKm": 15.9
+    },
+    {
+      "locationId": "fr-paris-17-batignolles-monceau",
+      "stationId": "LFPB",
+      "name": "Paris/Le Bourge Arpt",
+      "coordinates": [
+        2.428,
+        48.967
+      ],
+      "elevationM": 50,
+      "distanceKm": 12.1
+    },
+    {
+      "locationId": "fr-paris-18-buttes-montmartre",
+      "stationId": "LFPB",
+      "name": "Paris/Le Bourge Arpt",
+      "coordinates": [
+        2.428,
+        48.967
+      ],
+      "elevationM": 50,
+      "distanceKm": 10.3
+    },
+    {
+      "locationId": "fr-paris-19-buttes-chaumont",
+      "stationId": "LFPB",
+      "name": "Paris/Le Bourge Arpt",
+      "coordinates": [
+        2.428,
+        48.967
+      ],
+      "elevationM": 50,
+      "distanceKm": 10.1
+    },
+    {
+      "locationId": "fr-paris-20-menilmontant",
+      "stationId": "LFPB",
+      "name": "Paris/Le Bourge Arpt",
+      "coordinates": [
+        2.428,
+        48.967
+      ],
+      "elevationM": 50,
+      "distanceKm": 11.6
+    },
+    {
+      "locationId": "fr-reims",
+      "stationId": "LFSR",
+      "name": "Reims Arpt",
+      "coordinates": [
+        4.051,
+        49.306
+      ],
+      "elevationM": 91,
+      "distanceKm": 4.8
+    },
+    {
+      "locationId": "fr-rennes",
+      "stationId": "LFRN",
+      "name": "Rennes/St Jacques Arpt",
+      "coordinates": [
+        -1.734,
+        48.069
+      ],
+      "elevationM": 35,
+      "distanceKm": 6.4
+    },
+    {
+      "locationId": "fr-strasbourg",
+      "stationId": "LFST",
+      "name": "Strasbourg/Entzheim Arpt",
+      "coordinates": [
+        7.64,
+        48.549
+      ],
+      "elevationM": 149,
+      "distanceKm": 8.7
+    },
+    {
+      "locationId": "fr-toulon",
+      "stationId": "LFTH",
+      "name": "Toulon/Hyères Arpt",
+      "coordinates": [
+        6.146,
+        43.094
+      ],
+      "elevationM": 3,
+      "distanceKm": 18
+    },
+    {
+      "locationId": "fr-toulouse",
+      "stationId": "LFBO",
+      "name": "Toulouse/Blagnac Arpt",
+      "coordinates": [
+        1.379,
+        43.621
+      ],
+      "elevationM": 150,
+      "distanceKm": 5.5
+    },
+    {
+      "locationId": "gr-acharnes",
+      "stationId": "LGAV",
+      "name": "Athens/Venizelos Intl",
+      "coordinates": [
+        23.945,
+        37.936
+      ],
+      "elevationM": 83,
+      "distanceKm": 24.7
+    },
+    {
+      "locationId": "gr-agios-dimitrios",
+      "stationId": "LGAV",
+      "name": "Athens/Venizelos Intl",
+      "coordinates": [
+        23.945,
+        37.936
+      ],
+      "elevationM": 83,
+      "distanceKm": 18.6
+    },
+    {
+      "locationId": "gr-aigaleo",
+      "stationId": "LGAV",
+      "name": "Athens/Venizelos Intl",
+      "coordinates": [
+        23.945,
+        37.936
+      ],
+      "elevationM": 83,
+      "distanceKm": 23.5
+    },
+    {
+      "locationId": "gr-athens",
+      "stationId": "LGAV",
+      "name": "Athens/Venizelos Intl",
+      "coordinates": [
+        23.945,
+        37.936
+      ],
+      "elevationM": 83,
+      "distanceKm": 19.8
+    },
+    {
+      "locationId": "gr-evosmos",
+      "stationId": "LGTS",
+      "name": "Thessaloniki Intl",
+      "coordinates": [
+        22.971,
+        40.52
+      ],
+      "elevationM": 4,
+      "distanceKm": 17.6
+    },
+    {
+      "locationId": "gr-glyfada",
+      "stationId": "LGAV",
+      "name": "Athens/Venizelos Intl",
+      "coordinates": [
+        23.945,
+        37.936
+      ],
+      "elevationM": 83,
+      "distanceKm": 18.3
+    },
+    {
+      "locationId": "gr-ilion",
+      "stationId": "LGAV",
+      "name": "Athens/Venizelos Intl",
+      "coordinates": [
+        23.945,
+        37.936
+      ],
+      "elevationM": 83,
+      "distanceKm": 24
+    },
+    {
+      "locationId": "gr-ilioupoli",
+      "stationId": "LGAV",
+      "name": "Athens/Venizelos Intl",
+      "coordinates": [
+        23.945,
+        37.936
+      ],
+      "elevationM": 83,
+      "distanceKm": 15.5
+    },
+    {
+      "locationId": "gr-ioannina",
+      "stationId": "LGIO",
+      "name": "Ioannina Arpt",
+      "coordinates": [
+        20.823,
+        39.696
+      ],
+      "elevationM": 476,
+      "distanceKm": 4.4
+    },
+    {
+      "locationId": "gr-irakleion",
+      "stationId": "LGIR",
+      "name": "Iraklion Intl",
+      "coordinates": [
+        25.173,
+        35.337
+      ],
+      "elevationM": 37,
+      "distanceKm": 2.9
+    },
+    {
+      "locationId": "gr-kalamaria",
+      "stationId": "LGTS",
+      "name": "Thessaloniki Intl",
+      "coordinates": [
+        22.971,
+        40.52
+      ],
+      "elevationM": 4,
+      "distanceKm": 7.2
+    },
+    {
+      "locationId": "gr-kallithea",
+      "stationId": "LGAV",
+      "name": "Athens/Venizelos Intl",
+      "coordinates": [
+        23.945,
+        37.936
+      ],
+      "elevationM": 83,
+      "distanceKm": 21.5
+    },
+    {
+      "locationId": "gr-khalandrion",
+      "stationId": "LGAV",
+      "name": "Athens/Venizelos Intl",
+      "coordinates": [
+        23.945,
+        37.936
+      ],
+      "elevationM": 83,
+      "distanceKm": 16
+    },
+    {
+      "locationId": "gr-marousi",
+      "stationId": "LGAV",
+      "name": "Athens/Venizelos Intl",
+      "coordinates": [
+        23.945,
+        37.936
+      ],
+      "elevationM": 83,
+      "distanceKm": 17.9
+    },
+    {
+      "locationId": "gr-nea-ionia",
+      "stationId": "LGAV",
+      "name": "Athens/Venizelos Intl",
+      "coordinates": [
+        23.945,
+        37.936
+      ],
+      "elevationM": 83,
+      "distanceKm": 19.8
+    },
+    {
+      "locationId": "gr-nea-smyrni",
+      "stationId": "LGAV",
+      "name": "Athens/Venizelos Intl",
+      "coordinates": [
+        23.945,
+        37.936
+      ],
+      "elevationM": 83,
+      "distanceKm": 20.3
+    },
+    {
+      "locationId": "gr-palaio-faliro",
+      "stationId": "LGAV",
+      "name": "Athens/Venizelos Intl",
+      "coordinates": [
+        23.945,
+        37.936
+      ],
+      "elevationM": 83,
+      "distanceKm": 21.4
+    },
+    {
+      "locationId": "gr-peristeri",
+      "stationId": "LGAV",
+      "name": "Athens/Venizelos Intl",
+      "coordinates": [
+        23.945,
+        37.936
+      ],
+      "elevationM": 83,
+      "distanceKm": 23.9
+    },
+    {
+      "locationId": "gr-thessaloniki",
+      "stationId": "LGTS",
+      "name": "Thessaloniki Intl",
+      "coordinates": [
+        22.971,
+        40.52
+      ],
+      "elevationM": 4,
+      "distanceKm": 13.8
+    },
+    {
+      "locationId": "gr-volos",
+      "stationId": "LGBL",
+      "name": "Nea Anchialos Arpt",
+      "coordinates": [
+        22.794,
+        39.22
+      ],
+      "elevationM": 13,
+      "distanceKm": 21.2
+    },
+    {
+      "locationId": "gr-zografos",
+      "stationId": "LGAV",
+      "name": "Athens/Venizelos Intl",
+      "coordinates": [
+        23.945,
+        37.936
+      ],
+      "elevationM": 83,
+      "distanceKm": 16
+    },
+    {
+      "locationId": "hr-dalmatian-coast",
+      "stationId": "LDSB",
+      "name": "Brac/Bol Arpt",
+      "coordinates": [
+        16.68,
+        43.286
+      ],
+      "elevationM": 525,
+      "distanceKm": 12.8
+    },
+    {
+      "locationId": "hr-osijek",
+      "stationId": "LDOS",
+      "name": "Osijek Arpt",
+      "coordinates": [
+        18.81,
+        45.463
+      ],
+      "elevationM": 82,
+      "distanceKm": 13.3
+    },
+    {
+      "locationId": "hr-rijeka",
+      "stationId": "LDRI",
+      "name": "Rijeka Arpt",
+      "coordinates": [
+        14.573,
+        45.218
+      ],
+      "elevationM": 80,
+      "distanceKm": 15.8
+    },
+    {
+      "locationId": "hr-split",
+      "stationId": "LDSP",
+      "name": "Split Arpt",
+      "coordinates": [
+        16.301,
+        43.539
+      ],
+      "elevationM": 16,
+      "distanceKm": 11.6
+    },
+    {
+      "locationId": "hr-zadar",
+      "stationId": "LDZD",
+      "name": "Zadar Arpt",
+      "coordinates": [
+        15.347,
+        44.108
+      ],
+      "elevationM": 82,
+      "distanceKm": 9.8
+    },
+    {
+      "locationId": "hr-zagreb",
+      "stationId": "LDZA",
+      "name": "Zagreb/Tuđman Intl",
+      "coordinates": [
+        16.054,
+        45.729
+      ],
+      "elevationM": 103,
+      "distanceKm": 11.2
+    },
+    {
+      "locationId": "hu-bekescsaba",
+      "stationId": "LHBC",
+      "name": "Békéscsaba Arpt",
+      "coordinates": [
+        21.161,
+        46.678
+      ],
+      "elevationM": 81,
+      "distanceKm": 4.7
+    },
+    {
+      "locationId": "hu-budapest",
+      "stationId": "LHBP",
+      "name": "Budapest/Liszt Intl",
+      "coordinates": [
+        19.256,
+        47.437
+      ],
+      "elevationM": 141,
+      "distanceKm": 17.6
+    },
+    {
+      "locationId": "hu-debrecen",
+      "stationId": "LHDC",
+      "name": "Debrecen Arpt",
+      "coordinates": [
+        21.615,
+        47.489
+      ],
+      "elevationM": 105,
+      "distanceKm": 4.8
+    },
+    {
+      "locationId": "hu-gyor",
+      "stationId": "LHPR",
+      "name": "Győr-Pér Intl",
+      "coordinates": [
+        17.808,
+        47.627
+      ],
+      "elevationM": 127,
+      "distanceKm": 14.4
+    },
+    {
+      "locationId": "hu-kecskemet",
+      "stationId": "LHKE",
+      "name": "Kecskemét Arpt",
+      "coordinates": [
+        19.749,
+        46.917
+      ],
+      "elevationM": 113,
+      "distanceKm": 4.5
+    },
+    {
+      "locationId": "hu-nyiregyhaza",
+      "stationId": "LHNY",
+      "name": "Nyiregyhaza Arpt",
+      "coordinates": [
+        21.6916,
+        47.984
+      ],
+      "elevationM": 99,
+      "distanceKm": 3.7
+    },
+    {
+      "locationId": "hu-pecs",
+      "stationId": "LHPP",
+      "name": "Pécs/Pogány Intl",
+      "coordinates": [
+        18.241,
+        45.991
+      ],
+      "elevationM": 193,
+      "distanceKm": 9.5
+    },
+    {
+      "locationId": "hu-szeged",
+      "stationId": "LHUD",
+      "name": "Szeged Arpt",
+      "coordinates": [
+        20.09,
+        46.256
+      ],
+      "elevationM": 76,
+      "distanceKm": 4.5
+    },
+    {
+      "locationId": "ie-cork",
+      "stationId": "EICK",
+      "name": "Cork Arpt",
+      "coordinates": [
+        -8.479,
+        51.848
+      ],
+      "elevationM": 158,
+      "distanceKm": 5.6
+    },
+    {
+      "locationId": "ie-dublin",
+      "stationId": "EIDW",
+      "name": "Dublin Arpt",
+      "coordinates": [
+        -6.298,
+        53.422
+      ],
+      "elevationM": 75,
+      "distanceKm": 10.4
+    },
+    {
+      "locationId": "ie-galway",
+      "stationId": "EICM",
+      "name": "Galway Arpt",
+      "coordinates": [
+        -8.942,
+        53.3
+      ],
+      "elevationM": 25,
+      "distanceKm": 7.9
+    },
+    {
+      "locationId": "ie-limerick",
+      "stationId": "EINN",
+      "name": "Shannon Arpt",
+      "coordinates": [
+        -8.925,
+        52.702
+      ],
+      "elevationM": 20,
+      "distanceKm": 20.8
+    },
+    {
+      "locationId": "ie-tallaght",
+      "stationId": "EIME",
+      "name": "Casement Arpt",
+      "coordinates": [
+        -6.442,
+        53.306
+      ],
+      "elevationM": 90,
+      "distanceKm": 5.1
+    },
+    {
+      "locationId": "ie-waterford",
+      "stationId": "EIWF",
+      "name": "Waterford Arpt",
+      "coordinates": [
+        -7.087,
+        52.187
+      ],
+      "elevationM": 26,
+      "distanceKm": 8.1
+    },
+    {
+      "locationId": "it-acilia-castel-fusano-ostia-antica",
+      "stationId": "LIRA",
+      "name": "Rome/Ciampino Arpt",
+      "coordinates": [
+        12.585,
+        41.808
+      ],
+      "elevationM": 101,
+      "distanceKm": 21.7
+    },
+    {
+      "locationId": "it-bari",
+      "stationId": "LIBD",
+      "name": "Bari/Palese Arpt",
+      "coordinates": [
+        16.765,
+        41.138
+      ],
+      "elevationM": 42,
+      "distanceKm": 9
+    },
+    {
+      "locationId": "it-bologna",
+      "stationId": "LIPE",
+      "name": "Bologna/Marconi Arpt",
+      "coordinates": [
+        11.297,
+        44.531
+      ],
+      "elevationM": 37,
+      "distanceKm": 5.3
+    },
+    {
+      "locationId": "it-brescia",
+      "stationId": "LIPO",
+      "name": "Brescia Arpt",
+      "coordinates": [
+        10.331,
+        45.429
+      ],
+      "elevationM": 104,
+      "distanceKm": 14.9
+    },
+    {
+      "locationId": "it-cagliari",
+      "stationId": "LIEE",
+      "name": "Cagliari/Elmas Arpt",
+      "coordinates": [
+        9.06,
+        39.243
+      ],
+      "elevationM": 1,
+      "distanceKm": 5.3
+    },
+    {
+      "locationId": "it-catania",
+      "stationId": "LICC",
+      "name": "Catania/Fontanarossa Arpt",
+      "coordinates": [
+        15.064,
+        37.467
+      ],
+      "elevationM": 6,
+      "distanceKm": 2.9
+    },
+    {
+      "locationId": "it-ferrara",
+      "stationId": "LIPF",
+      "name": "Ferrara Arpt",
+      "coordinates": [
+        11.61,
+        44.814
+      ],
+      "elevationM": 5,
+      "distanceKm": 2.8
+    },
+    {
+      "locationId": "it-florence",
+      "stationId": "LIRQ",
+      "name": "Florence/Peretola Arpt",
+      "coordinates": [
+        11.205,
+        43.81
+      ],
+      "elevationM": 33,
+      "distanceKm": 4.8
+    },
+    {
+      "locationId": "it-foggia",
+      "stationId": "LIBF",
+      "name": "Foggia/Lisa Arpt",
+      "coordinates": [
+        15.535,
+        41.433
+      ],
+      "elevationM": 81,
+      "distanceKm": 3.2
+    },
+    {
+      "locationId": "it-genoa",
+      "stationId": "LIMJ",
+      "name": "Genoa/Colombo Arpt",
+      "coordinates": [
+        8.838,
+        44.413
+      ],
+      "elevationM": 3,
+      "distanceKm": 8.5
+    },
+    {
+      "locationId": "it-livorno",
+      "stationId": "LIRP",
+      "name": "Pisa/Galilei Arpt",
+      "coordinates": [
+        10.393,
+        43.684
+      ],
+      "elevationM": 1,
+      "distanceKm": 16.4
+    },
+    {
+      "locationId": "it-messina",
+      "stationId": "LICR",
+      "name": "Reggio Calabria Arpt",
+      "coordinates": [
+        15.654,
+        38.072
+      ],
+      "elevationM": 16,
+      "distanceKm": 16.2
+    },
+    {
+      "locationId": "it-mestre",
+      "stationId": "LIPZ",
+      "name": "Venice/Polo Arpt",
+      "coordinates": [
+        12.352,
+        45.505
+      ],
+      "elevationM": 3,
+      "distanceKm": 8.4
+    },
+    {
+      "locationId": "it-milan",
+      "stationId": "LIML",
+      "name": "Milan/Linate Arpt",
+      "coordinates": [
+        9.263,
+        45.461
+      ],
+      "elevationM": 109,
+      "distanceKm": 5.7
+    },
+    {
+      "locationId": "it-naples",
+      "stationId": "LIRN",
+      "name": "Naples Intl",
+      "coordinates": [
+        14.292,
+        40.885
+      ],
+      "elevationM": 76,
+      "distanceKm": 4.2
+    },
+    {
+      "locationId": "it-padua",
+      "stationId": "LIPU",
+      "name": "Pavdova Arpt",
+      "coordinates": [
+        11.848,
+        45.396
+      ],
+      "elevationM": 6,
+      "distanceKm": 3.2
+    },
+    {
+      "locationId": "it-palermo",
+      "stationId": "LICJ",
+      "name": "Palermo Arpt",
+      "coordinates": [
+        13.091,
+        38.176
+      ],
+      "elevationM": 20,
+      "distanceKm": 24.7
+    },
+    {
+      "locationId": "it-parma",
+      "stationId": "LIMP",
+      "name": "Parma Arpt",
+      "coordinates": [
+        10.296,
+        44.825
+      ],
+      "elevationM": 41,
+      "distanceKm": 3.7
+    },
+    {
+      "locationId": "it-prato",
+      "stationId": "LIRQ",
+      "name": "Florence/Peretola Arpt",
+      "coordinates": [
+        11.205,
+        43.81
+      ],
+      "elevationM": 33,
+      "distanceKm": 11.7
+    },
+    {
+      "locationId": "it-reggio-calabria",
+      "stationId": "LICR",
+      "name": "Reggio Calabria Arpt",
+      "coordinates": [
+        15.654,
+        38.072
+      ],
+      "elevationM": 16,
+      "distanceKm": 4.3
+    },
+    {
+      "locationId": "it-rimini",
+      "stationId": "LIPR",
+      "name": "Rimini/Miramare Arpt",
+      "coordinates": [
+        12.612,
+        44.02
+      ],
+      "elevationM": 10,
+      "distanceKm": 5.6
+    },
+    {
+      "locationId": "it-rome",
+      "stationId": "LIRA",
+      "name": "Rome/Ciampino Arpt",
+      "coordinates": [
+        12.585,
+        41.808
+      ],
+      "elevationM": 101,
+      "distanceKm": 11.2
+    },
+    {
+      "locationId": "it-taranto",
+      "stationId": "LIBG",
+      "name": "Grottaglie Arpt",
+      "coordinates": [
+        17.403,
+        40.517
+      ],
+      "elevationM": 64,
+      "distanceKm": 14.4
+    },
+    {
+      "locationId": "it-trieste",
+      "stationId": "LJPZ",
+      "name": "Portorož Arpt",
+      "coordinates": [
+        13.615,
+        45.473
+      ],
+      "elevationM": 2,
+      "distanceKm": 23.3
+    },
+    {
+      "locationId": "it-turin",
+      "stationId": "LIMA",
+      "name": "Torino/Aeritalia Arpt",
+      "coordinates": [
+        7.603,
+        45.086
+      ],
+      "elevationM": 285,
+      "distanceKm": 6.8
+    },
+    {
+      "locationId": "it-verona",
+      "stationId": "LIPX",
+      "name": "Verona Arpt",
+      "coordinates": [
+        10.872,
+        45.387
+      ],
+      "elevationM": 67,
+      "distanceKm": 11.1
+    },
+    {
+      "locationId": "lt-kaunas",
+      "stationId": "EYKA",
+      "name": "Kaunas Arpt",
+      "coordinates": [
+        24.069,
+        54.962
+      ],
+      "elevationM": 68,
+      "distanceKm": 12.2
+    },
+    {
+      "locationId": "lt-siauliai",
+      "stationId": "EYSA",
+      "name": "Šiauliai Intl",
+      "coordinates": [
+        23.395,
+        55.894
+      ],
+      "elevationM": 135,
+      "distanceKm": 6.6
+    },
+    {
+      "locationId": "lt-vilnius",
+      "stationId": "EYVI",
+      "name": "Vilnius Intl",
+      "coordinates": [
+        25.286,
+        54.634
+      ],
+      "elevationM": 180,
+      "distanceKm": 6.1
+    },
+    {
+      "locationId": "lu-dudelange",
+      "stationId": "ELLX",
+      "name": "Luxembourg/Findel Arpt",
+      "coordinates": [
+        6.204,
+        49.626
+      ],
+      "elevationM": 374,
+      "distanceKm": 18.2
+    },
+    {
+      "locationId": "lu-esch-sur-alzette",
+      "stationId": "ELLX",
+      "name": "Luxembourg/Findel Arpt",
+      "coordinates": [
+        6.204,
+        49.626
+      ],
+      "elevationM": 374,
+      "distanceKm": 21.7
+    },
+    {
+      "locationId": "lu-luxembourg",
+      "stationId": "ELLX",
+      "name": "Luxembourg/Findel Arpt",
+      "coordinates": [
+        6.204,
+        49.626
+      ],
+      "elevationM": 374,
+      "distanceKm": 5.4
+    },
+    {
+      "locationId": "lu-luxembourg-moselle",
+      "stationId": "ELLX",
+      "name": "Luxembourg/Findel Arpt",
+      "coordinates": [
+        6.204,
+        49.626
+      ],
+      "elevationM": 374,
+      "distanceKm": 13.5
+    },
+    {
+      "locationId": "lv-jurmala",
+      "stationId": "EVRA",
+      "name": "Riga Intl",
+      "coordinates": [
+        23.968,
+        56.924
+      ],
+      "elevationM": 7,
+      "distanceKm": 12.9
+    },
+    {
+      "locationId": "lv-jurmala-coast",
+      "stationId": "EVRA",
+      "name": "Riga Intl",
+      "coordinates": [
+        23.968,
+        56.924
+      ],
+      "elevationM": 7,
+      "distanceKm": 13.5
+    },
+    {
+      "locationId": "lv-liepaja",
+      "stationId": "EVLA",
+      "name": "Liepāja Intl",
+      "coordinates": [
+        21.097,
+        56.517
+      ],
+      "elevationM": 5,
+      "distanceKm": 5.5
+    },
+    {
+      "locationId": "lv-riga",
+      "stationId": "EVRA",
+      "name": "Riga Intl",
+      "coordinates": [
+        23.968,
+        56.924
+      ],
+      "elevationM": 7,
+      "distanceKm": 8.7
+    },
+    {
+      "locationId": "mt-birkirkara",
+      "stationId": "LMML",
+      "name": "Malta Intl",
+      "coordinates": [
+        14.477,
+        35.858
+      ],
+      "elevationM": 78,
+      "distanceKm": 4.6
+    },
+    {
+      "locationId": "mt-mosta",
+      "stationId": "LMML",
+      "name": "Malta Intl",
+      "coordinates": [
+        14.477,
+        35.858
+      ],
+      "elevationM": 78,
+      "distanceKm": 7.4
+    },
+    {
+      "locationId": "mt-qormi",
+      "stationId": "LMML",
+      "name": "Malta Intl",
+      "coordinates": [
+        14.477,
+        35.858
+      ],
+      "elevationM": 78,
+      "distanceKm": 2.1
+    },
+    {
+      "locationId": "mt-san-pawl-il-bahar",
+      "stationId": "LMML",
+      "name": "Malta Intl",
+      "coordinates": [
+        14.477,
+        35.858
+      ],
+      "elevationM": 78,
+      "distanceKm": 11.7
+    },
+    {
+      "locationId": "mt-sliema",
+      "stationId": "LMML",
+      "name": "Malta Intl",
+      "coordinates": [
+        14.477,
+        35.858
+      ],
+      "elevationM": 78,
+      "distanceKm": 6.5
+    },
+    {
+      "locationId": "mt-valletta",
+      "stationId": "LMML",
+      "name": "Malta Intl",
+      "coordinates": [
+        14.477,
+        35.858
+      ],
+      "elevationM": 78,
+      "distanceKm": 5.8
+    },
+    {
+      "locationId": "nl-almere-stad",
+      "stationId": "EHLE",
+      "name": "Lelystad Arpt",
+      "coordinates": [
+        5.522,
+        52.456
+      ],
+      "elevationM": -3,
+      "distanceKm": 23
+    },
+    {
+      "locationId": "nl-amsterdam",
+      "stationId": "EHAM",
+      "name": "Amsterdam/Schiphol Arpt",
+      "coordinates": [
+        4.79,
+        52.315
+      ],
+      "elevationM": -2,
+      "distanceKm": 9.4
+    },
+    {
+      "locationId": "nl-delft",
+      "stationId": "EHRD",
+      "name": "Rotterdam/The Hague Arpt",
+      "coordinates": [
+        4.444,
+        51.954
+      ],
+      "elevationM": -4,
+      "distanceKm": 8.4
+    },
+    {
+      "locationId": "nl-dordrecht",
+      "stationId": "EHRD",
+      "name": "Rotterdam/The Hague Arpt",
+      "coordinates": [
+        4.444,
+        51.954
+      ],
+      "elevationM": -4,
+      "distanceKm": 22.5
+    },
+    {
+      "locationId": "nl-eindhoven",
+      "stationId": "EHEH",
+      "name": "Eindhoven Arpt",
+      "coordinates": [
+        5.377,
+        51.45
+      ],
+      "elevationM": 20,
+      "distanceKm": 7.1
+    },
+    {
+      "locationId": "nl-groningen",
+      "stationId": "EHGG",
+      "name": "Groningen Arpt",
+      "coordinates": [
+        6.579,
+        53.12
+      ],
+      "elevationM": 2,
+      "distanceKm": 11.1
+    },
+    {
+      "locationId": "nl-haarlem",
+      "stationId": "EHAM",
+      "name": "Amsterdam/Schiphol Arpt",
+      "coordinates": [
+        4.79,
+        52.315
+      ],
+      "elevationM": -2,
+      "distanceKm": 12.7
+    },
+    {
+      "locationId": "nl-heerlen",
+      "stationId": "EHBK",
+      "name": "Maastricht/Aachen Arpt",
+      "coordinates": [
+        5.762,
+        50.905
+      ],
+      "elevationM": 112,
+      "distanceKm": 15.6
+    },
+    {
+      "locationId": "nl-hoofddorp",
+      "stationId": "EHAM",
+      "name": "Amsterdam/Schiphol Arpt",
+      "coordinates": [
+        4.79,
+        52.315
+      ],
+      "elevationM": -2,
+      "distanceKm": 7
+    },
+    {
+      "locationId": "nl-leeuwarden",
+      "stationId": "EHLW",
+      "name": "Leeuwarden Arpt",
+      "coordinates": [
+        5.752,
+        53.223
+      ],
+      "elevationM": 1,
+      "distanceKm": 4.5
+    },
+    {
+      "locationId": "nl-leiden",
+      "stationId": "EHRD",
+      "name": "Rotterdam/The Hague Arpt",
+      "coordinates": [
+        4.444,
+        51.954
+      ],
+      "elevationM": -4,
+      "distanceKm": 23
+    },
+    {
+      "locationId": "nl-maastricht",
+      "stationId": "EHBK",
+      "name": "Maastricht/Aachen Arpt",
+      "coordinates": [
+        5.762,
+        50.905
+      ],
+      "elevationM": 112,
+      "distanceKm": 8.1
+    },
+    {
+      "locationId": "nl-nijmegen",
+      "stationId": "EHVK",
+      "name": "Volkel Arpt",
+      "coordinates": [
+        5.707,
+        51.658
+      ],
+      "elevationM": 20,
+      "distanceKm": 22.8
+    },
+    {
+      "locationId": "nl-rotterdam",
+      "stationId": "EHRD",
+      "name": "Rotterdam/The Hague Arpt",
+      "coordinates": [
+        4.444,
+        51.954
+      ],
+      "elevationM": -4,
+      "distanceKm": 4.3
+    },
+    {
+      "locationId": "nl-tilburg",
+      "stationId": "EHEH",
+      "name": "Eindhoven Arpt",
+      "coordinates": [
+        5.377,
+        51.45
+      ],
+      "elevationM": 20,
+      "distanceKm": 23
+    },
+    {
+      "locationId": "nl-zaanstad",
+      "stationId": "EHAM",
+      "name": "Amsterdam/Schiphol Arpt",
+      "coordinates": [
+        4.79,
+        52.315
+      ],
+      "elevationM": -2,
+      "distanceKm": 15.4
+    },
+    {
+      "locationId": "nl-zoetermeer",
+      "stationId": "EHRD",
+      "name": "Rotterdam/The Hague Arpt",
+      "coordinates": [
+        4.444,
+        51.954
+      ],
+      "elevationM": -4,
+      "distanceKm": 12
+    },
+    {
+      "locationId": "pl-bydgoszcz",
+      "stationId": "EPBY",
+      "name": "Bydgoszcz Arpt",
+      "coordinates": [
+        17.9949,
+        53.0962
+      ],
+      "elevationM": 66,
+      "distanceKm": 3.2
+    },
+    {
+      "locationId": "pl-bytom",
+      "stationId": "EPKT",
+      "name": "Katowice/Pyrzowice Arpt",
+      "coordinates": [
+        19.085,
+        50.478
+      ],
+      "elevationM": 296,
+      "distanceKm": 18
+    },
+    {
+      "locationId": "pl-gdansk",
+      "stationId": "EPGD",
+      "name": "Gdańsk/Wałęsa Arpt",
+      "coordinates": [
+        18.466,
+        54.379
+      ],
+      "elevationM": 136,
+      "distanceKm": 12.2
+    },
+    {
+      "locationId": "pl-gdynia",
+      "stationId": "EPGD",
+      "name": "Gdańsk/Wałęsa Arpt",
+      "coordinates": [
+        18.466,
+        54.379
+      ],
+      "elevationM": 136,
+      "distanceKm": 16.1
+    },
+    {
+      "locationId": "pl-katowice",
+      "stationId": "EPKT",
+      "name": "Katowice/Pyrzowice Arpt",
+      "coordinates": [
+        19.085,
+        50.478
+      ],
+      "elevationM": 296,
+      "distanceKm": 24.7
+    },
+    {
+      "locationId": "pl-krakow",
+      "stationId": "EPKK",
+      "name": "Kraków/Paul II Arpt",
+      "coordinates": [
+        19.797,
+        50.078
+      ],
+      "elevationM": 237,
+      "distanceKm": 10.1
+    },
+    {
+      "locationId": "pl-lodz",
+      "stationId": "EPLL",
+      "name": "Łódź Arpt",
+      "coordinates": [
+        19.401,
+        51.724
+      ],
+      "elevationM": 176,
+      "distanceKm": 7.2
+    },
+    {
+      "locationId": "pl-lublin",
+      "stationId": "EPLB",
+      "name": "Lublin Arpt",
+      "coordinates": [
+        22.714,
+        51.239
+      ],
+      "elevationM": 206,
+      "distanceKm": 10.1
+    },
+    {
+      "locationId": "pl-mokotow",
+      "stationId": "EPWA",
+      "name": "Warsaw/Chopin Arpt",
+      "coordinates": [
+        20.961,
+        52.163
+      ],
+      "elevationM": 107,
+      "distanceKm": 6.1
+    },
+    {
+      "locationId": "pl-poznan",
+      "stationId": "EPPO",
+      "name": "Poznań/Ławica Arpt",
+      "coordinates": [
+        16.835,
+        52.417
+      ],
+      "elevationM": 87,
+      "distanceKm": 6.5
+    },
+    {
+      "locationId": "pl-praga-poludnie",
+      "stationId": "EPWA",
+      "name": "Warsaw/Chopin Arpt",
+      "coordinates": [
+        20.961,
+        52.163
+      ],
+      "elevationM": 107,
+      "distanceKm": 12.4
+    },
+    {
+      "locationId": "pl-radom",
+      "stationId": "EPRA",
+      "name": "Radom Arpt",
+      "coordinates": [
+        21.211,
+        51.39
+      ],
+      "elevationM": 182,
+      "distanceKm": 4.6
+    },
+    {
+      "locationId": "pl-rzeszow",
+      "stationId": "EPRZ",
+      "name": "Rzeszów/Jasionka Arpt",
+      "coordinates": [
+        22.025,
+        50.112
+      ],
+      "elevationM": 206,
+      "distanceKm": 8.1
+    },
+    {
+      "locationId": "pl-sosnowiec",
+      "stationId": "EPKT",
+      "name": "Katowice/Pyrzowice Arpt",
+      "coordinates": [
+        19.085,
+        50.478
+      ],
+      "elevationM": 296,
+      "distanceKm": 21.3
+    },
+    {
+      "locationId": "pl-ursynow",
+      "stationId": "EPWA",
+      "name": "Warsaw/Chopin Arpt",
+      "coordinates": [
+        20.961,
+        52.163
+      ],
+      "elevationM": 107,
+      "distanceKm": 6.3
+    },
+    {
+      "locationId": "pl-warsaw",
+      "stationId": "EPWA",
+      "name": "Warsaw/Chopin Arpt",
+      "coordinates": [
+        20.961,
+        52.163
+      ],
+      "elevationM": 107,
+      "distanceKm": 8.2
+    },
+    {
+      "locationId": "pl-wroclaw",
+      "stationId": "EPWR",
+      "name": "Wrocław/Strachowice Arpt",
+      "coordinates": [
+        16.8998,
+        51.1032
+      ],
+      "elevationM": 118,
+      "distanceKm": 9.1
+    },
+    {
+      "locationId": "pt-algueirao",
+      "stationId": "LPCS",
+      "name": "Cascais Arpt",
+      "coordinates": [
+        -9.355,
+        38.725
+      ],
+      "elevationM": 99,
+      "distanceKm": 8.1
+    },
+    {
+      "locationId": "pt-amadora",
+      "stationId": "LPPT",
+      "name": "Lisbon Arpt",
+      "coordinates": [
+        -9.136,
+        38.781
+      ],
+      "elevationM": 98,
+      "distanceKm": 8.8
+    },
+    {
+      "locationId": "pt-cacem",
+      "stationId": "LPCS",
+      "name": "Cascais Arpt",
+      "coordinates": [
+        -9.355,
+        38.725
+      ],
+      "elevationM": 99,
+      "distanceKm": 6.8
+    },
+    {
+      "locationId": "pt-faro",
+      "stationId": "LPFR",
+      "name": "Faro Arpt",
+      "coordinates": [
+        -7.966,
+        37.014
+      ],
+      "elevationM": 3,
+      "distanceKm": 3.5
+    },
+    {
+      "locationId": "pt-funchal",
+      "stationId": "LPMA",
+      "name": "Madeira Arpt",
+      "coordinates": [
+        -16.774,
+        32.698
+      ],
+      "elevationM": 54,
+      "distanceKm": 14.6
+    },
+    {
+      "locationId": "pt-horta",
+      "stationId": "LPHR",
+      "name": "Horta Arpt",
+      "coordinates": [
+        -28.714,
+        38.521
+      ],
+      "elevationM": 39,
+      "distanceKm": 7.8
+    },
+    {
+      "locationId": "pt-lisbon",
+      "stationId": "LPPT",
+      "name": "Lisbon Arpt",
+      "coordinates": [
+        -9.136,
+        38.781
+      ],
+      "elevationM": 98,
+      "distanceKm": 6.3
+    },
+    {
+      "locationId": "pt-loures",
+      "stationId": "LPPT",
+      "name": "Lisbon Arpt",
+      "coordinates": [
+        -9.136,
+        38.781
+      ],
+      "elevationM": 98,
+      "distanceKm": 6.2
+    },
+    {
+      "locationId": "pt-ponta-delgada",
+      "stationId": "LPPD",
+      "name": "Ponta Delgada/Paulo II Arpt",
+      "coordinates": [
+        -25.698,
+        37.741
+      ],
+      "elevationM": 62,
+      "distanceKm": 2.8
+    },
+    {
+      "locationId": "pt-porto",
+      "stationId": "LPPR",
+      "name": "Porto/Cameriro Arpt",
+      "coordinates": [
+        -8.684,
+        41.235
+      ],
+      "elevationM": 64,
+      "distanceKm": 11.4
+    },
+    {
+      "locationId": "pt-queluz",
+      "stationId": "LPCS",
+      "name": "Cascais Arpt",
+      "coordinates": [
+        -9.355,
+        38.725
+      ],
+      "elevationM": 99,
+      "distanceKm": 9.4
+    },
+    {
+      "locationId": "pt-santa-cruz-das-flores",
+      "stationId": "LPFL",
+      "name": "Azores/Flores Arpt",
+      "coordinates": [
+        -31.131,
+        39.455
+      ],
+      "elevationM": 35,
+      "distanceKm": 0.3
+    },
+    {
+      "locationId": "pt-vila-nova-de-gaia",
+      "stationId": "LPPR",
+      "name": "Porto/Cameriro Arpt",
+      "coordinates": [
+        -8.684,
+        41.235
+      ],
+      "elevationM": 64,
+      "distanceKm": 13.7
+    },
+    {
+      "locationId": "ro-arad",
+      "stationId": "LRAR",
+      "name": "Arad Intl",
+      "coordinates": [
+        21.264,
+        46.176
+      ],
+      "elevationM": 102,
+      "distanceKm": 4.1
+    },
+    {
+      "locationId": "ro-bacau",
+      "stationId": "LRBC",
+      "name": "Bacău Intl",
+      "coordinates": [
+        26.91,
+        46.522
+      ],
+      "elevationM": 183,
+      "distanceKm": 5
+    },
+    {
+      "locationId": "ro-baia-mare",
+      "stationId": "LRBM",
+      "name": "Baia Mare Arpt",
+      "coordinates": [
+        23.47,
+        47.658
+      ],
+      "elevationM": 180,
+      "distanceKm": 7.3
+    },
+    {
+      "locationId": "ro-botosani",
+      "stationId": "LRSV",
+      "name": "Suceava/Salcea Arpt",
+      "coordinates": [
+        26.354,
+        47.686
+      ],
+      "elevationM": 406,
+      "distanceKm": 24.4
+    },
+    {
+      "locationId": "ro-brasov",
+      "stationId": "LRBV",
+      "name": "Brașov-Ghimbav Intl",
+      "coordinates": [
+        25.524,
+        45.706
+      ],
+      "elevationM": 538,
+      "distanceKm": 9
+    },
+    {
+      "locationId": "ro-bucharest",
+      "stationId": "LRBS",
+      "name": "Bucharest/Băneasa Intl",
+      "coordinates": [
+        26.078,
+        44.511
+      ],
+      "elevationM": 91,
+      "distanceKm": 9
+    },
+    {
+      "locationId": "ro-cluj-napoca",
+      "stationId": "LRCL",
+      "name": "Cluj-Napoca Intl",
+      "coordinates": [
+        23.676,
+        46.783
+      ],
+      "elevationM": 313,
+      "distanceKm": 6.1
+    },
+    {
+      "locationId": "ro-constanta",
+      "stationId": "LRCK",
+      "name": "Constanta/Kogălniceanu Arpt",
+      "coordinates": [
+        28.488,
+        44.362
+      ],
+      "elevationM": 108,
+      "distanceKm": 23.3
+    },
+    {
+      "locationId": "ro-craiova",
+      "stationId": "LRCV",
+      "name": "Craiova Arpt",
+      "coordinates": [
+        23.867,
+        44.31
+      ],
+      "elevationM": 192,
+      "distanceKm": 5.4
+    },
+    {
+      "locationId": "ro-iasi",
+      "stationId": "LRIA",
+      "name": "Iaşi Intl",
+      "coordinates": [
+        27.627,
+        47.164
+      ],
+      "elevationM": 71,
+      "distanceKm": 2.1
+    },
+    {
+      "locationId": "ro-oradea",
+      "stationId": "LROD",
+      "name": "Oradea Intl",
+      "coordinates": [
+        21.896,
+        47.036
+      ],
+      "elevationM": 132,
+      "distanceKm": 2
+    },
+    {
+      "locationId": "ro-satu-mare",
+      "stationId": "LRSM",
+      "name": "Satu Mare Arpt",
+      "coordinates": [
+        22.886,
+        47.703
+      ],
+      "elevationM": 123,
+      "distanceKm": 10.8
+    },
+    {
+      "locationId": "ro-sibiu",
+      "stationId": "LRSB",
+      "name": "Sibiu Intl",
+      "coordinates": [
+        24.091,
+        45.789
+      ],
+      "elevationM": 442,
+      "distanceKm": 4.7
+    },
+    {
+      "locationId": "ro-suceava",
+      "stationId": "LRSV",
+      "name": "Suceava/Salcea Arpt",
+      "coordinates": [
+        26.354,
+        47.686
+      ],
+      "elevationM": 406,
+      "distanceKm": 9.7
+    },
+    {
+      "locationId": "ro-targu-mures",
+      "stationId": "LRTM",
+      "name": "Targu Mures Arpt",
+      "coordinates": [
+        24.421,
+        46.468
+      ],
+      "elevationM": 289,
+      "distanceKm": 13.3
+    },
+    {
+      "locationId": "ro-timisoara",
+      "stationId": "LRTR",
+      "name": "Timişoara/Traian Vuia Arpt",
+      "coordinates": [
+        21.333,
+        45.811
+      ],
+      "elevationM": 104,
+      "distanceKm": 10.5
+    },
+    {
+      "locationId": "se-gothenburg",
+      "stationId": "ESGP",
+      "name": "Goteborg/City Arpt",
+      "coordinates": [
+        11.869,
+        57.781
+      ],
+      "elevationM": 15,
+      "distanceKm": 10.1
+    },
+    {
+      "locationId": "se-halmstad",
+      "stationId": "ESMT",
+      "name": "Halmstad Arpt",
+      "coordinates": [
+        12.82,
+        56.691
+      ],
+      "elevationM": 24,
+      "distanceKm": 2.9
+    },
+    {
+      "locationId": "se-haninge",
+      "stationId": "ESSB",
+      "name": "Stockholm/Bromma Arpt",
+      "coordinates": [
+        17.933,
+        59.356
+      ],
+      "elevationM": 14,
+      "distanceKm": 24.1
+    },
+    {
+      "locationId": "se-huddinge",
+      "stationId": "ESSB",
+      "name": "Stockholm/Bromma Arpt",
+      "coordinates": [
+        17.933,
+        59.356
+      ],
+      "elevationM": 14,
+      "distanceKm": 13.5
+    },
+    {
+      "locationId": "se-joenkoeping",
+      "stationId": "ESGJ",
+      "name": "Jönköping Arpt",
+      "coordinates": [
+        14.069,
+        57.752
+      ],
+      "elevationM": 224,
+      "distanceKm": 6.1
+    },
+    {
+      "locationId": "se-karlskrona",
+      "stationId": "ESDF",
+      "name": "Ronneby Arpt",
+      "coordinates": [
+        15.267,
+        56.266
+      ],
+      "elevationM": 52,
+      "distanceKm": 22.9
+    },
+    {
+      "locationId": "se-karlstad",
+      "stationId": "ESOK",
+      "name": "Karlstad Arpt",
+      "coordinates": [
+        13.342,
+        59.442
+      ],
+      "elevationM": 101,
+      "distanceKm": 11.5
+    },
+    {
+      "locationId": "se-linkoeping",
+      "stationId": "ESSL",
+      "name": "Linköping City Arpt",
+      "coordinates": [
+        15.681,
+        58.406
+      ],
+      "elevationM": 51,
+      "distanceKm": 3.5
+    },
+    {
+      "locationId": "se-lulea",
+      "stationId": "ESPA",
+      "name": "Luleå Arpt",
+      "coordinates": [
+        22.126,
+        65.541
+      ],
+      "elevationM": 12,
+      "distanceKm": 5
+    },
+    {
+      "locationId": "se-lund",
+      "stationId": "ESMS",
+      "name": "Malmo/Sturup Arpt",
+      "coordinates": [
+        13.373,
+        55.539
+      ],
+      "elevationM": 68,
+      "distanceKm": 21.7
+    },
+    {
+      "locationId": "se-malmoe",
+      "stationId": "EKCH",
+      "name": "Kobenhavn Intl",
+      "coordinates": [
+        12.656,
+        55.618
+      ],
+      "elevationM": 4,
+      "distanceKm": 21.7
+    },
+    {
+      "locationId": "se-moelndal",
+      "stationId": "ESGG",
+      "name": "Göteborg/Landvetter Arpt",
+      "coordinates": [
+        12.285,
+        57.667
+      ],
+      "elevationM": 152,
+      "distanceKm": 16.2
+    },
+    {
+      "locationId": "se-norrkoeping",
+      "stationId": "ESSP",
+      "name": "Norrköping Arpt",
+      "coordinates": [
+        16.255,
+        58.584
+      ],
+      "elevationM": 3,
+      "distanceKm": 4.3
+    },
+    {
+      "locationId": "se-oerebro",
+      "stationId": "ESOE",
+      "name": "Örebro Arpt",
+      "coordinates": [
+        15.046,
+        59.229
+      ],
+      "elevationM": 57,
+      "distanceKm": 10.4
+    },
+    {
+      "locationId": "se-soedertaelje",
+      "stationId": "ESSB",
+      "name": "Stockholm/Bromma Arpt",
+      "coordinates": [
+        17.933,
+        59.356
+      ],
+      "elevationM": 14,
+      "distanceKm": 25
+    },
+    {
+      "locationId": "se-sollentuna",
+      "stationId": "ESSB",
+      "name": "Stockholm/Bromma Arpt",
+      "coordinates": [
+        17.933,
+        59.356
+      ],
+      "elevationM": 14,
+      "distanceKm": 8.1
+    },
+    {
+      "locationId": "se-solna",
+      "stationId": "ESSB",
+      "name": "Stockholm/Bromma Arpt",
+      "coordinates": [
+        17.933,
+        59.356
+      ],
+      "elevationM": 14,
+      "distanceKm": 3.9
+    },
+    {
+      "locationId": "se-stockholm",
+      "stationId": "ESSB",
+      "name": "Stockholm/Bromma Arpt",
+      "coordinates": [
+        17.933,
+        59.356
+      ],
+      "elevationM": 14,
+      "distanceKm": 8.2
+    },
+    {
+      "locationId": "se-sundsvall",
+      "stationId": "ESNN",
+      "name": "Sundsvall-Timra Arpt",
+      "coordinates": [
+        17.436,
+        62.532
+      ],
+      "elevationM": 4,
+      "distanceKm": 17
+    },
+    {
+      "locationId": "se-taby",
+      "stationId": "ESSB",
+      "name": "Stockholm/Bromma Arpt",
+      "coordinates": [
+        17.933,
+        59.356
+      ],
+      "elevationM": 14,
+      "distanceKm": 12.4
+    },
+    {
+      "locationId": "se-umea",
+      "stationId": "ESNU",
+      "name": "Umeå Arpt",
+      "coordinates": [
+        20.285,
+        63.789
+      ],
+      "elevationM": 8,
+      "distanceKm": 4.6
+    },
+    {
+      "locationId": "se-uppsala",
+      "stationId": "ESCM",
+      "name": "Uppsala Arpt",
+      "coordinates": [
+        17.589,
+        59.899
+      ],
+      "elevationM": 21,
+      "distanceKm": 5.3
+    },
+    {
+      "locationId": "se-vaesteras",
+      "stationId": "ESOW",
+      "name": "Stockholm/Västerås Arpt",
+      "coordinates": [
+        16.638,
+        59.595
+      ],
+      "elevationM": 7,
+      "distanceKm": 5.3
+    },
+    {
+      "locationId": "se-vaexjoe",
+      "stationId": "ESMX",
+      "name": "Växjö Arpt",
+      "coordinates": [
+        14.73,
+        56.927
+      ],
+      "elevationM": 176,
+      "distanceKm": 7.3
+    },
+    {
+      "locationId": "si-koper",
+      "stationId": "LJPZ",
+      "name": "Portorož Arpt",
+      "coordinates": [
+        13.615,
+        45.473
+      ],
+      "elevationM": 2,
+      "distanceKm": 12.2
+    },
+    {
+      "locationId": "si-kranj",
+      "stationId": "LJLJ",
+      "name": "Ljubljana/Pucnik Arpt",
+      "coordinates": [
+        14.477,
+        46.218
+      ],
+      "elevationM": 363,
+      "distanceKm": 9.6
+    },
+    {
+      "locationId": "si-ljubljana",
+      "stationId": "LJLJ",
+      "name": "Ljubljana/Pucnik Arpt",
+      "coordinates": [
+        14.477,
+        46.218
+      ],
+      "elevationM": 363,
+      "distanceKm": 18.7
+    },
+    {
+      "locationId": "si-maribor",
+      "stationId": "LJMB",
+      "name": "Maribor/Rusjan Arpt",
+      "coordinates": [
+        15.682,
+        46.48
+      ],
+      "elevationM": 263,
+      "distanceKm": 8.9
+    },
+    {
+      "locationId": "sk-banska-bystrica",
+      "stationId": "LZSL",
+      "name": "Sliač Arpt",
+      "coordinates": [
+        19.14,
+        48.639
+      ],
+      "elevationM": 311,
+      "distanceKm": 11.2
+    },
+    {
+      "locationId": "sk-bratislava",
+      "stationId": "LZIB",
+      "name": "Bratislava/Ivanka Arpt",
+      "coordinates": [
+        17.207,
+        48.17
+      ],
+      "elevationM": 129,
+      "distanceKm": 7.8
+    },
+    {
+      "locationId": "sk-kosice",
+      "stationId": "LZKZ",
+      "name": "Košice Intl",
+      "coordinates": [
+        21.24,
+        48.661
+      ],
+      "elevationM": 227,
+      "distanceKm": 6.1
+    },
+    {
+      "locationId": "sk-nitra",
+      "stationId": "LZNI",
+      "name": "Nitra Arpt",
+      "coordinates": [
+        18.136,
+        48.278
+      ],
+      "elevationM": 131,
+      "distanceKm": 5
+    },
+    {
+      "locationId": "sk-petrzalka",
+      "stationId": "LZIB",
+      "name": "Bratislava/Ivanka Arpt",
+      "coordinates": [
+        17.207,
+        48.17
+      ],
+      "elevationM": 129,
+      "distanceKm": 7.8
+    },
+    {
+      "locationId": "sk-zilina",
+      "stationId": "LZZI",
+      "name": "Žilina Arpt",
+      "coordinates": [
+        18.613,
+        49.231
+      ],
+      "elevationM": 311,
+      "distanceKm": 9.2
+    }
+  ]
+}

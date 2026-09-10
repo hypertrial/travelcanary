@@ -1,0 +1,478 @@
+{
+  "schemaVersion": 2,
+  "reviewedAt": "2026-08-30",
+  "stationSource": "https://opendata.chmi.cz/hydrology/now/metadata/meta1.json",
+  "geometrySource": {
+    "url": "https://ags.cuzk.cz/arcgis/rest/services/RUIAN/Vyhledavaci_sluzba_nad_daty_RUIAN/MapServer/14",
+    "downloadedAt": "2026-08-30",
+    "sha256": "6f42b0d9e7666b0328338cc3ecd7b37071a379d657475081e95366e34871ec74",
+    "featureCount": 206
+  },
+  "bulletinContract": "https://opendata.chmi.cz/hydrology/product/metadata/flash_flood/popis_flash_flood.pdf",
+  "mappings": [
+    {
+      "locationId": "cz-bohemian-switzerland",
+      "orpCodes": [
+        "701",
+        "710",
+        "728",
+        "736",
+        "744",
+        "922"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-244000",
+          "dbc": "244000",
+          "name": "Hřensko",
+          "stream": "Kamenice",
+          "kind": "H",
+          "spa1": 80,
+          "spa2": 110,
+          "spa3": 140
+        }
+      ]
+    },
+    {
+      "locationId": "cz-brno",
+      "orpCodes": [
+        "1295",
+        "1317",
+        "1325",
+        "1333",
+        "1341",
+        "1350",
+        "1368",
+        "1376",
+        "1635"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-457000",
+          "dbc": "457000",
+          "name": "Bílovice nad Svitavou",
+          "stream": "Svitava",
+          "kind": "H",
+          "spa1": 200,
+          "spa2": 270,
+          "spa3": 350
+        }
+      ]
+    },
+    {
+      "locationId": "cz-brno-stred",
+      "orpCodes": [
+        "1295",
+        "1317",
+        "1325",
+        "1333",
+        "1341",
+        "1350",
+        "1368",
+        "1376",
+        "1635"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-457000",
+          "dbc": "457000",
+          "name": "Bílovice nad Svitavou",
+          "stream": "Svitava",
+          "kind": "H",
+          "spa1": 200,
+          "spa2": 270,
+          "spa3": 350
+        }
+      ]
+    },
+    {
+      "locationId": "cz-ceske-budejovice",
+      "orpCodes": [
+        "281",
+        "302",
+        "311",
+        "329",
+        "353",
+        "418"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-115100",
+          "dbc": "115100",
+          "name": "České Budějovice",
+          "stream": "Vltava",
+          "kind": "H",
+          "spa1": 300,
+          "spa2": 370,
+          "spa3": 430
+        }
+      ]
+    },
+    {
+      "locationId": "cz-havirov",
+      "orpCodes": [
+        "1741",
+        "1775",
+        "1783",
+        "1791",
+        "1805",
+        "1813",
+        "1821",
+        "1961"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-291000",
+          "dbc": "291000",
+          "name": "Žermanice pod nádrží",
+          "stream": "Lučina",
+          "kind": "Q",
+          "spa1": 15,
+          "spa2": 20,
+          "spa3": 30
+        }
+      ]
+    },
+    {
+      "locationId": "cz-hradec-kralove",
+      "orpCodes": [
+        "965",
+        "1007",
+        "1040",
+        "1074",
+        "1082",
+        "1104",
+        "1112"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-042000",
+          "dbc": "042000",
+          "name": "Němčice",
+          "stream": "Labe",
+          "kind": "H",
+          "spa1": 350,
+          "spa2": 400,
+          "spa3": 450
+        }
+      ]
+    },
+    {
+      "locationId": "cz-kladno",
+      "orpCodes": [
+        "19",
+        "51",
+        "78",
+        "86",
+        "132",
+        "230",
+        "272"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-201990",
+          "dbc": "201990",
+          "name": "Praha - Jiviny",
+          "stream": "Litovický potok",
+          "kind": "H",
+          "spa1": 105,
+          "spa2": 115,
+          "spa3": 125
+        }
+      ]
+    },
+    {
+      "locationId": "cz-krkonose-mountains",
+      "orpCodes": [
+        "787",
+        "795",
+        "809",
+        "1015",
+        "1023",
+        "1031",
+        "1066",
+        "1139",
+        "1147",
+        "1155",
+        "1201",
+        "1210",
+        "1228"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-001000",
+          "dbc": "001000",
+          "name": "Špindlerův Mlýn",
+          "stream": "Labe",
+          "kind": "H",
+          "spa1": 165,
+          "spa2": 200,
+          "spa3": 220
+        }
+      ]
+    },
+    {
+      "locationId": "cz-liberec",
+      "orpCodes": [
+        "710",
+        "779",
+        "787",
+        "795",
+        "809",
+        "817",
+        "1155"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-316000",
+          "dbc": "316000",
+          "name": "Liberec",
+          "stream": "Lužická Nisa",
+          "kind": "H",
+          "spa1": 85,
+          "spa2": 125,
+          "spa3": 160
+        }
+      ]
+    },
+    {
+      "locationId": "cz-most",
+      "orpCodes": [
+        "752",
+        "850",
+        "876",
+        "884",
+        "892",
+        "906",
+        "914"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-216000",
+          "dbc": "216000",
+          "name": "Žatec",
+          "stream": "Ohře",
+          "kind": "H",
+          "spa1": 250,
+          "spa2": 500,
+          "spa3": 700
+        }
+      ]
+    },
+    {
+      "locationId": "cz-olomouc",
+      "orpCodes": [
+        "1562",
+        "1881",
+        "1899",
+        "1911",
+        "1996"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-367000",
+          "dbc": "367000",
+          "name": "Olomouc-Nové Sady tok",
+          "stream": "Morava",
+          "kind": "H",
+          "spa1": 360,
+          "spa2": 390,
+          "spa3": 430
+        }
+      ]
+    },
+    {
+      "locationId": "cz-opava",
+      "orpCodes": [
+        "1716",
+        "1724",
+        "1830",
+        "1929",
+        "1937",
+        "1945",
+        "1953",
+        "1961"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-266000",
+          "dbc": "266000",
+          "name": "Opava",
+          "stream": "Opava",
+          "kind": "H",
+          "spa1": 250,
+          "spa2": 300,
+          "spa3": 350
+        }
+      ]
+    },
+    {
+      "locationId": "cz-ostrava",
+      "orpCodes": [
+        "1741",
+        "1783",
+        "1791",
+        "1805",
+        "1813",
+        "1830",
+        "1856",
+        "1929",
+        "1945",
+        "1961"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-293000",
+          "dbc": "293000",
+          "name": "Ostrava",
+          "stream": "Ostravice",
+          "kind": "H",
+          "spa1": 290,
+          "spa2": 400,
+          "spa3": 530
+        }
+      ]
+    },
+    {
+      "locationId": "cz-pardubice",
+      "orpCodes": [
+        "965",
+        "981",
+        "1074",
+        "1082",
+        "1091"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-059000",
+          "dbc": "059000",
+          "name": "Nemošice",
+          "stream": "Chrudimka",
+          "kind": "H",
+          "spa1": 150,
+          "spa2": 180,
+          "spa3": 220
+        }
+      ]
+    },
+    {
+      "locationId": "cz-pilsen",
+      "orpCodes": [
+        "582",
+        "591",
+        "612",
+        "621",
+        "639",
+        "647",
+        "655"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-186000",
+          "dbc": "186000",
+          "name": "Bílá Hora",
+          "stream": "Berounka",
+          "kind": "H",
+          "spa1": 250,
+          "spa2": 350,
+          "spa3": 450
+        }
+      ]
+    },
+    {
+      "locationId": "cz-prague",
+      "orpCodes": [
+        "19",
+        "78",
+        "132",
+        "213",
+        "221",
+        "230"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-200600",
+          "dbc": "200600",
+          "name": "Praha - Nusle",
+          "stream": "Botič",
+          "kind": "H",
+          "spa1": 120,
+          "spa2": 160,
+          "spa3": 220
+        }
+      ]
+    },
+    {
+      "locationId": "cz-stodulky",
+      "orpCodes": [
+        "19",
+        "51",
+        "78",
+        "213",
+        "230"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-201990",
+          "dbc": "201990",
+          "name": "Praha - Jiviny",
+          "stream": "Litovický potok",
+          "kind": "H",
+          "spa1": 105,
+          "spa2": 115,
+          "spa3": 125
+        }
+      ]
+    },
+    {
+      "locationId": "cz-usti-nad-labem",
+      "orpCodes": [
+        "728",
+        "825",
+        "833",
+        "906",
+        "914",
+        "922"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-221000",
+          "dbc": "221000",
+          "name": "Ústí nad Labem",
+          "stream": "Labe",
+          "kind": "H",
+          "spa1": 450,
+          "spa2": 530,
+          "spa3": 600
+        }
+      ]
+    },
+    {
+      "locationId": "cz-zlin",
+      "orpCodes": [
+        "1422",
+        "1431",
+        "1449",
+        "1457",
+        "1465",
+        "1520",
+        "1538",
+        "1546",
+        "1601",
+        "1619"
+      ],
+      "stations": [
+        {
+          "objID": "0-203-1-412000",
+          "dbc": "412000",
+          "name": "Zlín",
+          "stream": "Dřevnice",
+          "kind": "H",
+          "spa1": 170,
+          "spa2": 200,
+          "spa3": 260
+        }
+      ]
+    }
+  ]
+}

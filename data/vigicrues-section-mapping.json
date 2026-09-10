@@ -1,0 +1,248 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": "https://www.vigicrues.gouv.fr/services/InfoVigiCru.geojson",
+  "license": "Licence Ouverte / Open Licence 2.0",
+  "mappings": [
+    {
+      "locationId": "fr-angers",
+      "sectionCodes": [
+        "ML11",
+        "ML14",
+        "ML9"
+      ]
+    },
+    {
+      "locationId": "fr-bordeaux",
+      "sectionCodes": [
+        "DO22"
+      ]
+    },
+    {
+      "locationId": "fr-clermont-ferrand",
+      "sectionCodes": [
+        "AL3"
+      ]
+    },
+    {
+      "locationId": "fr-dijon",
+      "sectionCodes": [
+        "RS23"
+      ]
+    },
+    {
+      "locationId": "fr-french-alps",
+      "sectionCodes": [
+        "AN11",
+        "AN12",
+        "AN13",
+        "AN14",
+        "AN20",
+        "AN30",
+        "AN31",
+        "AN40",
+        "AN41",
+        "AN42",
+        "AN43",
+        "AN44",
+        "GA21",
+        "GA30",
+        "ME10",
+        "ME9",
+        "RS130",
+        "RS131"
+      ]
+    },
+    {
+      "locationId": "fr-french-riviera",
+      "sectionCodes": [
+        "GA21",
+        "ME3",
+        "ME4",
+        "ME5",
+        "ME6",
+        "ME7",
+        "ME9"
+      ]
+    },
+    {
+      "locationId": "fr-grenoble",
+      "sectionCodes": [
+        "AN11",
+        "AN12",
+        "AN20",
+        "AN30",
+        "AN31"
+      ]
+    },
+    {
+      "locationId": "fr-le-havre",
+      "sectionCodes": [
+        "NO40"
+      ]
+    },
+    {
+      "locationId": "fr-lille",
+      "sectionCodes": [
+        "AP14",
+        "OA14"
+      ]
+    },
+    {
+      "locationId": "fr-lyon",
+      "sectionCodes": [
+        "RS100",
+        "RS11",
+        "RS12",
+        "RS14"
+      ]
+    },
+    {
+      "locationId": "fr-marne-la-vallee",
+      "sectionCodes": [
+        "IF16",
+        "IF17"
+      ]
+    },
+    {
+      "locationId": "fr-marseille",
+      "sectionCodes": [
+        "ME1"
+      ]
+    },
+    {
+      "locationId": "fr-montpellier",
+      "sectionCodes": [
+        "MO14"
+      ]
+    },
+    {
+      "locationId": "fr-nantes",
+      "sectionCodes": [
+        "ML15",
+        "ML18"
+      ]
+    },
+    {
+      "locationId": "fr-nice",
+      "sectionCodes": [
+        "ME3",
+        "ME9"
+      ]
+    },
+    {
+      "locationId": "fr-nimes",
+      "sectionCodes": [
+        "GA32",
+        "GA5"
+      ]
+    },
+    {
+      "locationId": "fr-paris",
+      "sectionCodes": [
+        "IF17",
+        "IF3",
+        "IF5"
+      ]
+    },
+    {
+      "locationId": "fr-paris-13-gobelins",
+      "sectionCodes": [
+        "IF17",
+        "IF22",
+        "IF3",
+        "IF5"
+      ]
+    },
+    {
+      "locationId": "fr-paris-15-vaugirard",
+      "sectionCodes": [
+        "IF17",
+        "IF3",
+        "IF5"
+      ]
+    },
+    {
+      "locationId": "fr-paris-16-passy",
+      "sectionCodes": [
+        "IF17",
+        "IF3",
+        "IF5"
+      ]
+    },
+    {
+      "locationId": "fr-paris-17-batignolles-monceau",
+      "sectionCodes": [
+        "IF17",
+        "IF3",
+        "IF5"
+      ]
+    },
+    {
+      "locationId": "fr-paris-18-buttes-montmartre",
+      "sectionCodes": [
+        "IF17",
+        "IF3",
+        "IF5"
+      ]
+    },
+    {
+      "locationId": "fr-paris-19-buttes-chaumont",
+      "sectionCodes": [
+        "IF17",
+        "IF3",
+        "IF5"
+      ]
+    },
+    {
+      "locationId": "fr-paris-20-menilmontant",
+      "sectionCodes": [
+        "IF17",
+        "IF3",
+        "IF5"
+      ]
+    },
+    {
+      "locationId": "fr-rennes",
+      "sectionCodes": [
+        "BT10",
+        "BT11",
+        "BT12",
+        "BT8",
+        "BT9"
+      ]
+    },
+    {
+      "locationId": "fr-saint-etienne",
+      "sectionCodes": [
+        "LC105",
+        "LC126",
+        "RS160"
+      ]
+    },
+    {
+      "locationId": "fr-strasbourg",
+      "sectionCodes": [
+        "SA11",
+        "SA14",
+        "SA15",
+        "SA7"
+      ]
+    },
+    {
+      "locationId": "fr-toulon",
+      "sectionCodes": [
+        "ME7"
+      ]
+    },
+    {
+      "locationId": "fr-toulouse",
+      "sectionCodes": [
+        "MP1",
+        "MP11",
+        "MP17",
+        "MP18",
+        "MP19"
+      ]
+    }
+  ]
+}

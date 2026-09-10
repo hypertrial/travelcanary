@@ -1,0 +1,7109 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-08",
+  "status": "candidate",
+  "baseline": {
+    "catalogVersion": 2,
+    "locationCount": 503,
+    "sha256": "9197d7fc245c7110f785665c98f9b8c18f0c292b9006e703010645a918680a4b"
+  },
+  "source": {
+    "url": "https://download.geonames.org/export/dump/",
+    "license": "CC-BY-4.0",
+    "retrievedAt": "2026-09-08"
+  },
+  "geometryNotice": "GeoNames representative coordinates with explicit approximate local matching radii; park, island and mountain entries do not claim complete named-region boundaries. Source-region, coastal and representativeness checks must pass before activation.",
+  "countries": {
+    "AL": {
+      "name": "Albania",
+      "target": 12
+    },
+    "AD": {
+      "name": "Andorra",
+      "target": 5
+    },
+    "BY": {
+      "name": "Belarus",
+      "target": 8
+    },
+    "BA": {
+      "name": "Bosnia and Herzegovina",
+      "target": 10
+    },
+    "IS": {
+      "name": "Iceland",
+      "target": 12
+    },
+    "XK": {
+      "name": "Kosovo",
+      "target": 6
+    },
+    "LI": {
+      "name": "Liechtenstein",
+      "target": 3
+    },
+    "MD": {
+      "name": "Moldova",
+      "target": 8
+    },
+    "MC": {
+      "name": "Monaco",
+      "target": 1
+    },
+    "ME": {
+      "name": "Montenegro",
+      "target": 8
+    },
+    "MK": {
+      "name": "North Macedonia",
+      "target": 8
+    },
+    "NO": {
+      "name": "Norway",
+      "target": 20
+    },
+    "SM": {
+      "name": "San Marino",
+      "target": 2
+    },
+    "RS": {
+      "name": "Serbia",
+      "target": 12
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "target": 30
+    },
+    "VA": {
+      "name": "Vatican City",
+      "target": 1
+    },
+    "TR": {
+      "name": "Türkiye",
+      "target": 30
+    }
+  },
+  "locations": [
+    {
+      "id": "ad-andorra-la-vella",
+      "name": "Andorra la Vella",
+      "aliases": [],
+      "country": "Andorra",
+      "countryCode": "AD",
+      "type": "capital",
+      "centroid": [
+        1.52109,
+        42.50779
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          1.52109,
+          42.50779
+        ],
+        "radiusKm": 3
+      },
+      "timezone": "Europe/Andorra",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AD",
+      "provenance": {
+        "name": "https://www.geonames.org/3041563",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          1.52109,
+          42.50779
+        ]
+      ]
+    },
+    {
+      "id": "ad-arinsal",
+      "name": "Arinsal",
+      "aliases": [],
+      "country": "Andorra",
+      "countryCode": "AD",
+      "type": "city",
+      "centroid": [
+        1.48453,
+        42.57205
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          1.48453,
+          42.57205
+        ],
+        "radiusKm": 3
+      },
+      "timezone": "Europe/Andorra",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AD",
+      "provenance": {
+        "name": "https://www.geonames.org/3041519",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          1.48453,
+          42.57205
+        ]
+      ]
+    },
+    {
+      "id": "ad-ordino",
+      "name": "Ordino",
+      "aliases": [],
+      "country": "Andorra",
+      "countryCode": "AD",
+      "type": "city",
+      "centroid": [
+        1.53319,
+        42.55623
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          1.53319,
+          42.55623
+        ],
+        "radiusKm": 3
+      },
+      "timezone": "Europe/Andorra",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AD",
+      "provenance": {
+        "name": "https://www.geonames.org/3039678",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          1.53319,
+          42.55623
+        ]
+      ]
+    },
+    {
+      "id": "ad-pas-de-la-casa",
+      "name": "Pas de la Casa",
+      "aliases": [],
+      "country": "Andorra",
+      "countryCode": "AD",
+      "type": "resort",
+      "centroid": [
+        1.73361,
+        42.54277
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          1.73361,
+          42.54277
+        ],
+        "radiusKm": 3
+      },
+      "timezone": "Europe/Andorra",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AD",
+      "provenance": {
+        "name": "https://www.geonames.org/3039604",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          1.73361,
+          42.54277
+        ]
+      ]
+    },
+    {
+      "id": "ad-soldeu",
+      "name": "Soldeu",
+      "aliases": [],
+      "country": "Andorra",
+      "countryCode": "AD",
+      "type": "resort",
+      "centroid": [
+        1.66769,
+        42.57688
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          1.66769,
+          42.57688
+        ],
+        "radiusKm": 3
+      },
+      "timezone": "Europe/Andorra",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AD",
+      "provenance": {
+        "name": "https://www.geonames.org/3038999",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          1.66769,
+          42.57688
+        ]
+      ]
+    },
+    {
+      "id": "al-berat",
+      "name": "Berat",
+      "aliases": [],
+      "country": "Albania",
+      "countryCode": "AL",
+      "type": "city",
+      "centroid": [
+        19.95222,
+        40.70583
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.95222,
+          40.70583
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Tirane",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AL",
+      "provenance": {
+        "name": "https://www.geonames.org/3186084",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          19.95222,
+          40.70583
+        ]
+      ]
+    },
+    {
+      "id": "al-durres",
+      "name": "Durrës",
+      "aliases": [
+        "Durres"
+      ],
+      "country": "Albania",
+      "countryCode": "AL",
+      "type": "city",
+      "centroid": [
+        19.45469,
+        41.32355
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.45469,
+          41.32355
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Tirane",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AL",
+      "provenance": {
+        "name": "https://www.geonames.org/3185728",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          19.45469,
+          41.32355
+        ]
+      ]
+    },
+    {
+      "id": "al-gjirokaster",
+      "name": "Gjirokastër",
+      "aliases": [
+        "Gjirokaster"
+      ],
+      "country": "Albania",
+      "countryCode": "AL",
+      "type": "city",
+      "centroid": [
+        20.13889,
+        40.07583
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.13889,
+          40.07583
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Tirane",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AL",
+      "provenance": {
+        "name": "https://www.geonames.org/783148",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          20.13889,
+          40.07583
+        ]
+      ]
+    },
+    {
+      "id": "al-himare",
+      "name": "Himarë",
+      "aliases": [
+        "Himare"
+      ],
+      "country": "Albania",
+      "countryCode": "AL",
+      "type": "city",
+      "centroid": [
+        19.74472,
+        40.10167
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.74472,
+          40.10167
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Tirane",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AL",
+      "provenance": {
+        "name": "https://www.geonames.org/3185377",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          19.74472,
+          40.10167
+        ]
+      ]
+    },
+    {
+      "id": "al-korce",
+      "name": "Korçë",
+      "aliases": [
+        "Korce"
+      ],
+      "country": "Albania",
+      "countryCode": "AL",
+      "type": "city",
+      "centroid": [
+        20.78083,
+        40.61861
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.78083,
+          40.61861
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Tirane",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AL",
+      "provenance": {
+        "name": "https://www.geonames.org/782756",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          20.78083,
+          40.61861
+        ]
+      ]
+    },
+    {
+      "id": "al-kruje",
+      "name": "Krujë",
+      "aliases": [
+        "Kruje"
+      ],
+      "country": "Albania",
+      "countryCode": "AL",
+      "type": "city",
+      "centroid": [
+        19.79278,
+        41.50917
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.79278,
+          41.50917
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Tirane",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AL",
+      "provenance": {
+        "name": "https://www.geonames.org/3185082",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          19.79278,
+          41.50917
+        ]
+      ]
+    },
+    {
+      "id": "al-sarande",
+      "name": "Sarandë",
+      "aliases": [
+        "Sarande"
+      ],
+      "country": "Albania",
+      "countryCode": "AL",
+      "type": "city",
+      "centroid": [
+        20.00477,
+        39.87534
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.00477,
+          39.87534
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Tirane",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AL",
+      "provenance": {
+        "name": "https://www.geonames.org/363243",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          20.00477,
+          39.87534
+        ]
+      ]
+    },
+    {
+      "id": "al-shkoder",
+      "name": "Shkodër",
+      "aliases": [
+        "Shkoder"
+      ],
+      "country": "Albania",
+      "countryCode": "AL",
+      "type": "city",
+      "centroid": [
+        19.51258,
+        42.06828
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.51258,
+          42.06828
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Tirane",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AL",
+      "provenance": {
+        "name": "https://www.geonames.org/3184081",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          19.51258,
+          42.06828
+        ]
+      ]
+    },
+    {
+      "id": "al-theth",
+      "name": "Theth",
+      "aliases": [],
+      "country": "Albania",
+      "countryCode": "AL",
+      "type": "mountain",
+      "centroid": [
+        19.77444,
+        42.39583
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.77444,
+          42.39583
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Tirane",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AL",
+      "provenance": {
+        "name": "https://www.geonames.org/3183884",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          19.77444,
+          42.39583
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "al-tirana",
+      "name": "Tirana",
+      "aliases": [
+        "Tiranë"
+      ],
+      "country": "Albania",
+      "countryCode": "AL",
+      "type": "capital",
+      "centroid": [
+        19.81866,
+        41.32744
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.81866,
+          41.32744
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Tirane",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AL",
+      "provenance": {
+        "name": "https://www.geonames.org/3183875",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          19.81866,
+          41.32744
+        ]
+      ]
+    },
+    {
+      "id": "al-valbona-valley",
+      "name": "Valbona Valley",
+      "aliases": [],
+      "country": "Albania",
+      "countryCode": "AL",
+      "type": "park",
+      "centroid": [
+        19.87388,
+        42.43053
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.87388,
+          42.43053
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Tirane",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AL",
+      "provenance": {
+        "name": "https://www.geonames.org/12110454",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          19.87388,
+          42.43053
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "al-vlore",
+      "name": "Vlorë",
+      "aliases": [
+        "Vlore"
+      ],
+      "country": "Albania",
+      "countryCode": "AL",
+      "type": "city",
+      "centroid": [
+        19.48379,
+        40.4696
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.48379,
+          40.4696
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Tirane",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "AL",
+      "provenance": {
+        "name": "https://www.geonames.org/3183719",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          19.48379,
+          40.4696
+        ]
+      ]
+    },
+    {
+      "id": "ba-banja-luka",
+      "name": "Banja Luka",
+      "aliases": [],
+      "country": "Bosnia and Herzegovina",
+      "countryCode": "BA",
+      "type": "city",
+      "centroid": [
+        17.20629,
+        44.77879
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          17.20629,
+          44.77879
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Sarajevo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BA",
+      "provenance": {
+        "name": "https://www.geonames.org/3204541",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          17.20629,
+          44.77879
+        ]
+      ]
+    },
+    {
+      "id": "ba-bihac",
+      "name": "Bihać",
+      "aliases": [
+        "Bihac"
+      ],
+      "country": "Bosnia and Herzegovina",
+      "countryCode": "BA",
+      "type": "city",
+      "centroid": [
+        15.87083,
+        44.81694
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          15.87083,
+          44.81694
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Sarajevo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BA",
+      "provenance": {
+        "name": "https://www.geonames.org/3204222",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          15.87083,
+          44.81694
+        ]
+      ]
+    },
+    {
+      "id": "ba-bjelasnica",
+      "name": "Bjelašnica",
+      "aliases": [
+        "Bjelasnica"
+      ],
+      "country": "Bosnia and Herzegovina",
+      "countryCode": "BA",
+      "type": "mountain",
+      "centroid": [
+        18.25667,
+        43.70417
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          18.25667,
+          43.70417
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Sarajevo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BA",
+      "provenance": {
+        "name": "https://www.geonames.org/3204010",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          18.25667,
+          43.70417
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "ba-brcko",
+      "name": "Brčko",
+      "aliases": [
+        "Brcko"
+      ],
+      "country": "Bosnia and Herzegovina",
+      "countryCode": "BA",
+      "type": "city",
+      "centroid": [
+        18.8163,
+        44.87162
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          18.8163,
+          44.87162
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Sarajevo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BA",
+      "provenance": {
+        "name": "https://www.geonames.org/3203521",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          18.8163,
+          44.87162
+        ]
+      ]
+    },
+    {
+      "id": "ba-jahorina",
+      "name": "Jahorina",
+      "aliases": [],
+      "country": "Bosnia and Herzegovina",
+      "countryCode": "BA",
+      "type": "resort",
+      "centroid": [
+        18.56564,
+        43.73825
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          18.56564,
+          43.73825
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Sarajevo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BA",
+      "provenance": {
+        "name": "https://www.geonames.org/3205994",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          18.56564,
+          43.73825
+        ]
+      ]
+    },
+    {
+      "id": "ba-mostar",
+      "name": "Mostar",
+      "aliases": [],
+      "country": "Bosnia and Herzegovina",
+      "countryCode": "BA",
+      "type": "city",
+      "centroid": [
+        17.80806,
+        43.34333
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          17.80806,
+          43.34333
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Sarajevo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BA",
+      "provenance": {
+        "name": "https://www.geonames.org/3194828",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          17.80806,
+          43.34333
+        ]
+      ]
+    },
+    {
+      "id": "ba-sarajevo",
+      "name": "Sarajevo",
+      "aliases": [],
+      "country": "Bosnia and Herzegovina",
+      "countryCode": "BA",
+      "type": "capital",
+      "centroid": [
+        18.35644,
+        43.84864
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          18.35644,
+          43.84864
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Sarajevo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BA",
+      "provenance": {
+        "name": "https://www.geonames.org/3191281",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          18.35644,
+          43.84864
+        ]
+      ]
+    },
+    {
+      "id": "ba-travnik",
+      "name": "Travnik",
+      "aliases": [],
+      "country": "Bosnia and Herzegovina",
+      "countryCode": "BA",
+      "type": "city",
+      "centroid": [
+        17.66583,
+        44.22637
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          17.66583,
+          44.22637
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Sarajevo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BA",
+      "provenance": {
+        "name": "https://www.geonames.org/3188924",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          17.66583,
+          44.22637
+        ]
+      ]
+    },
+    {
+      "id": "ba-trebinje",
+      "name": "Trebinje",
+      "aliases": [],
+      "country": "Bosnia and Herzegovina",
+      "countryCode": "BA",
+      "type": "city",
+      "centroid": [
+        18.34362,
+        42.71197
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          18.34362,
+          42.71197
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Sarajevo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BA",
+      "provenance": {
+        "name": "https://www.geonames.org/3188893",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          18.34362,
+          42.71197
+        ]
+      ]
+    },
+    {
+      "id": "ba-tuzla",
+      "name": "Tuzla",
+      "aliases": [],
+      "country": "Bosnia and Herzegovina",
+      "countryCode": "BA",
+      "type": "city",
+      "centroid": [
+        18.66709,
+        44.53842
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          18.66709,
+          44.53842
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Sarajevo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BA",
+      "provenance": {
+        "name": "https://www.geonames.org/3188582",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          18.66709,
+          44.53842
+        ]
+      ]
+    },
+    {
+      "id": "by-brest",
+      "name": "Brest",
+      "aliases": [],
+      "country": "Belarus",
+      "countryCode": "BY",
+      "type": "city",
+      "centroid": [
+        23.71749,
+        52.10894
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          23.71749,
+          52.10894
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Minsk",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BY",
+      "provenance": {
+        "name": "https://www.geonames.org/629634",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          23.71749,
+          52.10894
+        ]
+      ]
+    },
+    {
+      "id": "by-gomel",
+      "name": "Homyel'",
+      "aliases": [
+        "Gomel",
+        "Гомель"
+      ],
+      "country": "Belarus",
+      "countryCode": "BY",
+      "type": "city",
+      "centroid": [
+        30.9754,
+        52.4345
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          30.9754,
+          52.4345
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Minsk",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BY",
+      "provenance": {
+        "name": "https://www.geonames.org/627907",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          30.9754,
+          52.4345
+        ]
+      ]
+    },
+    {
+      "id": "by-grodno",
+      "name": "Hrodna",
+      "aliases": [
+        "Grodno",
+        "Гродна"
+      ],
+      "country": "Belarus",
+      "countryCode": "BY",
+      "type": "city",
+      "centroid": [
+        23.82887,
+        53.6758
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          23.82887,
+          53.6758
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Minsk",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BY",
+      "provenance": {
+        "name": "https://www.geonames.org/627904",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          23.82887,
+          53.6758
+        ]
+      ]
+    },
+    {
+      "id": "by-mogilev",
+      "name": "Mahilyow",
+      "aliases": [
+        "Mogilev",
+        "Магілёў"
+      ],
+      "country": "Belarus",
+      "countryCode": "BY",
+      "type": "city",
+      "centroid": [
+        30.34044,
+        53.90876
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          30.34044,
+          53.90876
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Minsk",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BY",
+      "provenance": {
+        "name": "https://www.geonames.org/625665",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          30.34044,
+          53.90876
+        ]
+      ]
+    },
+    {
+      "id": "by-minsk",
+      "name": "Minsk",
+      "aliases": [
+        "Мінск",
+        "Минск"
+      ],
+      "country": "Belarus",
+      "countryCode": "BY",
+      "type": "capital",
+      "centroid": [
+        27.56653,
+        53.90019
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          27.56653,
+          53.90019
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Minsk",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BY",
+      "provenance": {
+        "name": "https://www.geonames.org/625144",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          27.56653,
+          53.90019
+        ]
+      ]
+    },
+    {
+      "id": "by-mir",
+      "name": "Mir",
+      "aliases": [],
+      "country": "Belarus",
+      "countryCode": "BY",
+      "type": "city",
+      "centroid": [
+        26.467,
+        53.4544
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          26.467,
+          53.4544
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Minsk",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BY",
+      "provenance": {
+        "name": "https://www.geonames.org/625128",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          26.467,
+          53.4544
+        ]
+      ]
+    },
+    {
+      "id": "by-nesvizh",
+      "name": "Nesvizh",
+      "aliases": [],
+      "country": "Belarus",
+      "countryCode": "BY",
+      "type": "city",
+      "centroid": [
+        26.67679,
+        53.22186
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          26.67679,
+          53.22186
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Minsk",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BY",
+      "provenance": {
+        "name": "https://www.geonames.org/624700",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          26.67679,
+          53.22186
+        ]
+      ]
+    },
+    {
+      "id": "by-vitebsk",
+      "name": "Vitebsk",
+      "aliases": [],
+      "country": "Belarus",
+      "countryCode": "BY",
+      "type": "city",
+      "centroid": [
+        30.2049,
+        55.1904
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          30.2049,
+          55.1904
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Minsk",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "BY",
+      "provenance": {
+        "name": "https://www.geonames.org/620127",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          30.2049,
+          55.1904
+        ]
+      ]
+    },
+    {
+      "id": "gb-aberdeen",
+      "name": "Aberdeen",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -2.09814,
+        57.14369
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -2.09814,
+          57.14369
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2657832",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -2.09814,
+          57.14369
+        ]
+      ]
+    },
+    {
+      "id": "gb-bath",
+      "name": "Bath",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -2.36172,
+        51.3751
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -2.36172,
+          51.3751
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2656173",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -2.36172,
+          51.3751
+        ]
+      ]
+    },
+    {
+      "id": "gb-belfast",
+      "name": "Belfast",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -5.92541,
+        54.59682
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -5.92541,
+          54.59682
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2655984",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -5.92541,
+          54.59682
+        ]
+      ]
+    },
+    {
+      "id": "gb-birmingham",
+      "name": "Birmingham",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -1.89983,
+        52.48142
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -1.89983,
+          52.48142
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2655603",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -1.89983,
+          52.48142
+        ]
+      ]
+    },
+    {
+      "id": "gb-brighton",
+      "name": "Brighton",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -0.13947,
+        50.82838
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -0.13947,
+          50.82838
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2654710",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -0.13947,
+          50.82838
+        ]
+      ]
+    },
+    {
+      "id": "gb-bushmills",
+      "name": "Bushmills",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -6.51918,
+        55.20493
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -6.51918,
+          55.20493
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2654175",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -6.51918,
+          55.20493
+        ]
+      ]
+    },
+    {
+      "id": "gb-cairngorms-national-park",
+      "name": "Cairngorms National Park",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "park",
+      "centroid": [
+        -3.60334,
+        57.04395
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -3.60334,
+          57.04395
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/10104113",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -3.60334,
+          57.04395
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "gb-cambridge",
+      "name": "Cambridge",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        0.11667,
+        52.2
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          0.11667,
+          52.2
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2653941",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          0.11667,
+          52.2
+        ]
+      ]
+    },
+    {
+      "id": "gb-cardiff",
+      "name": "Cardiff",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -3.18,
+        51.48
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -3.18,
+          51.48
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2653822",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -3.18,
+          51.48
+        ]
+      ]
+    },
+    {
+      "id": "gb-derry",
+      "name": "Derry",
+      "aliases": [
+        "Londonderry"
+      ],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -7.30934,
+        54.9981
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -7.30934,
+          54.9981
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2643736",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -7.30934,
+          54.9981
+        ]
+      ]
+    },
+    {
+      "id": "gb-edinburgh",
+      "name": "Edinburgh",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -3.19648,
+        55.95206
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -3.19648,
+          55.95206
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2650225",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -3.19648,
+          55.95206
+        ]
+      ]
+    },
+    {
+      "id": "gb-eryri-national-park",
+      "name": "Eryri National Park",
+      "aliases": [
+        "Snowdonia"
+      ],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "park",
+      "centroid": [
+        -4.08333,
+        53.08333
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -4.08333,
+          53.08333
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2637568",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -4.08333,
+          53.08333
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "gb-exeter",
+      "name": "Exeter",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -3.52751,
+        50.7236
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -3.52751,
+          50.7236
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2649808",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -3.52751,
+          50.7236
+        ]
+      ]
+    },
+    {
+      "id": "gb-glasgow",
+      "name": "Glasgow",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -4.25763,
+        55.86515
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -4.25763,
+          55.86515
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2648579",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -4.25763,
+          55.86515
+        ]
+      ]
+    },
+    {
+      "id": "gb-inverness",
+      "name": "Inverness",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -4.22398,
+        57.47908
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -4.22398,
+          57.47908
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2646088",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -4.22398,
+          57.47908
+        ]
+      ]
+    },
+    {
+      "id": "gb-isle-of-skye",
+      "name": "Isle of Skye",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "island",
+      "centroid": [
+        -6.2269,
+        57.42593
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -6.2269,
+          57.42593
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/13285696",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -6.2269,
+          57.42593
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "gb-lake-district-national-park",
+      "name": "Lake District National Park",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "park",
+      "centroid": [
+        -3.16667,
+        54.5
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -3.16667,
+          54.5
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2645021",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -3.16667,
+          54.5
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "gb-leeds",
+      "name": "Leeds",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -1.54785,
+        53.79648
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -1.54785,
+          53.79648
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2644688",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -1.54785,
+          53.79648
+        ]
+      ]
+    },
+    {
+      "id": "gb-liverpool",
+      "name": "Liverpool",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -2.97794,
+        53.41058
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -2.97794,
+          53.41058
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2644210",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -2.97794,
+          53.41058
+        ]
+      ]
+    },
+    {
+      "id": "gb-london",
+      "name": "London",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "capital",
+      "centroid": [
+        -0.12574,
+        51.50853
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -0.12574,
+          51.50853
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2643743",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -0.12574,
+          51.50853
+        ]
+      ]
+    },
+    {
+      "id": "gb-manchester",
+      "name": "Manchester",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -2.23743,
+        53.48095
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -2.23743,
+          53.48095
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2643123",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -2.23743,
+          53.48095
+        ]
+      ]
+    },
+    {
+      "id": "gb-newcastle-upon-tyne",
+      "name": "Newcastle upon Tyne",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -1.61396,
+        54.97328
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -1.61396,
+          54.97328
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2641673",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -1.61396,
+          54.97328
+        ]
+      ]
+    },
+    {
+      "id": "gb-orkney-islands",
+      "name": "Orkney Islands",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "island",
+      "centroid": [
+        -3.0,
+        59.0
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -3.0,
+          59.0
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2640924",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -3.0,
+          59.0
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "gb-oxford",
+      "name": "Oxford",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -1.25596,
+        51.75222
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -1.25596,
+          51.75222
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2640729",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -1.25596,
+          51.75222
+        ]
+      ]
+    },
+    {
+      "id": "gb-pembrokeshire-coast-national-park",
+      "name": "Pembrokeshire Coast National Park",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "park",
+      "centroid": [
+        -5.08333,
+        51.83333
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -5.08333,
+          51.83333
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2640499",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -5.08333,
+          51.83333
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "gb-plymouth",
+      "name": "Plymouth",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -4.14305,
+        50.37153
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -4.14305,
+          50.37153
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2640194",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -4.14305,
+          50.37153
+        ]
+      ]
+    },
+    {
+      "id": "gb-portsmouth",
+      "name": "Portsmouth",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -1.09125,
+        50.79899
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -1.09125,
+          50.79899
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2639996",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -1.09125,
+          50.79899
+        ]
+      ]
+    },
+    {
+      "id": "gb-shetland-islands",
+      "name": "Shetland Islands",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "island",
+      "centroid": [
+        -1.24104,
+        60.32275
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -1.24104,
+          60.32275
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2638011",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -1.24104,
+          60.32275
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "gb-swansea",
+      "name": "Swansea",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -3.94323,
+        51.62079
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -3.94323,
+          51.62079
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2636432",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -3.94323,
+          51.62079
+        ]
+      ]
+    },
+    {
+      "id": "gb-york",
+      "name": "York",
+      "aliases": [],
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "type": "city",
+      "centroid": [
+        -1.08271,
+        53.95763
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -1.08271,
+          53.95763
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/London",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "GB",
+      "provenance": {
+        "name": "https://www.geonames.org/2633352",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -1.08271,
+          53.95763
+        ]
+      ]
+    },
+    {
+      "id": "is-akureyri",
+      "name": "Akureyri",
+      "aliases": [],
+      "country": "Iceland",
+      "countryCode": "IS",
+      "type": "city",
+      "centroid": [
+        -18.0878,
+        65.68353
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -18.0878,
+          65.68353
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Atlantic/Reykjavik",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "IS",
+      "provenance": {
+        "name": "https://www.geonames.org/2633274",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -18.0878,
+          65.68353
+        ]
+      ]
+    },
+    {
+      "id": "is-egilsstadir",
+      "name": "Egilsstaðir",
+      "aliases": [
+        "Egilsstadir"
+      ],
+      "country": "Iceland",
+      "countryCode": "IS",
+      "type": "city",
+      "centroid": [
+        -14.39485,
+        65.26687
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -14.39485,
+          65.26687
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Atlantic/Reykjavik",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "IS",
+      "provenance": {
+        "name": "https://www.geonames.org/2632132",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -14.39485,
+          65.26687
+        ]
+      ]
+    },
+    {
+      "id": "is-grindavik",
+      "name": "Grindavík",
+      "aliases": [
+        "Grindavik"
+      ],
+      "country": "Iceland",
+      "countryCode": "IS",
+      "type": "city",
+      "centroid": [
+        -22.43931,
+        63.83849
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -22.43931,
+          63.83849
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Atlantic/Reykjavik",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "IS",
+      "provenance": {
+        "name": "https://www.geonames.org/3416888",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -22.43931,
+          63.83849
+        ]
+      ]
+    },
+    {
+      "id": "is-hofn",
+      "name": "Höfn",
+      "aliases": [
+        "Hofn"
+      ],
+      "country": "Iceland",
+      "countryCode": "IS",
+      "type": "city",
+      "centroid": [
+        -15.21212,
+        64.25388
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -15.21212,
+          64.25388
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Atlantic/Reykjavik",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "IS",
+      "provenance": {
+        "name": "https://www.geonames.org/2630299",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -15.21212,
+          64.25388
+        ]
+      ]
+    },
+    {
+      "id": "is-keflavik",
+      "name": "Keflavík",
+      "aliases": [
+        "Keflavik"
+      ],
+      "country": "Iceland",
+      "countryCode": "IS",
+      "type": "city",
+      "centroid": [
+        -22.56242,
+        64.00492
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -22.56242,
+          64.00492
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Atlantic/Reykjavik",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "IS",
+      "provenance": {
+        "name": "https://www.geonames.org/3415496",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -22.56242,
+          64.00492
+        ]
+      ]
+    },
+    {
+      "id": "is-reykjavik",
+      "name": "Reykjavík",
+      "aliases": [
+        "Reykjavik"
+      ],
+      "country": "Iceland",
+      "countryCode": "IS",
+      "type": "capital",
+      "centroid": [
+        -21.89541,
+        64.13548
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -21.89541,
+          64.13548
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Atlantic/Reykjavik",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "IS",
+      "provenance": {
+        "name": "https://www.geonames.org/3413829",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -21.89541,
+          64.13548
+        ]
+      ]
+    },
+    {
+      "id": "is-selfoss",
+      "name": "Selfoss",
+      "aliases": [],
+      "country": "Iceland",
+      "countryCode": "IS",
+      "type": "city",
+      "centroid": [
+        -20.99712,
+        63.93311
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -20.99712,
+          63.93311
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Atlantic/Reykjavik",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "IS",
+      "provenance": {
+        "name": "https://www.geonames.org/3413604",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -20.99712,
+          63.93311
+        ]
+      ]
+    },
+    {
+      "id": "is-vatnajokull",
+      "name": "Vatnajökull",
+      "aliases": [
+        "Vatnajokull"
+      ],
+      "country": "Iceland",
+      "countryCode": "IS",
+      "type": "mountain",
+      "centroid": [
+        -16.82293,
+        64.41998
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -16.82293,
+          64.41998
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Atlantic/Reykjavik",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "IS",
+      "provenance": {
+        "name": "https://www.geonames.org/2625477",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -16.82293,
+          64.41998
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "is-vestmannaeyjar",
+      "name": "Vestmannaeyjar",
+      "aliases": [],
+      "country": "Iceland",
+      "countryCode": "IS",
+      "type": "city",
+      "centroid": [
+        -20.27339,
+        63.44273
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -20.27339,
+          63.44273
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Atlantic/Reykjavik",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "IS",
+      "provenance": {
+        "name": "https://www.geonames.org/3412093",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -20.27339,
+          63.44273
+        ]
+      ]
+    },
+    {
+      "id": "is-vik-i-myrdal",
+      "name": "Vík í Mýrdal",
+      "aliases": [
+        "Vik I Myrdal"
+      ],
+      "country": "Iceland",
+      "countryCode": "IS",
+      "type": "city",
+      "centroid": [
+        -19.00972,
+        63.41944
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -19.00972,
+          63.41944
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Atlantic/Reykjavik",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "IS",
+      "provenance": {
+        "name": "https://www.geonames.org/2625252",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -19.00972,
+          63.41944
+        ]
+      ]
+    },
+    {
+      "id": "is-isafjordur",
+      "name": "Ísafjörður",
+      "aliases": [
+        "Isafjordur"
+      ],
+      "country": "Iceland",
+      "countryCode": "IS",
+      "type": "city",
+      "centroid": [
+        -23.13498,
+        66.07475
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -23.13498,
+          66.07475
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Atlantic/Reykjavik",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "IS",
+      "provenance": {
+        "name": "https://www.geonames.org/3415667",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          -23.13498,
+          66.07475
+        ]
+      ]
+    },
+    {
+      "id": "is-ingvellir",
+      "name": "Þingvellir",
+      "aliases": [
+        "Thingvellir"
+      ],
+      "country": "Iceland",
+      "countryCode": "IS",
+      "type": "park",
+      "centroid": [
+        -21.125,
+        64.25806
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          -21.125,
+          64.25806
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Atlantic/Reykjavik",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "IS",
+      "provenance": {
+        "name": "https://www.geonames.org/3412645",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          -21.125,
+          64.25806
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "li-malbun",
+      "name": "Malbun",
+      "aliases": [],
+      "country": "Liechtenstein",
+      "countryCode": "LI",
+      "type": "resort",
+      "centroid": [
+        9.60986,
+        47.10139
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          9.60986,
+          47.10139
+        ],
+        "radiusKm": 1
+      },
+      "timezone": "Europe/Vaduz",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "LI",
+      "provenance": {
+        "name": "https://www.geonames.org/6545409",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          9.60986,
+          47.10139
+        ]
+      ]
+    },
+    {
+      "id": "li-schaan",
+      "name": "Schaan",
+      "aliases": [],
+      "country": "Liechtenstein",
+      "countryCode": "LI",
+      "type": "city",
+      "centroid": [
+        9.50867,
+        47.16498
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          9.50867,
+          47.16498
+        ],
+        "radiusKm": 1
+      },
+      "timezone": "Europe/Vaduz",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "LI",
+      "provenance": {
+        "name": "https://www.geonames.org/3042041",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          9.50867,
+          47.16498
+        ]
+      ]
+    },
+    {
+      "id": "li-vaduz",
+      "name": "Vaduz",
+      "aliases": [],
+      "country": "Liechtenstein",
+      "countryCode": "LI",
+      "type": "capital",
+      "centroid": [
+        9.52154,
+        47.14151
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          9.52154,
+          47.14151
+        ],
+        "radiusKm": 1
+      },
+      "timezone": "Europe/Vaduz",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "LI",
+      "provenance": {
+        "name": "https://www.geonames.org/3042030",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          9.52154,
+          47.14151
+        ]
+      ]
+    },
+    {
+      "id": "mc-monaco",
+      "name": "Monaco",
+      "aliases": [],
+      "country": "Monaco",
+      "countryCode": "MC",
+      "type": "capital",
+      "centroid": [
+        7.42145,
+        43.73718
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          7.42145,
+          43.73718
+        ],
+        "radiusKm": 0.75
+      },
+      "timezone": "Europe/Monaco",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MC",
+      "provenance": {
+        "name": "https://www.geonames.org/2993458",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          7.42145,
+          43.73718
+        ]
+      ]
+    },
+    {
+      "id": "md-bender",
+      "name": "Bender",
+      "aliases": [],
+      "country": "Moldova",
+      "countryCode": "MD",
+      "type": "city",
+      "centroid": [
+        29.47671,
+        46.83158
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          29.47671,
+          46.83158
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Chisinau",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MD",
+      "provenance": {
+        "name": "https://www.geonames.org/618577",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          29.47671,
+          46.83158
+        ]
+      ]
+    },
+    {
+      "id": "md-balti",
+      "name": "Bălţi",
+      "aliases": [
+        "Balti"
+      ],
+      "country": "Moldova",
+      "countryCode": "MD",
+      "type": "city",
+      "centroid": [
+        27.92854,
+        47.76291
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          27.92854,
+          47.76291
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Chisinau",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MD",
+      "provenance": {
+        "name": "https://www.geonames.org/618605",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          27.92854,
+          47.76291
+        ]
+      ]
+    },
+    {
+      "id": "md-cahul",
+      "name": "Cahul",
+      "aliases": [],
+      "country": "Moldova",
+      "countryCode": "MD",
+      "type": "city",
+      "centroid": [
+        28.19516,
+        45.90456
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          28.19516,
+          45.90456
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Chisinau",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MD",
+      "provenance": {
+        "name": "https://www.geonames.org/618456",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          28.19516,
+          45.90456
+        ]
+      ]
+    },
+    {
+      "id": "md-chisinau",
+      "name": "Chișinău",
+      "aliases": [
+        "Chisinau"
+      ],
+      "country": "Moldova",
+      "countryCode": "MD",
+      "type": "capital",
+      "centroid": [
+        28.85938,
+        47.00902
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          28.85938,
+          47.00902
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Chisinau",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MD",
+      "provenance": {
+        "name": "https://www.geonames.org/618426",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          28.85938,
+          47.00902
+        ]
+      ]
+    },
+    {
+      "id": "md-comrat",
+      "name": "Comrat",
+      "aliases": [],
+      "country": "Moldova",
+      "countryCode": "MD",
+      "type": "city",
+      "centroid": [
+        28.65713,
+        46.29488
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          28.65713,
+          46.29488
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Chisinau",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MD",
+      "provenance": {
+        "name": "https://www.geonames.org/618405",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          28.65713,
+          46.29488
+        ]
+      ]
+    },
+    {
+      "id": "md-orhei",
+      "name": "Orhei",
+      "aliases": [],
+      "country": "Moldova",
+      "countryCode": "MD",
+      "type": "city",
+      "centroid": [
+        28.82535,
+        47.38503
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          28.82535,
+          47.38503
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Chisinau",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MD",
+      "provenance": {
+        "name": "https://www.geonames.org/617638",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          28.82535,
+          47.38503
+        ]
+      ]
+    },
+    {
+      "id": "md-soroca",
+      "name": "Soroca",
+      "aliases": [],
+      "country": "Moldova",
+      "countryCode": "MD",
+      "type": "city",
+      "centroid": [
+        28.28489,
+        48.15659
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          28.28489,
+          48.15659
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Chisinau",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MD",
+      "provenance": {
+        "name": "https://www.geonames.org/617367",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          28.28489,
+          48.15659
+        ]
+      ]
+    },
+    {
+      "id": "md-tiraspol",
+      "name": "Tiraspol",
+      "aliases": [],
+      "country": "Moldova",
+      "countryCode": "MD",
+      "type": "city",
+      "centroid": [
+        29.6284,
+        46.84275
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          29.6284,
+          46.84275
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Chisinau",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MD",
+      "provenance": {
+        "name": "https://www.geonames.org/617239",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          29.6284,
+          46.84275
+        ]
+      ]
+    },
+    {
+      "id": "me-budva",
+      "name": "Budva",
+      "aliases": [],
+      "country": "Montenegro",
+      "countryCode": "ME",
+      "type": "city",
+      "centroid": [
+        18.83922,
+        42.28721
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          18.83922,
+          42.28721
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Podgorica",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "ME",
+      "provenance": {
+        "name": "https://www.geonames.org/3203106",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          18.83922,
+          42.28721
+        ]
+      ]
+    },
+    {
+      "id": "me-cetinje",
+      "name": "Cetinje",
+      "aliases": [],
+      "country": "Montenegro",
+      "countryCode": "ME",
+      "type": "city",
+      "centroid": [
+        18.91417,
+        42.39063
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          18.91417,
+          42.39063
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Podgorica",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "ME",
+      "provenance": {
+        "name": "https://www.geonames.org/3202641",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          18.91417,
+          42.39063
+        ]
+      ]
+    },
+    {
+      "id": "me-durmitor-national-park",
+      "name": "Durmitor National Park",
+      "aliases": [],
+      "country": "Montenegro",
+      "countryCode": "ME",
+      "type": "park",
+      "centroid": [
+        19.01667,
+        43.1
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.01667,
+          43.1
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Podgorica",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "ME",
+      "provenance": {
+        "name": "https://www.geonames.org/3200941",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          19.01667,
+          43.1
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "me-herceg-novi",
+      "name": "Herceg Novi",
+      "aliases": [],
+      "country": "Montenegro",
+      "countryCode": "ME",
+      "type": "city",
+      "centroid": [
+        18.5375,
+        42.45306
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          18.5375,
+          42.45306
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Podgorica",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "ME",
+      "provenance": {
+        "name": "https://www.geonames.org/3199394",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          18.5375,
+          42.45306
+        ]
+      ]
+    },
+    {
+      "id": "me-kotor",
+      "name": "Kotor",
+      "aliases": [],
+      "country": "Montenegro",
+      "countryCode": "ME",
+      "type": "city",
+      "centroid": [
+        18.76825,
+        42.42067
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          18.76825,
+          42.42067
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Podgorica",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "ME",
+      "provenance": {
+        "name": "https://www.geonames.org/3197538",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          18.76825,
+          42.42067
+        ]
+      ]
+    },
+    {
+      "id": "me-lovcen-national-park",
+      "name": "Lovćen National Park",
+      "aliases": [
+        "Lovcen National Park"
+      ],
+      "country": "Montenegro",
+      "countryCode": "ME",
+      "type": "park",
+      "centroid": [
+        18.81833,
+        42.405
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          18.81833,
+          42.405
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Podgorica",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "ME",
+      "provenance": {
+        "name": "https://www.geonames.org/7932404",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          18.81833,
+          42.405
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "me-podgorica",
+      "name": "Podgorica",
+      "aliases": [],
+      "country": "Montenegro",
+      "countryCode": "ME",
+      "type": "capital",
+      "centroid": [
+        19.26309,
+        42.44124
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.26309,
+          42.44124
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Podgorica",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "ME",
+      "provenance": {
+        "name": "https://www.geonames.org/3193044",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          19.26309,
+          42.44124
+        ]
+      ]
+    },
+    {
+      "id": "me-ulcinj",
+      "name": "Ulcinj",
+      "aliases": [],
+      "country": "Montenegro",
+      "countryCode": "ME",
+      "type": "city",
+      "centroid": [
+        19.22436,
+        41.92936
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.22436,
+          41.92936
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Podgorica",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "ME",
+      "provenance": {
+        "name": "https://www.geonames.org/3188516",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          19.22436,
+          41.92936
+        ]
+      ]
+    },
+    {
+      "id": "mk-bitola",
+      "name": "Bitola",
+      "aliases": [],
+      "country": "North Macedonia",
+      "countryCode": "MK",
+      "type": "city",
+      "centroid": [
+        21.33553,
+        41.03226
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          21.33553,
+          41.03226
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Skopje",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MK",
+      "provenance": {
+        "name": "https://www.geonames.org/792578",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          21.33553,
+          41.03226
+        ]
+      ]
+    },
+    {
+      "id": "mk-galicica-national-park",
+      "name": "Galičica National Park",
+      "aliases": [
+        "Galicica National Park"
+      ],
+      "country": "North Macedonia",
+      "countryCode": "MK",
+      "type": "park",
+      "centroid": [
+        20.85,
+        41.0
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.85,
+          41.0
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Skopje",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MK",
+      "provenance": {
+        "name": "https://www.geonames.org/790781",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          20.85,
+          41.0
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "mk-kumanovo",
+      "name": "Kumanovo",
+      "aliases": [],
+      "country": "North Macedonia",
+      "countryCode": "MK",
+      "type": "city",
+      "centroid": [
+        21.71585,
+        42.13279
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          21.71585,
+          42.13279
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Skopje",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MK",
+      "provenance": {
+        "name": "https://www.geonames.org/788886",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          21.71585,
+          42.13279
+        ]
+      ]
+    },
+    {
+      "id": "mk-mavrovo-national-park",
+      "name": "Mavrovo National Park",
+      "aliases": [],
+      "country": "North Macedonia",
+      "countryCode": "MK",
+      "type": "park",
+      "centroid": [
+        20.66686,
+        41.63724
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.66686,
+          41.63724
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Skopje",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MK",
+      "provenance": {
+        "name": "https://www.geonames.org/9636801",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          20.66686,
+          41.63724
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "mk-ohrid",
+      "name": "Ohrid",
+      "aliases": [],
+      "country": "North Macedonia",
+      "countryCode": "MK",
+      "type": "city",
+      "centroid": [
+        20.80175,
+        41.11701
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.80175,
+          41.11701
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Skopje",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MK",
+      "provenance": {
+        "name": "https://www.geonames.org/787487",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          20.80175,
+          41.11701
+        ]
+      ]
+    },
+    {
+      "id": "mk-skopje",
+      "name": "Skopje",
+      "aliases": [
+        "Скопје"
+      ],
+      "country": "North Macedonia",
+      "countryCode": "MK",
+      "type": "capital",
+      "centroid": [
+        21.43141,
+        41.99646
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          21.43141,
+          41.99646
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Skopje",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MK",
+      "provenance": {
+        "name": "https://www.geonames.org/785842",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          21.43141,
+          41.99646
+        ]
+      ]
+    },
+    {
+      "id": "mk-struga",
+      "name": "Struga",
+      "aliases": [],
+      "country": "North Macedonia",
+      "countryCode": "MK",
+      "type": "city",
+      "centroid": [
+        20.67894,
+        41.17787
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.67894,
+          41.17787
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Skopje",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MK",
+      "provenance": {
+        "name": "https://www.geonames.org/785387",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          20.67894,
+          41.17787
+        ]
+      ]
+    },
+    {
+      "id": "mk-tetovo",
+      "name": "Tetovo",
+      "aliases": [],
+      "country": "North Macedonia",
+      "countryCode": "MK",
+      "type": "city",
+      "centroid": [
+        20.97138,
+        42.00989
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.97138,
+          42.00989
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Skopje",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "MK",
+      "provenance": {
+        "name": "https://www.geonames.org/785082",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          20.97138,
+          42.00989
+        ]
+      ]
+    },
+    {
+      "id": "no-alta",
+      "name": "Alta",
+      "aliases": [],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "city",
+      "centroid": [
+        23.27165,
+        69.96887
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          23.27165,
+          69.96887
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/847633",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          23.27165,
+          69.96887
+        ]
+      ]
+    },
+    {
+      "id": "no-bergen",
+      "name": "Bergen",
+      "aliases": [],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "city",
+      "centroid": [
+        5.32415,
+        60.39299
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          5.32415,
+          60.39299
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3161732",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          5.32415,
+          60.39299
+        ]
+      ]
+    },
+    {
+      "id": "no-bodo",
+      "name": "Bodø",
+      "aliases": [
+        "Bodo"
+      ],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "city",
+      "centroid": [
+        14.37513,
+        67.28267
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          14.37513,
+          67.28267
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3160881",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          14.37513,
+          67.28267
+        ]
+      ]
+    },
+    {
+      "id": "no-flam",
+      "name": "Flåm",
+      "aliases": [
+        "Flam"
+      ],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "resort",
+      "centroid": [
+        7.12194,
+        60.83706
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          7.12194,
+          60.83706
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3157191",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          7.12194,
+          60.83706
+        ]
+      ]
+    },
+    {
+      "id": "no-geilo",
+      "name": "Geilo",
+      "aliases": [],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "resort",
+      "centroid": [
+        8.20539,
+        60.53369
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          8.20539,
+          60.53369
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3155913",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          8.20539,
+          60.53369
+        ]
+      ]
+    },
+    {
+      "id": "no-geiranger",
+      "name": "Geiranger",
+      "aliases": [],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "resort",
+      "centroid": [
+        7.20719,
+        62.10186
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          7.20719,
+          62.10186
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/6692393",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          7.20719,
+          62.10186
+        ]
+      ]
+    },
+    {
+      "id": "no-jotunheimen-national-park",
+      "name": "Jotunheimen National Park",
+      "aliases": [],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "park",
+      "centroid": [
+        8.31667,
+        61.63333
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          8.31667,
+          61.63333
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3150706",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          8.31667,
+          61.63333
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "no-kirkenes",
+      "name": "Kirkenes",
+      "aliases": [],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "city",
+      "centroid": [
+        30.04578,
+        69.72706
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          30.04578,
+          69.72706
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/779303",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          30.04578,
+          69.72706
+        ]
+      ]
+    },
+    {
+      "id": "no-kristiansand",
+      "name": "Kristiansand",
+      "aliases": [],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "city",
+      "centroid": [
+        7.9956,
+        58.14671
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          7.9956,
+          58.14671
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3149318",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          7.9956,
+          58.14671
+        ]
+      ]
+    },
+    {
+      "id": "no-lillehammer",
+      "name": "Lillehammer",
+      "aliases": [],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "city",
+      "centroid": [
+        10.46628,
+        61.11514
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          10.46628,
+          61.11514
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3147474",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          10.46628,
+          61.11514
+        ]
+      ]
+    },
+    {
+      "id": "no-lofoten",
+      "name": "Lofoten",
+      "aliases": [
+        "Lofoten Islands"
+      ],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "island",
+      "centroid": [
+        13.16129,
+        68.04991
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          13.16129,
+          68.04991
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3147088",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          13.16129,
+          68.04991
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "no-narvik",
+      "name": "Narvik",
+      "aliases": [],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "city",
+      "centroid": [
+        17.4272,
+        68.43838
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          17.4272,
+          68.43838
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3144987",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          17.4272,
+          68.43838
+        ]
+      ]
+    },
+    {
+      "id": "no-oslo",
+      "name": "Oslo",
+      "aliases": [],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "capital",
+      "centroid": [
+        10.74609,
+        59.91273
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          10.74609,
+          59.91273
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3143244",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          10.74609,
+          59.91273
+        ]
+      ]
+    },
+    {
+      "id": "no-stavanger",
+      "name": "Stavanger",
+      "aliases": [],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "city",
+      "centroid": [
+        5.73332,
+        58.97005
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          5.73332,
+          58.97005
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3137115",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          5.73332,
+          58.97005
+        ]
+      ]
+    },
+    {
+      "id": "no-svolvaer",
+      "name": "Svolvær",
+      "aliases": [
+        "Svolvaer"
+      ],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "city",
+      "centroid": [
+        14.56834,
+        68.23417
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          14.56834,
+          68.23417
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3135020",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          14.56834,
+          68.23417
+        ]
+      ]
+    },
+    {
+      "id": "no-tromso",
+      "name": "Tromsø",
+      "aliases": [
+        "Tromso"
+      ],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "city",
+      "centroid": [
+        18.95508,
+        69.6489
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          18.95508,
+          69.6489
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3133895",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          18.95508,
+          69.6489
+        ]
+      ]
+    },
+    {
+      "id": "no-trondheim",
+      "name": "Trondheim",
+      "aliases": [],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "city",
+      "centroid": [
+        10.39506,
+        63.43049
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          10.39506,
+          63.43049
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3133880",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          10.39506,
+          63.43049
+        ]
+      ]
+    },
+    {
+      "id": "no-voss",
+      "name": "Voss",
+      "aliases": [],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "city",
+      "centroid": [
+        6.41474,
+        60.62869
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          6.41474,
+          60.62869
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3131329",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          6.41474,
+          60.62869
+        ]
+      ]
+    },
+    {
+      "id": "no-alesund",
+      "name": "Ålesund",
+      "aliases": [
+        "Alesund"
+      ],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "city",
+      "centroid": [
+        6.15492,
+        62.47225
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          6.15492,
+          62.47225
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3163392",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          6.15492,
+          62.47225
+        ]
+      ]
+    },
+    {
+      "id": "no-andalsnes",
+      "name": "Åndalsnes",
+      "aliases": [
+        "Andalsnes"
+      ],
+      "country": "Norway",
+      "countryCode": "NO",
+      "type": "city",
+      "centroid": [
+        7.68709,
+        62.56749
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          7.68709,
+          62.56749
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Oslo",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "NO",
+      "provenance": {
+        "name": "https://www.geonames.org/3163155",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          7.68709,
+          62.56749
+        ]
+      ]
+    },
+    {
+      "id": "rs-belgrade",
+      "name": "Belgrade",
+      "aliases": [
+        "Beograd",
+        "Београд"
+      ],
+      "country": "Serbia",
+      "countryCode": "RS",
+      "type": "capital",
+      "centroid": [
+        20.46513,
+        44.80401
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.46513,
+          44.80401
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "RS",
+      "provenance": {
+        "name": "https://www.geonames.org/792680",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          20.46513,
+          44.80401
+        ]
+      ]
+    },
+    {
+      "id": "rs-kopaonik-national-park",
+      "name": "Kopaonik National Park",
+      "aliases": [],
+      "country": "Serbia",
+      "countryCode": "RS",
+      "type": "park",
+      "centroid": [
+        20.8033,
+        43.30369
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.8033,
+          43.30369
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "RS",
+      "provenance": {
+        "name": "https://www.geonames.org/7114079",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          20.8033,
+          43.30369
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "rs-kragujevac",
+      "name": "Kragujevac",
+      "aliases": [],
+      "country": "Serbia",
+      "countryCode": "RS",
+      "type": "city",
+      "centroid": [
+        20.91667,
+        44.01667
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.91667,
+          44.01667
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "RS",
+      "provenance": {
+        "name": "https://www.geonames.org/789128",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          20.91667,
+          44.01667
+        ]
+      ]
+    },
+    {
+      "id": "rs-nis",
+      "name": "Niš",
+      "aliases": [
+        "Nis"
+      ],
+      "country": "Serbia",
+      "countryCode": "RS",
+      "type": "city",
+      "centroid": [
+        21.90333,
+        43.32472
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          21.90333,
+          43.32472
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "RS",
+      "provenance": {
+        "name": "https://www.geonames.org/787657",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          21.90333,
+          43.32472
+        ]
+      ]
+    },
+    {
+      "id": "rs-novi-pazar",
+      "name": "Novi Pazar",
+      "aliases": [],
+      "country": "Serbia",
+      "countryCode": "RS",
+      "type": "city",
+      "centroid": [
+        20.51222,
+        43.13667
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.51222,
+          43.13667
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "RS",
+      "provenance": {
+        "name": "https://www.geonames.org/787595",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          20.51222,
+          43.13667
+        ]
+      ]
+    },
+    {
+      "id": "rs-novi-sad",
+      "name": "Novi Sad",
+      "aliases": [],
+      "country": "Serbia",
+      "countryCode": "RS",
+      "type": "city",
+      "centroid": [
+        19.83694,
+        45.25167
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.83694,
+          45.25167
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "RS",
+      "provenance": {
+        "name": "https://www.geonames.org/3194360",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          19.83694,
+          45.25167
+        ]
+      ]
+    },
+    {
+      "id": "rs-sombor",
+      "name": "Sombor",
+      "aliases": [],
+      "country": "Serbia",
+      "countryCode": "RS",
+      "type": "city",
+      "centroid": [
+        19.11222,
+        45.77417
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.11222,
+          45.77417
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "RS",
+      "provenance": {
+        "name": "https://www.geonames.org/3190342",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          19.11222,
+          45.77417
+        ]
+      ]
+    },
+    {
+      "id": "rs-subotica",
+      "name": "Subotica",
+      "aliases": [],
+      "country": "Serbia",
+      "countryCode": "RS",
+      "type": "city",
+      "centroid": [
+        19.66667,
+        46.1
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.66667,
+          46.1
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "RS",
+      "provenance": {
+        "name": "https://www.geonames.org/3189595",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          19.66667,
+          46.1
+        ]
+      ]
+    },
+    {
+      "id": "rs-tara-mountains",
+      "name": "Tara Mountains",
+      "aliases": [],
+      "country": "Serbia",
+      "countryCode": "RS",
+      "type": "mountain",
+      "centroid": [
+        19.40498,
+        43.92563
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.40498,
+          43.92563
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "RS",
+      "provenance": {
+        "name": "https://www.geonames.org/3189202",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          19.40498,
+          43.92563
+        ]
+      ],
+      "scope": "local-area",
+      "scopeNote": "Conditions and geographic matching describe the representative point and local radius, not the entire named region."
+    },
+    {
+      "id": "rs-uzice",
+      "name": "Užice",
+      "aliases": [
+        "Uzice"
+      ],
+      "country": "Serbia",
+      "countryCode": "RS",
+      "type": "city",
+      "centroid": [
+        19.84878,
+        43.85861
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.84878,
+          43.85861
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "RS",
+      "provenance": {
+        "name": "https://www.geonames.org/3188434",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          19.84878,
+          43.85861
+        ]
+      ]
+    },
+    {
+      "id": "rs-zlatibor",
+      "name": "Zlatibor",
+      "aliases": [],
+      "country": "Serbia",
+      "countryCode": "RS",
+      "type": "resort",
+      "centroid": [
+        19.70029,
+        43.729
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          19.70029,
+          43.729
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "RS",
+      "provenance": {
+        "name": "https://www.geonames.org/3302765",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          19.70029,
+          43.729
+        ]
+      ]
+    },
+    {
+      "id": "rs-zrenjanin",
+      "name": "Zrenjanin",
+      "aliases": [],
+      "country": "Serbia",
+      "countryCode": "RS",
+      "type": "city",
+      "centroid": [
+        20.38194,
+        45.38361
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.38194,
+          45.38361
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "RS",
+      "provenance": {
+        "name": "https://www.geonames.org/783814",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          20.38194,
+          45.38361
+        ]
+      ]
+    },
+    {
+      "id": "sm-san-marino",
+      "name": "San Marino",
+      "aliases": [],
+      "country": "San Marino",
+      "countryCode": "SM",
+      "type": "capital",
+      "centroid": [
+        12.44639,
+        43.93667
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          12.44639,
+          43.93667
+        ],
+        "radiusKm": 1
+      },
+      "timezone": "Europe/San_Marino",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "SM",
+      "provenance": {
+        "name": "https://www.geonames.org/3168070",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          12.44639,
+          43.93667
+        ]
+      ]
+    },
+    {
+      "id": "sm-serravalle",
+      "name": "Serravalle",
+      "aliases": [],
+      "country": "San Marino",
+      "countryCode": "SM",
+      "type": "city",
+      "centroid": [
+        12.48167,
+        43.96897
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          12.48167,
+          43.96897
+        ],
+        "radiusKm": 1
+      },
+      "timezone": "Europe/San_Marino",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "SM",
+      "provenance": {
+        "name": "https://www.geonames.org/3166645",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          12.48167,
+          43.96897
+        ]
+      ]
+    },
+    {
+      "id": "tr-adana",
+      "name": "Adana",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        35.32531,
+        36.98615
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          35.32531,
+          36.98615
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/325363",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          35.32531,
+          36.98615
+        ]
+      ]
+    },
+    {
+      "id": "tr-alanya",
+      "name": "Alanya",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        31.99982,
+        36.54375
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          31.99982,
+          36.54375
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/324190",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          31.99982,
+          36.54375
+        ]
+      ]
+    },
+    {
+      "id": "tr-ankara",
+      "name": "Ankara",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "capital",
+      "centroid": [
+        32.85427,
+        39.91987
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          32.85427,
+          39.91987
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/323786",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          32.85427,
+          39.91987
+        ]
+      ]
+    },
+    {
+      "id": "tr-antalya",
+      "name": "Antalya",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        30.69556,
+        36.90812
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          30.69556,
+          36.90812
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/323777",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          30.69556,
+          36.90812
+        ]
+      ]
+    },
+    {
+      "id": "tr-artvin",
+      "name": "Artvin",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        41.82172,
+        41.18161
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          41.82172,
+          41.18161
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/751817",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          41.82172,
+          41.18161
+        ]
+      ]
+    },
+    {
+      "id": "tr-bodrum",
+      "name": "Bodrum",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        27.42917,
+        37.03833
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          27.42917,
+          37.03833
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/320995",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          27.42917,
+          37.03833
+        ]
+      ]
+    },
+    {
+      "id": "tr-bursa",
+      "name": "Bursa",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        29.06013,
+        40.19559
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          29.06013,
+          40.19559
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/750269",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          29.06013,
+          40.19559
+        ]
+      ]
+    },
+    {
+      "id": "tr-diyarbakir",
+      "name": "Diyarbakır",
+      "aliases": [
+        "Diyarbakir"
+      ],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        40.21721,
+        37.91363
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          40.21721,
+          37.91363
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/316541",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          40.21721,
+          37.91363
+        ]
+      ]
+    },
+    {
+      "id": "tr-edirne",
+      "name": "Edirne",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        26.55597,
+        41.67719
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          26.55597,
+          41.67719
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/747712",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          26.55597,
+          41.67719
+        ]
+      ]
+    },
+    {
+      "id": "tr-erzurum",
+      "name": "Erzurum",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        41.27694,
+        39.90861
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          41.27694,
+          39.90861
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/315368",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          41.27694,
+          39.90861
+        ]
+      ]
+    },
+    {
+      "id": "tr-eskisehir",
+      "name": "Eskişehir",
+      "aliases": [
+        "Eskisehir"
+      ],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        30.52056,
+        39.77667
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          30.52056,
+          39.77667
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/315202",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          30.52056,
+          39.77667
+        ]
+      ]
+    },
+    {
+      "id": "tr-fethiye",
+      "name": "Fethiye",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        29.12758,
+        36.64038
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          29.12758,
+          36.64038
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/314967",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          29.12758,
+          36.64038
+        ]
+      ]
+    },
+    {
+      "id": "tr-gaziantep",
+      "name": "Gaziantep",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        37.3825,
+        37.05944
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          37.3825,
+          37.05944
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/314830",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          37.3825,
+          37.05944
+        ]
+      ]
+    },
+    {
+      "id": "tr-goreme",
+      "name": "Göreme",
+      "aliases": [
+        "Goreme",
+        "Cappadocia"
+      ],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "resort",
+      "centroid": [
+        34.82885,
+        38.64284
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          34.82885,
+          38.64284
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/313947",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          34.82885,
+          38.64284
+        ]
+      ]
+    },
+    {
+      "id": "tr-istanbul",
+      "name": "Istanbul",
+      "aliases": [
+        "İstanbul"
+      ],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        28.94966,
+        41.01384
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          28.94966,
+          41.01384
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/745044",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          28.94966,
+          41.01384
+        ]
+      ]
+    },
+    {
+      "id": "tr-kars",
+      "name": "Kars",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        43.08548,
+        40.59825
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          43.08548,
+          40.59825
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/743952",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          43.08548,
+          40.59825
+        ]
+      ]
+    },
+    {
+      "id": "tr-kayseri",
+      "name": "Kayseri",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        35.48528,
+        38.73222
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          35.48528,
+          38.73222
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/308464",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          35.48528,
+          38.73222
+        ]
+      ]
+    },
+    {
+      "id": "tr-kas",
+      "name": "Kaş",
+      "aliases": [
+        "Kas"
+      ],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        29.63766,
+        36.20176
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          29.63766,
+          36.20176
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/308948",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          29.63766,
+          36.20176
+        ]
+      ]
+    },
+    {
+      "id": "tr-konya",
+      "name": "Konya",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        32.48464,
+        37.87135
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          32.48464,
+          37.87135
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/306571",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          32.48464,
+          37.87135
+        ]
+      ]
+    },
+    {
+      "id": "tr-kusadasi",
+      "name": "Kuşadası",
+      "aliases": [
+        "Kusadasi"
+      ],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        27.25713,
+        37.86014
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          27.25713,
+          37.86014
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/305359",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          27.25713,
+          37.86014
+        ]
+      ]
+    },
+    {
+      "id": "tr-mardin",
+      "name": "Mardin",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        40.74357,
+        37.31309
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          40.74357,
+          37.31309
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/304797",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          40.74357,
+          37.31309
+        ]
+      ]
+    },
+    {
+      "id": "tr-marmaris",
+      "name": "Marmaris",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        28.27417,
+        36.855
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          28.27417,
+          36.855
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/304782",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          28.27417,
+          36.855
+        ]
+      ]
+    },
+    {
+      "id": "tr-mersin",
+      "name": "Mersin",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        34.63886,
+        36.81196
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          34.63886,
+          36.81196
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/304531",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          34.63886,
+          36.81196
+        ]
+      ]
+    },
+    {
+      "id": "tr-pamukkale",
+      "name": "Pamukkale",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "resort",
+      "centroid": [
+        29.11729,
+        37.91644
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          29.11729,
+          37.91644
+        ],
+        "radiusKm": 5
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/302903",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          29.11729,
+          37.91644
+        ]
+      ]
+    },
+    {
+      "id": "tr-samsun",
+      "name": "Samsun",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        36.3361,
+        41.27976
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          36.3361,
+          41.27976
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/740264",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          36.3361,
+          41.27976
+        ]
+      ]
+    },
+    {
+      "id": "tr-trabzon",
+      "name": "Trabzon",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        39.72694,
+        41.005
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          39.72694,
+          41.005
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/738648",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          39.72694,
+          41.005
+        ]
+      ]
+    },
+    {
+      "id": "tr-van",
+      "name": "Van",
+      "aliases": [],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        43.38323,
+        38.49457
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          43.38323,
+          38.49457
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/298117",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          43.38323,
+          38.49457
+        ]
+      ]
+    },
+    {
+      "id": "tr-canakkale",
+      "name": "Çanakkale",
+      "aliases": [
+        "Canakkale"
+      ],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        26.41271,
+        40.15552
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          26.41271,
+          40.15552
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/749780",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          26.41271,
+          40.15552
+        ]
+      ]
+    },
+    {
+      "id": "tr-izmir",
+      "name": "İzmir",
+      "aliases": [
+        "Izmir"
+      ],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        27.13838,
+        38.41273
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          27.13838,
+          38.41273
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/311046",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": true,
+      "airQualitySamplePoints": [
+        [
+          27.13838,
+          38.41273
+        ]
+      ]
+    },
+    {
+      "id": "tr-sanliurfa",
+      "name": "Şanlıurfa",
+      "aliases": [
+        "Sanliurfa"
+      ],
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "type": "city",
+      "centroid": [
+        38.79392,
+        37.16708
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          38.79392,
+          37.16708
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Istanbul",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "TR",
+      "provenance": {
+        "name": "https://www.geonames.org/298333",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          38.79392,
+          37.16708
+        ]
+      ]
+    },
+    {
+      "id": "va-vatican-city",
+      "name": "Vatican City",
+      "aliases": [],
+      "country": "Vatican City",
+      "countryCode": "VA",
+      "type": "capital",
+      "centroid": [
+        12.45414,
+        41.90268
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          12.45414,
+          41.90268
+        ],
+        "radiusKm": 0.25
+      },
+      "timezone": "Europe/Vatican",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "VA",
+      "provenance": {
+        "name": "https://www.geonames.org/6691831",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          12.45414,
+          41.90268
+        ]
+      ]
+    },
+    {
+      "id": "xk-gjakove",
+      "name": "Gjakovë",
+      "aliases": [
+        "Gjakove"
+      ],
+      "country": "Kosovo",
+      "countryCode": "XK",
+      "type": "city",
+      "centroid": [
+        20.43083,
+        42.38028
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.43083,
+          42.38028
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "XK",
+      "provenance": {
+        "name": "https://www.geonames.org/791646",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          20.43083,
+          42.38028
+        ]
+      ]
+    },
+    {
+      "id": "xk-gjilan",
+      "name": "Gjilan",
+      "aliases": [],
+      "country": "Kosovo",
+      "countryCode": "XK",
+      "type": "city",
+      "centroid": [
+        21.46986,
+        42.46045
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          21.46986,
+          42.46045
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "XK",
+      "provenance": {
+        "name": "https://www.geonames.org/790674",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          21.46986,
+          42.46045
+        ]
+      ]
+    },
+    {
+      "id": "xk-peje",
+      "name": "Pejë",
+      "aliases": [
+        "Peja",
+        "Peć"
+      ],
+      "country": "Kosovo",
+      "countryCode": "XK",
+      "type": "city",
+      "centroid": [
+        20.28828,
+        42.65913
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.28828,
+          42.65913
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "XK",
+      "provenance": {
+        "name": "https://www.geonames.org/787157",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          20.28828,
+          42.65913
+        ]
+      ]
+    },
+    {
+      "id": "xk-pristina",
+      "name": "Pristina",
+      "aliases": [
+        "Prishtina"
+      ],
+      "country": "Kosovo",
+      "countryCode": "XK",
+      "type": "capital",
+      "centroid": [
+        21.16688,
+        42.67272
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          21.16688,
+          42.67272
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "XK",
+      "provenance": {
+        "name": "https://www.geonames.org/786714",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          21.16688,
+          42.67272
+        ]
+      ]
+    },
+    {
+      "id": "xk-prizren",
+      "name": "Prizren",
+      "aliases": [],
+      "country": "Kosovo",
+      "countryCode": "XK",
+      "type": "city",
+      "centroid": [
+        20.73972,
+        42.21389
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          20.73972,
+          42.21389
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "XK",
+      "provenance": {
+        "name": "https://www.geonames.org/786712",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          20.73972,
+          42.21389
+        ]
+      ]
+    },
+    {
+      "id": "xk-strpce",
+      "name": "Štrpce",
+      "aliases": [
+        "Strpce"
+      ],
+      "country": "Kosovo",
+      "countryCode": "XK",
+      "type": "city",
+      "centroid": [
+        21.02722,
+        42.23944
+      ],
+      "geometry": {
+        "kind": "radius",
+        "center": [
+          21.02722,
+          42.23944
+        ],
+        "radiusKm": 10
+      },
+      "timezone": "Europe/Belgrade",
+      "sourceRegionCodes": {
+        "meteoalarm": [],
+        "slf": [],
+        "euregio": [],
+        "nationalCivilAlerts": []
+      },
+      "coverageRef": "XK",
+      "provenance": {
+        "name": "https://www.geonames.org/785388",
+        "license": "CC-BY-4.0"
+      },
+      "isCoastal": false,
+      "airQualitySamplePoints": [
+        [
+          21.02722,
+          42.23944
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+.mapFallback {
+  position: absolute;
+  z-index: 8;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(300px, 440px) minmax(0, 1fr);
+  gap: 24px;
+  padding: 150px 24px 80px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 76% 18%, color-mix(in srgb, var(--brand-gold) 20%, transparent), transparent 30%),
+    linear-gradient(135deg, var(--surface-strong), var(--map-background));
+}
+
+.mapFallbackIntro { align-self: center; display: flex; align-items: flex-start; gap: 14px; max-width: 420px; padding: 22px; background: color-mix(in srgb, var(--surface) 86%, transparent); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); backdrop-filter: blur(14px); }
+.mapFallbackIntro > span { display: grid; place-items: center; flex: 0 0 auto; width: 42px; height: 42px; color: var(--ink-soft); background: var(--surface-strong); border-radius: 50%; }
+.mapFallbackIntro svg { width: 22px; height: 22px; }
+.mapFallbackIntro h2 { margin: 0; font-family: var(--font-display); font-size: 24px; font-weight: 600; letter-spacing: -.025em; }
+.mapFallbackIntro p { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+
+.directory { min-height: 0; padding: 16px; overflow-y: auto; background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
+.directory > h2 { position: sticky; z-index: 2; top: -16px; margin: 0 -16px 8px; padding: 16px; background: color-mix(in srgb, var(--surface) 97%, transparent); border-bottom: 1px solid var(--line); font-size: 15px; backdrop-filter: blur(12px); }
+.directory ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px 12px; margin: 0; padding: 0; list-style: none; }
+.directory button { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 9px; width: 100%; min-height: 54px; padding: 8px; color: var(--ink); background: transparent; border: 0; border-bottom: 1px solid var(--line); text-align: left; cursor: pointer; }
+.directory button:hover, .directory button:focus-visible { background: var(--surface-strong); }
+.directoryStatus { display: grid; place-items: center; width: 26px; height: 26px; color: #fff; background: var(--unknown); border-radius: 50%; font-size: 9px; font-weight: 900; }
+.directoryStatus svg { width: 12px; height: 12px; }
+.directoryStatus[data-level="NORMAL"] { background: var(--unknown); }
+.directoryStatus[data-level="ELEVATED"] { background: var(--elevated); }
+.directoryStatus[data-level="HIGH"] { background: var(--high); }
+.directoryStatus[data-level="SEVERE"] { background: var(--severe); }
+.directoryStatus[data-level="UNKNOWN"] { background: var(--unknown); }
+.directory button strong, .directory button small { display: block; }
+.directory button strong { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.directory button small { margin-top: 2px; color: var(--muted); font-size: 11px; }
+.directory button em { max-width: 108px; color: var(--muted); font-size: 11px; font-style: normal; font-weight: 750; line-height: 1.3; text-align: right; }
+
+:global(main[data-health-banner]) .mapFallback { padding-top: 214px; }
+
+@media (max-width: 1023px) {
+  .mapFallback { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); gap: 12px; padding: 168px 14px 76px; }
+  :global(main[data-health-banner]) .mapFallback { padding-top: 236px; }
+  .mapFallbackIntro { align-self: auto; max-width: none; padding: 14px; }
+  .mapFallbackIntro > span { width: 36px; height: 36px; }
+  .mapFallbackIntro h2 { font-size: 19px; }
+  .directory ul { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .mapFallback { padding: 128px 10px 68px; }
+  :global(main[data-health-banner]) .mapFallback { padding-top: 218px; }
+  .directory { padding: 10px; }
+  .directory > h2 { top: -10px; margin: 0 -10px 6px; padding: 12px; }
+}
+
+@media (forced-colors: active) {
+  .directoryStatus { forced-color-adjust: none; border: 1px solid CanvasText; }
+}

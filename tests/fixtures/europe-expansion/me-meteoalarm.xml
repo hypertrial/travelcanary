@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:cap="urn:oasis:names:tc:emergency:cap:1.2">
+  <link rel="hub" href="https://pubsubhubbub.appspot.com/"/>
+  <link type="application/atom+xml" rel="self" href="https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-montenegro"/>
+  <link type="text/html" rel="alternate" href="https://meteoalarm.org"/>
+  <rights>Copyright © 2026 MeteoAlarm.Org. Licensed under terms equivalent to CC BY 4.0, with additional requirements for redistributing outlined in our Terms and Conditions.</rights>
+  <generator>MeteoAlarm Producer Server</generator>
+  <logo>https://feeds.meteoalarm.org/images/logo.svg</logo>
+  <author>
+    <name>meteoalarm.org</name>
+    <uri>https://meteoalarm.org</uri>
+    <email>meteoalarm@geosphere.at</email>
+  </author>
+  <id>tag:meteoalarm.org,2021-02-19:ME</id>
+  <title>MeteoAlarm - Alerting Europe for Extreme Weather</title>
+  <updated>2026-09-08T15:35:07.843128Z</updated>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>ME001</value>
+    </cap:geocode>
+    <link title="Continental and Mountains" href="https://meteoalarm.org?geocode=EMMA_ID:ME001" hreflang="en"/>
+    <cap:areaDesc>Continental and Mountains</cap:areaDesc>
+    <cap:event>Thunderstorm</cap:event>
+    <cap:sent>2026-09-08T12:51:13+00:00</cap:sent>
+    <cap:expires>2026-09-09T19:00:00+00:00</cap:expires>
+    <cap:effective>2026-09-09T11:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-09T11:00:00+00:00</cap:onset>
+    <cap:certainty>Possible</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.499.0.1788871873931</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/beb5579b-1018-41ce-a4c4-06f1e7647a28"/>
+    <link title="Montenegro" rel="related" href="https://meteoalarm.org?region=ME" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T12:51:13Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/beb5579b-1018-41ce-a4c4-06f1e7647a28?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Thunderstorm Warning issued for Montenegro - Continental and Mountains</title>
+    <updated>2026-09-08T12:51:13Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>ME001</value>
+    </cap:geocode>
+    <link title="Continental and Mountains" href="https://meteoalarm.org?geocode=EMMA_ID:ME001" hreflang="en"/>
+    <cap:areaDesc>Continental and Mountains</cap:areaDesc>
+    <cap:event>High Temperature</cap:event>
+    <cap:sent>2026-09-08T12:50:21+00:00</cap:sent>
+    <cap:expires>2026-09-09T21:59:00+00:00</cap:expires>
+    <cap:effective>2026-09-08T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-08T22:00:00+00:00</cap:onset>
+    <cap:certainty>Possible</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.499.0.1788871821126</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/76055194-3c01-48cb-89ba-dc6cf4f16e36"/>
+    <link title="Montenegro" rel="related" href="https://meteoalarm.org?region=ME" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T12:50:21Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/76055194-3c01-48cb-89ba-dc6cf4f16e36?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Montenegro - Continental and Mountains</title>
+    <updated>2026-09-08T12:50:21Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>ME003</value>
+    </cap:geocode>
+    <link title="Central" href="https://meteoalarm.org?geocode=EMMA_ID:ME003" hreflang="en"/>
+    <cap:areaDesc>Central</cap:areaDesc>
+    <cap:event>High Temperature</cap:event>
+    <cap:sent>2026-09-08T12:49:42+00:00</cap:sent>
+    <cap:expires>2026-09-09T21:59:00+00:00</cap:expires>
+    <cap:effective>2026-09-08T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-08T22:00:00+00:00</cap:onset>
+    <cap:certainty>Possible</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.499.0.1788871782654</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/ea1c2936-e838-40fc-82da-445573e75cb9"/>
+    <link title="Montenegro" rel="related" href="https://meteoalarm.org?region=ME" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T12:49:42Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/ea1c2936-e838-40fc-82da-445573e75cb9?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Montenegro - Central</title>
+    <updated>2026-09-08T12:49:42Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>ME002</value>
+    </cap:geocode>
+    <link title="Adriatic coast" href="https://meteoalarm.org?geocode=EMMA_ID:ME002" hreflang="en"/>
+    <cap:areaDesc>Adriatic coast</cap:areaDesc>
+    <cap:event>High Temperature</cap:event>
+    <cap:sent>2026-09-08T12:49:07+00:00</cap:sent>
+    <cap:expires>2026-09-09T21:59:00+00:00</cap:expires>
+    <cap:effective>2026-09-08T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-08T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Severe</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.499.0.1788871747492</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/0b5a25d0-4b90-4863-8a05-9cae1b8619e9"/>
+    <link title="Montenegro" rel="related" href="https://meteoalarm.org?region=ME" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T12:49:07Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/0b5a25d0-4b90-4863-8a05-9cae1b8619e9?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Orange High-temperature Warning issued for Montenegro - Adriatic coast</title>
+    <updated>2026-09-08T12:49:07Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>ME002</value>
+    </cap:geocode>
+    <link title="Adriatic coast" href="https://meteoalarm.org?geocode=EMMA_ID:ME002" hreflang="en"/>
+    <cap:areaDesc>Adriatic coast</cap:areaDesc>
+    <cap:event>High Temperature</cap:event>
+    <cap:sent>2026-09-06T10:46:35+00:00</cap:sent>
+    <cap:expires>2026-09-07T21:59:00+00:00</cap:expires>
+    <cap:effective>2026-09-06T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-06T22:00:00+00:00</cap:onset>
+    <cap:certainty>Possible</cap:certainty>
+    <cap:severity>Severe</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.499.0.1788691595698</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/0add3222-8b2b-4818-b8a3-f24d46a4d0f5"/>
+    <link title="Montenegro" rel="related" href="https://meteoalarm.org?region=ME" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T10:46:35Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/0add3222-8b2b-4818-b8a3-f24d46a4d0f5?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Orange High-temperature Warning issued for Montenegro - Adriatic coast</title>
+    <updated>2026-09-06T10:46:35Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>ME003</value>
+    </cap:geocode>
+    <link title="Central" href="https://meteoalarm.org?geocode=EMMA_ID:ME003" hreflang="en"/>
+    <cap:areaDesc>Central</cap:areaDesc>
+    <cap:event>High Temperature</cap:event>
+    <cap:sent>2026-09-06T10:45:20+00:00</cap:sent>
+    <cap:expires>2026-09-07T21:59:00+00:00</cap:expires>
+    <cap:effective>2026-09-06T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-06T22:00:00+00:00</cap:onset>
+    <cap:certainty>Possible</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.499.0.1788691520364</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/b815d386-cc11-4371-8a29-974b96da785d"/>
+    <link title="Montenegro" rel="related" href="https://meteoalarm.org?region=ME" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T10:45:20Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/b815d386-cc11-4371-8a29-974b96da785d?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Montenegro - Central</title>
+    <updated>2026-09-06T10:45:20Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>ME001</value>
+    </cap:geocode>
+    <link title="Continental and Mountains" href="https://meteoalarm.org?geocode=EMMA_ID:ME001" hreflang="en"/>
+    <cap:areaDesc>Continental and Mountains</cap:areaDesc>
+    <cap:event>High Temperature</cap:event>
+    <cap:sent>2026-09-06T10:44:43+00:00</cap:sent>
+    <cap:expires>2026-09-07T21:59:00+00:00</cap:expires>
+    <cap:effective>2026-09-06T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-06T22:00:00+00:00</cap:onset>
+    <cap:certainty>Possible</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.499.0.1788691483875</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/e888f81d-5cf4-4672-9a4d-ccf8d39b785b"/>
+    <link title="Montenegro" rel="related" href="https://meteoalarm.org?region=ME" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T10:44:43Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/e888f81d-5cf4-4672-9a4d-ccf8d39b785b?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Montenegro - Continental and Mountains</title>
+    <updated>2026-09-06T10:44:43Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>ME002</value>
+    </cap:geocode>
+    <link title="Adriatic coast" href="https://meteoalarm.org?geocode=EMMA_ID:ME002" hreflang="en"/>
+    <cap:areaDesc>Adriatic coast</cap:areaDesc>
+    <cap:event>Wind</cap:event>
+    <cap:sent>2026-09-06T10:43:31+00:00</cap:sent>
+    <cap:expires>2026-09-07T10:00:00+00:00</cap:expires>
+    <cap:effective>2026-09-06T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-06T22:00:00+00:00</cap:onset>
+    <cap:certainty>Possible</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.1.499.0.1788691411959</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/93fec267-23d4-4819-a3ab-35a9561adf9d"/>
+    <link title="Montenegro" rel="related" href="https://meteoalarm.org?region=ME" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T10:43:31Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-montenegro/93fec267-23d4-4819-a3ab-35a9561adf9d?index_info=1&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Wind Warning issued for Montenegro - Adriatic coast</title>
+    <updated>2026-09-06T10:43:31Z</updated>
+  </entry>
+</feed>

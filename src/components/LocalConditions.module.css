@@ -1,0 +1,14 @@
+.section { border-top: 1px solid var(--border, #d9dce0); padding-top: 1.25rem; margin-top: 1.25rem; min-width: 0; color: #384249; }
+.section h3 { font-size: 1rem; margin: 0 0 .5rem; }
+.section h4 { font-size: .9rem; margin: .75rem 0 .35rem; }
+.section p, .section li { font-size: .82rem; line-height: 1.55; margin: .4rem 0; overflow-wrap: anywhere; }
+.section small { display: block; font-size: .75rem; line-height: 1.5; }
+.section a { color: #365c70; text-decoration: underline; text-underline-offset: .15em; }
+.section summary { cursor: pointer; font-size: .85rem; padding: .65rem 0; }
+.section summary:focus-visible, .section a:focus-visible { outline: 2px solid #365c70; outline-offset: 3px; }
+.hours { list-style: none; padding: 0; margin: 0; }
+.hours li { padding: .5rem 0; border-top: 1px solid #e7e9eb; }
+.note { color: #59656e; }
+.retry { min-height: 44px; padding: .65rem .85rem; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface-soft); color: var(--brand-navy); font-size: .82rem; font-weight: 700; cursor: pointer; }
+.retry:hover:not(:disabled) { background: var(--surface-strong); }
+.retry:disabled { cursor: wait; opacity: .65; }

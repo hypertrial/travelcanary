@@ -1,0 +1,2777 @@
+{
+  "policyClasses": {
+    "open": "Reviewed and enabled by default.",
+    "restricted": "Lawful reuse with terms requiring explicit operator acceptance; disabled by default.",
+    "gated": "Makes no requests until its documented technical and legal gates pass.",
+    "blocked": "Documentation or official links only; never fetched by TravelCanary."
+  },
+  "localConditions": [
+    {
+      "id": "open-meteo-weather",
+      "policy": "restricted",
+      "officialUrl": "https://open-meteo.com/",
+      "license": "CC BY 4.0; free service for noncommercial use only",
+      "licenseUrl": "https://open-meteo.com/en/terms",
+      "enabled": true,
+      "noncommercial": true,
+      "reviewDate": "2026-08-31",
+      "evidence": [
+        "https://open-meteo.com/en/docs",
+        "https://open-meteo.com/en/terms"
+      ],
+      "blocker": null,
+      "name": "Open-Meteo weather forecast",
+      "cadenceHours": 5,
+      "notice": "Forecast, not an observation or warning. Open-Meteo and its weather-model providers; hourly data reformatted by TravelCanary.",
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "open-meteo-air",
+      "policy": "restricted",
+      "officialUrl": "https://open-meteo.com/",
+      "license": "CC BY 4.0; free service for noncommercial use only",
+      "licenseUrl": "https://open-meteo.com/en/terms",
+      "enabled": true,
+      "noncommercial": true,
+      "reviewDate": "2026-08-31",
+      "evidence": [
+        "https://open-meteo.com/en/docs",
+        "https://open-meteo.com/en/terms"
+      ],
+      "blocker": null,
+      "name": "Open-Meteo / Copernicus CAMS",
+      "cadenceHours": 8,
+      "notice": "Modeled air quality, dust and UV, not station observations. Contains modified Copernicus Atmosphere Monitoring Service information.",
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "open-meteo-marine",
+      "policy": "restricted",
+      "officialUrl": "https://open-meteo.com/",
+      "license": "CC BY 4.0; free service for noncommercial use only",
+      "licenseUrl": "https://open-meteo.com/en/terms",
+      "enabled": true,
+      "noncommercial": true,
+      "reviewDate": "2026-08-31",
+      "evidence": [
+        "https://open-meteo.com/en/docs",
+        "https://open-meteo.com/en/terms"
+      ],
+      "blocker": null,
+      "name": "Open-Meteo marine forecast",
+      "cadenceHours": 8,
+      "notice": "Open-Meteo / DWD and marine-model providers. Nearby offshore forecast. Not suitable for navigation, beach-safety decisions or determining ferry operation.",
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "met-norway",
+      "policy": "open",
+      "name": "MET Norway",
+      "officialUrl": "https://www.met.no/en",
+      "license": "CC BY 4.0 / NLOD 2.0",
+      "licenseUrl": "https://api.met.no/doc/License",
+      "notice": "Fallback forecast, not an observation or official warning. Reformatted by TravelCanary.",
+      "enabled": true,
+      "noncommercial": false,
+      "cadenceHours": 3,
+      "reviewDate": "2026-08-31",
+      "evidence": [
+        "https://api.met.no/doc/TermsOfService"
+      ],
+      "blocker": null,
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "awc-metar",
+      "policy": "open",
+      "name": "NOAA Aviation Weather Center",
+      "officialUrl": "https://aviationweather.gov/",
+      "license": "US government weather information",
+      "licenseUrl": "https://www.weather.gov/disclaimer",
+      "notice": "Observed at the named airport, not throughout the destination. Units converted; not for aviation decisions.",
+      "enabled": true,
+      "noncommercial": false,
+      "cadenceHours": 1,
+      "reviewDate": "2026-08-31",
+      "evidence": [
+        "https://aviationweather.gov/data/api/"
+      ],
+      "blocker": null,
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "ipma-observations",
+      "policy": "restricted",
+      "name": "IPMA weather stations",
+      "officialUrl": "https://api.ipma.pt/",
+      "license": "Free public data; noncommercial use",
+      "licenseUrl": "https://api.ipma.pt/",
+      "notice": "IPMA station observation. Modified: sentinel values removed, units preserved, and mapped only to reviewed representative destinations. Not a warning or destination-wide measurement.",
+      "logo": "/sources/ipma.png",
+      "enabled": true,
+      "noncommercial": true,
+      "cadenceHours": 1,
+      "reviewDate": "2026-09-01",
+      "evidence": [
+        "https://api.ipma.pt/",
+        "https://api.ipma.pt/open-data/observation/meteorology/stations/obs-surface.geojson"
+      ],
+      "blocker": null,
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "ipma-seismic",
+      "policy": "restricted",
+      "name": "IPMA seismic activity",
+      "officialUrl": "https://api.ipma.pt/",
+      "license": "Free public data; noncommercial use",
+      "licenseUrl": "https://api.ipma.pt/",
+      "notice": "IPMA regional earthquake context. Modified: limited to the previous 24 hours, magnitude 3 or greater, within 100 km. This display threshold is not alert scoring.",
+      "logo": "/sources/ipma.png",
+      "enabled": true,
+      "noncommercial": true,
+      "cadenceHours": 1,
+      "reviewDate": "2026-09-01",
+      "evidence": [
+        "https://api.ipma.pt/",
+        "https://api.ipma.pt/open-data/observation/seismic/3.json",
+        "https://api.ipma.pt/open-data/observation/seismic/7.json"
+      ],
+      "blocker": null,
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "ign-seismic",
+      "policy": "gated",
+      "name": "IGN regional earthquakes",
+      "officialUrl": "https://www.ign.es/web/social-rss",
+      "license": "Activation requires completed source review",
+      "licenseUrl": "https://www.ign.es/web/social-rss",
+      "notice": "Not connected. This source does not contribute monitoring coverage.",
+      "enabled": false,
+      "noncommercial": false,
+      "cadenceHours": 1,
+      "reviewDate": "2026-08-31",
+      "evidence": [
+        "https://www.ign.es/web/social-rss"
+      ],
+      "blocker": "RSS event-time and correction/deletion lifecycle need representative current fixtures before activation.",
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "arso-hydro",
+      "policy": "open",
+      "name": "ARSO hydrology",
+      "officialUrl": "https://www.arso.gov.si/vode/podatki/hidro_podatki_xml.html",
+      "license": "Slovenian public information reuse; attribution required",
+      "licenseUrl": "https://eionet.arso.gov.si/pravna-podlaga",
+      "notice": "ARSO provisional river observation at a reviewed station. Reference-level crossings are factual station context, not an official warning or destination-wide flood condition.",
+      "enabled": true,
+      "noncommercial": false,
+      "cadenceHours": 1,
+      "reviewDate": "2026-09-02",
+      "evidence": [
+        "https://www.arso.gov.si/vode/podatki/hidro_podatki_xml.html",
+        "https://www.arso.gov.si/vode/podatki/opis_hidro_xml.pdf",
+        "https://eionet.arso.gov.si/pravna-podlaga"
+      ],
+      "blocker": null,
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "opw-hydro",
+      "policy": "open",
+      "name": "Office of Public Works water levels",
+      "officialUrl": "https://waterlevel.ie/",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://waterlevel.ie/page/api/",
+      "notice": "Contains Irish Public Sector Information licensed under CC BY 4.0, provided by OPW (waterlevel.ie). Provisional, unchecked station observation relative to local gauge zero; not a flood warning. See https://waterlevel.ie/disclaimer/.",
+      "enabled": true,
+      "noncommercial": false,
+      "cadenceHours": 1,
+      "reviewDate": "2026-09-08",
+      "evidence": [
+        "https://waterlevel.ie/page/api/",
+        "https://waterlevel.ie/disclaimer/",
+        "https://waterlevel.ie/error/",
+        "https://waterlevel.ie/0000030099/0001/"
+      ],
+      "blocker": null,
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "rws-water",
+      "policy": "open",
+      "name": "Rijkswaterstaat Waterdata",
+      "officialUrl": "https://rijkswaterstaatdata.nl/waterdata/",
+      "license": "CC0",
+      "licenseUrl": "https://www.rijkswaterstaat.nl/zakelijk/open-data",
+      "notice": "Rijkswaterstaat current water-level observation at the named station, filtered to published quality codes and NAP datum. Observation only; not a flood warning or destination-wide measurement.",
+      "enabled": true,
+      "noncommercial": false,
+      "cadenceHours": 1,
+      "reviewDate": "2026-09-01",
+      "evidence": [
+        "https://rijkswaterstaatdata.nl/waterdata/",
+        "https://rijkswaterstaatdata.nl/projecten/waterwebservices-overschakeling/",
+        "https://www.rijkswaterstaat.nl/zakelijk/open-data"
+      ],
+      "blocker": null,
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "vmm-water",
+      "policy": "gated",
+      "name": "VMM Waterinfo",
+      "officialUrl": "https://www.waterinfo.vlaanderen.be/default.aspx?path=Public%2FOver+waterinfo%2FFAQ+open+data",
+      "license": "Activation requires completed source review",
+      "licenseUrl": "https://www.waterinfo.vlaanderen.be/default.aspx?path=Public%2FOver+waterinfo%2FFAQ+open+data",
+      "notice": "Not connected. This source does not contribute monitoring coverage.",
+      "enabled": false,
+      "noncommercial": false,
+      "cadenceHours": 1,
+      "reviewDate": "2026-08-31",
+      "evidence": [
+        "https://www.waterinfo.vlaanderen.be/default.aspx?path=Public%2FOver+waterinfo%2FFAQ+open+data"
+      ],
+      "blocker": "The live tested group provides rainfall; water-level group IDs, quality codes and geographic mappings remain unapproved. HIC requires separate authenticated access.",
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "lhmt-hydro",
+      "policy": "gated",
+      "name": "Lithuanian Hydrometeorological Service",
+      "officialUrl": "https://api.meteo.lt/",
+      "license": "Activation requires completed source review",
+      "licenseUrl": "https://api.meteo.lt/",
+      "notice": "Not connected. This source does not contribute monitoring coverage.",
+      "enabled": false,
+      "noncommercial": false,
+      "cadenceHours": 1,
+      "reviewDate": "2026-08-31",
+      "evidence": [
+        "https://api.meteo.lt/"
+      ],
+      "blocker": "CC BY-SA 4.0 permits reuse; exact station/river mappings and vertical-reference metadata need review before publishing values.",
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "syke-hydro",
+      "policy": "gated",
+      "name": "Finnish Environment Institute SYKE",
+      "officialUrl": "https://www.syke.fi/en/environmental-data/open-web-services/environmental-data-apis",
+      "license": "Activation requires completed source review",
+      "licenseUrl": "https://www.syke.fi/en/environmental-data/open-web-services/environmental-data-apis",
+      "notice": "Not connected. This source does not contribute monitoring coverage.",
+      "enabled": false,
+      "noncommercial": false,
+      "cadenceHours": 1,
+      "reviewDate": "2026-08-31",
+      "evidence": [
+        "https://www.syke.fi/en/environmental-data/open-web-services/environmental-data-apis"
+      ],
+      "blocker": "OData observation queries, quality flags, vertical-reference metadata and exact mappings need a completed live fixture gate.",
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "cyprus-air",
+      "policy": "gated",
+      "name": "Cyprus air-quality network",
+      "officialUrl": "https://www.airquality.dli.mlsi.gov.cy/",
+      "license": "Activation requires completed source review",
+      "licenseUrl": "https://www.airquality.dli.mlsi.gov.cy/",
+      "notice": "Not connected. This source does not contribute monitoring coverage.",
+      "enabled": false,
+      "noncommercial": false,
+      "cadenceHours": 1,
+      "reviewDate": "2026-08-31",
+      "evidence": [
+        "https://www.airquality.dli.mlsi.gov.cy/"
+      ],
+      "blocker": "CC BY-SA dataset; local-time/DST interpretation, instrument flags and representative station mappings require review.",
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "nimh-hydro",
+      "policy": "gated",
+      "name": "Bulgarian NIMH",
+      "officialUrl": "https://info.meteo.bg/openData/",
+      "license": "Activation requires completed source review",
+      "licenseUrl": "https://info.meteo.bg/openData/",
+      "notice": "Not connected. This source does not contribute monitoring coverage.",
+      "enabled": false,
+      "noncommercial": false,
+      "cadenceHours": 1,
+      "reviewDate": "2026-08-31",
+      "evidence": [
+        "https://info.meteo.bg/openData/"
+      ],
+      "blocker": "Experimental daily data need documented timestamps, reuse and exact station-area mappings; daily values cannot imply current flood warnings.",
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "digitraffic",
+      "policy": "open",
+      "name": "Fintraffic Digitraffic",
+      "officialUrl": "https://www.digitraffic.fi/en/road-traffic/",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "notice": "Fintraffic / Digitraffic. Modified: only current accident-associated roadClosed records, matched by official geometry. Nearby context, not route advice or complete disruption coverage.",
+      "enabled": true,
+      "noncommercial": false,
+      "cadenceHours": 1,
+      "reviewDate": "2026-08-31",
+      "evidence": [
+        "https://www.digitraffic.fi/en/road-traffic/",
+        "https://www.digitraffic.fi/en/terms-of-service/",
+        "https://tie.digitraffic.fi/api/traffic-message/v2/traffic-announcements/datex2-3.7.xml"
+      ],
+      "blocker": null,
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "smhi-water",
+      "policy": "gated",
+      "name": "SMHI water-shortage information",
+      "officialUrl": "https://opendata-download-warnings.smhi.se/ibww/api/version/1",
+      "license": "Activation requires completed source review",
+      "licenseUrl": "https://opendata-download-warnings.smhi.se/ibww/api/version/1",
+      "notice": "Not connected. This source does not contribute monitoring coverage.",
+      "enabled": false,
+      "noncommercial": false,
+      "cadenceHours": 1,
+      "reviewDate": "2026-08-31",
+      "evidence": [
+        "https://opendata-download-warnings.smhi.se/ibww/api/version/1"
+      ],
+      "blocker": "Informational-message validity and unmodified-warning reuse requirements need representative lifecycle fixtures.",
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "krisinformation-infrastructure",
+      "policy": "open",
+      "name": "Krisinformation infrastructure notices",
+      "officialUrl": "https://www.krisinformation.se/",
+      "license": "Official open API; attribution required",
+      "licenseUrl": "https://www.krisinformation.se/om-krisinformation/for-myndigheter-och-andra-aktorer/oppen-data/",
+      "notice": "Official Swedish crisis information. Modified into fixed infrastructure categories; source prose is not republished. Regional notices do not prove a destination-wide interruption.",
+      "enabled": true,
+      "noncommercial": false,
+      "cadenceHours": 1,
+      "reviewDate": "2026-09-02",
+      "evidence": [
+        "https://api.krisinformation.se/v3",
+        "https://www.krisinformation.se/om-krisinformation/for-myndigheter-och-andra-aktorer/oppen-data/"
+      ],
+      "blocker": null,
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "ndw-traffic",
+      "policy": "open",
+      "name": "NDW open traffic data",
+      "officialUrl": "https://opendata.ndw.nu/",
+      "license": "CC0",
+      "licenseUrl": "https://www.ndw.nu/service/copyright",
+      "notice": "Official Dutch road incident data. Modified: only current serious incidents and complete closures intersecting the destination are retained. Not route advice.",
+      "enabled": true,
+      "noncommercial": false,
+      "cadenceHours": 1,
+      "reviewDate": "2026-09-02",
+      "evidence": [
+        "https://opendata.ndw.nu/",
+        "https://docs.ndw.nu/faq/incidenten/",
+        "https://www.ndw.nu/service/copyright"
+      ],
+      "blocker": null,
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "autobahn-traffic",
+      "policy": "restricted",
+      "name": "Autobahn GmbH traffic information",
+      "officialUrl": "https://www.autobahn.de/",
+      "license": "Official public API; factual context only",
+      "licenseUrl": "https://autobahn.api.bund.dev/",
+      "notice": "Official German motorway closure or warning intersecting the destination. Fixed factual summary; not complete transport monitoring or route advice.",
+      "enabled": true,
+      "noncommercial": true,
+      "cadenceHours": 1,
+      "reviewDate": "2026-09-02",
+      "evidence": [
+        "https://verkehr.autobahn.de/o/autobahn",
+        "https://autobahn.api.bund.dev/"
+      ],
+      "blocker": null,
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "eac-power",
+      "policy": "gated",
+      "name": "Electricity Authority of Cyprus",
+      "officialUrl": "https://www.eac.com.cy/EN/RegulatedActivities/Distribution/PowerInterruptions/Pages/Faultsandscheduledinterruptions.aspx?District=0",
+      "license": "Official free public information; factual context only",
+      "licenseUrl": "https://www.eac.com.cy/EN/Documents/20210416_Access%20Guide%20to%20EAC%20Information.pdf",
+      "notice": "Official current faults and scheduled interruptions mapped only by reviewed locality names. The list may not represent every premises-level outage.",
+      "enabled": false,
+      "noncommercial": true,
+      "cadenceHours": 1,
+      "reviewDate": "2026-09-02",
+      "evidence": [
+        "https://www.eac.com.cy/EN/RegulatedActivities/Distribution/PowerInterruptions/Pages/Faultsandscheduledinterruptions.aspx?District=0",
+        "https://www.eac.com.cy/EN/Documents/20210416_Access%20Guide%20to%20EAC%20Information.pdf"
+      ],
+      "blocker": "The five public district pages did not complete within the reviewed eight-second source budget during the release live gate.",
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "enemalta-power",
+      "policy": "gated",
+      "name": "Enemalta live outage map",
+      "officialUrl": "https://www.enemalta.com.mt/planned-power-cuts/",
+      "license": "Official public outage map; factual context only",
+      "licenseUrl": "https://www.enemalta.com.mt/terms-of-use/",
+      "notice": "Official current and planned electricity interruptions matched by published geometry. Fixed factual summary; absence from the map is not an all-clear.",
+      "enabled": false,
+      "noncommercial": true,
+      "cadenceHours": 1,
+      "reviewDate": "2026-09-02",
+      "evidence": [
+        "https://www.enemalta.com.mt/planned-power-cuts/",
+        "https://mobilegis.enemalta.com.mt/mobilegis_rest/api/currentoutages/GetOutages",
+        "https://mobilegis.enemalta.com.mt/mobilegis_Rest/api/currentoutages/GetPlannedOutages"
+      ],
+      "blocker": "The official planned-outage response was 1,209,931 bytes at the release live gate, exceeding the approved 512 KiB response limit.",
+      "role": "context",
+      "satisfiesCoverage": false
+    },
+    {
+      "id": "pse-energy-compass",
+      "policy": "open",
+      "name": "PSE Energy Compass",
+      "officialUrl": "https://www.energetycznykompas.pl/",
+      "license": "Official public API",
+      "licenseUrl": "https://api.raporty.pse.pl/",
+      "notice": "National electricity-use recommendation from PSE. This describes system conditions and does not indicate a local power outage.",
+      "enabled": true,
+      "noncommercial": false,
+      "cadenceHours": 1,
+      "reviewDate": "2026-09-02",
+      "evidence": [
+        "https://api.raporty.pse.pl/",
+        "https://www.pse.pl/-/nowe-funkcje-w-energetycznym-kompasie"
+      ],
+      "blocker": null,
+      "role": "context",
+      "satisfiesCoverage": false
+    }
+  ],
+  "schemaVersion": 3,
+  "reviewedAt": "2026-09-08",
+  "credentials": {
+    "required": [],
+    "optional": [
+      "effis-active-fire"
+    ],
+    "environmentGated": [
+      "gfm",
+      "eonet",
+      "edo-drought",
+      "fcdo-travel-advice"
+    ]
+  },
+  "providers": [
+    {
+      "providerId": "meteoalarm",
+      "policy": "open",
+      "sourceId": "meteoalarm",
+      "displayName": "MeteoAlarm",
+      "mode": "authoritative",
+      "cadenceMinutes": 10,
+      "hazards": [
+        "severe-weather",
+        "flood",
+        "extreme-heat",
+        "extreme-cold",
+        "wildfire",
+        "snow-ice",
+        "avalanche",
+        "coastal"
+      ],
+      "healthScope": "global",
+      "satisfiesCoverage": true,
+      "officialUrl": "https://meteoalarm.org/",
+      "limitationCode": null
+    },
+    {
+      "providerId": "usgs",
+      "policy": "open",
+      "sourceId": "usgs",
+      "displayName": "USGS",
+      "mode": "authoritative",
+      "cadenceMinutes": 10,
+      "hazards": [
+        "earthquake"
+      ],
+      "healthScope": "global",
+      "satisfiesCoverage": true,
+      "officialUrl": "https://earthquake.usgs.gov/",
+      "limitationCode": null
+    },
+    {
+      "providerId": "effis-fire-danger",
+      "policy": "open",
+      "sourceId": "effis",
+      "displayName": "EFFIS fire danger",
+      "mode": "authoritative",
+      "cadenceMinutes": 60,
+      "hazards": [
+        "fire-danger"
+      ],
+      "healthScope": "coverage",
+      "satisfiesCoverage": true,
+      "officialUrl": "https://forest-fire.emergency.copernicus.eu/",
+      "limitationCode": null
+    },
+    {
+      "providerId": "cems-rapid-mapping",
+      "policy": "open",
+      "sourceId": "cems",
+      "displayName": "Copernicus EMS Rapid Mapping",
+      "mode": "complementary",
+      "cadenceMinutes": 10,
+      "hazards": [
+        "wildfire",
+        "industrial",
+        "civil-emergency",
+        "flood"
+      ],
+      "healthScope": "non_blocking",
+      "satisfiesCoverage": true,
+      "officialUrl": "https://mapping.emergency.copernicus.eu/",
+      "limitationCode": null
+    },
+    {
+      "providerId": "gdacs",
+      "policy": "open",
+      "sourceId": "gdacs",
+      "displayName": "GDACS",
+      "mode": "discovery",
+      "cadenceMinutes": 60,
+      "hazards": [],
+      "healthScope": "non_blocking",
+      "satisfiesCoverage": false,
+      "officialUrl": "https://www.gdacs.org/",
+      "limitationCode": "discovery_only"
+    },
+    {
+      "providerId": "gfm",
+      "policy": "gated",
+      "sourceId": "gfm",
+      "displayName": "Copernicus Global Flood Monitoring",
+      "mode": "complementary",
+      "cadenceMinutes": 120,
+      "hazards": [
+        "flood"
+      ],
+      "healthScope": "non_blocking",
+      "satisfiesCoverage": false,
+      "officialUrl": "https://global-flood.emergency.copernicus.eu/",
+      "limitationCode": null
+    },
+    {
+      "providerId": "emsc",
+      "policy": "open",
+      "sourceId": "emsc",
+      "displayName": "EMSC",
+      "mode": "fallback",
+      "cadenceMinutes": 10,
+      "hazards": [
+        "earthquake"
+      ],
+      "healthScope": "global",
+      "satisfiesCoverage": false,
+      "officialUrl": "https://www.seismicportal.eu/",
+      "limitationCode": "preliminary_fallback"
+    },
+    {
+      "providerId": "slf-avalanche",
+      "policy": "open",
+      "sourceId": "slf-avalanche",
+      "displayName": "SLF avalanche bulletins",
+      "mode": "authoritative",
+      "cadenceMinutes": 60,
+      "hazards": [
+        "avalanche"
+      ],
+      "healthScope": "coverage",
+      "satisfiesCoverage": true,
+      "officialUrl": "https://www.slf.ch/en/avalanche-bulletin-and-snow-situation/",
+      "limitationCode": null
+    },
+    {
+      "providerId": "euregio-avalanche",
+      "policy": "open",
+      "sourceId": "euregio-avalanche",
+      "displayName": "Avalanche.report",
+      "mode": "authoritative",
+      "cadenceMinutes": 60,
+      "hazards": [
+        "avalanche"
+      ],
+      "healthScope": "coverage",
+      "satisfiesCoverage": true,
+      "officialUrl": "https://avalanche.report/",
+      "limitationCode": null
+    },
+    {
+      "providerId": "effis-active-fire",
+      "policy": "open",
+      "sourceId": "effis-active-fire",
+      "displayName": "EFFIS / NASA FIRMS active fire",
+      "mode": "complementary",
+      "cadenceMinutes": 60,
+      "hazards": [
+        "wildfire"
+      ],
+      "healthScope": "non_blocking",
+      "satisfiesCoverage": false,
+      "officialUrl": "https://forest-fire.emergency.copernicus.eu/",
+      "limitationCode": "satellite_context_only"
+    },
+    {
+      "providerId": "eea-aqi",
+      "policy": "open",
+      "sourceId": "eea",
+      "displayName": "European Environment Agency",
+      "mode": "authoritative",
+      "cadenceMinutes": 60,
+      "hazards": [
+        "air-quality"
+      ],
+      "healthScope": "coverage",
+      "satisfiesCoverage": true,
+      "officialUrl": "https://airindex.eea.europa.eu/",
+      "limitationCode": null
+    },
+    {
+      "providerId": "gdelt",
+      "policy": "gated",
+      "sourceId": "gdelt",
+      "displayName": "GDELT",
+      "mode": "discovery",
+      "cadenceMinutes": 60,
+      "hazards": [
+        "civil-unrest",
+        "security",
+        "terrorism",
+        "armed-conflict"
+      ],
+      "healthScope": "non_blocking",
+      "satisfiesCoverage": false,
+      "officialUrl": "https://www.gdeltproject.org/",
+      "limitationCode": "corroborated_context_only"
+    },
+    {
+      "providerId": "national-civil-alerts",
+      "policy": "open",
+      "sourceId": "national-civil-alerts",
+      "displayName": "National public warning systems",
+      "mode": "authoritative",
+      "cadenceMinutes": 10,
+      "hazards": [
+        "flood",
+        "civil-unrest",
+        "security",
+        "terrorism",
+        "armed-conflict",
+        "industrial",
+        "nuclear",
+        "civil-emergency"
+      ],
+      "healthScope": "coverage",
+      "satisfiesCoverage": true,
+      "officialUrl": "https://www.berec.europa.eu/en/pws",
+      "limitationCode": "country_readiness_varies"
+    },
+    {
+      "providerId": "vigicrues",
+      "policy": "open",
+      "sourceId": "vigicrues",
+      "displayName": "Vigicrues",
+      "mode": "authoritative",
+      "cadenceMinutes": 10,
+      "hazards": [
+        "flood"
+      ],
+      "healthScope": "coverage",
+      "satisfiesCoverage": true,
+      "officialUrl": "https://www.vigicrues.gouv.fr/",
+      "limitationCode": null
+    },
+    {
+      "providerId": "foen-flood",
+      "policy": "open",
+      "sourceId": "foen-flood",
+      "displayName": "FOEN flood warning map",
+      "mode": "authoritative",
+      "cadenceMinutes": 60,
+      "hazards": [
+        "flood"
+      ],
+      "healthScope": "coverage",
+      "satisfiesCoverage": true,
+      "officialUrl": "https://www.hydrodaten.admin.ch/",
+      "limitationCode": null
+    },
+    {
+      "providerId": "ehyd-flood",
+      "policy": "open",
+      "sourceId": "ehyd-flood",
+      "displayName": "eHYD flood stages",
+      "mode": "authoritative",
+      "cadenceMinutes": 60,
+      "hazards": [
+        "flood"
+      ],
+      "healthScope": "coverage",
+      "satisfiesCoverage": true,
+      "officialUrl": "https://ehyd.gv.at/",
+      "limitationCode": null
+    },
+    {
+      "providerId": "eonet",
+      "policy": "gated",
+      "sourceId": "eonet",
+      "displayName": "NASA EONET",
+      "mode": "complementary",
+      "cadenceMinutes": 60,
+      "hazards": [
+        "wildfire",
+        "volcano"
+      ],
+      "healthScope": "non_blocking",
+      "satisfiesCoverage": false,
+      "officialUrl": "https://eonet.gsfc.nasa.gov/",
+      "limitationCode": "context_only"
+    },
+    {
+      "providerId": "edo-drought",
+      "policy": "gated",
+      "sourceId": "edo-drought",
+      "displayName": "Copernicus European Drought Observatory",
+      "mode": "complementary",
+      "cadenceMinutes": 1440,
+      "hazards": [
+        "drought"
+      ],
+      "healthScope": "non_blocking",
+      "satisfiesCoverage": false,
+      "officialUrl": "https://drought.emergency.copernicus.eu/",
+      "limitationCode": "context_only"
+    },
+    {
+      "providerId": "fcdo-travel-advice",
+      "policy": "gated",
+      "sourceId": "fcdo-travel-advice",
+      "displayName": "GOV.UK foreign travel advice",
+      "mode": "complementary",
+      "cadenceMinutes": 60,
+      "hazards": [
+        "security"
+      ],
+      "healthScope": "non_blocking",
+      "satisfiesCoverage": false,
+      "officialUrl": "https://www.gov.uk/foreign-travel-advice",
+      "limitationCode": "context_only"
+    }
+  ],
+  "nationalWarningPartitions": [
+    {
+      "countryCode": "AT",
+      "authority": "Austrian Federal Ministry of the Interior",
+      "systemName": "AT-Alert",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://warnung.at-alert.at/"
+      ],
+      "enabled": true,
+      "endpoint": "https://warnung.at-alert.at/api/rpc/alert/list",
+      "hazards": [
+        "civil-emergency"
+      ],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "Official public warnings / freie Werke",
+        "url": "https://www.rtr.at/rtr/service/opendata/OD_Nutzungsbedingungen.de.html"
+      },
+      "limitationCode": null,
+      "satisfiesCoverage": true,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "at-alert",
+          "authority": "Austrian Federal Ministry of the Interior",
+          "systemName": "AT-Alert",
+          "policy": "open",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "civil-emergency"
+          ],
+          "coverageContribution": "partial",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://warnung.at-alert.at/",
+          "evidenceUrls": [
+            "https://warnung.at-alert.at/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": null
+        }
+      ]
+    },
+    {
+      "countryCode": "BE",
+      "authority": "Belgian National Crisis Center",
+      "systemName": "BE-Alert",
+      "reviewedAt": "2026-09-08",
+      "evidenceUrls": [
+        "https://publicalerts.be/CapGateway/feed?outdated=false",
+        "https://www.be-alert.be/fr/conditions-generales-dutilisation"
+      ],
+      "enabled": false,
+      "endpoint": "https://publicalerts.be/CapGateway/feed?outdated=false",
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "evidence_review_required",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "be-alert-cap",
+          "authority": "Belgian National Crisis Center",
+          "systemName": "BE-Alert",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "civil-emergency",
+            "security",
+            "industrial",
+            "nuclear",
+            "wildfire"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "partial",
+          "lifecycleStatus": "partial",
+          "geometryStatus": "partial",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.be-alert.be/en/",
+          "evidenceUrls": [
+            "https://publicalerts.be/CapGateway/feed?outdated=false",
+            "https://www.be-alert.be/fr/conditions-generales-dutilisation"
+          ],
+          "reviewedAt": "2026-09-08",
+          "nextReviewAt": "2026-12-07",
+          "limitationCode": "evidence_review_required"
+        }
+      ]
+    },
+    {
+      "countryCode": "BG",
+      "authority": "Bulgarian Ministry of Interior",
+      "systemName": "BG-ALERT",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://bg-alert.bg/"
+      ],
+      "enabled": false,
+      "endpoint": "https://bg-alert.bg/",
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "evidence_review_required",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "bg-alert-web",
+          "authority": "Bulgarian Ministry of Interior",
+          "systemName": "BG-ALERT",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 60,
+          "format": "html",
+          "hazards": [
+            "civil-emergency",
+            "security",
+            "industrial",
+            "wildfire"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "partial",
+          "lifecycleStatus": "partial",
+          "geometryStatus": "partial",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://bg-alert.bg/",
+          "evidenceUrls": [
+            "https://bg-alert.bg/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "evidence_review_required"
+        }
+      ]
+    },
+    {
+      "countryCode": "HR",
+      "authority": "Croatian Civil Protection Directorate",
+      "systemName": "SRUUK",
+      "reviewedAt": "2026-09-07",
+      "evidenceUrls": [
+        "https://civilna-zastita.gov.hr/"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "no_supported_machine_feed",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "hr-public-warning",
+          "authority": "Croatian Civil Protection Directorate",
+          "systemName": "SRUUK",
+          "policy": "blocked",
+          "runtimeTarget": "none",
+          "role": "blocked",
+          "status": "blocked",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "blocked",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://civilna-zastita.gov.hr/",
+          "evidenceUrls": [
+            "https://civilna-zastita.gov.hr/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "no_supported_machine_feed"
+        },
+        {
+          "id": "dhmz-cap",
+          "authority": "Croatian Meteorological and Hydrological Service",
+          "systemName": "DHMZ direct CAP warnings",
+          "policy": "open",
+          "runtimeTarget": "meteoalarm-fallback",
+          "role": "fallback",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "cap",
+          "hazards": [
+            "severe-weather",
+            "extreme-heat",
+            "extreme-cold",
+            "snow-ice",
+            "coastal",
+            "fire-danger",
+            "avalanche",
+            "flood"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://meteo.hr/proizvodi.php?section=podaci&param=xml_korisnici",
+          "evidenceUrls": [
+            "https://meteo.hr/proizvodi.php?section=podaci&param=xml_korisnici",
+            "https://meteo.hr/upozorenja/cap_hr_today.xml"
+          ],
+          "reviewedAt": "2026-09-07",
+          "nextReviewAt": "2026-12-06",
+          "limitationCode": null
+        }
+      ]
+    },
+    {
+      "countryCode": "CY",
+      "authority": "Cyprus Civil Defence",
+      "systemName": "Cyprus public warning system",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://www.gov.cy/moi/en/civil-defence/"
+      ],
+      "enabled": false,
+      "endpoint": "https://www.gov.cy/moi/en/civil-defence/",
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "evidence_review_required",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "cy-alert-news",
+          "authority": "Cyprus Civil Defence",
+          "systemName": "Cyprus public warning system",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 60,
+          "format": "html",
+          "hazards": [
+            "civil-emergency",
+            "security",
+            "industrial",
+            "wildfire"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "partial",
+          "lifecycleStatus": "partial",
+          "geometryStatus": "partial",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.gov.cy/moi/en/civil-defence/",
+          "evidenceUrls": [
+            "https://www.gov.cy/moi/en/civil-defence/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "evidence_review_required"
+        }
+      ]
+    },
+    {
+      "countryCode": "CZ",
+      "authority": "Czech Hydrometeorological Institute",
+      "systemName": "CHMI hydrology and flash-flood risk",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://opendata.chmi.cz/hydrology/",
+        "https://opendata.chmi.cz/hydrology/product/metadata/flash_flood/popis_flash_flood.pdf"
+      ],
+      "enabled": true,
+      "endpoint": "https://opendata.chmi.cz/hydrology/now/data/",
+      "hazards": [
+        "flood"
+      ],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "CHMI open data terms",
+        "url": "https://opendata.chmi.cz/"
+      },
+      "limitationCode": null,
+      "satisfiesCoverage": true,
+      "coverageLocationIds": [
+        "cz-bohemian-switzerland",
+        "cz-brno",
+        "cz-brno-stred",
+        "cz-ceske-budejovice",
+        "cz-havirov",
+        "cz-hradec-kralove",
+        "cz-kladno",
+        "cz-krkonose-mountains",
+        "cz-liberec",
+        "cz-most",
+        "cz-olomouc",
+        "cz-opava",
+        "cz-ostrava",
+        "cz-pardubice",
+        "cz-pilsen",
+        "cz-prague",
+        "cz-stodulky",
+        "cz-usti-nad-labem",
+        "cz-zlin"
+      ],
+      "systems": [
+        {
+          "id": "chmi-hydrology",
+          "authority": "Czech Hydrometeorological Institute",
+          "systemName": "CHMI hydrology and flash-flood risk",
+          "policy": "open",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "flood"
+          ],
+          "coverageContribution": "partial",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://opendata.chmi.cz/hydrology/",
+          "evidenceUrls": [
+            "https://opendata.chmi.cz/hydrology/",
+            "https://opendata.chmi.cz/hydrology/product/metadata/flash_flood/popis_flash_flood.pdf"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": null
+        }
+      ]
+    },
+    {
+      "countryCode": "DK",
+      "authority": "Danish Emergency Management Agency",
+      "systemName": "S!RENEN",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://www.sirenen.dk/"
+      ],
+      "enabled": false,
+      "endpoint": "https://via.ritzau.dk/rss/short-messages/latest",
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "evidence_review_required",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "dk-police-emergency-rss",
+          "authority": "Danish Emergency Management Agency",
+          "systemName": "S!RENEN",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 60,
+          "format": "rss",
+          "hazards": [
+            "civil-emergency",
+            "security",
+            "industrial",
+            "wildfire"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "partial",
+          "lifecycleStatus": "partial",
+          "geometryStatus": "partial",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.sirenen.dk/",
+          "evidenceUrls": [
+            "https://www.sirenen.dk/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "evidence_review_required"
+        }
+      ]
+    },
+    {
+      "countryCode": "EE",
+      "authority": "Estonian Rescue Board",
+      "systemName": "EE-ALARM",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://www.olevalmis.ee/en/"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "no_supported_machine_feed",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "ee-public-warning",
+          "authority": "Estonian Rescue Board",
+          "systemName": "EE-ALARM",
+          "policy": "blocked",
+          "runtimeTarget": "none",
+          "role": "blocked",
+          "status": "blocked",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "blocked",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.olevalmis.ee/en/",
+          "evidenceUrls": [
+            "https://www.olevalmis.ee/en/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "no_supported_machine_feed"
+        }
+      ]
+    },
+    {
+      "countryCode": "FI",
+      "authority": "Finnish public authorities",
+      "systemName": "Finland public warning system",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://www.suomi.fi/guides/preparedness"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "no_supported_machine_feed",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "fi-public-warning",
+          "authority": "Finnish public authorities",
+          "systemName": "Finland public warning system",
+          "policy": "blocked",
+          "runtimeTarget": "none",
+          "role": "blocked",
+          "status": "blocked",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "blocked",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.suomi.fi/guides/preparedness",
+          "evidenceUrls": [
+            "https://www.suomi.fi/guides/preparedness"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "no_supported_machine_feed"
+        },
+        {
+          "id": "fmi-cap",
+          "authority": "Finnish Meteorological Institute",
+          "systemName": "FMI CAP warnings",
+          "policy": "open",
+          "runtimeTarget": "meteoalarm-fallback",
+          "role": "fallback",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "rss",
+          "hazards": [
+            "severe-weather",
+            "flood",
+            "extreme-heat",
+            "extreme-cold",
+            "wildfire",
+            "snow-ice",
+            "coastal"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://alerts.fmi.fi/cap/profile/current/",
+          "evidenceUrls": [
+            "https://alerts.fmi.fi/cap/profile/current/",
+            "https://en.ilmatieteenlaitos.fi/open-source-code"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": null
+        }
+      ]
+    },
+    {
+      "countryCode": "FR",
+      "authority": "French Ministry of the Interior",
+      "systemName": "FR-Alert",
+      "reviewedAt": "2026-09-07",
+      "evidenceUrls": [
+        "https://fr-alert.gouv.fr/les-alertes",
+        "https://www.fr-alert.gouv.fr/mentions-legales"
+      ],
+      "enabled": true,
+      "endpoint": "https://fr-alert.gouv.fr/les-alertes",
+      "hazards": [
+        "civil-emergency",
+        "security",
+        "industrial",
+        "nuclear"
+      ],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "Licence Ouverte / Open Licence 2.0",
+        "url": "https://www.fr-alert.gouv.fr/mentions-legales"
+      },
+      "limitationCode": null,
+      "satisfiesCoverage": true,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "fr-alert",
+          "authority": "French Ministry of the Interior",
+          "systemName": "FR-Alert",
+          "policy": "open",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "civil-emergency",
+            "security",
+            "industrial",
+            "nuclear"
+          ],
+          "coverageContribution": "partial",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://fr-alert.gouv.fr/les-alertes",
+          "evidenceUrls": [
+            "https://fr-alert.gouv.fr/les-alertes",
+            "https://www.fr-alert.gouv.fr/mentions-legales"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": null
+        },
+        {
+          "id": "meteofrance-vigilance",
+          "authority": "Météo-France",
+          "systemName": "Météo-France Vigilance API",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "fallback",
+          "status": "credential_gated",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "severe-weather",
+            "flood",
+            "extreme-heat",
+            "extreme-cold",
+            "snow-ice",
+            "coastal"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "credential_required",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.data.gouv.fr/dataservices/api-bulletin-vigilance",
+          "evidenceUrls": [
+            "https://www.data.gouv.fr/dataservices/api-bulletin-vigilance"
+          ],
+          "reviewedAt": "2026-09-07",
+          "nextReviewAt": "2026-12-06",
+          "limitationCode": "source_contract_incomplete"
+        }
+      ]
+    },
+    {
+      "countryCode": "DE",
+      "authority": "Länderübergreifendes Hochwasserportal",
+      "systemName": "LHP flood warnings",
+      "reviewedAt": "2026-09-08",
+      "evidenceUrls": [
+        "https://www.hochwasserzentralen.de/"
+      ],
+      "enabled": true,
+      "endpoint": "https://api.hochwasserzentralen.de/public/v1/data/alerts?format=geojson&lang=en",
+      "hazards": [
+        "flood"
+      ],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "limitationCode": null,
+      "satisfiesCoverage": true,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "lhp-flood",
+          "authority": "Länderübergreifendes Hochwasserportal",
+          "systemName": "LHP flood warnings",
+          "policy": "open",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "flood"
+          ],
+          "coverageContribution": "complete",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "approved",
+          "officialUrl": "https://www.hochwasserzentralen.de/",
+          "evidenceUrls": [
+            "https://www.hochwasserzentralen.de/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": null
+        },
+        {
+          "id": "bbk-mowas-rss",
+          "authority": "Bundesamt für Bevölkerungsschutz und Katastrophenhilfe",
+          "systemName": "BBK civil-protection RSS",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 10,
+          "format": "rss",
+          "hazards": [
+            "civil-emergency",
+            "industrial",
+            "nuclear",
+            "security",
+            "wildfire"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.bbk.bund.de/DE/Warnung-Vorsorge/Warn-App-NINA/warn-app-nina_node.html",
+          "evidenceUrls": [
+            "https://www.bbk.bund.de/DE/Warnung-Vorsorge/Warn-App-NINA/warn-app-nina_node.html",
+            "https://warnung.bund.de/api/appdata/gsb/html/DE/app/impressum.html",
+            "https://warnung.bund.de/api31/mowas/rss/110000000000.rss"
+          ],
+          "reviewedAt": "2026-09-08",
+          "nextReviewAt": "2026-12-07",
+          "limitationCode": "source_contract_incomplete"
+        },
+        {
+          "id": "dwd-cap",
+          "authority": "Deutscher Wetterdienst",
+          "systemName": "DWD direct CAP recovery",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "fallback",
+          "status": "evidence_gated",
+          "cadenceMinutes": 10,
+          "format": "cap",
+          "hazards": [
+            "severe-weather",
+            "extreme-heat",
+            "extreme-cold",
+            "snow-ice",
+            "coastal"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://opendata.dwd.de/weather/alerts/cap/COMMUNEUNION_EVENT_STAT/",
+          "evidenceUrls": [
+            "https://opendata.dwd.de/weather/alerts/cap/COMMUNEUNION_EVENT_STAT/"
+          ],
+          "reviewedAt": "2026-09-07",
+          "nextReviewAt": "2026-12-06",
+          "limitationCode": "source_contract_incomplete"
+        }
+      ]
+    },
+    {
+      "countryCode": "GR",
+      "authority": "Greek Ministry for Climate Crisis and Civil Protection",
+      "systemName": "112 Greece",
+      "reviewedAt": "2026-09-08",
+      "evidenceUrls": [
+        "https://civilprotection.gov.gr/oroi-xrisis",
+        "https://civilprotection.gov.gr/en/112/pote-pos-me-eidopoiei",
+        "https://civilprotection.gov.gr/112/odigies-prostasias"
+      ],
+      "enabled": false,
+      "endpoint": "https://civilprotection.gov.gr/",
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": {
+        "name": "CC BY-NC-SA 4.0 with additional unchanged-content condition",
+        "url": "https://civilprotection.gov.gr/oroi-xrisis"
+      },
+      "limitationCode": "evidence_review_required",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "gr-112-news",
+          "authority": "Greek Ministry for Climate Crisis and Civil Protection",
+          "systemName": "112 Greece",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 60,
+          "format": "html",
+          "hazards": [
+            "civil-emergency",
+            "security",
+            "wildfire",
+            "flood"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "partial",
+          "lifecycleStatus": "partial",
+          "geometryStatus": "partial",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://civilprotection.gov.gr/",
+          "evidenceUrls": [
+            "https://civilprotection.gov.gr/oroi-xrisis",
+            "https://civilprotection.gov.gr/en/112/pote-pos-me-eidopoiei",
+            "https://civilprotection.gov.gr/112/odigies-prostasias"
+          ],
+          "reviewedAt": "2026-09-08",
+          "nextReviewAt": "2026-12-07",
+          "limitationCode": "evidence_review_required"
+        }
+      ]
+    },
+    {
+      "countryCode": "HU",
+      "authority": "Hungarian National Directorate General for Disaster Management",
+      "systemName": "VÉSZ",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://www.katasztrofavedelem.hu/"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "insufficient_geometry_or_lifecycle",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "hu-public-warning",
+          "authority": "Hungarian National Directorate General for Disaster Management",
+          "systemName": "VÉSZ",
+          "policy": "blocked",
+          "runtimeTarget": "none",
+          "role": "blocked",
+          "status": "blocked",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "blocked",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.katasztrofavedelem.hu/",
+          "evidenceUrls": [
+            "https://www.katasztrofavedelem.hu/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "insufficient_geometry_or_lifecycle"
+        }
+      ]
+    },
+    {
+      "countryCode": "IE",
+      "authority": "Irish Office of Emergency Planning",
+      "systemName": "Ireland public warning system",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://www.gov.ie/en/department-of-defence/organisation-information/office-of-emergency-planning/"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "no_supported_machine_feed",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "ie-public-warning",
+          "authority": "Irish Office of Emergency Planning",
+          "systemName": "Ireland public warning system",
+          "policy": "blocked",
+          "runtimeTarget": "none",
+          "role": "blocked",
+          "status": "blocked",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "blocked",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.gov.ie/en/department-of-defence/organisation-information/office-of-emergency-planning/",
+          "evidenceUrls": [
+            "https://www.gov.ie/en/department-of-defence/organisation-information/office-of-emergency-planning/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "no_supported_machine_feed"
+        },
+        {
+          "id": "met-eireann-json",
+          "authority": "Met Eireann",
+          "systemName": "Met Eireann warnings",
+          "policy": "open",
+          "runtimeTarget": "meteoalarm-fallback",
+          "role": "fallback",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "severe-weather",
+            "flood",
+            "extreme-heat",
+            "extreme-cold",
+            "snow-ice",
+            "coastal"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "partial",
+          "completenessStatus": "approved",
+          "officialUrl": "https://www.met.ie/warnings-today.html",
+          "evidenceUrls": [
+            "https://www.met.ie/Open_Data/Warnings/Met_Eireann_Warning_description_June2020.pdf",
+            "https://www.met.ie/Open_Data/json/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": null
+        }
+      ]
+    },
+    {
+      "countryCode": "IT",
+      "authority": "Italian Civil Protection Department",
+      "systemName": "National hydrogeological and hydraulic bulletin",
+      "reviewedAt": "2026-09-08",
+      "evidenceUrls": [
+        "https://github.com/pcm-dpc/DPC-Bollettini-Criticita-Idrogeologica-Idraulica",
+        "https://raw.githubusercontent.com/pcm-dpc/DPC-Bollettini-Criticita-Idrogeologica-Idraulica/master/README.md"
+      ],
+      "enabled": true,
+      "endpoint": "https://api.github.com/repos/pcm-dpc/DPC-Bollettini-Criticita-Idrogeologica-Idraulica/commits?path=files/topojson&per_page=1",
+      "hazards": [
+        "flood"
+      ],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "limitationCode": null,
+      "satisfiesCoverage": true,
+      "coverageLocationIds": [
+        "it-acilia-castel-fusano-ostia-antica",
+        "it-amalfi-coast",
+        "it-bari",
+        "it-bologna",
+        "it-brescia",
+        "it-cagliari",
+        "it-catania",
+        "it-dolomites",
+        "it-ferrara",
+        "it-florence",
+        "it-foggia",
+        "it-genoa",
+        "it-livorno",
+        "it-messina",
+        "it-mestre",
+        "it-milan",
+        "it-modena",
+        "it-naples",
+        "it-padua",
+        "it-palermo",
+        "it-parma",
+        "it-prato",
+        "it-reggio-calabria",
+        "it-reggio-nell-emilia",
+        "it-rimini",
+        "it-rome",
+        "it-taranto",
+        "it-trieste",
+        "it-turin",
+        "it-verona"
+      ],
+      "systems": [
+        {
+          "id": "it-public-warning",
+          "authority": "Italian Civil Protection Department",
+          "systemName": "IT-alert",
+          "policy": "blocked",
+          "runtimeTarget": "none",
+          "role": "blocked",
+          "status": "blocked",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "blocked",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.it-alert.gov.it/en/",
+          "evidenceUrls": [
+            "https://www.it-alert.gov.it/en/",
+            "https://github.com/pcm-dpc/IT-alert-Hub"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "repository_not_production_feed"
+        },
+        {
+          "id": "dpc-flood-bulletin",
+          "authority": "Italian Civil Protection Department",
+          "systemName": "National hydrogeological and hydraulic bulletin",
+          "policy": "open",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "active",
+          "cadenceMinutes": 60,
+          "format": "github-json",
+          "hazards": [
+            "flood"
+          ],
+          "coverageContribution": "partial",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://mappe.protezionecivile.gov.it/it/mappe-rischi/bollettino-di-criticita/",
+          "evidenceUrls": [
+            "https://github.com/pcm-dpc/DPC-Bollettini-Criticita-Idrogeologica-Idraulica",
+            "https://raw.githubusercontent.com/pcm-dpc/DPC-Bollettini-Criticita-Idrogeologica-Idraulica/master/README.md"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": null
+        },
+        {
+          "id": "dpc-volcanic-restrictions",
+          "authority": "Dipartimento della Protezione Civile and competent local authorities",
+          "systemName": "Italian volcanic warnings and restrictions",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 60,
+          "format": "html",
+          "hazards": [
+            "volcano"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://rischi.protezionecivile.gov.it/it/vulcanico/vulcani-italia/stromboli/",
+          "evidenceUrls": [
+            "https://rischi.protezionecivile.gov.it/it/approfondimento/rischio-vulcanico-le-attivita/",
+            "https://cme.ingv.it/statodi-attivita-dei-vulcani-eoliani/archivio-documenti-protezione-civile/ordinanze-sindacali-comune-di-lipari/stromboli"
+          ],
+          "reviewedAt": "2026-09-08",
+          "nextReviewAt": "2026-12-07",
+          "limitationCode": "source_contract_incomplete"
+        }
+      ]
+    },
+    {
+      "countryCode": "LV",
+      "authority": "Latvian Environment, Geology and Meteorology Centre",
+      "systemName": "LVĢMC hydrological warnings",
+      "reviewedAt": "2026-09-07",
+      "evidenceUrls": [
+        "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi",
+        "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi/resource/01dc7d3c-34e5-4cc3-8f1a-aaf022872a02"
+      ],
+      "enabled": true,
+      "endpoint": "https://data.gov.lv/dati/api/3/action/package_show?id=hidrometeorologiskie-bridinajumi",
+      "hazards": [
+        "flood"
+      ],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "CC0-1.0",
+        "url": "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi"
+      },
+      "limitationCode": null,
+      "satisfiesCoverage": true,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "lv-112-active",
+          "authority": "Latvian State Fire and Rescue Service",
+          "systemName": "Latvia public warning system",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 60,
+          "format": "html",
+          "hazards": [
+            "civil-emergency",
+            "security",
+            "industrial",
+            "wildfire"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "partial",
+          "lifecycleStatus": "partial",
+          "geometryStatus": "partial",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.vugd.gov.lv/en",
+          "evidenceUrls": [
+            "https://www.vugd.gov.lv/en"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "evidence_review_required"
+        },
+        {
+          "id": "lvgmc-flood",
+          "authority": "Latvian Environment, Geology and Meteorology Centre",
+          "systemName": "LVĢMC hydrological warnings",
+          "policy": "open",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "flood"
+          ],
+          "coverageContribution": "partial",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi",
+          "evidenceUrls": [
+            "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi",
+            "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi/resource/01dc7d3c-34e5-4cc3-8f1a-aaf022872a02"
+          ],
+          "reviewedAt": "2026-09-07",
+          "nextReviewAt": "2026-12-06",
+          "limitationCode": null
+        }
+      ]
+    },
+    {
+      "countryCode": "LT",
+      "authority": "Lithuanian Fire and Rescue Department",
+      "systemName": "LT72",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://lt72.lt/"
+      ],
+      "enabled": false,
+      "endpoint": "https://lt72.lt/kategorija/pranesimai/",
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "reuse_approval_required",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "lt72-sent-warnings",
+          "authority": "Lithuanian Fire and Rescue Department",
+          "systemName": "LT72",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 60,
+          "format": "html",
+          "hazards": [
+            "civil-emergency",
+            "security",
+            "industrial"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "partial",
+          "lifecycleStatus": "partial",
+          "geometryStatus": "partial",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://lt72.lt/",
+          "evidenceUrls": [
+            "https://lt72.lt/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "reuse_approval_required"
+        }
+      ]
+    },
+    {
+      "countryCode": "LU",
+      "authority": "Luxembourg Government",
+      "systemName": "LU-Alert",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://data.public.lu/fr/datasets/alertes-du-systeme-lu-alert/"
+      ],
+      "enabled": true,
+      "endpoint": "https://data.public.lu/api/1/datasets/alertes-du-systeme-lu-alert/",
+      "hazards": [
+        "civil-emergency",
+        "security",
+        "industrial",
+        "nuclear"
+      ],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "limitationCode": null,
+      "satisfiesCoverage": true,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "lu-alert",
+          "authority": "Luxembourg Government",
+          "systemName": "LU-Alert",
+          "policy": "open",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "cap",
+          "hazards": [
+            "civil-emergency",
+            "security",
+            "industrial",
+            "nuclear"
+          ],
+          "coverageContribution": "partial",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://data.public.lu/fr/datasets/alertes-du-systeme-lu-alert/",
+          "evidenceUrls": [
+            "https://data.public.lu/fr/datasets/alertes-du-systeme-lu-alert/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": null
+        }
+      ]
+    },
+    {
+      "countryCode": "MT",
+      "authority": "Malta Civil Protection Department",
+      "systemName": "Malta public warning system",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://cps.gov.mt/"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "no_supported_machine_feed",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "mt-public-warning",
+          "authority": "Malta Civil Protection Department",
+          "systemName": "Malta public warning system",
+          "policy": "blocked",
+          "runtimeTarget": "none",
+          "role": "blocked",
+          "status": "blocked",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "blocked",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://cps.gov.mt/",
+          "evidenceUrls": [
+            "https://cps.gov.mt/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "no_supported_machine_feed"
+        }
+      ]
+    },
+    {
+      "countryCode": "NL",
+      "authority": "Dutch National Coordinator for Security and Counterterrorism",
+      "systemName": "NL-Alert",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://www.nl-alert.nl/"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "supported_contract_required",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "nl-alert-current",
+          "authority": "Dutch National Coordinator for Security and Counterterrorism",
+          "systemName": "NL-Alert",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "civil-emergency",
+            "security",
+            "industrial",
+            "wildfire"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "unverified",
+          "reuseStatus": "unverified",
+          "severityStatus": "partial",
+          "lifecycleStatus": "partial",
+          "geometryStatus": "partial",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.nl-alert.nl/",
+          "evidenceUrls": [
+            "https://www.nl-alert.nl/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "supported_contract_required"
+        }
+      ]
+    },
+    {
+      "countryCode": "PL",
+      "authority": "Institute of Meteorology and Water Management",
+      "systemName": "IMGW hydrology warnings",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://hydro.imgw.pl/",
+        "https://danepubliczne.imgw.pl/data/current/ost_hydro/"
+      ],
+      "enabled": true,
+      "endpoint": "https://danepubliczne.imgw.pl/api/data/hydro/",
+      "hazards": [
+        "flood"
+      ],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "IMGW public data terms",
+        "url": "https://danepubliczne.imgw.pl/"
+      },
+      "limitationCode": null,
+      "satisfiesCoverage": true,
+      "coverageLocationIds": [
+        "pl-bialystok",
+        "pl-bielsko-biala",
+        "pl-bydgoszcz",
+        "pl-bytom",
+        "pl-czestochowa",
+        "pl-gdansk",
+        "pl-gdynia",
+        "pl-gliwice",
+        "pl-katowice",
+        "pl-kielce",
+        "pl-krakow",
+        "pl-lodz",
+        "pl-lublin",
+        "pl-masurian-lakes",
+        "pl-mokotow",
+        "pl-olsztyn",
+        "pl-poznan",
+        "pl-praga-poludnie",
+        "pl-radom",
+        "pl-ruda-slaska",
+        "pl-rybnik",
+        "pl-rzeszow",
+        "pl-sosnowiec",
+        "pl-szczecin",
+        "pl-tatra-mountains",
+        "pl-torun",
+        "pl-ursynow",
+        "pl-warsaw",
+        "pl-wroclaw",
+        "pl-zabrze"
+      ],
+      "systems": [
+        {
+          "id": "imgw-hydrology",
+          "authority": "Institute of Meteorology and Water Management",
+          "systemName": "IMGW hydrology warnings",
+          "policy": "open",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "flood"
+          ],
+          "coverageContribution": "partial",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://hydro.imgw.pl/",
+          "evidenceUrls": [
+            "https://hydro.imgw.pl/",
+            "https://danepubliczne.imgw.pl/data/current/ost_hydro/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": null
+        }
+      ]
+    },
+    {
+      "countryCode": "PT",
+      "authority": "Portuguese National Authority for Emergency and Civil Protection",
+      "systemName": "PROCIV",
+      "reviewedAt": "2026-09-08",
+      "evidenceUrls": [
+        "https://prociv.gov.pt/"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "no_supported_machine_feed",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "ipma-warnings-json",
+          "authority": "Portuguese Institute for Sea and Atmosphere",
+          "systemName": "IPMA weather warnings",
+          "policy": "open",
+          "runtimeTarget": "meteoalarm-fallback",
+          "role": "fallback",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "severe-weather",
+            "extreme-heat",
+            "extreme-cold",
+            "snow-ice",
+            "coastal"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://www.ipma.pt/en/otempo/prev-sam/",
+          "evidenceUrls": [
+            "https://api.ipma.pt/",
+            "https://api.ipma.pt/open-data/forecast/warnings/warnings_www.json",
+            "https://api.ipma.pt/open-data/distrits-islands.json"
+          ],
+          "reviewedAt": "2026-09-01",
+          "nextReviewAt": "2027-09-01",
+          "limitationCode": null
+        },
+        {
+          "id": "pt-public-warning",
+          "authority": "Portuguese National Authority for Emergency and Civil Protection",
+          "systemName": "PROCIV",
+          "policy": "blocked",
+          "runtimeTarget": "none",
+          "role": "blocked",
+          "status": "blocked",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "blocked",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://prociv.gov.pt/",
+          "evidenceUrls": [
+            "https://prociv.gov.pt/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "no_supported_machine_feed"
+        },
+        {
+          "id": "azores-civil-protection",
+          "authority": "Azores Regional Civil Protection and Fire Service",
+          "systemName": "Azores Civil Protection alerts",
+          "policy": "gated",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "evidence_gated",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "severe-weather",
+            "flood",
+            "wildfire",
+            "coastal",
+            "civil-emergency"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "partial",
+          "completenessStatus": "partial",
+          "officialUrl": "https://www.prociv.azores.gov.pt/alertas/",
+          "evidenceUrls": [
+            "https://www.prociv.azores.gov.pt/developer/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "reuse_approval_required"
+        },
+        {
+          "id": "anepc-incidents",
+          "authority": "Autoridade Nacional de Emergência e Proteção Civil",
+          "systemName": "ANEPC operational incidents",
+          "policy": "gated",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 60,
+          "format": "json",
+          "hazards": [
+            "wildfire",
+            "civil-emergency"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "partial",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://prociv.gov.pt/pt/ocorrencias/",
+          "evidenceUrls": [
+            "https://prociv.gov.pt/pt/ocorrencias/",
+            "https://dados.gov.pt/en/datasets/prociv-ocorrencias-em-aberto/",
+            "https://services-eu1.arcgis.com/VlrHb7fn5ewYhX6y/arcgis/rest/services/OcorrenciasSite/FeatureServer/0"
+          ],
+          "reviewedAt": "2026-09-08",
+          "nextReviewAt": "2026-12-07",
+          "limitationCode": "source_contract_incomplete"
+        }
+      ]
+    },
+    {
+      "countryCode": "RO",
+      "authority": "Romanian Department for Emergency Situations",
+      "systemName": "RO-ALERT",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://www.mai.gov.ro/"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "no_supported_machine_feed",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "ro-public-warning",
+          "authority": "Romanian Department for Emergency Situations",
+          "systemName": "RO-ALERT",
+          "policy": "blocked",
+          "runtimeTarget": "none",
+          "role": "blocked",
+          "status": "blocked",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "blocked",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.mai.gov.ro/",
+          "evidenceUrls": [
+            "https://www.mai.gov.ro/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "no_supported_machine_feed"
+        }
+      ]
+    },
+    {
+      "countryCode": "SK",
+      "authority": "Slovak Ministry of Interior",
+      "systemName": "Slovakia public warning system",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://www.minv.sk/"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "insufficient_geometry_or_lifecycle",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "sk-public-warning",
+          "authority": "Slovak Ministry of Interior",
+          "systemName": "Slovakia public warning system",
+          "policy": "blocked",
+          "runtimeTarget": "none",
+          "role": "blocked",
+          "status": "blocked",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "blocked",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.minv.sk/",
+          "evidenceUrls": [
+            "https://www.minv.sk/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "insufficient_geometry_or_lifecycle"
+        },
+        {
+          "id": "sk-crisis-rest",
+          "authority": "Slovak Ministry of Interior",
+          "systemName": "Crisis-management REST service",
+          "policy": "gated",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "credential_gated",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "civil-emergency",
+            "security",
+            "industrial",
+            "wildfire",
+            "flood"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "credential_required",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://portal.minv.sk/wps/esispz-api/docs/index.html",
+          "evidenceUrls": [
+            "https://pes.minv.sk/wps/wcm/connect/sk/site/main/zivotne-situacie/Sluzby-policajneho-zboru/Publikovanie-a-ziskavanie-informacii/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "official_credential_required"
+        }
+      ]
+    },
+    {
+      "countryCode": "SI",
+      "authority": "Slovenian Administration for Civil Protection and Disaster Relief",
+      "systemName": "Slovenia public warning system",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://www.gov.si/en/state-authorities/bodies-within-ministries/administration-for-civil-protection-and-disaster-relief/"
+      ],
+      "enabled": false,
+      "endpoint": "https://www.gov.si/en/state-authorities/bodies-within-ministries/administration-for-civil-protection-and-disaster-relief/",
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "evidence_review_required",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "si-spin-incidents",
+          "authority": "Slovenian Administration for Civil Protection and Disaster Relief",
+          "systemName": "Slovenia public warning system",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 60,
+          "format": "html",
+          "hazards": [
+            "civil-emergency",
+            "industrial",
+            "wildfire"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "partial",
+          "lifecycleStatus": "partial",
+          "geometryStatus": "partial",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.gov.si/en/state-authorities/bodies-within-ministries/administration-for-civil-protection-and-disaster-relief/",
+          "evidenceUrls": [
+            "https://www.gov.si/en/state-authorities/bodies-within-ministries/administration-for-civil-protection-and-disaster-relief/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "evidence_review_required"
+        }
+      ]
+    },
+    {
+      "countryCode": "ES",
+      "authority": "Protecció Civil de Catalunya",
+      "systemName": "Catalonia civil-protection plans",
+      "reviewedAt": "2026-09-07",
+      "evidenceUrls": [
+        "https://interior.gencat.cat/ca/arees_dactuacio/proteccio_civil/",
+        "https://analisi.transparenciacatalunya.cat/"
+      ],
+      "enabled": true,
+      "endpoint": "https://analisi.transparenciacatalunya.cat/resource/wj9c-j6vf.json",
+      "hazards": [],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "limitationCode": null,
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "catalonia-plans",
+          "authority": "Protecció Civil de Catalunya",
+          "systemName": "Catalonia civil-protection plans",
+          "policy": "open",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "context",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "civil-emergency"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://interior.gencat.cat/ca/arees_dactuacio/proteccio_civil/",
+          "evidenceUrls": [
+            "https://interior.gencat.cat/ca/arees_dactuacio/proteccio_civil/",
+            "https://analisi.transparenciacatalunya.cat/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": null
+        },
+        {
+          "id": "aemet-cap",
+          "authority": "Agencia Estatal de Meteorología",
+          "systemName": "AEMET direct CAP warnings",
+          "policy": "open",
+          "runtimeTarget": "meteoalarm-fallback",
+          "role": "fallback",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "atom",
+          "hazards": [
+            "severe-weather",
+            "extreme-heat",
+            "extreme-cold",
+            "snow-ice",
+            "coastal",
+            "avalanche"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://www.aemet.es/es/rss_info/avisos/esp",
+          "evidenceUrls": [
+            "https://www.aemet.es/es/rss_info/avisos/esp",
+            "https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/rss/CAP_AFAE_ATOM.xml"
+          ],
+          "reviewedAt": "2026-09-07",
+          "nextReviewAt": "2026-12-06",
+          "limitationCode": null
+        }
+      ]
+    },
+    {
+      "countryCode": "SE",
+      "authority": "Swedish Civil Defence and Resilience Agency",
+      "systemName": "Krisinformation",
+      "reviewedAt": "2026-09-07",
+      "evidenceUrls": [
+        "https://www.krisinformation.se/en"
+      ],
+      "enabled": true,
+      "endpoint": "https://api.krisinformation.se/v3/vmas?allCounties=true&language=en",
+      "hazards": [
+        "civil-emergency"
+      ],
+      "reuseStatus": "approved",
+      "license": null,
+      "limitationCode": null,
+      "satisfiesCoverage": true,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "krisinformation",
+          "authority": "Swedish Civil Defence and Resilience Agency",
+          "systemName": "Krisinformation",
+          "policy": "open",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "civil-emergency"
+          ],
+          "coverageContribution": "partial",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://www.krisinformation.se/en",
+          "evidenceUrls": [
+            "https://www.krisinformation.se/en"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": null
+        },
+        {
+          "id": "smhi-direct-warnings",
+          "authority": "Swedish Meteorological and Hydrological Institute",
+          "systemName": "SMHI direct warnings",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "fallback",
+          "status": "evidence_gated",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "severe-weather",
+            "flood",
+            "coastal"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://opendata-download-warnings.smhi.se/ibww/api/version/1",
+          "evidenceUrls": [
+            "https://opendata-download-warnings.smhi.se/ibww/api/version/1",
+            "https://www.smhi.se/download/18.55d446f91937861d43dbc6/1734468036504/Villkor%20f%C3%B6r%20konsekvensbaserade%20v%C3%A4dervarningar%20och%20meddelanden%20(G%C3%A4ller%20fr%C3%A5n%20oktober%202021).pdf"
+          ],
+          "reviewedAt": "2026-09-07",
+          "nextReviewAt": "2026-12-06",
+          "limitationCode": "warning_delivery_cadence_incompatible"
+        }
+      ]
+    },
+    {
+      "countryCode": "CH",
+      "authority": "Swiss Federal Office for Civil Protection",
+      "systemName": "Alertswiss",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://www.alert.swiss/en/home.html"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "undocumented_machine_feed",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "ch-public-warning",
+          "authority": "Swiss Federal Office for Civil Protection",
+          "systemName": "Alertswiss",
+          "policy": "blocked",
+          "runtimeTarget": "none",
+          "role": "blocked",
+          "status": "blocked",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "blocked",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.alert.swiss/en/home.html",
+          "evidenceUrls": [
+            "https://www.alert.swiss/en/home.html"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "undocumented_machine_feed"
+        }
+      ]
+    }
+  ]
+}

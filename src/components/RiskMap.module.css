@@ -1,0 +1,87 @@
+.map {
+  position: absolute;
+  inset: 0;
+  background: var(--map-background);
+  outline: none;
+}
+
+.map :global(.maplibregl-canvas-container) {
+  position: absolute;
+  inset: 0;
+}
+
+.map:focus-visible {
+  box-shadow: inset 0 0 0 3px var(--focus);
+}
+
+.map :global(.maplibregl-ctrl-attrib-button) {
+  width: 44px;
+  height: 44px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.cameraControls {
+  position: absolute;
+  z-index: 34;
+  right: 14px;
+  bottom: 38px;
+  display: grid;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ink) 13%, transparent);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(14px);
+}
+
+.cameraControls button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+.cameraControls button + button { border-top: 1px solid var(--line); }
+.cameraControls button:hover:not(:disabled) { background: var(--surface-strong); }
+.cameraControls button:disabled { color: var(--line-strong); cursor: default; }
+.cameraControls svg { width: 19px; height: 19px; }
+
+.map :global(.maplibregl-ctrl-attrib) {
+  color: var(--muted);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  font-family: var(--font-ui), sans-serif;
+  font-size: 10px;
+  backdrop-filter: blur(8px);
+}
+
+.tooltip :global(.maplibregl-popup-content) {
+  max-width: 240px;
+  padding: 9px 12px;
+  color: var(--ink);
+  font-family: var(--font-ui), sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 10px;
+  box-shadow: var(--shadow-md);
+}
+
+.tooltip :global(.maplibregl-popup-tip) {
+  border-top-color: var(--surface);
+}
+
+@media (max-width: 767px), (max-height: 500px) and (pointer: coarse) {
+  .cameraControls { right: 10px; bottom: calc(72px + env(safe-area-inset-bottom)); }
+  .map :global(.maplibregl-ctrl-bottom-right) { bottom: calc(62px + env(safe-area-inset-bottom)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cameraControls { transition: none; }
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2:profile:cap-lu:1.0">
+  <identifier>LU-Alert.fixture.1</identifier>
+  <sender>fixture@example.lu</sender>
+  <sent>2026-08-28T06:00:00+02:00</sent>
+  <status>Actual</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <info>
+    <language>fr-FR</language><category>Safety</category><event>Alerte publique</event>
+    <urgency>Immediate</urgency><severity>Severe</severity><certainty>Observed</certainty>
+    <effective>2026-08-28T05:30:00+02:00</effective><expires>2026-08-28T10:00:00+02:00</expires>
+    <headline>Alerte française</headline><description>Description française</description>
+    <area><areaDesc>Grand-Duché du Luxembourg</areaDesc><polygon>49.35,5.60 50.25,5.60 50.25,6.65 49.35,6.65 49.35,5.60</polygon></area>
+  </info>
+  <info>
+    <language>en-US</language><category>Safety</category><event>Public alert</event>
+    <urgency>Immediate</urgency><severity>Severe</severity><certainty>Observed</certainty>
+    <effective>2026-08-28T05:30:00+02:00</effective><expires>2026-08-28T10:00:00+02:00</expires>
+    <headline>English public alert</headline><description>English description</description><instruction>Follow official instructions.</instruction>
+    <area><areaDesc>Grand Duchy of Luxembourg</areaDesc><polygon>49.35,5.60 50.25,5.60 50.25,6.65 49.35,6.65 49.35,5.60</polygon></area>
+  </info>
+</alert>

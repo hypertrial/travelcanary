@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:cap="urn:oasis:names:tc:emergency:cap:1.2">
+  <link rel="hub" href="https://pubsubhubbub.appspot.com/"/>
+  <link type="application/atom+xml" rel="self" href="https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-serbia"/>
+  <link type="text/html" rel="alternate" href="https://meteoalarm.org"/>
+  <rights>Copyright © 2026 MeteoAlarm.Org. Licensed under terms equivalent to CC BY 4.0, with additional requirements for redistributing outlined in our Terms and Conditions.</rights>
+  <generator>MeteoAlarm Producer Server</generator>
+  <logo>https://feeds.meteoalarm.org/images/logo.svg</logo>
+  <author>
+    <name>meteoalarm.org</name>
+    <uri>https://meteoalarm.org</uri>
+    <email>meteoalarm@geosphere.at</email>
+  </author>
+  <id>tag:meteoalarm.org,2021-02-19:RS</id>
+  <title>MeteoAlarm - Alerting Europe for Extreme Weather</title>
+  <updated>2026-09-08T15:35:34.357670Z</updated>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS003</value>
+    </cap:geocode>
+    <link title="Belgrade" href="https://meteoalarm.org?geocode=EMMA_ID:RS003" hreflang="en"/>
+    <cap:areaDesc>Belgrade</cap:areaDesc>
+    <cap:event>High temperature orange</cap:event>
+    <cap:sent>2026-09-08T10:00:05+00:00</cap:sent>
+    <cap:expires>2026-09-09T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-08T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Severe</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Update</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260908120005.549526</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/cb0d5a35-f1d6-47c3-be5b-f34088ddc3e9"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T10:00:05Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/cb0d5a35-f1d6-47c3-be5b-f34088ddc3e9?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Orange High-temperature Warning issued for Serbia - Belgrade</title>
+    <updated>2026-09-08T10:00:05Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS001</value>
+    </cap:geocode>
+    <link title="Banat" href="https://meteoalarm.org?geocode=EMMA_ID:RS001" hreflang="en"/>
+    <cap:areaDesc>Banat</cap:areaDesc>
+    <cap:event>High temperature orange</cap:event>
+    <cap:sent>2026-09-08T10:00:04+00:00</cap:sent>
+    <cap:expires>2026-09-09T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-08T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Severe</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Update</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260908120004.953724</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/a76120d3-8bc3-471b-b2e4-adcd797decc9"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T10:00:04Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/a76120d3-8bc3-471b-b2e4-adcd797decc9?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Orange High-temperature Warning issued for Serbia - Banat</title>
+    <updated>2026-09-08T10:00:04Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS007</value>
+    </cap:geocode>
+    <link title="Kosovo i Metohija" href="https://meteoalarm.org?geocode=EMMA_ID:RS007" hreflang="en"/>
+    <cap:areaDesc>Kosovo i Metohija</cap:areaDesc>
+    <cap:event>High temperature orange</cap:event>
+    <cap:sent>2026-09-07T10:00:10+00:00</cap:sent>
+    <cap:expires>2026-09-09T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-08T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Severe</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Update</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260907120010.576253</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/14f6c5fc-09b7-4d19-bab3-3f4a625be26b"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T10:00:10Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/14f6c5fc-09b7-4d19-bab3-3f4a625be26b?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Orange High-temperature Warning issued for Serbia - Kosovo i Metohija</title>
+    <updated>2026-09-07T10:00:10Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS009</value>
+    </cap:geocode>
+    <link title="Srem" href="https://meteoalarm.org?geocode=EMMA_ID:RS009" hreflang="en"/>
+    <cap:areaDesc>Srem</cap:areaDesc>
+    <cap:event>High temperature orange</cap:event>
+    <cap:sent>2026-09-07T10:00:06+00:00</cap:sent>
+    <cap:expires>2026-09-09T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-08T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Severe</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Update</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260907120006.906214</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/a3d8272e-50ff-4d65-afc7-9350f8c2f026"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T10:00:06Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/a3d8272e-50ff-4d65-afc7-9350f8c2f026?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Orange High-temperature Warning issued for Serbia - Srem</title>
+    <updated>2026-09-07T10:00:06Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS006</value>
+    </cap:geocode>
+    <link title="Southwestern Serbia" href="https://meteoalarm.org?geocode=EMMA_ID:RS006" hreflang="en"/>
+    <cap:areaDesc>Southwestern Serbia</cap:areaDesc>
+    <cap:event>High temperature orange</cap:event>
+    <cap:sent>2026-09-07T10:00:08+00:00</cap:sent>
+    <cap:expires>2026-09-09T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-08T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Severe</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Update</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260907120008.317471</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/102f1c16-836f-4381-a3a2-def75d4f4fb3"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T10:00:08Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/102f1c16-836f-4381-a3a2-def75d4f4fb3?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Orange High-temperature Warning issued for Serbia - Southwestern Serbia</title>
+    <updated>2026-09-07T10:00:08Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS002</value>
+    </cap:geocode>
+    <link title="Backa" href="https://meteoalarm.org?geocode=EMMA_ID:RS002" hreflang="en"/>
+    <cap:areaDesc>Backa</cap:areaDesc>
+    <cap:event>High temperature orange</cap:event>
+    <cap:sent>2026-09-07T10:00:03+00:00</cap:sent>
+    <cap:expires>2026-09-09T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-08T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Severe</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Update</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260907120003.574502</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/03e4510c-914a-4adc-bcaa-c8f8376d7d12"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T10:00:03Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/03e4510c-914a-4adc-bcaa-c8f8376d7d12?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Orange High-temperature Warning issued for Serbia - Backa</title>
+    <updated>2026-09-07T10:00:03Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS005</value>
+    </cap:geocode>
+    <link title="Southeastern Serbia" href="https://meteoalarm.org?geocode=EMMA_ID:RS005" hreflang="en"/>
+    <cap:areaDesc>Southeastern Serbia</cap:areaDesc>
+    <cap:event>High temperature orange</cap:event>
+    <cap:sent>2026-09-06T18:30:59+00:00</cap:sent>
+    <cap:expires>2026-09-09T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-08T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Severe</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260906203059.723130</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/be92eac0-e524-4567-b9fb-0f7ead17a1de"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T18:30:59Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/be92eac0-e524-4567-b9fb-0f7ead17a1de?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Orange High-temperature Warning issued for Serbia - Southeastern Serbia</title>
+    <updated>2026-09-06T18:30:59Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS004</value>
+    </cap:geocode>
+    <link title="Eastern Serbia" href="https://meteoalarm.org?geocode=EMMA_ID:RS004" hreflang="en"/>
+    <cap:areaDesc>Eastern Serbia</cap:areaDesc>
+    <cap:event>High temperature yellow</cap:event>
+    <cap:sent>2026-09-06T18:30:58+00:00</cap:sent>
+    <cap:expires>2026-09-09T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-08T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260906203058.551165</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/30357716-a3be-41da-bece-c2409a1a126a"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T18:30:58Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/30357716-a3be-41da-bece-c2409a1a126a?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Serbia - Eastern Serbia</title>
+    <updated>2026-09-06T18:30:58Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS011</value>
+    </cap:geocode>
+    <link title="Western Serbia" href="https://meteoalarm.org?geocode=EMMA_ID:RS011" hreflang="en"/>
+    <cap:areaDesc>Western Serbia</cap:areaDesc>
+    <cap:event>High temperature orange</cap:event>
+    <cap:sent>2026-09-06T18:30:55+00:00</cap:sent>
+    <cap:expires>2026-09-09T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-08T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Severe</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260906203055.119323</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/47165872-66fa-41f5-ac8b-4552da1b47d0"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T18:30:55Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/47165872-66fa-41f5-ac8b-4552da1b47d0?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Orange High-temperature Warning issued for Serbia - Western Serbia</title>
+    <updated>2026-09-06T18:30:55Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS008</value>
+    </cap:geocode>
+    <link title="Pomoravlje" href="https://meteoalarm.org?geocode=EMMA_ID:RS008" hreflang="en"/>
+    <cap:areaDesc>Pomoravlje</cap:areaDesc>
+    <cap:event>High temperature orange</cap:event>
+    <cap:sent>2026-09-06T18:30:57+00:00</cap:sent>
+    <cap:expires>2026-09-09T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-08T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Severe</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260906203057.465531</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/6248d82e-5250-487f-a2bf-e96116fad3b2"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T18:30:57Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/6248d82e-5250-487f-a2bf-e96116fad3b2?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Orange High-temperature Warning issued for Serbia - Pomoravlje</title>
+    <updated>2026-09-06T18:30:57Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS010</value>
+    </cap:geocode>
+    <link title="Sumadija" href="https://meteoalarm.org?geocode=EMMA_ID:RS010" hreflang="en"/>
+    <cap:areaDesc>Sumadija</cap:areaDesc>
+    <cap:event>High temperature orange</cap:event>
+    <cap:sent>2026-09-06T18:30:56+00:00</cap:sent>
+    <cap:expires>2026-09-09T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-08T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Severe</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260906203056.165570</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/b2439966-62d3-4a40-878d-1b2d2819d171"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T18:30:56Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/b2439966-62d3-4a40-878d-1b2d2819d171?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Orange High-temperature Warning issued for Serbia - Sumadija</title>
+    <updated>2026-09-06T18:30:56Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS007</value>
+    </cap:geocode>
+    <link title="Kosovo i Metohija" href="https://meteoalarm.org?geocode=EMMA_ID:RS007" hreflang="en"/>
+    <cap:areaDesc>Kosovo i Metohija</cap:areaDesc>
+    <cap:event>High temperature yellow</cap:event>
+    <cap:sent>2026-09-05T16:31:04+00:00</cap:sent>
+    <cap:expires>2026-09-08T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-07T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260905183104.155814</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/25090f91-f98e-42bc-b845-6525b0af68a3"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T16:31:04Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/25090f91-f98e-42bc-b845-6525b0af68a3?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Serbia - Kosovo i Metohija</title>
+    <updated>2026-09-05T16:31:04Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS006</value>
+    </cap:geocode>
+    <link title="Southwestern Serbia" href="https://meteoalarm.org?geocode=EMMA_ID:RS006" hreflang="en"/>
+    <cap:areaDesc>Southwestern Serbia</cap:areaDesc>
+    <cap:event>High temperature yellow</cap:event>
+    <cap:sent>2026-09-05T16:31:03+00:00</cap:sent>
+    <cap:expires>2026-09-08T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-07T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260905183103.326635</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/56f0f231-d618-46ae-8615-182591bc5d25"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T16:31:03Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/56f0f231-d618-46ae-8615-182591bc5d25?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Serbia - Southwestern Serbia</title>
+    <updated>2026-09-05T16:31:03Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS005</value>
+    </cap:geocode>
+    <link title="Southeastern Serbia" href="https://meteoalarm.org?geocode=EMMA_ID:RS005" hreflang="en"/>
+    <cap:areaDesc>Southeastern Serbia</cap:areaDesc>
+    <cap:event>High temperature yellow</cap:event>
+    <cap:sent>2026-09-05T16:31:02+00:00</cap:sent>
+    <cap:expires>2026-09-08T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-07T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260905183102.638865</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/8067b596-5e15-487e-800e-34a385e03000"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T16:31:02Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/8067b596-5e15-487e-800e-34a385e03000?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Serbia - Southeastern Serbia</title>
+    <updated>2026-09-05T16:31:02Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS004</value>
+    </cap:geocode>
+    <link title="Eastern Serbia" href="https://meteoalarm.org?geocode=EMMA_ID:RS004" hreflang="en"/>
+    <cap:areaDesc>Eastern Serbia</cap:areaDesc>
+    <cap:event>High temperature yellow</cap:event>
+    <cap:sent>2026-09-05T16:31:01+00:00</cap:sent>
+    <cap:expires>2026-09-08T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-07T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260905183101.402402</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/842af174-09b9-44d6-8f7c-0d43347aa49e"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T16:31:01Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/842af174-09b9-44d6-8f7c-0d43347aa49e?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Serbia - Eastern Serbia</title>
+    <updated>2026-09-05T16:31:01Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS008</value>
+    </cap:geocode>
+    <link title="Pomoravlje" href="https://meteoalarm.org?geocode=EMMA_ID:RS008" hreflang="en"/>
+    <cap:areaDesc>Pomoravlje</cap:areaDesc>
+    <cap:event>High temperature yellow</cap:event>
+    <cap:sent>2026-09-05T16:30:59+00:00</cap:sent>
+    <cap:expires>2026-09-08T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-07T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260905183059.856772</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/e3f60003-da96-4141-b6e1-803bd3940f37"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T16:30:59Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/e3f60003-da96-4141-b6e1-803bd3940f37?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Serbia - Pomoravlje</title>
+    <updated>2026-09-05T16:30:59Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS010</value>
+    </cap:geocode>
+    <link title="Sumadija" href="https://meteoalarm.org?geocode=EMMA_ID:RS010" hreflang="en"/>
+    <cap:areaDesc>Sumadija</cap:areaDesc>
+    <cap:event>High temperature yellow</cap:event>
+    <cap:sent>2026-09-05T16:30:58+00:00</cap:sent>
+    <cap:expires>2026-09-08T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-07T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260905183058.151738</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/b018de07-f3a1-4c8a-9219-411447456a98"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T16:30:58Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/b018de07-f3a1-4c8a-9219-411447456a98?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Serbia - Sumadija</title>
+    <updated>2026-09-05T16:30:58Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS011</value>
+    </cap:geocode>
+    <link title="Western Serbia" href="https://meteoalarm.org?geocode=EMMA_ID:RS011" hreflang="en"/>
+    <cap:areaDesc>Western Serbia</cap:areaDesc>
+    <cap:event>High temperature yellow</cap:event>
+    <cap:sent>2026-09-05T16:30:57+00:00</cap:sent>
+    <cap:expires>2026-09-08T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-07T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260905183057.488855</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/ea100226-6c2c-44ce-a243-0f1bdd0b1da3"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T16:30:57Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/ea100226-6c2c-44ce-a243-0f1bdd0b1da3?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Serbia - Western Serbia</title>
+    <updated>2026-09-05T16:30:57Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS003</value>
+    </cap:geocode>
+    <link title="Belgrade" href="https://meteoalarm.org?geocode=EMMA_ID:RS003" hreflang="en"/>
+    <cap:areaDesc>Belgrade</cap:areaDesc>
+    <cap:event>High temperature yellow</cap:event>
+    <cap:sent>2026-09-05T16:30:56+00:00</cap:sent>
+    <cap:expires>2026-09-08T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-07T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260905183056.612539</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/bde21693-e86e-4c53-98f7-6f6cedbe1127"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T16:30:56Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/bde21693-e86e-4c53-98f7-6f6cedbe1127?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Serbia - Belgrade</title>
+    <updated>2026-09-05T16:30:56Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS009</value>
+    </cap:geocode>
+    <link title="Srem" href="https://meteoalarm.org?geocode=EMMA_ID:RS009" hreflang="en"/>
+    <cap:areaDesc>Srem</cap:areaDesc>
+    <cap:event>High temperature yellow</cap:event>
+    <cap:sent>2026-09-05T16:30:55+00:00</cap:sent>
+    <cap:expires>2026-09-08T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-07T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260905183055.587194</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/aa4fcece-ca6e-4189-985b-49f45fe9203f"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T16:30:55Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/aa4fcece-ca6e-4189-985b-49f45fe9203f?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Serbia - Srem</title>
+    <updated>2026-09-05T16:30:55Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS001</value>
+    </cap:geocode>
+    <link title="Banat" href="https://meteoalarm.org?geocode=EMMA_ID:RS001" hreflang="en"/>
+    <cap:areaDesc>Banat</cap:areaDesc>
+    <cap:event>High temperature yellow</cap:event>
+    <cap:sent>2026-09-05T16:30:54+00:00</cap:sent>
+    <cap:expires>2026-09-08T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-07T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260905183054.819840</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/f9aacf84-c5b1-42b6-94a9-610d71fd17ee"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T16:30:54Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/f9aacf84-c5b1-42b6-94a9-610d71fd17ee?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Serbia - Banat</title>
+    <updated>2026-09-05T16:30:54Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS002</value>
+    </cap:geocode>
+    <link title="Backa" href="https://meteoalarm.org?geocode=EMMA_ID:RS002" hreflang="en"/>
+    <cap:areaDesc>Backa</cap:areaDesc>
+    <cap:event>High temperature yellow</cap:event>
+    <cap:sent>2026-09-05T16:30:53+00:00</cap:sent>
+    <cap:expires>2026-09-08T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-07T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260905183053.607191</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/191c26dc-5290-44ef-be0b-d7c22987147f"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T16:30:53Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/191c26dc-5290-44ef-be0b-d7c22987147f?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Serbia - Backa</title>
+    <updated>2026-09-05T16:30:53Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS007</value>
+    </cap:geocode>
+    <link title="Kosovo i Metohija" href="https://meteoalarm.org?geocode=EMMA_ID:RS007" hreflang="en"/>
+    <cap:areaDesc>Kosovo i Metohija</cap:areaDesc>
+    <cap:event>High temperature yellow</cap:event>
+    <cap:sent>2026-09-04T17:01:12+00:00</cap:sent>
+    <cap:expires>2026-09-07T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-06T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-06T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260904190112.733509</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/c65a2c99-4f33-4e96-be2e-75115c05e4b1"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-04T17:01:12Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/c65a2c99-4f33-4e96-be2e-75115c05e4b1?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Serbia - Kosovo i Metohija</title>
+    <updated>2026-09-04T17:01:12Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>RS005</value>
+    </cap:geocode>
+    <link title="Southeastern Serbia" href="https://meteoalarm.org?geocode=EMMA_ID:RS005" hreflang="en"/>
+    <cap:areaDesc>Southeastern Serbia</cap:areaDesc>
+    <cap:event>High temperature yellow</cap:event>
+    <cap:sent>2026-09-04T17:01:10+00:00</cap:sent>
+    <cap:expires>2026-09-07T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-06T22:00:00+00:00</cap:effective>
+    <cap:onset>2026-09-06T22:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.688.0.20260904190110.808439</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/08285469-241b-4feb-8caf-2ae990679352"/>
+    <link title="Serbia" rel="related" href="https://meteoalarm.org?region=RS" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-04T17:01:10Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-serbia/08285469-241b-4feb-8caf-2ae990679352?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Serbia - Southeastern Serbia</title>
+    <updated>2026-09-04T17:01:10Z</updated>
+  </entry>
+</feed>

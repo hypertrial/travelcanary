@@ -1,0 +1,6 @@
+.page { min-height: 100dvh; display: grid; place-items: center; padding: 24px; background: var(--paper); }
+.card { width: min(100%, 440px); padding: 28px; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-sm); }
+.brand { color: var(--brand-navy); font-weight: 800; }
+.card h1 { margin: 16px 0; color: var(--ink); font-size: 28px; }
+.card p { line-height: 1.6; }
+.card a { display: inline-flex; align-items: center; min-height: 44px; margin-top: 8px; color: var(--brand-navy); font-weight: 750; text-underline-offset: 3px; }

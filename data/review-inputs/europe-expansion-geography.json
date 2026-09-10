@@ -1,0 +1,1771 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-08",
+  "status": "candidate",
+  "source": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson",
+  "sourceSha256": "239eec57ac17f100a11e2536cffc56752c318b50ae765b0918ff7aab4ce8f255",
+  "license": "Public domain — Natural Earth",
+  "notice": "Display-geometry plausibility only. Generalized polygons are not warning jurisdiction, source eligibility or authoritative coastal classification. Do not move a valid GeoNames point merely to fit this map.",
+  "locations": [
+    {
+      "id": "ad-andorra-la-vella",
+      "coordinates": [
+        1.52109,
+        42.50779
+      ],
+      "naturalEarthAdmin": "Andorra",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "ad-arinsal",
+      "coordinates": [
+        1.48453,
+        42.57205
+      ],
+      "naturalEarthAdmin": "Andorra",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "ad-ordino",
+      "coordinates": [
+        1.53319,
+        42.55623
+      ],
+      "naturalEarthAdmin": "Andorra",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "ad-pas-de-la-casa",
+      "coordinates": [
+        1.73361,
+        42.54277
+      ],
+      "naturalEarthAdmin": "Andorra",
+      "insideGeneralizedPolygon": false,
+      "disposition": "review-generalized-boundary-exception"
+    },
+    {
+      "id": "ad-soldeu",
+      "coordinates": [
+        1.66769,
+        42.57688
+      ],
+      "naturalEarthAdmin": "Andorra",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "al-berat",
+      "coordinates": [
+        19.95222,
+        40.70583
+      ],
+      "naturalEarthAdmin": "Albania",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "al-durres",
+      "coordinates": [
+        19.45469,
+        41.32355
+      ],
+      "naturalEarthAdmin": "Albania",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "al-gjirokaster",
+      "coordinates": [
+        20.13889,
+        40.07583
+      ],
+      "naturalEarthAdmin": "Albania",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "al-himare",
+      "coordinates": [
+        19.74472,
+        40.10167
+      ],
+      "naturalEarthAdmin": "Albania",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "al-korce",
+      "coordinates": [
+        20.78083,
+        40.61861
+      ],
+      "naturalEarthAdmin": "Albania",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "al-kruje",
+      "coordinates": [
+        19.79278,
+        41.50917
+      ],
+      "naturalEarthAdmin": "Albania",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "al-sarande",
+      "coordinates": [
+        20.00477,
+        39.87534
+      ],
+      "naturalEarthAdmin": "Albania",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "al-shkoder",
+      "coordinates": [
+        19.51258,
+        42.06828
+      ],
+      "naturalEarthAdmin": "Albania",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "al-theth",
+      "coordinates": [
+        19.77444,
+        42.39583
+      ],
+      "naturalEarthAdmin": "Albania",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "al-tirana",
+      "coordinates": [
+        19.81866,
+        41.32744
+      ],
+      "naturalEarthAdmin": "Albania",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "al-valbona-valley",
+      "coordinates": [
+        19.87388,
+        42.43053
+      ],
+      "naturalEarthAdmin": "Albania",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "al-vlore",
+      "coordinates": [
+        19.48379,
+        40.4696
+      ],
+      "naturalEarthAdmin": "Albania",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "ba-banja-luka",
+      "coordinates": [
+        17.20629,
+        44.77879
+      ],
+      "naturalEarthAdmin": "Bosnia and Herzegovina",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "ba-bihac",
+      "coordinates": [
+        15.87083,
+        44.81694
+      ],
+      "naturalEarthAdmin": "Bosnia and Herzegovina",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "ba-bjelasnica",
+      "coordinates": [
+        18.25667,
+        43.70417
+      ],
+      "naturalEarthAdmin": "Bosnia and Herzegovina",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "ba-brcko",
+      "coordinates": [
+        18.8163,
+        44.87162
+      ],
+      "naturalEarthAdmin": "Bosnia and Herzegovina",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "ba-jahorina",
+      "coordinates": [
+        18.56564,
+        43.73825
+      ],
+      "naturalEarthAdmin": "Bosnia and Herzegovina",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "ba-mostar",
+      "coordinates": [
+        17.80806,
+        43.34333
+      ],
+      "naturalEarthAdmin": "Bosnia and Herzegovina",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "ba-sarajevo",
+      "coordinates": [
+        18.35644,
+        43.84864
+      ],
+      "naturalEarthAdmin": "Bosnia and Herzegovina",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "ba-travnik",
+      "coordinates": [
+        17.66583,
+        44.22637
+      ],
+      "naturalEarthAdmin": "Bosnia and Herzegovina",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "ba-trebinje",
+      "coordinates": [
+        18.34362,
+        42.71197
+      ],
+      "naturalEarthAdmin": "Bosnia and Herzegovina",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "ba-tuzla",
+      "coordinates": [
+        18.66709,
+        44.53842
+      ],
+      "naturalEarthAdmin": "Bosnia and Herzegovina",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "by-brest",
+      "coordinates": [
+        23.71749,
+        52.10894
+      ],
+      "naturalEarthAdmin": "Belarus",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "by-gomel",
+      "coordinates": [
+        30.9754,
+        52.4345
+      ],
+      "naturalEarthAdmin": "Belarus",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "by-grodno",
+      "coordinates": [
+        23.82887,
+        53.6758
+      ],
+      "naturalEarthAdmin": "Belarus",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "by-mogilev",
+      "coordinates": [
+        30.34044,
+        53.90876
+      ],
+      "naturalEarthAdmin": "Belarus",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "by-minsk",
+      "coordinates": [
+        27.56653,
+        53.90019
+      ],
+      "naturalEarthAdmin": "Belarus",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "by-mir",
+      "coordinates": [
+        26.467,
+        53.4544
+      ],
+      "naturalEarthAdmin": "Belarus",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "by-nesvizh",
+      "coordinates": [
+        26.67679,
+        53.22186
+      ],
+      "naturalEarthAdmin": "Belarus",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "by-vitebsk",
+      "coordinates": [
+        30.2049,
+        55.1904
+      ],
+      "naturalEarthAdmin": "Belarus",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-aberdeen",
+      "coordinates": [
+        -2.09814,
+        57.14369
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-bath",
+      "coordinates": [
+        -2.36172,
+        51.3751
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-belfast",
+      "coordinates": [
+        -5.92541,
+        54.59682
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-birmingham",
+      "coordinates": [
+        -1.89983,
+        52.48142
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-brighton",
+      "coordinates": [
+        -0.13947,
+        50.82838
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-bushmills",
+      "coordinates": [
+        -6.51918,
+        55.20493
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-cairngorms-national-park",
+      "coordinates": [
+        -3.60334,
+        57.04395
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-cambridge",
+      "coordinates": [
+        0.11667,
+        52.2
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-cardiff",
+      "coordinates": [
+        -3.18,
+        51.48
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-derry",
+      "coordinates": [
+        -7.30934,
+        54.9981
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-edinburgh",
+      "coordinates": [
+        -3.19648,
+        55.95206
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-eryri-national-park",
+      "coordinates": [
+        -4.08333,
+        53.08333
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-exeter",
+      "coordinates": [
+        -3.52751,
+        50.7236
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-glasgow",
+      "coordinates": [
+        -4.25763,
+        55.86515
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-inverness",
+      "coordinates": [
+        -4.22398,
+        57.47908
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-isle-of-skye",
+      "coordinates": [
+        -6.2269,
+        57.42593
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-lake-district-national-park",
+      "coordinates": [
+        -3.16667,
+        54.5
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-leeds",
+      "coordinates": [
+        -1.54785,
+        53.79648
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-liverpool",
+      "coordinates": [
+        -2.97794,
+        53.41058
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-london",
+      "coordinates": [
+        -0.12574,
+        51.50853
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-manchester",
+      "coordinates": [
+        -2.23743,
+        53.48095
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-newcastle-upon-tyne",
+      "coordinates": [
+        -1.61396,
+        54.97328
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-orkney-islands",
+      "coordinates": [
+        -3,
+        59
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-oxford",
+      "coordinates": [
+        -1.25596,
+        51.75222
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-pembrokeshire-coast-national-park",
+      "coordinates": [
+        -5.08333,
+        51.83333
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-plymouth",
+      "coordinates": [
+        -4.14305,
+        50.37153
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-portsmouth",
+      "coordinates": [
+        -1.09125,
+        50.79899
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-shetland-islands",
+      "coordinates": [
+        -1.24104,
+        60.32275
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-swansea",
+      "coordinates": [
+        -3.94323,
+        51.62079
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "gb-york",
+      "coordinates": [
+        -1.08271,
+        53.95763
+      ],
+      "naturalEarthAdmin": "United Kingdom",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "is-akureyri",
+      "coordinates": [
+        -18.0878,
+        65.68353
+      ],
+      "naturalEarthAdmin": "Iceland",
+      "insideGeneralizedPolygon": false,
+      "disposition": "review-generalized-boundary-exception"
+    },
+    {
+      "id": "is-egilsstadir",
+      "coordinates": [
+        -14.39485,
+        65.26687
+      ],
+      "naturalEarthAdmin": "Iceland",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "is-grindavik",
+      "coordinates": [
+        -22.43931,
+        63.83849
+      ],
+      "naturalEarthAdmin": "Iceland",
+      "insideGeneralizedPolygon": false,
+      "disposition": "review-generalized-boundary-exception"
+    },
+    {
+      "id": "is-hofn",
+      "coordinates": [
+        -15.21212,
+        64.25388
+      ],
+      "naturalEarthAdmin": "Iceland",
+      "insideGeneralizedPolygon": false,
+      "disposition": "review-generalized-boundary-exception"
+    },
+    {
+      "id": "is-keflavik",
+      "coordinates": [
+        -22.56242,
+        64.00492
+      ],
+      "naturalEarthAdmin": "Iceland",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "is-reykjavik",
+      "coordinates": [
+        -21.89541,
+        64.13548
+      ],
+      "naturalEarthAdmin": "Iceland",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "is-selfoss",
+      "coordinates": [
+        -20.99712,
+        63.93311
+      ],
+      "naturalEarthAdmin": "Iceland",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "is-vatnajokull",
+      "coordinates": [
+        -16.82293,
+        64.41998
+      ],
+      "naturalEarthAdmin": "Iceland",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "is-vestmannaeyjar",
+      "coordinates": [
+        -20.27339,
+        63.44273
+      ],
+      "naturalEarthAdmin": "Iceland",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "is-vik-i-myrdal",
+      "coordinates": [
+        -19.00972,
+        63.41944
+      ],
+      "naturalEarthAdmin": "Iceland",
+      "insideGeneralizedPolygon": false,
+      "disposition": "review-generalized-boundary-exception"
+    },
+    {
+      "id": "is-isafjordur",
+      "coordinates": [
+        -23.13498,
+        66.07475
+      ],
+      "naturalEarthAdmin": "Iceland",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "is-ingvellir",
+      "coordinates": [
+        -21.125,
+        64.25806
+      ],
+      "naturalEarthAdmin": "Iceland",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "li-malbun",
+      "coordinates": [
+        9.60986,
+        47.10139
+      ],
+      "naturalEarthAdmin": "Liechtenstein",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "li-schaan",
+      "coordinates": [
+        9.50867,
+        47.16498
+      ],
+      "naturalEarthAdmin": "Liechtenstein",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "li-vaduz",
+      "coordinates": [
+        9.52154,
+        47.14151
+      ],
+      "naturalEarthAdmin": "Liechtenstein",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "mc-monaco",
+      "coordinates": [
+        7.42145,
+        43.73718
+      ],
+      "naturalEarthAdmin": "Monaco",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "md-bender",
+      "coordinates": [
+        29.47671,
+        46.83158
+      ],
+      "naturalEarthAdmin": "Moldova",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "md-balti",
+      "coordinates": [
+        27.92854,
+        47.76291
+      ],
+      "naturalEarthAdmin": "Moldova",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "md-cahul",
+      "coordinates": [
+        28.19516,
+        45.90456
+      ],
+      "naturalEarthAdmin": "Moldova",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "md-chisinau",
+      "coordinates": [
+        28.85938,
+        47.00902
+      ],
+      "naturalEarthAdmin": "Moldova",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "md-comrat",
+      "coordinates": [
+        28.65713,
+        46.29488
+      ],
+      "naturalEarthAdmin": "Moldova",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "md-orhei",
+      "coordinates": [
+        28.82535,
+        47.38503
+      ],
+      "naturalEarthAdmin": "Moldova",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "md-soroca",
+      "coordinates": [
+        28.28489,
+        48.15659
+      ],
+      "naturalEarthAdmin": "Moldova",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "md-tiraspol",
+      "coordinates": [
+        29.6284,
+        46.84275
+      ],
+      "naturalEarthAdmin": "Moldova",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "me-budva",
+      "coordinates": [
+        18.83922,
+        42.28721
+      ],
+      "naturalEarthAdmin": "Montenegro",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "me-cetinje",
+      "coordinates": [
+        18.91417,
+        42.39063
+      ],
+      "naturalEarthAdmin": "Montenegro",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "me-durmitor-national-park",
+      "coordinates": [
+        19.01667,
+        43.1
+      ],
+      "naturalEarthAdmin": "Montenegro",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "me-herceg-novi",
+      "coordinates": [
+        18.5375,
+        42.45306
+      ],
+      "naturalEarthAdmin": "Montenegro",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "me-kotor",
+      "coordinates": [
+        18.76825,
+        42.42067
+      ],
+      "naturalEarthAdmin": "Montenegro",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "me-lovcen-national-park",
+      "coordinates": [
+        18.81833,
+        42.405
+      ],
+      "naturalEarthAdmin": "Montenegro",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "me-podgorica",
+      "coordinates": [
+        19.26309,
+        42.44124
+      ],
+      "naturalEarthAdmin": "Montenegro",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "me-ulcinj",
+      "coordinates": [
+        19.22436,
+        41.92936
+      ],
+      "naturalEarthAdmin": "Montenegro",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "mk-bitola",
+      "coordinates": [
+        21.33553,
+        41.03226
+      ],
+      "naturalEarthAdmin": "North Macedonia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "mk-galicica-national-park",
+      "coordinates": [
+        20.85,
+        41
+      ],
+      "naturalEarthAdmin": "North Macedonia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "mk-kumanovo",
+      "coordinates": [
+        21.71585,
+        42.13279
+      ],
+      "naturalEarthAdmin": "North Macedonia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "mk-mavrovo-national-park",
+      "coordinates": [
+        20.66686,
+        41.63724
+      ],
+      "naturalEarthAdmin": "North Macedonia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "mk-ohrid",
+      "coordinates": [
+        20.80175,
+        41.11701
+      ],
+      "naturalEarthAdmin": "North Macedonia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "mk-skopje",
+      "coordinates": [
+        21.43141,
+        41.99646
+      ],
+      "naturalEarthAdmin": "North Macedonia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "mk-struga",
+      "coordinates": [
+        20.67894,
+        41.17787
+      ],
+      "naturalEarthAdmin": "North Macedonia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "mk-tetovo",
+      "coordinates": [
+        20.97138,
+        42.00989
+      ],
+      "naturalEarthAdmin": "North Macedonia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "no-alta",
+      "coordinates": [
+        23.27165,
+        69.96887
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "no-bergen",
+      "coordinates": [
+        5.32415,
+        60.39299
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "no-bodo",
+      "coordinates": [
+        14.37513,
+        67.28267
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": false,
+      "disposition": "review-generalized-boundary-exception"
+    },
+    {
+      "id": "no-flam",
+      "coordinates": [
+        7.12194,
+        60.83706
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "no-geilo",
+      "coordinates": [
+        8.20539,
+        60.53369
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "no-geiranger",
+      "coordinates": [
+        7.20719,
+        62.10186
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "no-jotunheimen-national-park",
+      "coordinates": [
+        8.31667,
+        61.63333
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "no-kirkenes",
+      "coordinates": [
+        30.04578,
+        69.72706
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "no-kristiansand",
+      "coordinates": [
+        7.9956,
+        58.14671
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "no-lillehammer",
+      "coordinates": [
+        10.46628,
+        61.11514
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "no-lofoten",
+      "coordinates": [
+        13.16129,
+        68.04991
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": false,
+      "disposition": "review-generalized-boundary-exception"
+    },
+    {
+      "id": "no-narvik",
+      "coordinates": [
+        17.4272,
+        68.43838
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": false,
+      "disposition": "review-generalized-boundary-exception"
+    },
+    {
+      "id": "no-oslo",
+      "coordinates": [
+        10.74609,
+        59.91273
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "no-stavanger",
+      "coordinates": [
+        5.73332,
+        58.97005
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": false,
+      "disposition": "review-generalized-boundary-exception"
+    },
+    {
+      "id": "no-svolvaer",
+      "coordinates": [
+        14.56834,
+        68.23417
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "no-tromso",
+      "coordinates": [
+        18.95508,
+        69.6489
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": false,
+      "disposition": "review-generalized-boundary-exception"
+    },
+    {
+      "id": "no-trondheim",
+      "coordinates": [
+        10.39506,
+        63.43049
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "no-voss",
+      "coordinates": [
+        6.41474,
+        60.62869
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "no-alesund",
+      "coordinates": [
+        6.15492,
+        62.47225
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": false,
+      "disposition": "review-generalized-boundary-exception"
+    },
+    {
+      "id": "no-andalsnes",
+      "coordinates": [
+        7.68709,
+        62.56749
+      ],
+      "naturalEarthAdmin": "Norway",
+      "insideGeneralizedPolygon": false,
+      "disposition": "review-generalized-boundary-exception"
+    },
+    {
+      "id": "rs-belgrade",
+      "coordinates": [
+        20.46513,
+        44.80401
+      ],
+      "naturalEarthAdmin": "Republic of Serbia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "rs-kopaonik-national-park",
+      "coordinates": [
+        20.8033,
+        43.30369
+      ],
+      "naturalEarthAdmin": "Republic of Serbia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "rs-kragujevac",
+      "coordinates": [
+        20.91667,
+        44.01667
+      ],
+      "naturalEarthAdmin": "Republic of Serbia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "rs-nis",
+      "coordinates": [
+        21.90333,
+        43.32472
+      ],
+      "naturalEarthAdmin": "Republic of Serbia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "rs-novi-pazar",
+      "coordinates": [
+        20.51222,
+        43.13667
+      ],
+      "naturalEarthAdmin": "Republic of Serbia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "rs-novi-sad",
+      "coordinates": [
+        19.83694,
+        45.25167
+      ],
+      "naturalEarthAdmin": "Republic of Serbia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "rs-sombor",
+      "coordinates": [
+        19.11222,
+        45.77417
+      ],
+      "naturalEarthAdmin": "Republic of Serbia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "rs-subotica",
+      "coordinates": [
+        19.66667,
+        46.1
+      ],
+      "naturalEarthAdmin": "Republic of Serbia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "rs-tara-mountains",
+      "coordinates": [
+        19.40498,
+        43.92563
+      ],
+      "naturalEarthAdmin": "Republic of Serbia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "rs-uzice",
+      "coordinates": [
+        19.84878,
+        43.85861
+      ],
+      "naturalEarthAdmin": "Republic of Serbia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "rs-zlatibor",
+      "coordinates": [
+        19.70029,
+        43.729
+      ],
+      "naturalEarthAdmin": "Republic of Serbia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "rs-zrenjanin",
+      "coordinates": [
+        20.38194,
+        45.38361
+      ],
+      "naturalEarthAdmin": "Republic of Serbia",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "sm-san-marino",
+      "coordinates": [
+        12.44639,
+        43.93667
+      ],
+      "naturalEarthAdmin": "San Marino",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "sm-serravalle",
+      "coordinates": [
+        12.48167,
+        43.96897
+      ],
+      "naturalEarthAdmin": "San Marino",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-adana",
+      "coordinates": [
+        35.32531,
+        36.98615
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-alanya",
+      "coordinates": [
+        31.99982,
+        36.54375
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": false,
+      "disposition": "review-generalized-boundary-exception"
+    },
+    {
+      "id": "tr-ankara",
+      "coordinates": [
+        32.85427,
+        39.91987
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-antalya",
+      "coordinates": [
+        30.69556,
+        36.90812
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-artvin",
+      "coordinates": [
+        41.82172,
+        41.18161
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-bodrum",
+      "coordinates": [
+        27.42917,
+        37.03833
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-bursa",
+      "coordinates": [
+        29.06013,
+        40.19559
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-diyarbakir",
+      "coordinates": [
+        40.21721,
+        37.91363
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-edirne",
+      "coordinates": [
+        26.55597,
+        41.67719
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-erzurum",
+      "coordinates": [
+        41.27694,
+        39.90861
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-eskisehir",
+      "coordinates": [
+        30.52056,
+        39.77667
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-fethiye",
+      "coordinates": [
+        29.12758,
+        36.64038
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-gaziantep",
+      "coordinates": [
+        37.3825,
+        37.05944
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-goreme",
+      "coordinates": [
+        34.82885,
+        38.64284
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-istanbul",
+      "coordinates": [
+        28.94966,
+        41.01384
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-kars",
+      "coordinates": [
+        43.08548,
+        40.59825
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-kayseri",
+      "coordinates": [
+        35.48528,
+        38.73222
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-kas",
+      "coordinates": [
+        29.63766,
+        36.20176
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-konya",
+      "coordinates": [
+        32.48464,
+        37.87135
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-kusadasi",
+      "coordinates": [
+        27.25713,
+        37.86014
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-mardin",
+      "coordinates": [
+        40.74357,
+        37.31309
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-marmaris",
+      "coordinates": [
+        28.27417,
+        36.855
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-mersin",
+      "coordinates": [
+        34.63886,
+        36.81196
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-pamukkale",
+      "coordinates": [
+        29.11729,
+        37.91644
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-samsun",
+      "coordinates": [
+        36.3361,
+        41.27976
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-trabzon",
+      "coordinates": [
+        39.72694,
+        41.005
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-van",
+      "coordinates": [
+        43.38323,
+        38.49457
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-canakkale",
+      "coordinates": [
+        26.41271,
+        40.15552
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-izmir",
+      "coordinates": [
+        27.13838,
+        38.41273
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "tr-sanliurfa",
+      "coordinates": [
+        38.79392,
+        37.16708
+      ],
+      "naturalEarthAdmin": "Turkey",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "va-vatican-city",
+      "coordinates": [
+        12.45414,
+        41.90268
+      ],
+      "naturalEarthAdmin": "Vatican",
+      "insideGeneralizedPolygon": false,
+      "disposition": "review-generalized-boundary-exception"
+    },
+    {
+      "id": "xk-gjakove",
+      "coordinates": [
+        20.43083,
+        42.38028
+      ],
+      "naturalEarthAdmin": "Kosovo",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "xk-gjilan",
+      "coordinates": [
+        21.46986,
+        42.46045
+      ],
+      "naturalEarthAdmin": "Kosovo",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "xk-peje",
+      "coordinates": [
+        20.28828,
+        42.65913
+      ],
+      "naturalEarthAdmin": "Kosovo",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "xk-pristina",
+      "coordinates": [
+        21.16688,
+        42.67272
+      ],
+      "naturalEarthAdmin": "Kosovo",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "xk-prizren",
+      "coordinates": [
+        20.73972,
+        42.21389
+      ],
+      "naturalEarthAdmin": "Kosovo",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    },
+    {
+      "id": "xk-strpce",
+      "coordinates": [
+        21.02722,
+        42.23944
+      ],
+      "naturalEarthAdmin": "Kosovo",
+      "insideGeneralizedPolygon": true,
+      "disposition": "plausible-representative-point"
+    }
+  ]
+}

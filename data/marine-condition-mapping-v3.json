@@ -1,0 +1,612 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": 3,
+  "reviewedAt": "2026-09-08",
+  "source": "https://marine-api.open-meteo.com/v1/marine",
+  "documentation": "https://open-meteo.com/en/docs/marine-weather-api",
+  "rule": "Only the independently reviewed stable sea-preference model cells within25km are eligible for nearby offshore forecast context. No navigation, beach, harbor or ferry-operation inference. All other new coastal points make zero marine requests.",
+  "samples": [
+    {
+      "path": "tests/fixtures/europe-expansion/marine-offshore-0.json",
+      "bytes": 39788,
+      "sha256": "b8ddf891138edebd22a3fb2f456868f8f22c0b9304ee2514a35e1c63f2a40ebc",
+      "checkedAt": "2026-09-08T16:49:04.643Z"
+    },
+    {
+      "path": "tests/fixtures/europe-expansion/marine-offshore-40.json",
+      "bytes": 9919,
+      "sha256": "e5acc71af43ce6a004b6ba3dc7d2d50910b3c8fd28406b6a230112c279016690",
+      "checkedAt": "2026-09-08T16:49:04.643Z"
+    }
+  ],
+  "mappings": [
+    {
+      "locationId": "al-durres",
+      "status": "mapped",
+      "queryCoordinates": [
+        19.375015,
+        41.291664
+      ],
+      "distanceKm": 7.541,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 0
+    },
+    {
+      "locationId": "al-himare",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "al-sarande",
+      "status": "mapped",
+      "queryCoordinates": [
+        19.875015,
+        39.875
+      ],
+      "distanceKm": 11.073,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 2
+    },
+    {
+      "locationId": "al-vlore",
+      "status": "mapped",
+      "queryCoordinates": [
+        19.375015,
+        40.458336
+      ],
+      "distanceKm": 9.287,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 3
+    },
+    {
+      "locationId": "gb-aberdeen",
+      "status": "mapped",
+      "queryCoordinates": [
+        -2.0416565,
+        57.125008
+      ],
+      "distanceKm": 3.992,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 4
+    },
+    {
+      "locationId": "gb-belfast",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "No usable retained marine series; a representative offshore cell is not approved."
+    },
+    {
+      "locationId": "gb-brighton",
+      "status": "mapped",
+      "queryCoordinates": [
+        -0.12498474,
+        50.791664
+      ],
+      "distanceKm": 4.208,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 5
+    },
+    {
+      "locationId": "gb-bushmills",
+      "status": "mapped",
+      "queryCoordinates": [
+        -6.5416565,
+        55.375008
+      ],
+      "distanceKm": 18.965,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 6
+    },
+    {
+      "locationId": "gb-cardiff",
+      "status": "mapped",
+      "queryCoordinates": [
+        -3.2083282,
+        51.375008
+      ],
+      "distanceKm": 11.839,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 7
+    },
+    {
+      "locationId": "gb-derry",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "No usable retained marine series; a representative offshore cell is not approved."
+    },
+    {
+      "locationId": "gb-edinburgh",
+      "status": "mapped",
+      "queryCoordinates": [
+        -3.2083282,
+        56.041664
+      ],
+      "distanceKm": 9.991,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 8
+    },
+    {
+      "locationId": "gb-inverness",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "gb-isle-of-skye",
+      "status": "mapped",
+      "queryCoordinates": [
+        -6.1249847,
+        57.458336
+      ],
+      "distanceKm": 7.084,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 10
+    },
+    {
+      "locationId": "gb-liverpool",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "gb-newcastle-upon-tyne",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "No usable retained marine series; a representative offshore cell is not approved."
+    },
+    {
+      "locationId": "gb-orkney-islands",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "gb-pembrokeshire-coast-national-park",
+      "status": "mapped",
+      "queryCoordinates": [
+        -5.1249847,
+        51.791664
+      ],
+      "distanceKm": 5.447,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 13
+    },
+    {
+      "locationId": "gb-plymouth",
+      "status": "mapped",
+      "queryCoordinates": [
+        -4.1249847,
+        50.291664
+      ],
+      "distanceKm": 8.973,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 14
+    },
+    {
+      "locationId": "gb-portsmouth",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "gb-shetland-islands",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "gb-swansea",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "is-akureyri",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "No usable retained marine series; a representative offshore cell is not approved."
+    },
+    {
+      "locationId": "is-grindavik",
+      "status": "mapped",
+      "queryCoordinates": [
+        -22.458328,
+        63.791664
+      ],
+      "distanceKm": 5.29,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 18
+    },
+    {
+      "locationId": "is-hofn",
+      "status": "mapped",
+      "queryCoordinates": [
+        -15.208328,
+        64.208336
+      ],
+      "distanceKm": 5.068,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 19
+    },
+    {
+      "locationId": "is-isafjordur",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "No usable retained marine series; a representative offshore cell is not approved."
+    },
+    {
+      "locationId": "is-keflavik",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "is-reykjavik",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "No usable retained marine series; a representative offshore cell is not approved."
+    },
+    {
+      "locationId": "is-vestmannaeyjar",
+      "status": "mapped",
+      "queryCoordinates": [
+        -20.291656,
+        63.458336
+      ],
+      "distanceKm": 1.958,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 21
+    },
+    {
+      "locationId": "is-vik-i-myrdal",
+      "status": "mapped",
+      "queryCoordinates": [
+        -19.041656,
+        63.375008
+      ],
+      "distanceKm": 5.19,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 22
+    },
+    {
+      "locationId": "mc-monaco",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Monaco marine applicability and representative offshore cell remain unapproved."
+    },
+    {
+      "locationId": "me-budva",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "me-herceg-novi",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "me-kotor",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "me-ulcinj",
+      "status": "mapped",
+      "queryCoordinates": [
+        19.208344,
+        41.875
+      ],
+      "distanceKm": 6.188,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 27
+    },
+    {
+      "locationId": "no-alesund",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "no-alta",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "No usable retained marine series; a representative offshore cell is not approved."
+    },
+    {
+      "locationId": "no-andalsnes",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "No usable retained marine series; a representative offshore cell is not approved."
+    },
+    {
+      "locationId": "no-bergen",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "no-bodo",
+      "status": "mapped",
+      "queryCoordinates": [
+        14.291672,
+        67.291664
+      ],
+      "distanceKm": 3.72,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-0.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 29
+    },
+    {
+      "locationId": "no-flam",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "No usable retained marine series; a representative offshore cell is not approved."
+    },
+    {
+      "locationId": "no-geiranger",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "No usable retained marine series; a representative offshore cell is not approved."
+    },
+    {
+      "locationId": "no-kirkenes",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "No usable retained marine series; a representative offshore cell is not approved."
+    },
+    {
+      "locationId": "no-kristiansand",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "no-lofoten",
+      "status": "mapped",
+      "queryCoordinates": [
+        13.291672,
+        67.958336
+      ],
+      "distanceKm": 11.54,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-40.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 31
+    },
+    {
+      "locationId": "no-narvik",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "No usable retained marine series; a representative offshore cell is not approved."
+    },
+    {
+      "locationId": "no-oslo",
+      "status": "mapped",
+      "queryCoordinates": [
+        10.7083435,
+        59.875008
+      ],
+      "distanceKm": 4.693,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-40.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 32
+    },
+    {
+      "locationId": "no-stavanger",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "no-svolvaer",
+      "status": "mapped",
+      "queryCoordinates": [
+        14.541672,
+        68.208336
+      ],
+      "distanceKm": 3.076,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-40.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 34
+    },
+    {
+      "locationId": "no-tromso",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "No usable retained marine series; a representative offshore cell is not approved."
+    },
+    {
+      "locationId": "no-trondheim",
+      "status": "mapped",
+      "queryCoordinates": [
+        10.375015,
+        63.541664
+      ],
+      "distanceKm": 12.402,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-40.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 35
+    },
+    {
+      "locationId": "tr-alanya",
+      "status": "mapped",
+      "queryCoordinates": [
+        31.958344,
+        36.458336
+      ],
+      "distanceKm": 10.196,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-40.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 37
+    },
+    {
+      "locationId": "tr-antalya",
+      "status": "mapped",
+      "queryCoordinates": [
+        30.708344,
+        36.791664
+      ],
+      "distanceKm": 12.999,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-40.json",
+      "repeatSample": "marine-offshore-0.json",
+      "repeatIndex": 38
+    },
+    {
+      "locationId": "tr-bodrum",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "tr-canakkale",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "tr-fethiye",
+      "status": "mapped",
+      "queryCoordinates": [
+        29.041672,
+        36.625
+      ],
+      "distanceKm": 7.854,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-40.json",
+      "repeatSample": "marine-offshore-40.json",
+      "repeatIndex": 0
+    },
+    {
+      "locationId": "tr-istanbul",
+      "status": "mapped",
+      "queryCoordinates": [
+        28.958344,
+        40.958336
+      ],
+      "distanceKm": 6.215,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-40.json",
+      "repeatSample": "marine-offshore-40.json",
+      "repeatIndex": 1
+    },
+    {
+      "locationId": "tr-izmir",
+      "status": "mapped",
+      "queryCoordinates": [
+        27.041672,
+        38.458336
+      ],
+      "distanceKm": 9.832,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-40.json",
+      "repeatSample": "marine-offshore-40.json",
+      "repeatIndex": 9
+    },
+    {
+      "locationId": "tr-kas",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "tr-kusadasi",
+      "status": "mapped",
+      "queryCoordinates": [
+        27.208344,
+        37.875
+      ],
+      "distanceKm": 4.59,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-40.json",
+      "repeatSample": "marine-offshore-40.json",
+      "repeatIndex": 3
+    },
+    {
+      "locationId": "tr-marmaris",
+      "status": "unsupported",
+      "distanceKm": null,
+      "provenance": "Retained model cell has unresolved geographic suitability; requires a reviewed offshore replacement or source-supported explanation."
+    },
+    {
+      "locationId": "tr-mersin",
+      "status": "mapped",
+      "queryCoordinates": [
+        34.708344,
+        36.791664
+      ],
+      "distanceKm": 6.585,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-40.json",
+      "repeatSample": "marine-offshore-40.json",
+      "repeatIndex": 5
+    },
+    {
+      "locationId": "tr-samsun",
+      "status": "mapped",
+      "queryCoordinates": [
+        36.375015,
+        41.375
+      ],
+      "distanceKm": 11.078,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-40.json",
+      "repeatSample": "marine-offshore-40.json",
+      "repeatIndex": 6
+    },
+    {
+      "locationId": "tr-trabzon",
+      "status": "mapped",
+      "queryCoordinates": [
+        39.708344,
+        41.208336
+      ],
+      "distanceKm": 22.664,
+      "provenance": "Independently reviewed model-cell context: sea-preference query, non-null wave series, stable returned cell on repeat, no retained land-geometry conflict or positive-elevation discrepancy. Generalized land geometry is a review signal, not an authoritative sea mask.",
+      "sample": "marine-40.json",
+      "repeatSample": "marine-offshore-40.json",
+      "repeatIndex": 7
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-02",
+  "sources": [
+    "https://api.krisinformation.se/v3",
+    "https://autobahn.api.bund.dev/",
+    "https://www.eac.com.cy/EN/RegulatedActivities/Distribution/PowerInterruptions/Pages/Faultsandscheduledinterruptions.aspx?District=0"
+  ],
+  "sweden": {
+    "blekinge lan": ["se-karlskrona"],
+    "gavleborgs lan": ["se-gaevle"],
+    "gotlands lan": ["se-gotland"],
+    "hallands lan": ["se-halmstad"],
+    "jonkopings lan": ["se-joenkoeping"],
+    "kronobergs lan": ["se-vaexjoe"],
+    "norrbottens lan": ["se-lulea", "se-swedish-lapland"],
+    "orebro lan": ["se-oerebro"],
+    "ostergotlands lan": ["se-linkoeping", "se-norrkoeping"],
+    "skane lan": ["se-helsingborg", "se-lund", "se-malmoe"],
+    "sodermanlands lan": ["se-eskilstuna"],
+    "stockholms lan": ["se-haninge", "se-huddinge", "se-soedertaelje", "se-sollentuna", "se-solna", "se-stockholm", "se-taby"],
+    "uppsala lan": ["se-uppsala"],
+    "varmlands lan": ["se-karlstad"],
+    "vasterbottens lan": ["se-swedish-lapland", "se-umea"],
+    "vasternorrlands lan": ["se-sundsvall"],
+    "vastmanlands lan": ["se-vaesteras"],
+    "vastra gotalands lan": ["se-boras", "se-gothenburg", "se-moelndal"]
+  },
+  "germany": [
+    ["de-aachen", "A4"], ["de-augsburg", "A8"], ["de-bavarian-alps", "A95"], ["de-berlin", "A100"], ["de-bielefeld", "A2"],
+    ["de-black-forest", "A5"], ["de-bochum", "A40"], ["de-bonn", "A3"], ["de-bremen", "A1"], ["de-dortmund", "A45"],
+    ["de-dresden", "A4"], ["de-duisburg", "A59"], ["de-duesseldorf", "A46"], ["de-essen", "A52"], ["de-frankfurt-am-main", "A5"],
+    ["de-gelsenkirchen", "A42"], ["de-hamburg", "A7"], ["de-hannover", "A2"], ["de-karlsruhe", "A8"], ["de-kiel", "A215"],
+    ["de-koeln", "A3"], ["de-leipzig", "A14"], ["de-mannheim", "A6"], ["de-moenchengladbach", "A61"], ["de-munich", "A99"],
+    ["de-muenster", "A43"], ["de-nuremberg", "A9"], ["de-stuttgart", "A81"], ["de-wiesbaden", "A66"], ["de-wuppertal", "A46"]
+  ],
+  "cyprus": {
+    "cy-ayia-napa-coast": ["ayia napa", "agia napa"],
+    "cy-famagusta": [],
+    "cy-larnaca": ["larnaca", "larnaka"],
+    "cy-limassol": ["limassol", "lemesos"],
+    "cy-nicosia": ["nicosia", "lefkosia"],
+    "cy-strovolos": ["strovolos"],
+    "cy-troodos-mountains": []
+  },
+  "unsupported": [
+    { "locationId": "cy-famagusta", "reason": "Outside the EAC-controlled live interruption geography." },
+    { "locationId": "cy-troodos-mountains", "reason": "Broad mountain region has no exact EAC locality mapping." }
+  ]
+}

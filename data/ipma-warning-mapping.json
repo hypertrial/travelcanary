@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-01",
+  "source": "https://api.ipma.pt/open-data/distrits-islands.json",
+  "documentation": "https://api.ipma.pt/",
+  "mappings": {
+    "AVR": ["pt-aveiro"],
+    "BRG": ["pt-braga"],
+    "CBR": ["pt-coimbra"],
+    "FAR": ["pt-algarve", "pt-faro"],
+    "LRA": ["pt-leiria"],
+    "LSB": ["pt-algueirao", "pt-amadora", "pt-cacem", "pt-lisbon", "pt-loures", "pt-queluz"],
+    "MCS": ["pt-funchal", "pt-madeira"],
+    "PTO": ["pt-felgueiras", "pt-porto", "pt-vila-nova-de-gaia"],
+    "STM": [],
+    "STB": ["pt-setubal"],
+    "VIS": ["pt-viseu"],
+    "AOR": ["pt-ponta-delgada"],
+    "ACE": ["pt-horta"],
+    "AOC": ["pt-santa-cruz-das-flores"]
+  },
+  "unsupportedOfficialAreas": ["BJA", "BGC", "CBO", "EVR", "GDA", "PTG", "VCT", "VRL", "MPS"]
+}

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alert xmlns = "urn:oasis:names:tc:emergency:cap:1.2">
+  <identifier>2.49.0.0.724.0.ES.20260906215001.659004ATTA09191788731401</identifier>
+  <sender>http://www.aemet.es</sender>
+  <sent>2026-09-06T21:50:01-00:00</sent>
+  <status>Actual</status>
+  <msgType>Alert</msgType>
+  <scope>Public</scope>
+  <info>
+    <language>es-ES</language>
+    <category>Met</category>
+    <event>Aviso de temperaturas máximas de nivel amarillo</event>
+    <responseType>Monitor</responseType>
+    <urgency>Future</urgency>
+    <severity>Moderate</severity>
+    <certainty>Likely</certainty>
+    <eventCode>
+      <valueName>AEMET-Meteoalerta fenomeno</valueName>
+      <value>AT;Temperaturas máximas</value>
+    </eventCode>
+    <effective>2026-09-06T22:50:01+01:00</effective>
+    <onset>2026-09-09T10:00:00+01:00</onset>
+    <expires>2026-09-09T19:59:59+01:00</expires>
+    <senderName>AEMET. Agencia Estatal de Meteorología</senderName>
+    <headline>Aviso de temperaturas máximas de nivel amarillo. Este, sur y oeste de Gran Canaria</headline>
+    <description>Temperatura máxima: 34 ºC. Afectando principalmente a medianías del sureste y oeste.</description>
+    <instruction>Esté atento. Manténgase informado de la predicción meteorológica más actualizada. Se pueden producir daños moderados a personas y bienes, especialmente a aquellos vulnerables o en zonas expuestas al fenómeno.</instruction>
+    <web>https://www.aemet.es/es/eltiempo/prediccion/avisos</web>
+    <contact>AEMET</contact>
+    <parameter>
+      <valueName>AEMET-Meteoalerta nivel</valueName>
+      <value>amarillo</value>
+    </parameter>
+    <parameter>
+      <valueName>AEMET-Meteoalerta parametro</valueName>
+      <value>TA;Temperatura máxima;34 ºC</value>
+    </parameter>
+    <parameter>
+      <valueName>AEMET-Meteoalerta probabilidad</valueName>
+      <value>40%-70%</value>
+    </parameter>
+    <area>
+      <areaDesc>Este, sur y oeste de Gran Canaria</areaDesc>
+      <polygon>28.05,-15.74 28.03,-15.72 28.05,-15.69 28.04,-15.65 28.02,-15.61 28.0,-15.64 27.99,-15.71 27.96,-15.75 27.92,-15.69 27.92,-15.65 27.97,-15.6 27.95,-15.59 27.96,-15.55 27.99,-15.55 28.01,-15.51 28.04,-15.42 28.03,-15.39 27.99,-15.37 27.97,-15.38 27.89,-15.39 27.86,-15.38 27.85,-15.41 27.81,-15.42 27.79,-15.49 27.76,-15.56 27.73,-15.6 27.75,-15.67 27.83,-15.79 27.91,-15.83 27.97,-15.83 28.02,-15.81 28.02,-15.79 28.05,-15.74</polygon>
+      <geocode>
+        <valueName>AEMET-Meteoalerta zona</valueName>
+        <value>659004</value>
+      </geocode>
+    </area>
+  </info>
+  <info>
+    <language>en-GB</language>
+    <category>Met</category>
+    <event>Moderate high-temperature warning</event>
+    <responseType>Monitor</responseType>
+    <urgency>Future</urgency>
+    <severity>Moderate</severity>
+    <certainty>Likely</certainty>
+    <eventCode>
+      <valueName>AEMET-Meteoalerta fenomeno</valueName>
+      <value>AT;Temperaturas máximas</value>
+    </eventCode>
+    <effective>2026-09-06T22:50:01+01:00</effective>
+    <onset>2026-09-09T10:00:00+01:00</onset>
+    <expires>2026-09-09T19:59:59+01:00</expires>
+    <senderName>AEMET. State Meteorological Agency</senderName>
+    <headline>Moderate high-temperature warning. Este, sur y oeste de Gran Canaria</headline>
+    <description>Maximum temperature: 34 ºC. Afectando principalmente a medianías del sureste y oeste.</description>
+    <instruction>Be aware, keep up to date with the latest weather forecast. Moderate damages to people and properties may occur, especially to those vulnerable or in exposed areas.</instruction>
+    <web>https://www.aemet.es/en/eltiempo/prediccion/avisos</web>
+    <contact>AEMET</contact>
+    <parameter>
+      <valueName>AEMET-Meteoalerta nivel</valueName>
+      <value>amarillo</value>
+    </parameter>
+    <parameter>
+      <valueName>AEMET-Meteoalerta parametro</valueName>
+      <value>TA;Maximum temperature;34 ºC</value>
+    </parameter>
+    <parameter>
+      <valueName>AEMET-Meteoalerta probabilidad</valueName>
+      <value>40%-70%</value>
+    </parameter>
+    <area>
+      <areaDesc>Este, sur y oeste de Gran Canaria</areaDesc>
+      <polygon>28.05,-15.74 28.03,-15.72 28.05,-15.69 28.04,-15.65 28.02,-15.61 28.0,-15.64 27.99,-15.71 27.96,-15.75 27.92,-15.69 27.92,-15.65 27.97,-15.6 27.95,-15.59 27.96,-15.55 27.99,-15.55 28.01,-15.51 28.04,-15.42 28.03,-15.39 27.99,-15.37 27.97,-15.38 27.89,-15.39 27.86,-15.38 27.85,-15.41 27.81,-15.42 27.79,-15.49 27.76,-15.56 27.73,-15.6 27.75,-15.67 27.83,-15.79 27.91,-15.83 27.97,-15.83 28.02,-15.81 28.02,-15.79 28.05,-15.74</polygon>
+      <geocode>
+        <valueName>AEMET-Meteoalerta zona</valueName>
+        <value>659004</value>
+      </geocode>
+    </area>
+  </info>
+</alert>

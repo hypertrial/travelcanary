@@ -1,0 +1,977 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:cap="urn:oasis:names:tc:emergency:cap:1.2">
+  <link rel="hub" href="https://pubsubhubbub.appspot.com/"/>
+  <link type="application/atom+xml" rel="self" href="https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-bosnia-herzegovina"/>
+  <link type="text/html" rel="alternate" href="https://meteoalarm.org"/>
+  <rights>Copyright © 2026 MeteoAlarm.Org. Licensed under terms equivalent to CC BY 4.0, with additional requirements for redistributing outlined in our Terms and Conditions.</rights>
+  <generator>MeteoAlarm Producer Server</generator>
+  <logo>https://feeds.meteoalarm.org/images/logo.svg</logo>
+  <author>
+    <name>meteoalarm.org</name>
+    <uri>https://meteoalarm.org</uri>
+    <email>meteoalarm@geosphere.at</email>
+  </author>
+  <id>tag:meteoalarm.org,2021-02-19:BA</id>
+  <title>MeteoAlarm - Alerting Europe for Extreme Weather</title>
+  <updated>2026-09-08T15:35:45.840095Z</updated>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA009</value>
+    </cap:geocode>
+    <link title="Foca" href="https://meteoalarm.org?geocode=EMMA_ID:BA009" hreflang="en"/>
+    <cap:areaDesc>Foca</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-08T08:53:24+00:00</cap:sent>
+    <cap:expires>2026-09-09T16:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T08:53:24+00:00</cap:effective>
+    <cap:onset>2026-09-09T10:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260908105324.58201063</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/81fcf5d1-7699-4bde-8e3c-956e8ea9a692"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T08:53:24Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/81fcf5d1-7699-4bde-8e3c-956e8ea9a692?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Foca</title>
+    <updated>2026-09-08T08:53:24Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA002</value>
+    </cap:geocode>
+    <link title="Prijedor" href="https://meteoalarm.org?geocode=EMMA_ID:BA002" hreflang="en"/>
+    <cap:areaDesc>Prijedor</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-08T08:53:24+00:00</cap:sent>
+    <cap:expires>2026-09-09T17:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T08:53:24+00:00</cap:effective>
+    <cap:onset>2026-09-09T09:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260908105324.99318942</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/304197ea-030e-4883-bc1d-56b850516757"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T08:53:24Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/304197ea-030e-4883-bc1d-56b850516757?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Prijedor</title>
+    <updated>2026-09-08T08:53:24Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA010</value>
+    </cap:geocode>
+    <link title="Trebinje" href="https://meteoalarm.org?geocode=EMMA_ID:BA010" hreflang="en"/>
+    <cap:areaDesc>Trebinje</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-08T08:53:24+00:00</cap:sent>
+    <cap:expires>2026-09-09T17:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T08:53:24+00:00</cap:effective>
+    <cap:onset>2026-09-09T08:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260908105324.44458987</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/5907e373-5029-426e-ad4d-e63fdf6d4f7d"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T08:53:24Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/5907e373-5029-426e-ad4d-e63fdf6d4f7d?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Trebinje</title>
+    <updated>2026-09-08T08:53:24Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA007</value>
+    </cap:geocode>
+    <link title="Visegrad" href="https://meteoalarm.org?geocode=EMMA_ID:BA007" hreflang="en"/>
+    <cap:areaDesc>Visegrad</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-08T08:53:24+00:00</cap:sent>
+    <cap:expires>2026-09-09T16:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T08:53:24+00:00</cap:effective>
+    <cap:onset>2026-09-09T10:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260908105324.51169892</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/a3cddabb-a962-4ab6-b36a-c71b2f15a56a"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T08:53:24Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/a3cddabb-a962-4ab6-b36a-c71b2f15a56a?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Visegrad</title>
+    <updated>2026-09-08T08:53:24Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA003</value>
+    </cap:geocode>
+    <link title="Banja Luka" href="https://meteoalarm.org?geocode=EMMA_ID:BA003" hreflang="en"/>
+    <cap:areaDesc>Banja Luka</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-08T08:53:24+00:00</cap:sent>
+    <cap:expires>2026-09-09T17:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T08:53:24+00:00</cap:effective>
+    <cap:onset>2026-09-09T09:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260908105324.75857203</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/0efe1846-4f2d-4a49-a478-25c707838f99"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T08:53:24Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/0efe1846-4f2d-4a49-a478-25c707838f99?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Banja Luka</title>
+    <updated>2026-09-08T08:53:24Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA002</value>
+    </cap:geocode>
+    <link title="Prijedor" href="https://meteoalarm.org?geocode=EMMA_ID:BA002" hreflang="en"/>
+    <cap:areaDesc>Prijedor</cap:areaDesc>
+    <cap:event>Wind Yellow Warning</cap:event>
+    <cap:sent>2026-09-08T08:53:24+00:00</cap:sent>
+    <cap:expires>2026-09-09T21:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-08T08:53:24+00:00</cap:effective>
+    <cap:onset>2026-09-09T18:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260908105324.81090115</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/b33630ad-ba2d-43b3-b8ae-49ce4d1ae6f3"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-08T08:53:24Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/b33630ad-ba2d-43b3-b8ae-49ce4d1ae6f3?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow Wind Warning issued for Bosnia-Herzegovina - Prijedor</title>
+    <updated>2026-09-08T08:53:24Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA001</value>
+    </cap:geocode>
+    <link title="Bihac" href="https://meteoalarm.org?geocode=EMMA_ID:BA001" hreflang="en"/>
+    <cap:areaDesc>Bihac</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-07T13:10:20+00:00</cap:sent>
+    <cap:expires>2026-09-09T14:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T13:10:20+00:00</cap:effective>
+    <cap:onset>2026-09-09T10:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.0.BA.260907151020.44386603</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/53c46bdd-7659-4157-9d67-63185cff73e9"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T13:10:20Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/53c46bdd-7659-4157-9d67-63185cff73e9?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Bihac</title>
+    <updated>2026-09-07T13:10:20Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA008</value>
+    </cap:geocode>
+    <link title="Mostar" href="https://meteoalarm.org?geocode=EMMA_ID:BA008" hreflang="en"/>
+    <cap:areaDesc>Mostar</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-07T13:10:20+00:00</cap:sent>
+    <cap:expires>2026-09-09T14:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T13:10:20+00:00</cap:effective>
+    <cap:onset>2026-09-09T10:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.0.BA.260907151020.84477980</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/09988bdf-43cb-4cf2-9035-f14fbdda3fd9"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T13:10:20Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/09988bdf-43cb-4cf2-9035-f14fbdda3fd9?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Mostar</title>
+    <updated>2026-09-07T13:10:20Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA004</value>
+    </cap:geocode>
+    <link title="Tuzla" href="https://meteoalarm.org?geocode=EMMA_ID:BA004" hreflang="en"/>
+    <cap:areaDesc>Tuzla</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-07T13:10:20+00:00</cap:sent>
+    <cap:expires>2026-09-09T14:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T13:10:20+00:00</cap:effective>
+    <cap:onset>2026-09-09T10:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.0.BA.260907151020.15728639</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/5f199e53-a6f8-464e-9ec0-210ccf5e5f92"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T13:10:20Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/5f199e53-a6f8-464e-9ec0-210ccf5e5f92?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Tuzla</title>
+    <updated>2026-09-07T13:10:20Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA005</value>
+    </cap:geocode>
+    <link title="Livno" href="https://meteoalarm.org?geocode=EMMA_ID:BA005" hreflang="en"/>
+    <cap:areaDesc>Livno</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-07T13:10:20+00:00</cap:sent>
+    <cap:expires>2026-09-09T14:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T13:10:20+00:00</cap:effective>
+    <cap:onset>2026-09-09T10:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.0.BA.260907151020.59773643</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/ed55ac7a-9434-49db-aae8-44da6857064d"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T13:10:20Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/ed55ac7a-9434-49db-aae8-44da6857064d?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Livno</title>
+    <updated>2026-09-07T13:10:20Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA006</value>
+    </cap:geocode>
+    <link title="Sarajevo" href="https://meteoalarm.org?geocode=EMMA_ID:BA006" hreflang="en"/>
+    <cap:areaDesc>Sarajevo</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-07T13:10:20+00:00</cap:sent>
+    <cap:expires>2026-09-09T14:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T13:10:20+00:00</cap:effective>
+    <cap:onset>2026-09-09T10:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.0.BA.260907151020.73257156</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/ef4bad3d-2c06-4fe8-9b02-bb6e3743c5bd"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T13:10:20Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/ef4bad3d-2c06-4fe8-9b02-bb6e3743c5bd?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Sarajevo</title>
+    <updated>2026-09-07T13:10:20Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA002</value>
+    </cap:geocode>
+    <link title="Prijedor" href="https://meteoalarm.org?geocode=EMMA_ID:BA002" hreflang="en"/>
+    <cap:areaDesc>Prijedor</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-07T08:29:21+00:00</cap:sent>
+    <cap:expires>2026-09-09T17:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T08:29:21+00:00</cap:effective>
+    <cap:onset>2026-09-09T09:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260907102921.65111088</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/00fdadff-10e2-43c1-9a34-4a7360eeba49"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T08:29:21Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/00fdadff-10e2-43c1-9a34-4a7360eeba49?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Prijedor</title>
+    <updated>2026-09-07T08:29:21Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA007</value>
+    </cap:geocode>
+    <link title="Visegrad" href="https://meteoalarm.org?geocode=EMMA_ID:BA007" hreflang="en"/>
+    <cap:areaDesc>Visegrad</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-07T08:29:21+00:00</cap:sent>
+    <cap:expires>2026-09-09T16:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T08:29:21+00:00</cap:effective>
+    <cap:onset>2026-09-09T10:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260907102921.38487082</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/c654648a-dc78-417b-91aa-8a6933ec9767"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T08:29:21Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/c654648a-dc78-417b-91aa-8a6933ec9767?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Visegrad</title>
+    <updated>2026-09-07T08:29:21Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA009</value>
+    </cap:geocode>
+    <link title="Foca" href="https://meteoalarm.org?geocode=EMMA_ID:BA009" hreflang="en"/>
+    <cap:areaDesc>Foca</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-07T08:29:21+00:00</cap:sent>
+    <cap:expires>2026-09-09T16:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T08:29:21+00:00</cap:effective>
+    <cap:onset>2026-09-09T10:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260907102921.60164400</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/378976f0-1612-4394-b6c0-239a6aa0dbbe"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T08:29:21Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/378976f0-1612-4394-b6c0-239a6aa0dbbe?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Foca</title>
+    <updated>2026-09-07T08:29:21Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA003</value>
+    </cap:geocode>
+    <link title="Banja Luka" href="https://meteoalarm.org?geocode=EMMA_ID:BA003" hreflang="en"/>
+    <cap:areaDesc>Banja Luka</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-07T08:29:21+00:00</cap:sent>
+    <cap:expires>2026-09-09T17:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T08:29:21+00:00</cap:effective>
+    <cap:onset>2026-09-09T09:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260907102921.37387874</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/1342e566-283b-4a1f-8da7-eb0be5f77cde"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T08:29:21Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/1342e566-283b-4a1f-8da7-eb0be5f77cde?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Banja Luka</title>
+    <updated>2026-09-07T08:29:21Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA010</value>
+    </cap:geocode>
+    <link title="Trebinje" href="https://meteoalarm.org?geocode=EMMA_ID:BA010" hreflang="en"/>
+    <cap:areaDesc>Trebinje</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-07T08:29:21+00:00</cap:sent>
+    <cap:expires>2026-09-09T17:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-07T08:29:21+00:00</cap:effective>
+    <cap:onset>2026-09-09T08:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260907102921.14091430</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/98f14e9a-b302-4d20-ae4b-7c3fe2a408b9"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-07T08:29:21Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/98f14e9a-b302-4d20-ae4b-7c3fe2a408b9?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Trebinje</title>
+    <updated>2026-09-07T08:29:21Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA010</value>
+    </cap:geocode>
+    <link title="Trebinje" href="https://meteoalarm.org?geocode=EMMA_ID:BA010" hreflang="en"/>
+    <cap:areaDesc>Trebinje</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-06T10:28:30+00:00</cap:sent>
+    <cap:expires>2026-09-08T16:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-06T10:28:30+00:00</cap:effective>
+    <cap:onset>2026-09-08T07:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260906122830.21289074</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/0d2dae67-33a0-4011-b928-4c8e44aba62d"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T10:28:30Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/0d2dae67-33a0-4011-b928-4c8e44aba62d?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Trebinje</title>
+    <updated>2026-09-06T10:28:30Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA009</value>
+    </cap:geocode>
+    <link title="Foca" href="https://meteoalarm.org?geocode=EMMA_ID:BA009" hreflang="en"/>
+    <cap:areaDesc>Foca</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-06T10:28:30+00:00</cap:sent>
+    <cap:expires>2026-09-08T14:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-06T10:28:30+00:00</cap:effective>
+    <cap:onset>2026-09-08T09:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260906122830.48236106</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/61313aec-a8cd-4b7a-b0d1-07420c45f65d"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T10:28:30Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/61313aec-a8cd-4b7a-b0d1-07420c45f65d?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Foca</title>
+    <updated>2026-09-06T10:28:30Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA002</value>
+    </cap:geocode>
+    <link title="Prijedor" href="https://meteoalarm.org?geocode=EMMA_ID:BA002" hreflang="en"/>
+    <cap:areaDesc>Prijedor</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-06T10:28:30+00:00</cap:sent>
+    <cap:expires>2026-09-08T15:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-06T10:28:30+00:00</cap:effective>
+    <cap:onset>2026-09-08T08:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260906122830.92174721</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/c18fe4aa-fa87-40d9-ba14-d608abbddb29"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T10:28:30Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/c18fe4aa-fa87-40d9-ba14-d608abbddb29?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Prijedor</title>
+    <updated>2026-09-06T10:28:30Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA003</value>
+    </cap:geocode>
+    <link title="Banja Luka" href="https://meteoalarm.org?geocode=EMMA_ID:BA003" hreflang="en"/>
+    <cap:areaDesc>Banja Luka</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-06T10:28:30+00:00</cap:sent>
+    <cap:expires>2026-09-08T15:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-06T10:28:30+00:00</cap:effective>
+    <cap:onset>2026-09-08T08:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260906122830.49555305</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/39742751-e806-4f46-b7fc-0fc4e0bf3c15"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T10:28:30Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/39742751-e806-4f46-b7fc-0fc4e0bf3c15?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Banja Luka</title>
+    <updated>2026-09-06T10:28:30Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA007</value>
+    </cap:geocode>
+    <link title="Visegrad" href="https://meteoalarm.org?geocode=EMMA_ID:BA007" hreflang="en"/>
+    <cap:areaDesc>Visegrad</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-06T10:28:30+00:00</cap:sent>
+    <cap:expires>2026-09-08T14:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-06T10:28:30+00:00</cap:effective>
+    <cap:onset>2026-09-08T09:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260906122830.43860436</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/f9a2aef8-aac9-456e-ace6-e27172cc1ae6"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T10:28:30Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/f9a2aef8-aac9-456e-ace6-e27172cc1ae6?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Visegrad</title>
+    <updated>2026-09-06T10:28:30Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA004</value>
+    </cap:geocode>
+    <link title="Tuzla" href="https://meteoalarm.org?geocode=EMMA_ID:BA004" hreflang="en"/>
+    <cap:areaDesc>Tuzla</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-06T06:13:20+00:00</cap:sent>
+    <cap:expires>2026-09-08T15:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-06T06:13:20+00:00</cap:effective>
+    <cap:onset>2026-09-08T09:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.0.BA.260906081320.87687029</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/0e71cc2b-cd9b-4019-81e9-3cf4291745b6"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T06:13:20Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/0e71cc2b-cd9b-4019-81e9-3cf4291745b6?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Tuzla</title>
+    <updated>2026-09-06T06:13:20Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA008</value>
+    </cap:geocode>
+    <link title="Mostar" href="https://meteoalarm.org?geocode=EMMA_ID:BA008" hreflang="en"/>
+    <cap:areaDesc>Mostar</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-06T06:13:20+00:00</cap:sent>
+    <cap:expires>2026-09-08T15:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-06T06:13:20+00:00</cap:effective>
+    <cap:onset>2026-09-08T08:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.0.BA.260906081320.53397464</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/7210860d-045c-4b0d-9708-d42a943f2bf4"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T06:13:20Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/7210860d-045c-4b0d-9708-d42a943f2bf4?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Mostar</title>
+    <updated>2026-09-06T06:13:20Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA006</value>
+    </cap:geocode>
+    <link title="Sarajevo" href="https://meteoalarm.org?geocode=EMMA_ID:BA006" hreflang="en"/>
+    <cap:areaDesc>Sarajevo</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-06T06:13:20+00:00</cap:sent>
+    <cap:expires>2026-09-08T15:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-06T06:13:20+00:00</cap:effective>
+    <cap:onset>2026-09-08T09:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.0.BA.260906081320.59231374</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/2bafd807-a4a6-479f-865e-4682e765733e"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T06:13:20Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/2bafd807-a4a6-479f-865e-4682e765733e?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Sarajevo</title>
+    <updated>2026-09-06T06:13:20Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA005</value>
+    </cap:geocode>
+    <link title="Livno" href="https://meteoalarm.org?geocode=EMMA_ID:BA005" hreflang="en"/>
+    <cap:areaDesc>Livno</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-06T06:13:20+00:00</cap:sent>
+    <cap:expires>2026-09-08T15:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-06T06:13:20+00:00</cap:effective>
+    <cap:onset>2026-09-08T09:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.0.BA.260906081320.61126449</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/80fba90c-20be-4f02-96a2-f65cbf134590"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T06:13:20Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/80fba90c-20be-4f02-96a2-f65cbf134590?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Livno</title>
+    <updated>2026-09-06T06:13:20Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA001</value>
+    </cap:geocode>
+    <link title="Bihac" href="https://meteoalarm.org?geocode=EMMA_ID:BA001" hreflang="en"/>
+    <cap:areaDesc>Bihac</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-06T06:13:20+00:00</cap:sent>
+    <cap:expires>2026-09-08T15:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-06T06:13:20+00:00</cap:effective>
+    <cap:onset>2026-09-08T09:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.0.BA.260906081320.19100737</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/c2345571-1171-4e47-94d0-287407a13895"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-06T06:13:20Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/c2345571-1171-4e47-94d0-287407a13895?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Bihac</title>
+    <updated>2026-09-06T06:13:20Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA002</value>
+    </cap:geocode>
+    <link title="Prijedor" href="https://meteoalarm.org?geocode=EMMA_ID:BA002" hreflang="en"/>
+    <cap:areaDesc>Prijedor</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-05T11:56:49+00:00</cap:sent>
+    <cap:expires>2026-09-07T15:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-05T11:56:49+00:00</cap:effective>
+    <cap:onset>2026-09-07T08:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260905135649.60532233</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/af18f385-4f81-4d2b-83cc-4566f04426e6"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T11:56:49Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/af18f385-4f81-4d2b-83cc-4566f04426e6?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Prijedor</title>
+    <updated>2026-09-05T11:56:49Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA010</value>
+    </cap:geocode>
+    <link title="Trebinje" href="https://meteoalarm.org?geocode=EMMA_ID:BA010" hreflang="en"/>
+    <cap:areaDesc>Trebinje</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-05T11:56:49+00:00</cap:sent>
+    <cap:expires>2026-09-07T16:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-05T11:56:49+00:00</cap:effective>
+    <cap:onset>2026-09-07T07:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260905135649.92893861</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/931495f3-93c8-4e14-8edc-6169fdbbc412"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T11:56:49Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/931495f3-93c8-4e14-8edc-6169fdbbc412?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Trebinje</title>
+    <updated>2026-09-05T11:56:49Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA007</value>
+    </cap:geocode>
+    <link title="Visegrad" href="https://meteoalarm.org?geocode=EMMA_ID:BA007" hreflang="en"/>
+    <cap:areaDesc>Visegrad</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-05T11:56:49+00:00</cap:sent>
+    <cap:expires>2026-09-07T14:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-05T11:56:49+00:00</cap:effective>
+    <cap:onset>2026-09-07T09:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260905135649.53968788</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/a4ea1d31-4f21-4fdc-9a82-3c45e62ef0bb"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T11:56:49Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/a4ea1d31-4f21-4fdc-9a82-3c45e62ef0bb?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Visegrad</title>
+    <updated>2026-09-05T11:56:49Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA003</value>
+    </cap:geocode>
+    <link title="Banja Luka" href="https://meteoalarm.org?geocode=EMMA_ID:BA003" hreflang="en"/>
+    <cap:areaDesc>Banja Luka</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-05T11:56:49+00:00</cap:sent>
+    <cap:expires>2026-09-07T15:59:59+00:00</cap:expires>
+    <cap:effective>2026-09-05T11:56:49+00:00</cap:effective>
+    <cap:onset>2026-09-07T08:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.1.BA.260905135649.15887012</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/4b7281de-b1e2-4b78-bf5a-7b9b209b47ac"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T11:56:49Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/4b7281de-b1e2-4b78-bf5a-7b9b209b47ac?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Banja Luka</title>
+    <updated>2026-09-05T11:56:49Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA004</value>
+    </cap:geocode>
+    <link title="Tuzla" href="https://meteoalarm.org?geocode=EMMA_ID:BA004" hreflang="en"/>
+    <cap:areaDesc>Tuzla</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-05T06:31:43+00:00</cap:sent>
+    <cap:expires>2026-09-07T14:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-05T06:31:43+00:00</cap:effective>
+    <cap:onset>2026-09-07T10:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.0.BA.260905083143.87663496</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/65dd3e7b-9d62-4439-ab62-97e171221106"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T06:31:43Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/65dd3e7b-9d62-4439-ab62-97e171221106?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Tuzla</title>
+    <updated>2026-09-05T06:31:43Z</updated>
+  </entry>
+  <entry>
+    <cap:geocode>
+      <valueName>EMMA_ID</valueName>
+      <value>BA008</value>
+    </cap:geocode>
+    <link title="Mostar" href="https://meteoalarm.org?geocode=EMMA_ID:BA008" hreflang="en"/>
+    <cap:areaDesc>Mostar</cap:areaDesc>
+    <cap:event>High-temperature Yellow Warning</cap:event>
+    <cap:sent>2026-09-05T06:31:43+00:00</cap:sent>
+    <cap:expires>2026-09-07T15:00:59+00:00</cap:expires>
+    <cap:effective>2026-09-05T06:31:43+00:00</cap:effective>
+    <cap:onset>2026-09-07T10:00:00+00:00</cap:onset>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:severity>Moderate</cap:severity>
+    <cap:urgency>Future</cap:urgency>
+    <cap:scope>Public</cap:scope>
+    <cap:message_type>Alert</cap:message_type>
+    <cap:status>Actual</cap:status>
+    <cap:identifier>2.49.0.0.70.0.BA.260905083143.31555106</cap:identifier>
+    <link type="application/cap+xml" href="https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/50b2f95f-c847-40e9-b94a-5c99831c42f9"/>
+    <link title="Bosnia-Herzegovina" rel="related" href="https://meteoalarm.org?region=BA" hreflang="en"/>
+    <author>
+      <name>meteoalarm.org</name>
+      <uri>https://meteoalarm.org</uri>
+    </author>
+    <published>2026-09-05T06:31:43Z</published>
+    <id>https://feeds.meteoalarm.org/api/v1/warnings/feeds-bosnia-herzegovina/50b2f95f-c847-40e9-b94a-5c99831c42f9?index_info=0&amp;index_area=0&amp;index_geocode=0</id>
+    <title>Yellow High-temperature Warning issued for Bosnia-Herzegovina - Mostar</title>
+    <updated>2026-09-05T06:31:43Z</updated>
+  </entry>
+</feed>

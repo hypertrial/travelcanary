@@ -1,0 +1,35 @@
+# Third-Party Data Notices
+
+- Location names and city coordinates are derived from [GeoNames](https://www.geonames.org/) under CC BY 4.0. Regional matching areas are Travel Canary approximations released as CC0 and are not legal boundaries.
+- MeteoAlarm warning data is provided by EUMETNET members under CC BY 4.0-equivalent terms. Follow provider attribution and redistribution requirements.
+- Eurostat GISCO NUTS 2024 level-2 geometry is used to verify MeteoAlarm regional catalog mappings under the European Commission reuse policy.
+- [Natural Earth 1:50m Admin-0 country polygons](https://www.naturalearthdata.com/downloads/50m-cultural-vectors/50m-admin-0-countries-2/) are simplified into the public coverage tint under the [Natural Earth public-domain terms](https://www.naturalearthdata.com/about/terms-of-use/). The overlay is cartographic only and is not a legal boundary.
+- European Environment Agency European AQI categories are sampled under the [EEA reuse policy](https://www.eea.europa.eu/en/legal-notice). Canary Islands categories come from the official IDECanarias air-quality WMS. Preserve attribution, source time, and the distinction between station and modelled estimates.
+- EFFIS and Copernicus EMS EU-owned content is generally reusable under CC BY 4.0 with attribution; individual products can contain third-party rights.
+- NASA FIRMS thermal-hotspot data is provided by NASA's Fire Information for Resource Management System. Preserve NASA/FIRMS acknowledgement, acquisition time, sensor, and the distinction between a satellite hotspot and a confirmed wildfire perimeter.
+- NASA EONET open-event metadata supplies recent wildfire and volcano context. Preserve NASA attribution and do not represent EONET as a local warning service.
+- Copernicus EDO CDI data supplies dekadal agricultural and ecosystem drought context. Preserve Copernicus attribution and do not represent it as an immediate emergency warning.
+- GOV.UK FCDO whole-country travel-advice status is contextual. Preserve the official page link and do not infer sub-country geometry from prose.
+- USGS earthquake data is used from its published application feeds and lifecycle policy.
+- EMSC earthquake fallback data is provided through the Seismic Portal FDSN service under CC BY 4.0. Preserve EMSC attribution and treat its unmatched reports as preliminary.
+- GDACS event metadata is used only to discover and route checks to independent approved sources. GDACS evidence is not published as a scored hazard and does not imply endorsement or verification.
+- Vigicrues warning data and the offline river-section mapping source are provided by the French government under Licence Ouverte / Open Licence 2.0. Runtime ingestion fetches only the bounded official RSS feed.
+- FOEN flood warning-map data is provided through the Swiss federal geoportal. Preserve FOEN attribution and the distinction between a warning-map pixel and a measured local flood.
+- eHYD / Hydrographie Österreich flood-warning stages are provided as Open Government Data Austria under CC BY 4.0. Preserve the attribution `Datenquelle: ehyd.gv.at` with a link to `https://ehyd.gv.at`. Score only official warning stages, never raw water-level measurements.
+- German LHP flood alerts are provided by the Länderübergreifendes Hochwasserportal under its public API terms and CC BY 4.0 attribution. Preserve authority, update time, and visible source link.
+- LVĢMC hydrological warnings and geographic joins come from the [official Latvian CKAN dataset](https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi), released as CC0. Retain LVĢMC attribution and distinguish processed warning text from measurements.
+- Direct AEMET Atom/CAP warnings are reused under [AEMET's legal notice](https://www.aemet.es/es/nota_legal). Retain AEMET attribution, original issue time, official link and identification of TravelCanary processing; do not imply endorsement.
+- DHMZ today/tomorrow CAP warnings and official land/sea warning geometry are reused under the [DHMZ XML service's attribution terms](https://www.meteo.hr/proizvodi.php?param=xml_korisnici&section=podaci). Retain DHMZ attribution, issue times and official links. The committed geographic mapping is derived from DHMZ shapefiles.
+- IPMA weather warnings, station observations, and regional seismic records are reused for noncommercial purposes under the [IPMA API conditions](https://api.ipma.pt/). Preserve source attribution, the linked official logo, timestamps, and the distinction between warnings and contextual measurements. The same-origin 160 px logo asset is a resized copy of IPMA's published `ipma.17-vertical-logo.png`, not a TravelCanary recreation.
+- Catalonia civil-protection plan status comes from the Generalitat de Catalunya open-data portal. It is context-only for the five reviewed Catalan destinations and does not establish civil-warning coverage.
+- SLF and Avalanche.report bulletins are used under CC BY 4.0. Avalanche.report destination mappings are generated from the official EAWS regions repository, whose geometry packages are CC0-1.0. Preserve source attribution and do not extend coverage without a real geometry intersection.
+- Copernicus GFM is optional satellite corroboration. It cannot satisfy official-warning coverage and must preserve Copernicus attribution.
+- Sweden's Krisinformation VMA feed is reused with authority attribution under its open-data terms. Test messages are rejected and editorial text is not used for severity inference.
+- AT-Alert public warnings are published by RTR under Austria's official-works / freie Werke treatment and RTR open-data terms. Test, exercise, and Amber messages are rejected. Other national warning-system authority names and homepages are catalogued only for coverage disclosure until their partitions pass every readiness gate.
+- The basemap uses [OpenFreeMap](https://openfreemap.org/) and OpenStreetMap data. Keep the attribution rendered by MapLibre.
+- The map renderer and generated same-origin worker assets use [MapLibre GL JS](https://maplibre.org/) under the BSD 3-Clause license; generated files retain their license header.
+- The Newsreader variable typeface is designed by Production Type and distributed under the [SIL Open Font License 1.1](https://github.com/productiontype/Newsreader/blob/master/OFL.txt). Next.js downloads and self-hosts the required subsets at build time; browsers do not contact Google Fonts.
+
+BBK MoWaS and EURDEP are not ingested. BBK's advertised RSS service remains gated pending an applicable reusable reader and issuer-content contract, district matching and lifecycle validation. Existing open sources provide hazard-specific evidence, but are not represented as equivalent national all-hazard or radiological-warning coverage. BE-Alert's noncommercial website reproduction permission is acknowledged; CAP gateway and issuer-content applicability remains unverified.
+
+New warning-source links and terms were reviewed on 2026-09-07; other notices retain their earlier review dates. Verify current terms before production launch.

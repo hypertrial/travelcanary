@@ -1,0 +1,9 @@
+{
+  "sourceDate": "2026-02-25",
+  "sourceUrlTemplate": "https://static.avalanche.report/eaws_bulletins/{date}/{date}-{feedCode}.json",
+  "ratedBulletinCounts": {
+    "AT-02": 5, "AT-03": 5, "AT-04": 2, "AT-05": 4, "AT-06": 3, "AT-07": 5, "AT-08": 2,
+    "CZ": 2, "DE-BY": 3, "FR": 36, "IT-32-BZ": 3, "IT-32-TN": 2, "PL-12": 1,
+    "RO": 6, "SE": 6, "SI": 3, "SK": 3
+  }
+}

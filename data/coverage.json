@@ -1,0 +1,5095 @@
+{
+  "schemaVersion": 2,
+  "countries": {
+    "AT": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "BE": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "BG": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "CH": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm",
+            "foen-flood"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "CY": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "CZ": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "DE": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm",
+            "national-civil-alerts"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "DK": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "EE": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "ES": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "FI": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "FR": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "partial",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "partial",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "GR": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "HR": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "HU": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "IE": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "IT": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "LT": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "LU": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "partial",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "partial",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "LV": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm",
+            "national-civil-alerts"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "MT": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "NL": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "PL": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "PT": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "RO": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "SE": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "SI": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    },
+    "SK": {
+      "hazards": {
+        "severe-weather": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "flood": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "gfm"
+          ]
+        },
+        "extreme-heat": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "extreme-cold": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "wildfire": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm",
+            "cems-rapid-mapping",
+            "effis-active-fire"
+          ]
+        },
+        "fire-danger": {
+          "status": "monitored",
+          "providerIds": [
+            "effis-fire-danger"
+          ]
+        },
+        "air-quality": {
+          "status": "monitored",
+          "providerIds": [
+            "eea-aqi"
+          ]
+        },
+        "earthquake": {
+          "status": "monitored",
+          "providerIds": [
+            "usgs",
+            "emsc"
+          ]
+        },
+        "volcano": {
+          "status": "not_monitored",
+          "providerIds": [
+            "eonet"
+          ]
+        },
+        "drought": {
+          "status": "not_monitored",
+          "providerIds": [
+            "edo-drought"
+          ]
+        },
+        "snow-ice": {
+          "status": "monitored",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "avalanche": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "coastal": {
+          "status": "partial",
+          "providerIds": [
+            "meteoalarm"
+          ]
+        },
+        "civil-unrest": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "security": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "terrorism": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "armed-conflict": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "industrial": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        },
+        "nuclear": {
+          "status": "not_monitored",
+          "providerIds": [
+            "national-civil-alerts"
+          ]
+        },
+        "civil-emergency": {
+          "status": "partial",
+          "providerIds": [
+            "cems-rapid-mapping",
+            "national-civil-alerts"
+          ]
+        }
+      }
+    }
+  },
+  "locationOverrides": {
+    "fr-angers": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-bordeaux": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-clermont-ferrand": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-dijon": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-french-alps": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      },
+      "avalanche": {
+        "status": "monitored",
+        "providerIds": [
+          "euregio-avalanche"
+        ]
+      }
+    },
+    "fr-french-riviera": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-grenoble": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-le-havre": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-lille": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-lyon": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-marne-la-vallee": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-marseille": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-montpellier": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-nantes": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-nice": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-nimes": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-paris": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-paris-13-gobelins": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-paris-15-vaugirard": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-paris-16-passy": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-paris-17-batignolles-monceau": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-paris-18-buttes-montmartre": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-paris-19-buttes-chaumont": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-paris-20-menilmontant": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-rennes": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-saint-etienne": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-strasbourg": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-toulon": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "fr-toulouse": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "vigicrues"
+        ]
+      }
+    },
+    "at-austrian-alps": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "ehyd-flood"
+        ]
+      },
+      "avalanche": {
+        "status": "monitored",
+        "providerIds": [
+          "euregio-avalanche"
+        ]
+      }
+    },
+    "at-graz": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "ehyd-flood"
+        ]
+      }
+    },
+    "at-innsbruck": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "ehyd-flood"
+        ]
+      }
+    },
+    "at-klagenfurt-am-woerthersee": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "ehyd-flood"
+        ]
+      }
+    },
+    "at-linz": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "ehyd-flood"
+        ]
+      }
+    },
+    "at-salzburg": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "ehyd-flood"
+        ]
+      }
+    },
+    "at-salzkammergut": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "ehyd-flood"
+        ]
+      },
+      "avalanche": {
+        "status": "monitored",
+        "providerIds": [
+          "euregio-avalanche"
+        ]
+      }
+    },
+    "at-vienna": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "ehyd-flood"
+        ]
+      }
+    },
+    "at-villach": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "ehyd-flood"
+        ]
+      }
+    },
+    "ch-bernese-oberland": {
+      "avalanche": {
+        "status": "monitored",
+        "providerIds": [
+          "slf-avalanche"
+        ]
+      }
+    },
+    "ch-swiss-alps": {
+      "avalanche": {
+        "status": "monitored",
+        "providerIds": [
+          "slf-avalanche"
+        ]
+      }
+    },
+    "cz-krkonose-mountains": {
+      "avalanche": {
+        "status": "monitored",
+        "providerIds": [
+          "euregio-avalanche"
+        ]
+      },
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "de-bavarian-alps": {
+      "avalanche": {
+        "status": "monitored",
+        "providerIds": [
+          "euregio-avalanche"
+        ]
+      }
+    },
+    "it-dolomites": {
+      "avalanche": {
+        "status": "monitored",
+        "providerIds": [
+          "euregio-avalanche"
+        ]
+      },
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-tatra-mountains": {
+      "avalanche": {
+        "status": "monitored",
+        "providerIds": [
+          "euregio-avalanche"
+        ]
+      },
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "ro-romanian-carpathians": {
+      "avalanche": {
+        "status": "monitored",
+        "providerIds": [
+          "euregio-avalanche"
+        ]
+      }
+    },
+    "se-swedish-lapland": {
+      "avalanche": {
+        "status": "monitored",
+        "providerIds": [
+          "euregio-avalanche"
+        ]
+      }
+    },
+    "si-julian-alps": {
+      "avalanche": {
+        "status": "monitored",
+        "providerIds": [
+          "euregio-avalanche"
+        ]
+      }
+    },
+    "si-lake-bled": {
+      "avalanche": {
+        "status": "monitored",
+        "providerIds": [
+          "euregio-avalanche"
+        ]
+      }
+    },
+    "sk-high-tatras": {
+      "avalanche": {
+        "status": "monitored",
+        "providerIds": [
+          "euregio-avalanche"
+        ]
+      }
+    },
+    "es-las-palmas-de-gran-canaria": {
+      "air-quality": {
+        "status": "not_monitored",
+        "providerIds": []
+      }
+    },
+    "es-santa-cruz-de-tenerife": {
+      "air-quality": {
+        "status": "not_monitored",
+        "providerIds": []
+      }
+    },
+    "pt-horta": {
+      "air-quality": {
+        "status": "not_monitored",
+        "providerIds": []
+      }
+    },
+    "pt-ponta-delgada": {
+      "air-quality": {
+        "status": "not_monitored",
+        "providerIds": []
+      }
+    },
+    "pt-santa-cruz-das-flores": {
+      "air-quality": {
+        "status": "not_monitored",
+        "providerIds": []
+      }
+    },
+    "cz-bohemian-switzerland": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-brno": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-brno-stred": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-ceske-budejovice": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-havirov": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-hradec-kralove": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-kladno": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-liberec": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-most": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-olomouc": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-opava": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-ostrava": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-pardubice": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-pilsen": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-prague": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-stodulky": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-usti-nad-labem": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "cz-zlin": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-acilia-castel-fusano-ostia-antica": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-amalfi-coast": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-bari": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-bologna": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-brescia": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-cagliari": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-catania": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-ferrara": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-florence": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-foggia": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-genoa": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-livorno": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-messina": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-mestre": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-milan": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-modena": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-naples": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-padua": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-palermo": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-parma": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-prato": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-reggio-calabria": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-reggio-nell-emilia": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-rimini": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-rome": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-taranto": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-trieste": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-turin": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "it-verona": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-bialystok": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-bielsko-biala": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-bydgoszcz": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-bytom": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-czestochowa": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-gdansk": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-gdynia": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-gliwice": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-katowice": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-kielce": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-krakow": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-lodz": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-lublin": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-masurian-lakes": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-mokotow": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-olsztyn": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-poznan": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-praga-poludnie": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-radom": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-ruda-slaska": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-rybnik": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-rzeszow": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-sosnowiec": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-szczecin": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-torun": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-ursynow": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-warsaw": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-wroclaw": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    },
+    "pl-zabrze": {
+      "flood": {
+        "status": "partial",
+        "providerIds": [
+          "meteoalarm",
+          "cems-rapid-mapping",
+          "gfm",
+          "national-civil-alerts"
+        ]
+      }
+    }
+  }
+}
