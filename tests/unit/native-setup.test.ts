@@ -20,7 +20,7 @@ describe("native self-host setup", () => {
 
   it("quotes paths and rejects newline injection", () => {
     expect(nativeUnitFiles({ repository: "/opt/Travel Canary", node: "/opt/node", dataDirectory: "/tmp/data", environmentFile: "/tmp/env", port: 3000 }).web)
-      .toContain('WorkingDirectory="/opt/Travel Canary"');
+      .toContain("WorkingDirectory=/opt/Travel\\x20Canary");
     expect(() => nativeUnitFiles({ repository: "/opt/bad\npath", node: "/opt/node", dataDirectory: "/tmp/data", environmentFile: "/tmp/env", port: 3000 })).toThrow(/newlines/);
   });
 

@@ -10,9 +10,20 @@ export type NativeInstallPaths = {
   collectorUnit: string;
 };
 
-function systemdQuote(value: string) {
+function systemdExecQuote(value: string) {
   if (/\r|\n/.test(value)) throw new Error("Systemd paths cannot contain newlines");
   return `"${value.replaceAll("\\", "\\\\").replaceAll("\"", "\\\"").replaceAll("%", "%%")}"`;
+}
+
+function systemdPath(value: string) {
+  if (/\r|\n/.test(value)) throw new Error("Systemd paths cannot contain newlines");
+  return value
+    .replaceAll("\\", "\\x5c")
+    .replaceAll(" ", "\\x20")
+    .replaceAll("\t", "\\x09")
+    .replaceAll("\"", "\\x22")
+    .replaceAll("'", "\\x27")
+    .replaceAll("%", "%%");
 }
 
 function environmentQuote(value: string) {
@@ -39,10 +50,10 @@ export function nativeUnitFiles(options: { repository: string; node: string; dat
   const repository = resolve(options.repository);
   const next = join(repository, "node_modules", "next", "dist", "bin", "next");
   const collector = join(repository, "scripts", "collector.ts");
-  const common = `WorkingDirectory=${systemdQuote(repository)}\nEnvironmentFile=${systemdQuote(options.environmentFile)}\nNoNewPrivileges=true\nPrivateTmp=true\nProtectSystem=strict\nReadWritePaths=${systemdQuote(options.dataDirectory)}`;
+  const common = `WorkingDirectory=${systemdPath(repository)}\nEnvironmentFile=${systemdPath(options.environmentFile)}\nNoNewPrivileges=true\nPrivateTmp=true\nProtectSystem=strict\nReadWritePaths=${systemdPath(options.dataDirectory)}`;
   return {
-    web: `[Unit]\nDescription=TravelCanary web\nAfter=network-online.target\nWants=network-online.target\n\n[Service]\nType=simple\n${common}\nExecStart=${systemdQuote(options.node)} ${systemdQuote(next)} start --hostname 127.0.0.1 --port ${options.port}\nRestart=on-failure\nRestartSec=5\n\n[Install]\nWantedBy=default.target\n`,
-    collector: `[Unit]\nDescription=TravelCanary collector\nAfter=network-online.target\nWants=network-online.target\n\n[Service]\nType=simple\n${common}\nExecStart=${systemdQuote(options.node)} --import tsx ${systemdQuote(collector)}\nRestart=on-failure\nRestartSec=10\nTimeoutStopSec=120\n\n[Install]\nWantedBy=default.target\n`,
+    web: `[Unit]\nDescription=TravelCanary web\nAfter=network-online.target\nWants=network-online.target\n\n[Service]\nType=simple\n${common}\nExecStart=${systemdExecQuote(options.node)} ${systemdExecQuote(next)} start --hostname 127.0.0.1 --port ${options.port}\nRestart=on-failure\nRestartSec=5\n\n[Install]\nWantedBy=default.target\n`,
+    collector: `[Unit]\nDescription=TravelCanary collector\nAfter=network-online.target\nWants=network-online.target\n\n[Service]\nType=simple\n${common}\nExecStart=${systemdExecQuote(options.node)} --import tsx ${systemdExecQuote(collector)}\nRestart=on-failure\nRestartSec=10\nTimeoutStopSec=120\n\n[Install]\nWantedBy=default.target\n`,
   };
 }
 
