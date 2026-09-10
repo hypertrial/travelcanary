@@ -1,7 +1,7 @@
 import { ConditionsV3Schema } from "./domain/catalog-public";
 import { useEffect, useState } from "react";
 import { CONDITIONS_COUNTRY_LIMIT, ConditionsSchema, type Conditions as ConditionsV2 } from "./domain/conditions";
-import { catalogV2Paths, catalogV2SnapshotUrl, catalogV3Paths, catalogV3SnapshotUrl } from "./catalog-paths";
+import { catalogV2Paths, catalogV2SnapshotUrl, catalogV3LocalSnapshotPath, catalogV3Paths, catalogV3SnapshotUrl } from "./catalog-paths";
 
 type Conditions = ConditionsV2 | import("zod").infer<typeof ConditionsV3Schema>;
 
@@ -11,6 +11,7 @@ export function conditionsUrl(snapshotUrl: string | null, country: string, catal
   catalogVersion ??= snapshotUrl === catalogV3Paths.demoSnapshot || catalogV3SnapshotUrl(snapshotUrl) ? 3 : 2;
   if (catalogVersion === 3) {
     if (snapshotUrl === catalogV3Paths.demoSnapshot || snapshotUrl === catalogV2Paths.demoSnapshot) return `/${catalogV3Paths.conditions}${country}.json`;
+    if (snapshotUrl === catalogV3LocalSnapshotPath) return `/live/${catalogV3Paths.conditions}${country}.json`;
     const source = catalogV3SnapshotUrl(snapshotUrl) || catalogV2SnapshotUrl(snapshotUrl);
     return source ? new URL(`/${catalogV3Paths.conditions}${country}.json`, source).href : null;
   }

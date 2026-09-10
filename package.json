@@ -3,16 +3,21 @@
   "version": "0.1.0",
   "type": "module",
   "engines": {
-    "node": "24.x",
+    "node": "24.19.x",
     "npm": "11.x"
   },
   "packageManager": "npm@11.6.2",
+  "bin": {
+    "travelcanary": "bin/travelcanary"
+  },
   "scripts": {
     "postinstall": "node scripts/copy-maplibre-worker.mjs",
     "prebuild": "node scripts/copy-maplibre-worker.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:selfhost": "next start --hostname 127.0.0.1",
+    "collector": "node --import tsx scripts/collector.ts",
     "lint": "eslint . --cache --cache-location .eslintcache",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",

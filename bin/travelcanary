@@ -1,0 +1,74 @@
+#!/usr/bin/env node
+import { spawnSync } from "node:child_process";
+import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const repository = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const controlDirectory = join(repository, ".travelcanary");
+const installFile = join(controlDirectory, "install.json");
+const [command, ...args] = process.argv.slice(2);
+
+function fail(message) { console.error(message); process.exit(1); }
+function run(program, programArgs, options = {}) {
+  const result = spawnSync(program, programArgs, { cwd: repository, env: options.env || process.env, input: options.input,
+    stdio: options.capture ? [options.input ? "pipe" : "ignore", "pipe", "inherit"] : "inherit", maxBuffer: 64 * 1024 * 1024 });
+  if (result.error || result.status !== 0) fail(result.error?.message || `${program} exited with status ${result.status}`);
+  return result.stdout;
+}
+function install() { try { return JSON.parse(readFileSync(installFile, "utf8")); } catch { return null; } }
+function writeInstall(value) {
+  mkdirSync(controlDirectory, { recursive: true, mode: 0o700 });
+  writeFileSync(installFile, `${JSON.stringify(value, null, 2)}\n`, { mode: 0o600 }); chmodSync(installFile, 0o600);
+}
+function portValue(value) {
+  const port = Number(value || 3000);
+  if (!Number.isInteger(port) || port < 1 || port > 65535) fail("Port must be an integer from 1 to 65535");
+  return port;
+}
+function composeArgs(current, rest) { return ["compose", "--env-file", current.environmentFile, ...rest]; }
+function inner(extraEnvironment = {}) {
+  if (!existsSync(join(repository, "node_modules", "tsx"))) fail("Application dependencies are missing; run npm ci or use Docker setup");
+  run(process.execPath, ["--import", "tsx", join(repository, "scripts", "travelcanary-cli.ts"), command, ...args], {
+    env: { ...process.env, ...extraEnvironment },
+  });
+}
+
+const runtimeIndex = args.indexOf("--runtime");
+if (command === "setup" && args[runtimeIndex + 1] === "docker") {
+  const portIndex = args.indexOf("--port"); const port = portValue(portIndex >= 0 ? args[portIndex + 1] : undefined);
+  const environmentFile = join(controlDirectory, "docker.env");
+  mkdirSync(controlDirectory, { recursive: true, mode: 0o700 });
+  writeFileSync(environmentFile, `TRAVELCANARY_PORT=${port}\n`, { mode: 0o600 }); chmodSync(environmentFile, 0o600);
+  run("docker", ["compose", "version"]);
+  run("docker", ["compose", "--env-file", environmentFile, "up", "--build", "-d"]);
+  writeInstall({ runtime: "docker", port, environmentFile });
+  console.log(`TravelCanary is starting at http://127.0.0.1:${port}`);
+} else {
+  const current = install();
+  const outsideDocker = current?.runtime === "docker" && process.env.TRAVELCANARY_DATA_DIR !== "/data";
+  if (outsideDocker && command === "status") {
+    try {
+      const response = await fetch(`http://127.0.0.1:${current.port}/api/v1/health`, { signal: AbortSignal.timeout(3000) });
+      console.log(JSON.stringify(await response.json(), null, 2)); if (!response.ok) process.exitCode = 1;
+    } catch { fail(`TravelCanary is unavailable at http://127.0.0.1:${current.port}`); }
+  } else if (outsideDocker && command === "policy") {
+    run("docker", composeArgs(current, ["exec", "-T", "collector", "bin/travelcanary", "policy", args[0]]));
+  } else if (outsideDocker && command === "backup") {
+    const destination = resolve(args[0] || `travelcanary-backup-${new Date().toISOString().replaceAll(":", "-")}.db`);
+    if (existsSync(destination)) fail(`Refusing to overwrite ${destination}`);
+    const bytes = run("docker", composeArgs(current, ["exec", "-T", "collector", "bin/travelcanary", "backup", "-"]), { capture: true });
+    writeFileSync(destination, bytes, { mode: 0o600 }); chmodSync(destination, 0o600); console.log(`Private backup created: ${destination}`);
+  } else if (outsideDocker && command === "restore") {
+    if (!args[0]) fail("Usage: travelcanary restore <backup>");
+    const bytes = readFileSync(resolve(args[0]));
+    run("docker", composeArgs(current, ["stop", "web", "collector"]));
+    try { run("docker", composeArgs(current, ["run", "--rm", "--no-deps", "-T", "collector", "bin/travelcanary", "restore", "-"]), { input: bytes }); }
+    finally { run("docker", composeArgs(current, ["up", "-d"])); }
+  } else if (command === "setup" && args[runtimeIndex + 1] === "native") {
+    if (process.versions.node !== "24.19.0") fail(`Node 24.19.0 is required; found ${process.version}`);
+    const npm = spawnSync("npm", ["--version"], { encoding: "utf8" });
+    if (npm.status !== 0 || npm.stdout.trim() !== "11.6.2") fail(`npm 11.6.2 is required; found ${npm.stdout?.trim() || "unavailable"}`);
+    run("npm", ["ci"]); inner({ TRAVELCANARY_DEPENDENCIES_READY: "true" });
+  } else inner();
+}

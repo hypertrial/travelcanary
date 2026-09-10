@@ -28,6 +28,8 @@ export const catalogV3Paths = {
   demoSnapshot: "/catalogs/3/demo-snapshot.json",
 } as const;
 
+export const catalogV3LocalSnapshotPath = `/live/${catalogV3Paths.snapshot}`;
+
 export function catalogV2SnapshotUrl(value: string | undefined | null): URL | null {
   const url = trustedSnapshotUrl(value);
   return url && url.pathname.endsWith(`/${catalogV2Paths.snapshot}`)

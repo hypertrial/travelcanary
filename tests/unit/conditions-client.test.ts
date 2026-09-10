@@ -9,6 +9,7 @@ describe("bounded country conditions client", () => {
   it("allows only same-store public files or the explicit demo", () => {
     expect(conditionsUrl("https://unit.public.blob.vercel-storage.com/latest.json", "PT")).toBe("https://unit.public.blob.vercel-storage.com/conditions/v2/PT.json");
     expect(conditionsUrl("/demo-snapshot.json", "PT")).toBe("/conditions/v2/PT.json");
+    expect(conditionsUrl("/live/catalogs/3/latest.json", "PT", 3)).toBe("/live/catalogs/3/conditions/v3/PT.json");
     for (const url of ["https://evil.test/latest.json", "https://unit.public.blob.vercel-storage.com/latest.json?secret=x", "http://unit.public.blob.vercel-storage.com/latest.json"]) expect(conditionsUrl(url, "PT")).toBeNull();
     expect(conditionsUrl("/demo-snapshot.json", "../IE")).toBeNull();
   });

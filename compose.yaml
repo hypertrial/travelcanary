@@ -1,0 +1,43 @@
+services:
+  web:
+    build: .
+    image: travelcanary:local
+    command: npm run start:selfhost
+    init: true
+    restart: unless-stopped
+    environment:
+      TRAVELCANARY_RUNTIME: local
+      TRAVELCANARY_DATA_DIR: /data
+      NEXT_PUBLIC_CATALOG_VERSION: "3"
+      NEXT_PUBLIC_DATA_MODE: live
+      LOCAL_CONDITIONS_ENABLED: "true"
+      PORT: "3000"
+    ports:
+      - "127.0.0.1:${TRAVELCANARY_PORT:-3000}:3000"
+    volumes:
+      - travelcanary-data:/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/v1/health').then(r=>{if(r.status>=500)process.exit(1)})"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+  collector:
+    image: travelcanary:local
+    command: npm run collector
+    init: true
+    restart: unless-stopped
+    environment:
+      TRAVELCANARY_RUNTIME: local
+      TRAVELCANARY_DATA_DIR: /data
+      NEXT_PUBLIC_CATALOG_VERSION: "3"
+      NEXT_PUBLIC_DATA_MODE: live
+      LOCAL_CONDITIONS_ENABLED: "true"
+    volumes:
+      - travelcanary-data:/data
+    depends_on:
+      web:
+        condition: service_started
+
+volumes:
+  travelcanary-data:

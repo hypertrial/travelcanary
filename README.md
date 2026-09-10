@@ -13,6 +13,8 @@ npm run dev
 
 The developer server uses clearly labeled deterministic demo data and requires no credentials. Open <http://localhost:3000>.
 
+For a durable live instance, use the guided Docker Compose or native Node 24/systemd setup in [Self-hosting](docs/SELF_HOSTING.md). Both bind to `127.0.0.1` by default and initialize directly on catalog 3 with every destination marked `UNKNOWN` while collection warms up.
+
 Destination-selected **Local conditions** are separate from alert risk and monitoring coverage. Forecasts, modeled air quality, airport/IPMA weather observations, IPMA earthquake context, Rijkswaterstaat, ARSO and Irish OPW water observations, and reviewed infrastructure context are precomputed into bounded country files; visitors never call their providers. Infrastructure includes Finnish Digitraffic, Swedish Krisinformation, Dutch NDW, German Autobahn, and national PSE electricity-use advisories. Cyprus EAC and Malta Enemalta parsers are implemented but runtime-gated after their official surfaces failed the deadline and response-size gates respectively. Weather and modeled AQ are eligible at all 503 destinations; 131 of 152 coastal destinations have reviewed offshore marine cells and the other 21 are permanent product exclusions. Infrastructure never changes alerts, map markers, or coverage.
 
 With the default catalog 2, the responsive browser opens desktop on the 496-destination core-Europe extent; **Show all 503 destinations** includes the seven Atlantic-island destinations. Mobile uses dedicated Map and Alerts views, full-screen destination search, and a two-height briefing sheet. Shareable state uses `destination`, `view`, and `filter` query parameters. The generated web manifest allows Add to Home Screen / standalone installation on iOS and Android. Installation does not add offline data: there is deliberately no service worker, background refresh, push permission, or cached cold launch.
@@ -28,7 +30,7 @@ scripts/verify-fast
 scripts/verify
 ```
 
-`check:deploy` is the Vercel compile gate: it runs `check:fast` before `next build` until a required GitHub `check:fast` check can be enforced. GitHub Actions automatically runs `npm run check:fast` on pull requests and `main`; it does not build catalogs or install browsers. Full verification is exact-SHA `scripts/verify` on the designated Apple Silicon Mac. Do not configure a self-hosted runner. See [operations](docs/OPERATIONS.md#7-verification-authority).
+`check:deploy` is the Vercel compile gate: it runs `check:fast` before `next build` until a required GitHub `check:fast` check can be enforced. GitHub Actions automatically runs `npm run check:fast` on pull requests and `main`; it does not build catalogs or install browsers. Full verification is exact-SHA `scripts/verify` on the designated Apple Silicon Mac. Do not configure a self-hosted runner. See [operations](docs/OPERATIONS.md#6-verification).
 
 `perf:assets` checks the production route and MapLibre worker against the 600 KB map-readiness budget, verifies monitoring-detail and local-conditions code and Newsreader stay deferred until selection, and enforces a 650 KB selected-experience budget. `perf:bench` verifies indexed risk matching against a naïve reference and prints comparative timings.
 
@@ -38,7 +40,7 @@ Playwright uses port 3000 by default and refuses to reuse an existing server. Se
 
 ## Production
 
-Production uses Vercel Cron Jobs and two Vercel Blob stores. Every source can run keylessly; an optional free NASA FIRMS map key supplements the keyless EFFIS active-fire transport. See [operations](docs/OPERATIONS.md) for provisioning, secrets, launch checks, and rollback.
+The hosted adapter uses Vercel Cron Jobs and two Vercel Blob stores. Every source can run keylessly; an optional free NASA FIRMS map key supplements the keyless EFFIS active-fire transport. Public operator guidance deliberately excludes the private hosted service's cutover, credentials, project settings, and incident runbooks.
 
 Enabled ingestion covers MeteoAlarm with failure-only FMI, Met Éireann, IPMA, AEMET, and DHMZ direct recovery followed by conditional IFRC recovery; EEA air quality at 498 reviewed destinations with five explicit island exclusions; USGS and EMSC; Copernicus sources; GDACS discovery; NASA EONET context; European flood and avalanche sources; and ten enabled national partitions, including exact-zone Italian flood bulletins. GDELT is implemented but remains disabled in Production pending live reliability checks and verified article publication timestamps; undated PointData HTML links are discarded. Every one of the 28 reviewed countries has explicit per-system gates in national manifest V3. `NATIONAL_ALERTS_DISABLED_COUNTRIES` provides per-country rollback. Context and fallback evidence never establish monitoring coverage.
 

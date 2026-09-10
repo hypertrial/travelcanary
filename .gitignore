@@ -10,6 +10,8 @@ playwright-report/
 test-results/
 coverage/
 .vercel/
+.travelcanary/
+travelcanary-backup-*.db
 .env*
 !.env.example
 *.tsbuildinfo

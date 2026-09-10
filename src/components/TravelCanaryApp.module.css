@@ -89,6 +89,22 @@
 .mobileEmptyNotice { display: none; }
 .mobileMapFallback { display: none; }
 
+.restrictedNotice {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  color: var(--brand-gold-ink);
+  background: var(--brand-soft);
+  border: 1px solid color-mix(in srgb, var(--brand-gold) 42%, var(--line));
+  border-radius: var(--control-radius);
+}
+.restrictedNotice svg { width: 17px; height: 17px; }
+.restrictedNotice strong, .restrictedNotice small { display: block; }
+.restrictedNotice strong { font-size: 10.5px; }
+.restrictedNotice small { margin-top: 2px; font-size: 9px; line-height: 1.3; }
+
 .installHint {
   position: fixed;
   z-index: 240;
@@ -230,6 +246,7 @@
   .dismissNotice { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; color: var(--muted); background: transparent; border: 0; }
   .dismissNotice svg { width: 16px; height: 16px; }
   .installHint { display: grid; }
+  .restrictedNotice { position: fixed; z-index: 185; right: 10px; bottom: calc(72px + env(safe-area-inset-bottom)); left: 10px; box-shadow: var(--shadow-sm); }
 }
 
 @media (max-height: 500px) and (pointer: coarse) {

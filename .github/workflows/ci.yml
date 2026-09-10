@@ -21,7 +21,39 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 24.19.0
           cache: npm
+      - run: npm install --global npm@11.6.2
       - run: npm ci --no-audit --no-fund
       - run: npm run check:fast
+
+  self-host:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.19.0
+          cache: npm
+      - run: npm install --global npm@11.6.2
+      - run: npm ci --no-audit --no-fund
+      - run: npx vitest run tests/unit/local-storage.test.ts tests/unit/local-api.test.ts tests/unit/native-setup.test.ts
+      - run: npm run build
+        env:
+          TRAVELCANARY_RUNTIME: local
+          NEXT_PUBLIC_CATALOG_VERSION: "3"
+          NEXT_PUBLIC_DATA_MODE: live
+          LOCAL_CONDITIONS_ENABLED: "true"
+      - run: docker compose config --quiet
+      - run: docker build --tag travelcanary:ci .
+      - name: Smoke test generated systemd services
+        run: |
+          node --import tsx scripts/render-systemd-smoke.ts
+          systemd-analyze verify /tmp/travelcanary-systemd-home/.config/systemd/user/travelcanary-web.service /tmp/travelcanary-systemd-home/.config/systemd/user/travelcanary-collector.service
+          sudo systemctl link /tmp/travelcanary-systemd-home/.config/systemd/user/travelcanary-web.service /tmp/travelcanary-systemd-home/.config/systemd/user/travelcanary-collector.service
+          sudo systemctl daemon-reload
+          sudo systemctl start travelcanary-web.service travelcanary-collector.service
+          curl --fail --retry 20 --retry-delay 1 --retry-all-errors http://127.0.0.1:3199/api/v1/health
+          sudo systemctl is-active travelcanary-web.service travelcanary-collector.service
+          sudo systemctl stop travelcanary-web.service travelcanary-collector.service

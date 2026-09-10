@@ -46,7 +46,7 @@ function useResponsiveLayout() {
   return layout;
 }
 
-export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 2, conditionsEnabled = mode === "demo" }: { mode: DataMode; snapshotUrl: string | null; catalogVersion?: 2 | 3; conditionsEnabled?: boolean }) {
+export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 2, conditionsEnabled = mode === "demo", selfHosted = false }: { mode: DataMode; snapshotUrl: string | null; catalogVersion?: 2 | 3; conditionsEnabled?: boolean; selfHosted?: boolean }) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchTriggerRef = useRef<HTMLButtonElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
@@ -66,6 +66,7 @@ export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 2, conditi
   const [installHintVisible, setInstallHintVisible] = useState(false);
   const [dismissedMapNotice, setDismissedMapNotice] = useState<string | null>(null);
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
+  const [instance, setInstance] = useState<{ health: string; restrictedSources: { active: boolean } } | null>(null);
   const { isCompact, isMobile, detailsOverlay } = useResponsiveLayout();
   const { locations, locationsLoaded, snapshot, catalogError, snapshotError, started, loadCatalog, loadSnapshot } = useSafetyData({ mode, snapshotUrl, catalogVersion });
 
@@ -75,6 +76,20 @@ export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 2, conditi
     const timer = window.setInterval(() => setClock(Date.now()), 60_000);
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (!selfHosted) return;
+    let active = true;
+    const load = () => void fetch("/api/v1/plugin/summary", { cache: "no-store" }).then(async (response) => {
+      if (!response.ok) throw new Error();
+      const value = await response.json() as { health?: unknown; restrictedSources?: { active?: unknown } };
+      if (active && typeof value.health === "string" && typeof value.restrictedSources?.active === "boolean") {
+        setInstance({ health: value.health, restrictedSources: { active: value.restrictedSources.active } });
+      }
+    }).catch(() => { if (active) setInstance({ health: "unavailable", restrictedSources: { active: false } }); });
+    load(); const timer = window.setInterval(load, 5 * 60_000);
+    return () => { active = false; window.clearInterval(timer); };
+  }, [selfHosted]);
 
   useEffect(() => {
     const updateOnline = () => setOnline(navigator.onLine);
@@ -219,7 +234,9 @@ export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 2, conditi
 
   return <main ref={setPortalContainer} className={styles.appShell} data-health-banner={healthBannerVisible || undefined} data-details-open={Boolean(selected && !isCompact) || undefined} data-selected-id={selectedId || undefined} data-mobile-view={appView}>
     <div className={styles.controlRail} aria-label="TravelCanary controls">
-      <AppHeader status={liveStatus} compact={isMobile} installPlatform={platform} installed={installed} />
+      <AppHeader status={liveStatus} compact={isMobile} installPlatform={platform} installed={installed}
+        selfHosted={selfHosted} instanceHealth={instance?.health || null} restrictedSourcesActive={instance?.restrictedSources.active || false} />
+      {instance?.restrictedSources.active && <aside className={styles.restrictedNotice} role="status"><UiIcon name="attention" /><span><strong>Restricted data active</strong><small>This operator accepted noncommercial source terms.</small></span></aside>}
       <ConnectivityBanner online={online} />
       <DataHealthBanner state={uiState} message={healthMessage} onRetry={retry} />
       <DestinationSearch query={query} selectedId={selectedId} results={searchResults} isDisabled={!locationsLoaded || closingDetails} isMobile={isMobile} inputRef={searchInputRef} searchTriggerRef={searchTriggerRef} portalContainer={portalContainer}

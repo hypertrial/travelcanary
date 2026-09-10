@@ -5,7 +5,10 @@ import { AppMenu } from "./AppMenu";
 import type { InstallPlatform } from "@/lib/install-presentation";
 import styles from "./AppChrome.module.css";
 
-export function AppHeader({ status, compact, installPlatform, installed }: { status: LiveStatusPresentation; compact: boolean; installPlatform: InstallPlatform; installed: boolean }) {
+export function AppHeader({ status, compact, installPlatform, installed, selfHosted = false, instanceHealth = null, restrictedSourcesActive = false }: {
+  status: LiveStatusPresentation; compact: boolean; installPlatform: InstallPlatform; installed: boolean;
+  selfHosted?: boolean; instanceHealth?: string | null; restrictedSourcesActive?: boolean;
+}) {
   return <header className={styles.topbar}>
     <h1 className="sr-only">TravelCanary — current Europe location risk</h1>
     {/* A document link avoids loading the client router solely for the static brand home link. */}
@@ -28,7 +31,8 @@ export function AppHeader({ status, compact, installPlatform, installed }: { sta
           {status.detail && <span className={styles.liveDetail}>{status.detail}</span>}
         </span>
       </div>
-      <AppMenu compact={compact} platform={installPlatform} installed={installed} />
+      <AppMenu compact={compact} platform={installPlatform} installed={installed} selfHosted={selfHosted}
+        instanceHealth={instanceHealth} restrictedSourcesActive={restrictedSourcesActive} />
     </div>
   </header>;
 }

@@ -14,6 +14,13 @@ describe("public data configuration", () => {
     expect(getPublicDataConfig({ VERCEL_ENV: "production", NEXT_PUBLIC_DATA_MODE: "live", NEXT_PUBLIC_SNAPSHOT_URL: "https://store.public.blob.vercel-storage.com/latest.json" }).mode).toBe("live");
   });
 
+  it("uses the exact local catalog 3 route for self-hosted instances", () => {
+    expect(getPublicDataConfig({ TRAVELCANARY_RUNTIME: "local" })).toEqual({
+      mode: "live", snapshotUrl: "/live/catalogs/3/latest.json", catalogVersion: 3,
+    });
+    expect(getPublicDataConfig({ TRAVELCANARY_RUNTIME: "local", NEXT_PUBLIC_CATALOG_VERSION: "2" }).mode).toBe("unavailable");
+  });
+
   it("rejects a live URL outside the public Blob origin", () => {
     expect(getPublicDataConfig({ VERCEL_ENV: "production", NEXT_PUBLIC_DATA_MODE: "live", NEXT_PUBLIC_SNAPSHOT_URL: "https://example.com/latest.json" })).toEqual({ mode: "unavailable", snapshotUrl: null, catalogVersion: 2 });
   });
