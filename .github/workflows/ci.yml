@@ -39,6 +39,7 @@ jobs:
       - run: npm install --global npm@11.6.2
       - run: npm ci --no-audit --no-fund
       - run: npx vitest run tests/unit/local-storage.test.ts tests/unit/local-api.test.ts tests/unit/native-setup.test.ts
+      - run: npm run omarchy:check
       - run: npm run build
         env:
           TRAVELCANARY_RUNTIME: local

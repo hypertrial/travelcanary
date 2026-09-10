@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "hypertrial.travelcanary",
+  "name": "TravelCanary",
+  "version": "0.1.0",
+  "author": "Hypertrial",
+  "license": "MIT",
+  "description": "Local travel-risk status and urgent destinations in the Omarchy bar.",
+  "repository": "https://github.com/hypertrial/travelcanary",
+  "kinds": [
+    "service",
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "service": "omarchy/Service.qml",
+    "barWidget": "omarchy/BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "TravelCanary",
+    "description": "Show local TravelCanary health, risk counts, and urgent destinations.",
+    "category": "Info",
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": {
+      "serviceUrl": "http://127.0.0.1:3000",
+      "refreshIntervalSec": 300
+    },
+    "schema": [
+      {
+        "key": "serviceUrl",
+        "type": "string",
+        "label": "TravelCanary service URL",
+        "defaultValue": "http://127.0.0.1:3000",
+        "description": "Loopback HTTP origin only, for example http://127.0.0.1:3000."
+      },
+      {
+        "key": "refreshIntervalSec",
+        "type": "integer",
+        "label": "Refresh interval (seconds)",
+        "min": 60,
+        "max": 3600,
+        "step": 60,
+        "defaultValue": 300
+      }
+    ]
+  }
+}
