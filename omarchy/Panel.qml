@@ -200,7 +200,9 @@ Panel {
               anchors.margins: Style.space(10)
               textFormat: Text.PlainText
               wrapMode: Text.WordWrap
-              text: "Restricted data active — this operator accepted noncommercial source terms."
+              text: root.summary && root.summary.restrictedSources.disclosure
+                ? root.summary.restrictedSources.disclosure
+                : "Restricted data is present or collection is enabled under noncommercial source terms."
               color: root.foreground
               font.family: root.fontFamily
               font.pixelSize: Style.font.bodySmall

@@ -35,8 +35,9 @@ describe("Omarchy TravelCanary model", () => {
   });
 
   it("validates bounded summaries and derives the strongest state", () => {
-    const parsed = model.parseSummary(JSON.stringify(validSummary)) as { destinations: unknown[] };
+    const parsed = model.parseSummary(JSON.stringify(validSummary)) as { destinations: unknown[]; restrictedSources: { disclosure: string } };
     expect(parsed.destinations).toHaveLength(1);
+    expect(parsed.restrictedSources.disclosure).toBe(validSummary.restrictedSources.disclosure);
     expect(model.strongestState(parsed)).toBe("SEVERE");
     expect(model.attentionCount(parsed)).toBe(9);
     expect(model.parseSummary("not-json")).toBeNull();
