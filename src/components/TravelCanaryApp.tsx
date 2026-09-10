@@ -236,7 +236,7 @@ export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 2, conditi
     <div className={styles.controlRail} aria-label="TravelCanary controls">
       <AppHeader status={liveStatus} compact={isMobile} installPlatform={platform} installed={installed}
         selfHosted={selfHosted} instanceHealth={instance?.health || null} restrictedSourcesActive={instance?.restrictedSources.active || false} />
-      {instance?.restrictedSources.active && <aside className={styles.restrictedNotice} role="status"><UiIcon name="attention" /><span><strong>Restricted data active</strong><small>This operator accepted noncommercial source terms.</small></span></aside>}
+      {instance?.restrictedSources.active && <aside className={styles.restrictedNotice} role="status"><UiIcon name="attention" /><span><strong>Restricted data active</strong><small>Noncommercial source terms apply to this instance.</small></span></aside>}
       <ConnectivityBanner online={online} />
       <DataHealthBanner state={uiState} message={healthMessage} onRetry={retry} />
       <DestinationSearch query={query} selectedId={selectedId} results={searchResults} isDisabled={!locationsLoaded || closingDetails} isMobile={isMobile} inputRef={searchInputRef} searchTriggerRef={searchTriggerRef} portalContainer={portalContainer}

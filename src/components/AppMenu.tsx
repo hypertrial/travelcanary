@@ -33,7 +33,7 @@ function MenuBody({ platform, installed, selfHosted, instanceHealth, restrictedS
     <Heading slot="title">Self-hosted instance</Heading>
     <p>Service status: <strong>{instanceHealth || "checking"}</strong>. Data stays in the operator&apos;s local SQLite database unless they explicitly expose this site.</p>
     <p className={styles.note}>{restrictedSourcesActive
-      ? "Restricted sources are active. The operator accepted the current noncommercial source manifest; original terms still apply."
+      ? "Restricted data is present or collection is enabled under noncommercial source terms; original terms still apply."
       : "Restricted sources are disabled. Open reviewed sources can collect without that opt-in."}</p>
   </div>;
   return <div className={styles.menuBody}>

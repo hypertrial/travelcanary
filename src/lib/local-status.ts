@@ -1,11 +1,12 @@
 import { z } from "zod";
 import catalog from "../../public/catalogs/3/locations.json";
 import packageJson from "../../package.json";
-import { SnapshotV11Schema } from "./domain/catalog-public";
+import { ConditionsV3Schema, SnapshotV11Schema } from "./domain/catalog-public";
 import { catalogV3Paths } from "./catalog-paths";
 import { COLLECTOR_STATUS_KEY, LocalDatabase } from "./local-storage";
 import { readLocalPolicy } from "./local-storage";
-import { restrictedSourceCount, restrictedSourcesActive } from "./local-policy";
+import { restrictedConditionSourceIds, restrictedSourceCount, restrictedSourcesActive } from "./local-policy";
+import { catalogV3CountryCodes } from "./domain/contract-identities";
 
 export const CollectorStatusSchema = z.object({
   schemaVersion: z.literal(1),
@@ -33,6 +34,16 @@ export function readCollectorStatus(database: LocalDatabase) {
 
 const levelRank = { SEVERE: 5, HIGH: 4, ELEVATED: 3, UNKNOWN: 2, NORMAL: 1 } as const;
 const names = new Map(catalog.map((location) => [location.id, location]));
+
+function publishedRestrictedSources(database: LocalDatabase) {
+  for (const countryCode of catalogV3CountryCodes) {
+    const row = database.readPublic(`${catalogV3Paths.conditions}${countryCode}.json`);
+    if (!row) continue;
+    const conditions = ConditionsV3Schema.parse(JSON.parse(row.value));
+    if (Object.keys(conditions.sources).some((id) => restrictedConditionSourceIds.has(id))) return true;
+  }
+  return false;
+}
 
 export function localHealth(database: LocalDatabase, now = new Date()) {
   const collector = readCollectorStatus(database);
@@ -62,7 +73,9 @@ export function localPluginSummary(database: LocalDatabase, now = new Date()) {
   if (!row) throw new Error("Public snapshot is unavailable");
   const snapshot = SnapshotV11Schema.parse(JSON.parse(row.value));
   const policy = readLocalPolicy(database).policy;
-  const restrictedActive = restrictedSourcesActive(policy);
+  const restrictedAccepted = restrictedSourcesActive(policy);
+  const restrictedPublished = publishedRestrictedSources(database);
+  const restrictedActive = restrictedAccepted || restrictedPublished;
   const counts = { NORMAL: 0, ELEVATED: 0, HIGH: 0, SEVERE: 0, UNKNOWN: 0 };
   for (const value of Object.values(snapshot.locations)) counts[value.level] += 1;
   const destinations = Object.entries(snapshot.locations).map(([id, state]) => ({
@@ -87,7 +100,11 @@ export function localPluginSummary(database: LocalDatabase, now = new Date()) {
     restrictedSources: {
       active: restrictedActive,
       count: restrictedSourceCount,
-      disclosure: restrictedActive ? "This instance uses operator-accepted restricted, noncommercial data sources." : null,
+      disclosure: restrictedAccepted
+        ? "This instance uses operator-accepted restricted, noncommercial data sources."
+        : restrictedPublished
+          ? "Published data still includes restricted, noncommercial sources while collection is disabled."
+          : null,
     },
     counts: { ...counts, attention: counts.ELEVATED + counts.HIGH + counts.SEVERE + counts.UNKNOWN },
     destinations,
