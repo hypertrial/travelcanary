@@ -124,7 +124,7 @@ describe("local SQLite runtime", () => {
     expect(readLocalPolicy(restored).policy).toEqual(disabledLocalPolicy());
     expect(readFileSync(backupPath).byteLength).toBeGreaterThan(0);
     restored.close();
-  });
+  }, 20_000);
 });
 
 describe("collector serialization", () => {

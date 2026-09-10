@@ -4,6 +4,7 @@ RUN npm install --global npm@11.6.2
 FROM base AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
+COPY scripts/copy-maplibre-worker.mjs ./scripts/copy-maplibre-worker.mjs
 RUN npm ci
 COPY . .
 ENV TRAVELCANARY_RUNTIME=local NEXT_PUBLIC_CATALOG_VERSION=3 NEXT_PUBLIC_DATA_MODE=live LOCAL_CONDITIONS_ENABLED=true
