@@ -1,9 +1,10 @@
 import { appendFileSync, chmodSync } from "node:fs";
+import { join } from "node:path";
 import { conditionSourceIds } from "../src/lib/domain/conditions";
 import { sourceIds } from "../src/lib/domain/schemas";
 import { writeNativeFiles } from "../src/lib/native-setup";
 
-const home = "/tmp/travelcanary-systemd-home";
+const home = join(process.env.RUNNER_TEMP || "/tmp", "travelcanary-systemd-home");
 const paths = writeNativeFiles({ home, repository: process.cwd(), node: process.execPath, port: 3199, environment: {} });
 appendFileSync(paths.environmentFile, [
   `INGESTION_DISABLED_SOURCES=${sourceIds.join(",")}`,

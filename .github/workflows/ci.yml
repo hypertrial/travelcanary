@@ -49,11 +49,17 @@ jobs:
       - run: docker build --tag travelcanary:ci .
       - name: Smoke test generated systemd services
         run: |
+          set -euo pipefail
           node --import tsx scripts/render-systemd-smoke.ts
-          systemd-analyze verify /tmp/travelcanary-systemd-home/.config/systemd/user/travelcanary-web.service /tmp/travelcanary-systemd-home/.config/systemd/user/travelcanary-collector.service
-          sudo systemctl link /tmp/travelcanary-systemd-home/.config/systemd/user/travelcanary-web.service /tmp/travelcanary-systemd-home/.config/systemd/user/travelcanary-collector.service
+          unit_dir="$RUNNER_TEMP/travelcanary-systemd-home/.config/systemd/user"
+          systemd-analyze verify "$unit_dir/travelcanary-web.service" "$unit_dir/travelcanary-collector.service"
+          sudo systemctl link "$unit_dir/travelcanary-web.service" "$unit_dir/travelcanary-collector.service"
           sudo systemctl daemon-reload
+          trap 'sudo systemctl stop travelcanary-web.service travelcanary-collector.service || true' EXIT
           sudo systemctl start travelcanary-web.service travelcanary-collector.service
-          curl --fail --retry 20 --retry-delay 1 --retry-all-errors http://127.0.0.1:3199/api/v1/health
+          if ! curl --fail --retry 20 --retry-delay 1 --retry-all-errors http://127.0.0.1:3199/api/v1/health; then
+            sudo systemctl status travelcanary-web.service travelcanary-collector.service --no-pager || true
+            sudo journalctl -u travelcanary-web.service -u travelcanary-collector.service --no-pager -n 100 || true
+            exit 1
+          fi
           sudo systemctl is-active travelcanary-web.service travelcanary-collector.service
-          sudo systemctl stop travelcanary-web.service travelcanary-collector.service
