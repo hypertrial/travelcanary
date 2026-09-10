@@ -11,7 +11,7 @@ bin/travelcanary setup --runtime docker --port 3000
 bin/travelcanary status
 ```
 
-The setup builds one image, starts separate web and collector services, shares a named data volume, and publishes only `127.0.0.1:3000`. The initial catalog contains all 679 destinations as `UNKNOWN`; live states replace them as reviewed sources complete.
+The setup builds one image, starts separate web and collector services, shares a named data volume, and publishes only `127.0.0.1:3000`. The web process listens on the container network so Docker port forwarding works; the host still exposes only the loopback port. The initial catalog contains all 679 destinations as `UNKNOWN`; live states replace them as reviewed sources complete.
 
 ## Native Node and systemd
 
@@ -23,6 +23,8 @@ bin/travelcanary status
 ```
 
 Setup runs `npm ci`, builds the app, initializes the database under `${XDG_DATA_HOME:-$HOME/.local/share}/travelcanary`, and writes user services under `${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user`. Both services bind or connect locally; inspect them with `systemctl --user status travelcanary-web travelcanary-collector`.
+
+The collector stores the successful completion time for each cadence. On restart it runs only missing or due work immediately, waits out the remaining interval for recently completed work, and keeps all jobs serialized.
 
 ## Restricted data
 

@@ -5,7 +5,7 @@ import { resolve } from "node:path";
 import { SerialCollector, type CollectorOperation } from "../src/lib/collector";
 import { collectorEnvironment } from "../src/lib/local-policy";
 import { initializeLocalRuntime, localStores, LocalDatabase, readLocalPolicy } from "../src/lib/local-storage";
-import { writeCollectorStatus, type CollectorStatus } from "../src/lib/local-status";
+import { readCollectorStatus, writeCollectorStatus, type CollectorStatus } from "../src/lib/local-status";
 
 export async function runLocalCollector() {
   if (process.env.TRAVELCANARY_RUNTIME !== "local") throw new Error("Collector requires TRAVELCANARY_RUNTIME=local");
@@ -25,11 +25,13 @@ export async function runLocalCollector() {
   const stores = localStores(database);
   const owner = `${hostname()}:${process.pid}:${randomUUID()}`;
   database.acquireCollector(owner);
-  let lastSuccess: string | null = null;
-  let lastOperation: CollectorOperation | null = null;
+  const previousStatus = readCollectorStatus(database);
+  let lastSuccess = previousStatus?.lastSuccess ?? null;
+  let lastOperation: CollectorOperation | null = previousStatus?.lastOperation ?? null;
+  const completedAt = { ...previousStatus?.completedAt };
   let collectorState: CollectorStatus["state"] = "starting";
   const status = (state: CollectorStatus["state"], error: string | null = null) => writeCollectorStatus(database, {
-    schemaVersion: 1, state: collectorState = state, lastHeartbeat: new Date().toISOString(), lastSuccess, lastOperation, lastError: error?.slice(0, 300) || null,
+    schemaVersion: 1, state: collectorState = state, lastHeartbeat: new Date().toISOString(), lastSuccess, lastOperation, lastError: error?.slice(0, 300) || null, completedAt,
   });
   status("starting");
   const heartbeat = setInterval(() => { database.acquireCollector(owner); status(collectorState); }, 30_000);
@@ -43,7 +45,7 @@ export async function runLocalCollector() {
         : operation === "maintenance"
           ? await runMaintenance(stores)
           : await runIngestion({ cadence: operation, adapters: sourceAdapters, ...stores });
-      lastSuccess = new Date().toISOString(); status("idle");
+      lastSuccess = new Date().toISOString(); completedAt[operation] = lastSuccess; status("idle");
       console.info(JSON.stringify({ event: "collector_complete", operation, result }));
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -51,7 +53,7 @@ export async function runLocalCollector() {
       console.error(JSON.stringify({ event: "collector_failed", operation, message }));
     }
   });
-  void scheduler.start();
+  void scheduler.start(completedAt);
   let stopping = false;
   const stop = async () => {
     if (stopping) return;

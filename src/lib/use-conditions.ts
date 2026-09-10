@@ -22,8 +22,9 @@ export function conditionsUrl(snapshotUrl: string | null, country: string, catal
 
 export async function loadConditions(url: string, country: string, ids: string[], fetchImpl = fetch, expectedCatalogVersion?: 2 | 3): Promise<Conditions> {
   const path = new URL(url, "https://local.invalid").pathname;
-  const catalogVersion = path.startsWith("/catalogs/") ? 3 : 2;
-  if ((catalogVersion === 3 && path !== `/${catalogV3Paths.conditions}${country}.json`)
+  const publicPath = path.startsWith("/live/") ? path.slice("/live".length) : path;
+  const catalogVersion = publicPath.startsWith("/catalogs/") ? 3 : 2;
+  if ((catalogVersion === 3 && publicPath !== `/${catalogV3Paths.conditions}${country}.json`)
     || (expectedCatalogVersion && expectedCatalogVersion !== catalogVersion)) throw new Error("Conditions catalog namespace mismatch");
   const key = `${catalogVersion}:${url}:${ids.join(",")}`;
   const existing = cache.get(key);

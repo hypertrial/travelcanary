@@ -100,7 +100,7 @@ export async function fetchWithRetry(
           ...init,
           redirect: init.redirect ?? "follow",
           signal: init.signal ? AbortSignal.any([init.signal, controller.signal]) : controller.signal,
-          headers: { "User-Agent": "TravelCanary/0.1 (+https://github.com/hypertrial/travelcanary-risk)", ...init.headers },
+          headers: { "User-Agent": "TravelCanary/0.1 (+https://github.com/hypertrial/travelcanary)", ...init.headers },
         }),
         timedOut,
       ]);

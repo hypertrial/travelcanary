@@ -1,5 +1,6 @@
 export const collectorOperations = ["fast", "slow", "conditions", "satellite", "daily", "maintenance"] as const;
 export type CollectorOperation = typeof collectorOperations[number];
+export type CollectorCompletedAt = Partial<Record<CollectorOperation, string>>;
 
 export const collectorCadenceMs: Record<CollectorOperation, number> = {
   fast: 10 * 60_000,
@@ -23,9 +24,24 @@ export class SerialCollector {
     return this.queue;
   }
 
-  start() {
-    for (const operation of collectorOperations) void this.enqueue(operation);
-    this.timers = collectorOperations.map((operation) => setInterval(() => void this.enqueue(operation), collectorCadenceMs[operation]));
+  start(completedAt: CollectorCompletedAt = {}, now = Date.now()) {
+    for (const operation of collectorOperations) {
+      const completed = Date.parse(completedAt[operation] || "");
+      const delay = Number.isFinite(completed) ? Math.min(collectorCadenceMs[operation], Math.max(0, completed + collectorCadenceMs[operation] - now)) : 0;
+      const repeat = () => {
+        if (this.stopped) return;
+        void this.enqueue(operation);
+      };
+      if (delay === 0) {
+        repeat();
+        this.timers.push(setInterval(repeat, collectorCadenceMs[operation]));
+      } else {
+        this.timers.push(setTimeout(() => {
+          repeat();
+          if (!this.stopped) this.timers.push(setInterval(repeat, collectorCadenceMs[operation]));
+        }, delay));
+      }
+    }
     return this.queue;
   }
 

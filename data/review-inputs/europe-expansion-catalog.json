@@ -5,7 +5,7 @@
   "baseline": {
     "catalogVersion": 2,
     "locationCount": 503,
-    "sha256": "9197d7fc245c7110f785665c98f9b8c18f0c292b9006e703010645a918680a4b"
+    "sha256": "d256be911bea1afe05cf5eb1a47bee7190953160d6903bf6a721b533bade866b"
   },
   "source": {
     "url": "https://download.geonames.org/export/dump/",

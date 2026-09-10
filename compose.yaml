@@ -2,7 +2,7 @@ services:
   web:
     build: .
     image: travelcanary:local
-    command: npm run start:selfhost
+    command: npm run start:container
     init: true
     restart: unless-stopped
     environment:

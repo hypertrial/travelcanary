@@ -5,6 +5,16 @@ import { createSourceDiagnostics } from "@/lib/ingestion/types";
 describe("ingestion fetch", () => {
   afterEach(() => vi.useRealTimers());
 
+  it("identifies the canonical public repository to upstream sources", async () => {
+    let requestHeaders = new Headers();
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      requestHeaders = new Headers(init?.headers);
+      return new Response("ok");
+    });
+    await fetchWithRetry(fetchMock as typeof fetch, "https://example.test/feed", {}, 1);
+    expect(requestHeaders.get("User-Agent")).toBe("TravelCanary/0.1 (+https://github.com/hypertrial/travelcanary)");
+  });
+
   it("times out while a response body is still pending", async () => {
     vi.useFakeTimers();
     const request = fetchWithRetry(

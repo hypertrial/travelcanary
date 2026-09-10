@@ -34,4 +34,12 @@ describe("public release boundary", () => {
     expect(inventory.nationalWarningPartitions.flatMap((country: { systems: { policy: string }[] }) => country.systems)
       .every((source: { policy: string }) => policies.has(source.policy))).toBe(true);
   });
+
+  it("uses the public repository for generated catalog provenance", async () => {
+    const locations = JSON.parse(await readFile("data/locations.json", "utf8"));
+    const repositoryProvenance = locations.map((location: { provenance?: { name?: string } }) => location.provenance?.name)
+      .filter((name: unknown) => typeof name === "string" && name.includes("github.com/hypertrial/"));
+    expect(repositoryProvenance).toHaveLength(56);
+    expect(new Set(repositoryProvenance)).toEqual(new Set(["https://github.com/hypertrial/travelcanary/blob/main/data/locations.json"]));
+  });
 });

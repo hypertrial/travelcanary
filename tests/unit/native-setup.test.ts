@@ -26,10 +26,15 @@ describe("native self-host setup", () => {
 
   it("keeps Docker on loopback with one image and one shared named volume", async () => {
     const compose = await import("node:fs/promises").then(({ readFile }) => readFile("compose.yaml", "utf8"));
+    const dockerfile = await import("node:fs/promises").then(({ readFile }) => readFile("Dockerfile", "utf8"));
+    const packageJson = JSON.parse(await import("node:fs/promises").then(({ readFile }) => readFile("package.json", "utf8")));
     expect(compose).toContain('"127.0.0.1:${TRAVELCANARY_PORT:-3000}:3000"');
+    expect(compose).toContain("command: npm run start:container");
     expect(compose.match(/image: travelcanary:local/g)).toHaveLength(2);
     expect(compose.match(/travelcanary-data:\/data/g)).toHaveLength(2);
     expect(compose).not.toMatch(/network_mode:\s*host|privileged:\s*true/);
-    expect(await import("node:fs/promises").then(({ readFile }) => readFile("Dockerfile", "utf8"))).toContain("node:24.19.0-bookworm-slim");
+    expect(packageJson.scripts["start:container"]).toBe("next start --hostname 0.0.0.0");
+    expect(dockerfile).toContain("node:24.19.0-bookworm-slim");
+    expect(dockerfile).toContain('CMD ["npm", "run", "start:container"]');
   });
 });

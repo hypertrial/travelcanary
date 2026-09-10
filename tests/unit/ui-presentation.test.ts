@@ -12,9 +12,11 @@ import {
   evidenceLabel,
   liveStatusPresentation,
   normalizeSearchTerm,
+  parseSelfHostedInstanceStatus,
   publicAccessibleLabels,
   publicLabels,
   searchLocationSummaries,
+  unavailableInstanceStatus,
 } from "@/lib/ui-presentation";
 
 const snapshot = SnapshotSchema.parse(demoSnapshot);
@@ -168,6 +170,18 @@ describe("UI presentation", () => {
     expect(liveStatusPresentation({ mode: "live", uiState: "ready", generatedAt: "2026-08-25T10:10:00Z", now })).toMatchObject({ label: "Live", detail: "Time unavailable", desktopLabel: "Live · time unavailable" });
     expect(liveStatusPresentation({ mode: "live", uiState: "ready", generatedAt: "2026-08-25T08:33:00Z", now })).toMatchObject({ desktopLabel: "Live · 2 hours ago" });
     expect(liveStatusPresentation({ mode: "demo", uiState: "initial-loading", generatedAt: null, now }).accessibleLabel).toBe("Loading updates.");
+  });
+
+  it("validates self-hosted status and preserves its disclosure while unavailable", () => {
+    expect(parseSelfHostedInstanceStatus({ health: "ok", restrictedSources: { active: true } })).toEqual({
+      health: "ok", restrictedSources: { active: true },
+    });
+    expect(parseSelfHostedInstanceStatus({ health: "ok", restrictedSources: {} })).toBeNull();
+    expect(parseSelfHostedInstanceStatus(null)).toBeNull();
+    expect(unavailableInstanceStatus({ health: "ok", restrictedSources: { active: true } })).toEqual({
+      health: "unavailable", restrictedSources: { active: true },
+    });
+    expect(unavailableInstanceStatus(null)).toEqual({ health: "unavailable", restrictedSources: { active: false } });
   });
 
   it("creates destination-first briefing copy without replacing official evidence", () => {

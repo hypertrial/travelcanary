@@ -29,7 +29,7 @@ curl -H "Authorization: Bearer $CRON_SECRET" https://YOUR_DOMAIN/api/cron/mainte
 curl -H "Authorization: Bearer $CRON_SECRET" https://YOUR_DOMAIN/api/cron/conditions
 ```
 
-Local collection does not call these routes. The long-running collector imports the same ingestion functions, serializes all six jobs, and reloads local source policy before each run.
+Local collection does not call these routes. The long-running collector imports the same ingestion functions, serializes all six jobs, and reloads local source policy before each run. It persists successful completion times per cadence so a restart runs missing or due work immediately without repeating recently completed jobs.
 
 ## 4. Backups and recovery
 

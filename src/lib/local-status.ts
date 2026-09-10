@@ -15,6 +15,14 @@ export const CollectorStatusSchema = z.object({
   lastSuccess: z.string().datetime({ offset: true }).nullable(),
   lastOperation: z.enum(["fast", "slow", "conditions", "satellite", "daily", "maintenance"]).nullable(),
   lastError: z.string().max(300).nullable(),
+  completedAt: z.object({
+    fast: z.string().datetime({ offset: true }).optional(),
+    slow: z.string().datetime({ offset: true }).optional(),
+    conditions: z.string().datetime({ offset: true }).optional(),
+    satellite: z.string().datetime({ offset: true }).optional(),
+    daily: z.string().datetime({ offset: true }).optional(),
+    maintenance: z.string().datetime({ offset: true }).optional(),
+  }).strict().default({}),
 }).strict();
 export type CollectorStatus = z.infer<typeof CollectorStatusSchema>;
 

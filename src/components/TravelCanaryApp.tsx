@@ -14,7 +14,10 @@ import {
   deriveUiDataState,
   liveStatusPresentation,
   locationState,
+  parseSelfHostedInstanceStatus,
   searchLocationSummaries,
+  unavailableInstanceStatus,
+  type SelfHostedInstanceStatus,
   type SelectionOrigin,
 } from "@/lib/ui-presentation";
 import { AppHeader, ConnectivityBanner, DataHealthBanner } from "./AppChrome";
@@ -66,7 +69,7 @@ export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 2, conditi
   const [installHintVisible, setInstallHintVisible] = useState(false);
   const [dismissedMapNotice, setDismissedMapNotice] = useState<string | null>(null);
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
-  const [instance, setInstance] = useState<{ health: string; restrictedSources: { active: boolean } } | null>(null);
+  const [instance, setInstance] = useState<SelfHostedInstanceStatus | null>(null);
   const { isCompact, isMobile, detailsOverlay } = useResponsiveLayout();
   const { locations, locationsLoaded, snapshot, catalogError, snapshotError, started, loadCatalog, loadSnapshot } = useSafetyData({ mode, snapshotUrl, catalogVersion });
 
@@ -82,11 +85,10 @@ export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 2, conditi
     let active = true;
     const load = () => void fetch("/api/v1/plugin/summary", { cache: "no-store" }).then(async (response) => {
       if (!response.ok) throw new Error();
-      const value = await response.json() as { health?: unknown; restrictedSources?: { active?: unknown } };
-      if (active && typeof value.health === "string" && typeof value.restrictedSources?.active === "boolean") {
-        setInstance({ health: value.health, restrictedSources: { active: value.restrictedSources.active } });
-      }
-    }).catch(() => { if (active) setInstance({ health: "unavailable", restrictedSources: { active: false } }); });
+      const value = parseSelfHostedInstanceStatus(await response.json());
+      if (!value) throw new Error();
+      if (active) setInstance(value);
+    }).catch(() => { if (active) setInstance(unavailableInstanceStatus); });
     load(); const timer = window.setInterval(load, 5 * 60_000);
     return () => { active = false; window.clearInterval(timer); };
   }, [selfHosted]);

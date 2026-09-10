@@ -50,7 +50,7 @@
     },
     "coverageRef": "AT",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -361,7 +361,7 @@
     },
     "coverageRef": "AT",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -672,7 +672,7 @@
     },
     "coverageRef": "BE",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -734,7 +734,7 @@
     },
     "coverageRef": "BE",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -2084,7 +2084,7 @@
     },
     "coverageRef": "BG",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -2444,7 +2444,7 @@
     },
     "coverageRef": "BG",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -2999,7 +2999,7 @@
     },
     "coverageRef": "CH",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -3309,7 +3309,7 @@
     },
     "coverageRef": "CH",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -3472,7 +3472,7 @@
     },
     "coverageRef": "CY",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -3781,7 +3781,7 @@
     },
     "coverageRef": "CY",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -3843,7 +3843,7 @@
     },
     "coverageRef": "CZ",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -4204,7 +4204,7 @@
     },
     "coverageRef": "CZ",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -4910,7 +4910,7 @@
     },
     "coverageRef": "DE",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -5071,7 +5071,7 @@
     },
     "coverageRef": "DE",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -6438,7 +6438,7 @@
     },
     "coverageRef": "DK",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -6751,7 +6751,7 @@
     },
     "coverageRef": "DK",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -7015,7 +7015,7 @@
     },
     "coverageRef": "EE",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -7180,7 +7180,7 @@
     },
     "coverageRef": "EE",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -7738,7 +7738,7 @@
     },
     "coverageRef": "ES",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -8248,7 +8248,7 @@
     },
     "coverageRef": "ES",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -8904,7 +8904,7 @@
     },
     "coverageRef": "FI",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -8966,7 +8966,7 @@
     },
     "coverageRef": "FI",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -10018,7 +10018,7 @@
     },
     "coverageRef": "FR",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -10080,7 +10080,7 @@
     },
     "coverageRef": "FR",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -11532,7 +11532,7 @@
     },
     "coverageRef": "GR",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -11594,7 +11594,7 @@
     },
     "coverageRef": "GR",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -12855,7 +12855,7 @@
     },
     "coverageRef": "HR",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -12971,7 +12971,7 @@
     },
     "coverageRef": "HR",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -13473,7 +13473,7 @@
     },
     "coverageRef": "HU",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -13633,7 +13633,7 @@
     },
     "coverageRef": "HU",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -14383,7 +14383,7 @@
     },
     "coverageRef": "IE",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -14595,7 +14595,7 @@
     },
     "coverageRef": "IE",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -14702,7 +14702,7 @@
     },
     "coverageRef": "IT",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -15011,7 +15011,7 @@
     },
     "coverageRef": "IT",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -16170,7 +16170,7 @@
     },
     "coverageRef": "LT",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -16232,7 +16232,7 @@
     },
     "coverageRef": "LT",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -16682,7 +16682,7 @@
     },
     "coverageRef": "LU",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -16744,7 +16744,7 @@
     },
     "coverageRef": "LU",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -16854,7 +16854,7 @@
     },
     "coverageRef": "LV",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -17020,7 +17020,7 @@
     },
     "coverageRef": "LV",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -17230,7 +17230,7 @@
     },
     "coverageRef": "MT",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -17292,7 +17292,7 @@
     },
     "coverageRef": "MT",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -18841,7 +18841,7 @@
     },
     "coverageRef": "NL",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -18948,7 +18948,7 @@
     },
     "coverageRef": "NL",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -19749,7 +19749,7 @@
     },
     "coverageRef": "PL",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -20301,7 +20301,7 @@
     },
     "coverageRef": "PL",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -20611,7 +20611,7 @@
     },
     "coverageRef": "PT",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -21291,7 +21291,7 @@
     },
     "coverageRef": "PT",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -22288,7 +22288,7 @@
     },
     "coverageRef": "RO",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -22850,7 +22850,7 @@
     },
     "coverageRef": "RO",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -23416,7 +23416,7 @@
     },
     "coverageRef": "SE",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": true,
@@ -24424,7 +24424,7 @@
     },
     "coverageRef": "SE",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -24786,7 +24786,7 @@
     },
     "coverageRef": "SI",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -24946,7 +24946,7 @@
     },
     "coverageRef": "SI",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -25204,7 +25204,7 @@
     },
     "coverageRef": "SK",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,
@@ -25465,7 +25465,7 @@
     },
     "coverageRef": "SK",
     "provenance": {
-      "name": "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json",
+      "name": "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json",
       "license": "CC0-1.0 approximate matching area"
     },
     "isCoastal": false,

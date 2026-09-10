@@ -25,6 +25,15 @@ describe("catalog conditions reader isolation", () => {
     expect(conditionsUrl("/demo-snapshot.json", "GB", 3)).toBe("/catalogs/3/conditions/v3/GB.json");
   });
 
+  it("loads catalog3 conditions through the self-hosted live namespace", async () => {
+    const url = conditionsUrl("/live/catalogs/3/latest.json", "GB", 3)!;
+    const locationIds = release3.locationIds.filter((id) => id.startsWith("gb-"));
+    const file = ConditionsV3Schema.parse({ ...current, countryCode: "GB", sources: {}, sourceHealth: {}, locations: Object.fromEntries(locationIds.map((id) => [id, emptyConditions()])) });
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(Response.json(file));
+    await expect(loadConditions(url, "GB", locationIds, fetchMock, 3)).resolves.toEqual(file);
+    expect(fetchMock).toHaveBeenCalledWith(url, expect.anything());
+  });
+
   it.each([2, 3] as const)("rejects explicit expected release%s mismatch before any HTTP or cache return", async (expected) => {
     const fetchMock = vi.fn<typeof fetch>();
     await expect(loadConditions(expected === 2 ? currentUrl : legacyUrl, "AT", ids, fetchMock, expected)).rejects.toThrow(/namespace/);

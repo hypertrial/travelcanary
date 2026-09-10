@@ -17,4 +17,4 @@ COPY --from=build --chown=node:node /app /app
 RUN mkdir /data && chown node:node /data
 USER node
 EXPOSE 3000
-CMD ["npm", "run", "start:selfhost"]
+CMD ["npm", "run", "start:container"]

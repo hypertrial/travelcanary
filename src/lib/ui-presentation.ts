@@ -43,6 +43,23 @@ export interface LiveStatusPresentation {
   accessibleLabel: string;
 }
 
+export interface SelfHostedInstanceStatus {
+  health: string;
+  restrictedSources: { active: boolean };
+}
+
+export function parseSelfHostedInstanceStatus(value: unknown): SelfHostedInstanceStatus | null {
+  if (!value || typeof value !== "object") return null;
+  const candidate = value as { health?: unknown; restrictedSources?: { active?: unknown } };
+  return typeof candidate.health === "string" && typeof candidate.restrictedSources?.active === "boolean"
+    ? { health: candidate.health, restrictedSources: { active: candidate.restrictedSources.active } }
+    : null;
+}
+
+export function unavailableInstanceStatus(previous: SelfHostedInstanceStatus | null): SelfHostedInstanceStatus {
+  return { health: "unavailable", restrictedSources: { active: previous?.restrictedSources.active ?? false } };
+}
+
 export type AttentionActionKey = "emergency" | "change-plans" | "be-aware" | "unavailable";
 
 export interface AttentionActionGroup {

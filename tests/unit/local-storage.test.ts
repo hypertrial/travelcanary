@@ -4,17 +4,17 @@ import { copyFileSync, mkdtempSync, readFileSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { SerialCollector } from "@/lib/collector";
+import { collectorCadenceMs, collectorOperations, SerialCollector } from "@/lib/collector";
 import { catalogV3Paths } from "@/lib/catalog-paths";
 import { SnapshotV11Schema } from "@/lib/domain/catalog-public";
 import { catalogV3CountryCodes } from "@/lib/domain/contract-identities";
 import { collectorEnvironment, disabledLocalPolicy, restrictedSourceManifestDigest, restrictedSourcesActive } from "@/lib/local-policy";
 import { conditionAttribution } from "@/lib/conditions/sources";
 import {
-  initializeLocalRuntime, LocalCatalog3SnapshotStore, LocalDatabase, localStores,
+  COLLECTOR_STATUS_KEY, initializeLocalRuntime, LocalCatalog3SnapshotStore, LocalDatabase, localStores,
   publicObjectLimit, readLocalPolicy, writeLocalPolicy,
 } from "@/lib/local-storage";
-import { localPluginSummary } from "@/lib/local-status";
+import { localPluginSummary, readCollectorStatus, writeCollectorStatus } from "@/lib/local-status";
 
 function temporaryDatabase() {
   const directory = mkdtempSync(join(tmpdir(), "travelcanary-sqlite-"));
@@ -76,6 +76,20 @@ describe("local SQLite runtime", () => {
     expect(() => database.acquireCollector("collector-two", 2_000, 30_000)).toThrow(/Another collector/);
     expect(database.acquireCollector("collector-two", 31_001, 30_000)).toBeTruthy();
     database.close();
+  });
+
+  it("persists cadence completion state and reads legacy status safely", () => {
+    const { path, database } = temporaryDatabase(); initializeLocalRuntime(database);
+    const timestamp = "2026-09-10T12:00:00.000Z";
+    database.compareAndSwap("private", COLLECTOR_STATUS_KEY, JSON.stringify({
+      schemaVersion: 1, state: "idle", lastHeartbeat: timestamp, lastSuccess: timestamp, lastOperation: "fast", lastError: null,
+    }), null, 4096);
+    expect(readCollectorStatus(database)?.completedAt).toEqual({});
+    writeCollectorStatus(database, { ...readCollectorStatus(database)!, completedAt: { fast: timestamp } });
+    database.close();
+    const reopened = new LocalDatabase(path);
+    expect(readCollectorStatus(reopened)?.completedAt).toEqual({ fast: timestamp });
+    reopened.close();
   });
 
   it("binds restricted acceptance to the current manifest digest", () => {
@@ -185,5 +199,19 @@ describe("collector serialization", () => {
     await collector.stop();
     await vi.advanceTimersByTimeAsync(24 * 60 * 60_000);
     expect(operations).toHaveLength(6);
+  });
+
+  it("runs only due work after restart and waits out remaining cadences", async () => {
+    vi.useFakeTimers();
+    const now = Date.parse("2026-09-10T12:00:00.000Z");
+    const completedAt = Object.fromEntries(collectorOperations.map((operation) => [operation, new Date(now).toISOString()]));
+    completedAt.maintenance = new Date(now - collectorCadenceMs.maintenance).toISOString();
+    const operations: string[] = [];
+    const collector = new SerialCollector(async (operation) => { operations.push(operation); });
+    await collector.start(completedAt, now);
+    expect(operations).toEqual(["maintenance"]);
+    await vi.advanceTimersByTimeAsync(collectorCadenceMs.fast);
+    expect(operations).toEqual(["maintenance", "fast"]);
+    await collector.stop();
   });
 });

@@ -17,6 +17,7 @@
     "build": "next build",
     "start": "next start",
     "start:selfhost": "next start --hostname 127.0.0.1",
+    "start:container": "next start --hostname 0.0.0.0",
     "collector": "node --import tsx scripts/collector.ts",
     "omarchy:check": "node scripts/validate-omarchy-plugin.mjs && vitest run tests/unit/omarchy-model.test.ts",
     "lint": "eslint . --cache --cache-location .eslintcache",

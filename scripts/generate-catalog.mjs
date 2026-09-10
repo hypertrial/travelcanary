@@ -164,7 +164,7 @@ const regionLocations = regions.map(([countryCode, name, type, minLon, minLat, m
     timezone,
     sourceRegionCodes: { meteoalarm: [...new Set([code, areaCode(name), `${countryCode}:country`].filter(Boolean))] },
     coverageRef: countryCode,
-    provenance: { name: "https://github.com/hypertrial/travelcanary-risk/blob/main/data/locations.json", license: "CC0-1.0 approximate matching area" },
+    provenance: { name: "https://github.com/hypertrial/travelcanary/blob/main/data/locations.json", license: "CC0-1.0 approximate matching area" },
   };
 });
 
