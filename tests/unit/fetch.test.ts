@@ -65,6 +65,18 @@ describe("ingestion fetch", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
+  it("does not retry when a caller aborts with an Error reason", async () => {
+    const controller = new AbortController();
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => new Promise<Response>((_resolve, reject) => {
+      init?.signal?.addEventListener("abort", () => reject(init.signal?.reason), { once: true });
+    }));
+    const request = fetchWithRetry(fetchMock as typeof fetch, "https://example.test/feed", { signal: controller.signal });
+
+    controller.abort(new Error("transport budget exceeded"));
+    await expect(request).rejects.toThrow("transport budget exceeded");
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
   it("shares a hard response-byte budget across requests", async () => {
     const budget = { remaining: 10 };
     const fetchMock = (async () => new Response("123456")) as typeof fetch;

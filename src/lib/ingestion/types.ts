@@ -8,6 +8,7 @@ export interface IngestionContext {
   now: Date;
   locations: CatalogLocation[];
   fetch: typeof fetch;
+  signal?: AbortSignal;
   state?: IngestionState;
   deadlineAt?: number;
   diagnostics?: MutableSourceDiagnostics;

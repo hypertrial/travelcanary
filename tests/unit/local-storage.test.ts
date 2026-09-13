@@ -14,7 +14,7 @@ import {
   COLLECTOR_STATUS_KEY, initializeLocalRuntime, LocalCatalog3SnapshotStore, LocalDatabase, localStores,
   publicObjectLimit, readLocalPolicy, writeLocalPolicy,
 } from "@/lib/local-storage";
-import { localPluginSummary, readCollectorStatus, writeCollectorStatus } from "@/lib/local-status";
+import { localHealth, localPluginSummary, readCollectorStatus, writeCollectorStatus } from "@/lib/local-status";
 
 function temporaryDatabase() {
   const directory = mkdtempSync(join(tmpdir(), "travelcanary-sqlite-"));
@@ -90,6 +90,34 @@ describe("local SQLite runtime", () => {
     const reopened = new LocalDatabase(path);
     expect(readCollectorStatus(reopened)?.completedAt).toEqual({ fast: timestamp });
     reopened.close();
+  });
+
+  it("degrades health for stale snapshots and missing condition partitions", () => {
+    const staleNow = new Date("2026-09-10T12:00:00.000Z");
+    const stale = temporaryDatabase(); initializeLocalRuntime(stale.database, new Date(+staleNow - 3 * 60 * 60_000));
+    writeCollectorStatus(stale.database, { schemaVersion: 1, state: "idle", lastHeartbeat: staleNow.toISOString(),
+      lastSuccess: staleNow.toISOString(), lastOperation: "fast", lastError: null, completedAt: {} });
+    expect(localHealth(stale.database, staleNow)).toMatchObject({ status: "degraded", checks: { snapshot: { status: "failed", ageMinutes: 180 } } });
+    stale.database.close();
+
+    const missing = temporaryDatabase(); initializeLocalRuntime(missing.database, staleNow); missing.database.close();
+    const raw = new DatabaseSync(missing.path);
+    raw.prepare("DELETE FROM objects WHERE namespace='public' AND key='catalogs/3/conditions/v3/VA.json'").run(); raw.close();
+    const reopened = new LocalDatabase(missing.path);
+    writeCollectorStatus(reopened, { schemaVersion: 1, state: "idle", lastHeartbeat: staleNow.toISOString(),
+      lastSuccess: staleNow.toISOString(), lastOperation: "conditions", lastError: null, completedAt: {} });
+    expect(localHealth(reopened, staleNow)).toMatchObject({ status: "degraded", checks: { conditions: {
+      status: "failed", expected: 45, present: 44, overdueCountryCodes: ["VA"],
+    } } });
+    reopened.close();
+
+    const release = temporaryDatabase(); initializeLocalRuntime(release.database, staleNow);
+    const key = `${catalogV3Paths.conditions}AT.json`; const row = release.database.readPublic(key)!;
+    release.database.compareAndSwap("public", key, JSON.stringify({ ...JSON.parse(row.value), producerCommitSha: "a".repeat(40) }),
+      row.revision, publicObjectLimit(key));
+    expect(localHealth(release.database, staleNow)).toMatchObject({ status: "degraded", checks: { conditions: { status: "failed" } },
+      coverage: { fullyChecked: expect.any(Number), partlyChecked: expect.any(Number), notChecked: expect.any(Number) } });
+    release.database.close();
   });
 
   it("binds restricted acceptance to the current manifest digest", () => {

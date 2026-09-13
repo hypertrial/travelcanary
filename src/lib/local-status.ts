@@ -6,6 +6,8 @@ import { catalogV3Paths } from "./catalog-paths";
 import { COLLECTOR_STATUS_KEY, LocalDatabase, readLocalPolicy } from "./local-storage";
 import { restrictedConditionSourceIds, restrictedSourceCount, restrictedSourcesActive } from "./local-policy";
 import { catalogV3CountryCodes } from "./domain/contract-identities";
+import { catalogLocationsV3 } from "./catalog-data";
+import { coverageCounts, requiredTransportFailures } from "./public-health";
 
 export const CollectorStatusSchema = z.object({
   schemaVersion: z.literal(1),
@@ -55,15 +57,47 @@ function publishedRestrictedSources(database: LocalDatabase) {
 export function localHealth(database: LocalDatabase, now = new Date()) {
   const collector = readCollectorStatus(database);
   const snapshotRow = database.readPublic(catalogV3Paths.snapshot);
-  const snapshot = snapshotRow ? SnapshotV11Schema.parse(JSON.parse(snapshotRow.value)) : null;
+  let snapshot: z.infer<typeof SnapshotV11Schema> | null = null;
+  try { snapshot = snapshotRow ? SnapshotV11Schema.parse(JSON.parse(snapshotRow.value)) : null; } catch {}
+  const snapshotTime = Date.parse(snapshot?.generatedAt || "");
+  const snapshotAgeMinutes = Number.isFinite(snapshotTime) ? Math.max(0, Math.floor((now.getTime() - snapshotTime) / 60_000)) : 0;
+  const snapshotOk = Boolean(snapshot && now.getTime() - snapshotTime <= 120 * 60_000 && snapshotTime <= now.getTime() + 5 * 60_000);
+  const overdueCountryCodes: string[] = []; const producerCommits = new Set<string | null>(); let present = 0;
+  for (const countryCode of catalogV3CountryCodes) {
+    try {
+      const row = database.readPublic(`${catalogV3Paths.conditions}${countryCode}.json`);
+      if (!row) throw new Error("missing conditions");
+      const conditions = ConditionsV3Schema.parse(JSON.parse(row.value));
+      const generatedAt = Date.parse(conditions.generatedAt);
+      if (conditions.countryCode !== countryCode || now.getTime() - generatedAt > 75 * 60_000 || generatedAt > now.getTime() + 5 * 60_000) {
+        throw new Error("invalid conditions");
+      }
+      producerCommits.add(conditions.producerCommitSha); present += 1;
+    } catch { overdueCountryCodes.push(countryCode); }
+  }
+  const expectedCommit = process.env.TRAVELCANARY_RELEASE_SHA || process.env.VERCEL_GIT_COMMIT_SHA;
+  const releaseMismatch = producerCommits.size > 1 || Boolean(expectedCommit
+    && [...producerCommits].some((commit) => !commit?.startsWith(expectedCommit.toLowerCase())));
+  const failedTransports = snapshot ? requiredTransportFailures(snapshot, catalogLocationsV3, now) : ["snapshot/unavailable"];
   const heartbeatAge = collector ? now.getTime() - Date.parse(collector.lastHeartbeat) : Number.POSITIVE_INFINITY;
   const warming = !collector?.lastSuccess || (snapshot && Object.values(snapshot.locations).every(({ level }) => level === "UNKNOWN"));
-  const degraded = collector?.state === "failed" || heartbeatAge > 3 * 60_000 || !snapshot;
+  const degraded = collector?.state === "failed" || heartbeatAge > 3 * 60_000 || !snapshotOk
+    || present !== catalogV3CountryCodes.length || overdueCountryCodes.length > 0 || releaseMismatch || failedTransports.length > 0;
   return {
     schemaVersion: 1 as const,
     status: degraded ? "degraded" as const : warming ? "warming" as const : "ok" as const,
     runtime: "sqlite" as const,
     catalogVersion: 3 as const,
+    checkedAt: now.toISOString(),
+    checks: {
+      snapshot: { status: snapshotOk ? "ok" as const : "failed" as const, ageMinutes: snapshotAgeMinutes },
+      catalog: { status: snapshot ? "ok" as const : "failed" as const, expectedLocations: catalogLocationsV3.length,
+        actualLocations: snapshot ? Object.keys(snapshot.locations).length : 0 },
+      conditions: { status: present === catalogV3CountryCodes.length && !overdueCountryCodes.length && !releaseMismatch ? "ok" as const : "failed" as const,
+        expected: catalogV3CountryCodes.length, present, overdueCountryCodes },
+      transports: { status: failedTransports.length ? "failed" as const : "ok" as const, failed: failedTransports },
+    },
+    coverage: snapshot ? coverageCounts(snapshot, catalogLocationsV3, now) : { fullyChecked: 0, partlyChecked: 0, notChecked: 0 },
     database: { available: Boolean(snapshot), writable: true },
     collector: collector ? {
       state: collector.state,

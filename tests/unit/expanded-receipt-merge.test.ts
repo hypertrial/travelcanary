@@ -5,6 +5,9 @@ import type { AggregateSourceResult } from "@/lib/domain/schemas";
 import release2 from "../../data/catalog-releases/2.json";
 import release3 from "../../data/catalog-releases/3.json";
 import { catalogV3CountryCodes } from "@/lib/domain/contract-identities";
+import { catalogLocationsV3 } from "@/lib/catalog-data";
+import { buildCatalog3Snapshot } from "@/lib/catalog-projections";
+import { requiredTransportFailures } from "@/lib/public-health";
 
 const now = new Date("2026-09-08T12:00:00Z");
 const ids = release3.locationIds.filter((id) => !release2.locationIds.includes(id));
@@ -46,6 +49,12 @@ describe("expanded source receipt merging", () => {
     }
   });
 
+  it("rejects contradictory same-time replays before any legacy or receipt health mutates", () => {
+    const first = mergeSourceResults(state(), [result("ok", 176, 2)], now);
+    const replay = result("failed", 0, 2); const before = structuredClone(first);
+    expect(mergeSourceResults(first, [replay], now)).toEqual(before);
+  });
+
   it("does not refresh or remove expanded receipts during legacy collection", () => {
     const value = state(); mergeExpandedSourceReceipt(value, result("ok", 176)); value.collection = { catalogVersion: 2, revision: 2 };
     const before = structuredClone(value); mergeExpandedSourceReceipt(value, result("failed", 0, 1)); expect(value).toEqual(before);
@@ -81,6 +90,22 @@ describe("expanded source receipt merging", () => {
     expect(merged.frozenEaFloodAreaGeometries.area1).toHaveLength(1);
     expect(merged.events).toEqual([]);
     expect(IngestionStateV15Schema.safeParse(merged).success).toBe(true);
+  });
+
+  it("does not turn an all-unavailable partial transport into fresh health", () => {
+    const value = state();
+    const partitions = Object.fromEntries(catalogV3CountryCodes.map((code) => [code, { status: "disabled", sourceUpdatedAt: null,
+      events: [], error: null, limitationCode: "not_supported", checkedLocationIds: [], unavailableLocationIds: [] }]));
+    const unavailable = catalogLocationsV3.filter(({ countryCode }) => countryCode === "GB").map(({ id }) => id);
+    Object.assign(partitions, { GB: { status: "partial", sourceUpdatedAt: now.toISOString(), events: [], error: "No flood areas were checked",
+      checkedLocationIds: [], unavailableLocationIds: unavailable, transports: { "ea-flood": { status: "partial",
+        sourceUpdatedAt: now.toISOString(), events: [], error: "No flood areas were checked", checkedLocationIds: [], unavailableLocationIds: unavailable } } } });
+    const input = CatalogPartitionedSourceResultSchema.parse({ sourceId: "national-civil-alerts", checkedAt: now.toISOString(), partitions });
+    const merged = mergeSourceResults(value, [input], now);
+
+    expect(merged.partitionTransports.nationalCivilAlerts.GB["ea-flood"].lastSuccess).toBeNull();
+    expect(requiredTransportFailures(buildCatalog3Snapshot(merged, now), catalogLocationsV3, now))
+      .toContain("coverage/GB/flood/national-civil-alerts");
   });
 
   it("evicts frozen flood geometry deterministically before it can exceed private-state capacity", () => {

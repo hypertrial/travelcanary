@@ -59,8 +59,8 @@ function providerViable(snapshot: CatalogSnapshot, location: PublicCatalogLocati
         system.status === "active" && system.role === "coverage" && system.coverageContribution !== "none"
         && system.hazards.includes(hazard) && (!system.coverageLocationIds || system.coverageLocationIds.includes(location.id))
       )) || [];
-      if (systems.length && partition.transports?.length) return systems.some((system) => {
-        const transport = partition.transports!.find(({ id }) => id === system.id);
+      if (systems.length) return systems.some((system) => {
+        const transport = partition.transports?.find(({ id }) => id === system.id);
         return Boolean(transport && viable({ ...transport,
           lastSuccess: transport.lastSuccess ?? partition.lastSuccess,
           nextExpectedUpdate: transport.nextExpectedUpdate ?? partition.nextExpectedUpdate,
@@ -76,7 +76,7 @@ function providerViable(snapshot: CatalogSnapshot, location: PublicCatalogLocati
   return viable(provider, now, definition.cadenceMinutes);
 }
 
-function transportFailures(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date) {
+export function requiredTransportFailures(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date) {
   const failed = new Set<string>();
   for (const location of catalog) {
     const country = (coverageMatrix.countries as Record<string, { hazards: Record<HazardType, { status: string; providerIds: ProviderId[] }> }>)[location.countryCode];
@@ -102,7 +102,7 @@ function fixedPublicOrigin(env: Record<string, string | undefined>) {
   return url.origin;
 }
 
-function coverageCounts(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date) {
+export function coverageCounts(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date) {
   const coverage = { fullyChecked: 0, partlyChecked: 0, notChecked: 0 };
   for (const location of catalog) for (const check of locationCoveragePresentation({ location, state: snapshot.locations[location.id], snapshot, now }).categories.flatMap(({ subchecks }) => subchecks)) {
     if (!isExpandedDestination(location) && !hazardAppliesToLocation(check.hazard, location)) continue;
@@ -146,6 +146,7 @@ export async function checkPublicHealth(options: PublicHealthOptions) {
       const url = new URL(`${paths.conditions}${countryCode}.json`, base).href;
       const value = await boundedJson(fetchImpl, url, CONDITIONS_LIMIT, deadlineAt);
       const file = (catalogVersion === 3 ? ConditionsV3Schema : ConditionsSchema).parse(value);
+      if (file.countryCode !== countryCode) throw new Error("conditions country mismatch");
       present += 1;
       if (now.getTime() - Date.parse(file.generatedAt) > 75 * 60_000 || Date.parse(file.generatedAt) > now.getTime() + 5 * 60_000) overdueCountryCodes.push(countryCode);
       const releaseSha = env.VERCEL_GIT_COMMIT_SHA || env.TRAVELCANARY_RELEASE_SHA;
@@ -154,7 +155,7 @@ export async function checkPublicHealth(options: PublicHealthOptions) {
   });
   overdueCountryCodes.sort();
   const conditionsStatus: HealthStatus = present === countryCodes.length && !overdueCountryCodes.length && !releaseMismatch ? "ok" : "failed";
-  const failed = snapshot && catalog ? transportFailures(snapshot, catalog, now) : ["snapshot/unavailable"];
+  const failed = snapshot && catalog ? requiredTransportFailures(snapshot, catalog, now) : ["snapshot/unavailable"];
   const transportStatus: HealthStatus = failed.length ? "failed" : "ok";
   const status = [snapshotStatus, catalogStatus, conditionsStatus, transportStatus].every((item) => item === "ok") ? "ok" : "degraded";
   return {

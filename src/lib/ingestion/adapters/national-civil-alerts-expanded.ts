@@ -21,13 +21,27 @@ function timestamp(value: unknown, options: { norwayLocal?: boolean } = {}) {
     const parsed = Date.parse(raw); if (Number.isFinite(parsed)) return parsed;
     throw new Error("Warning timestamp is invalid");
   }
-  if (!options.norwayLocal || !/^\d{4}-\d\d-\d\d[T ]\d\d:\d\d(?::\d\d)?$/.test(raw)) throw new Error("Warning timestamp has no UTC offset");
-  const [year, month, day, hour, minute, second = 0] = raw.match(/\d+/g)!.map(Number);
+  if (!options.norwayLocal) throw new Error("Warning timestamp has no UTC offset");
+  const iso = /^(\d{4})-(\d\d)-(\d\d)[T ](\d\d):(\d\d)(?::(\d\d))?$/.exec(raw);
+  const nve = /^(\d\d)\/(\d\d)\/(\d{4}) (\d\d):(\d\d)(?::(\d\d))?$/.exec(raw);
+  if (!iso && !nve) throw new Error("Warning timestamp has no UTC offset");
+  const [year, month, day, hour, minute, second] = iso
+    ? [iso[1], iso[2], iso[3], iso[4], iso[5], iso[6] || "0"].map(Number)
+    : [nve![3], nve![2], nve![1], nve![4], nve![5], nve![6] || "0"].map(Number);
+  const calendar = new Date(Date.UTC(year, month - 1, day, hour, minute, second));
+  if (calendar.getUTCFullYear() !== year || calendar.getUTCMonth() !== month - 1 || calendar.getUTCDate() !== day
+    || calendar.getUTCHours() !== hour || calendar.getUTCMinutes() !== minute || calendar.getUTCSeconds() !== second) {
+    throw new Error("Warning timestamp is invalid");
+  }
   let utc = Date.UTC(year, month - 1, day, hour, minute, second);
   const formatter = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Oslo", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" });
   for (let iteration = 0; iteration < 2; iteration += 1) {
     const parts = Object.fromEntries(formatter.formatToParts(new Date(utc)).filter(({ type }) => type !== "literal").map(({ type, value }) => [type, Number(value)]));
     utc += Date.UTC(year, month - 1, day, hour, minute, second) - Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
+  }
+  const parts = Object.fromEntries(formatter.formatToParts(new Date(utc)).filter(({ type }) => type !== "literal").map(({ type, value }) => [type, Number(value)]));
+  if (parts.year !== year || parts.month !== month || parts.day !== day || parts.hour !== hour || parts.minute !== minute || parts.second !== second) {
+    throw new Error("Warning timestamp is invalid");
   }
   return utc;
 }
@@ -61,7 +75,7 @@ function polygonRings(geometry: unknown): Position[][][] {
 function level(value: unknown): HazardLevel | null {
   const normalized = text(value).toLowerCase();
   if (/extreme|red|danger/.test(normalized)) return "SEVERE";
-  if (/severe|orange|warning/.test(normalized)) return "HIGH";
+  if (/severe|orange|amber|warning/.test(normalized)) return "HIGH";
   if (/moderate|yellow|alert/.test(normalized)) return "ELEVATED";
   return null;
 }
@@ -149,11 +163,16 @@ export function parseNveWarnings(value: unknown, context: IngestionContext): Nat
   if (!records || records.length > 500) throw new Error("NVE response is not a bounded warning list");
   const latest = new Map<string, Row>();
   for (const raw of records as Row[]) {
-    const id = text(raw.Id || raw.id || raw.WarningId || raw.warningId);
+    const capStatus = text(raw.CapStatus || raw.capStatus);
+    if (capStatus && capStatus.toLowerCase() !== "actual") continue;
+    const id = text(raw.MasterId || raw.masterId || raw.Id || raw.id || raw.WarningId || raw.warningId);
     if (!id) throw new Error("NVE warning has no stable identity");
-    const prior = latest.get(id); const updated = timestamp(raw.LastUpdated || raw.lastUpdated || raw.PublishTime || raw.publishTime, { norwayLocal: true });
+    const prior = latest.get(id); const version = Number(raw.Version ?? raw.version ?? 0);
+    if (!Number.isFinite(version) || version < 0) throw new Error("NVE warning version is invalid");
+    const updated = timestamp(raw.LastUpdated || raw.lastUpdated || raw.PublishTime || raw.publishTime, { norwayLocal: true });
+    const priorVersion = prior ? Number(prior.Version ?? prior.version ?? 0) : -Infinity;
     const priorUpdated = prior ? timestamp(prior.LastUpdated || prior.lastUpdated || prior.PublishTime || prior.publishTime, { norwayLocal: true }) : -Infinity;
-    if (updated >= priorUpdated) latest.set(id, raw);
+    if (version > priorVersion || (version === priorVersion && updated >= priorUpdated)) latest.set(id, raw);
   }
   const events: NormalizedEvent[] = [];
   const unavailable = new Set<string>();
@@ -188,6 +207,7 @@ export function parseNveWarnings(value: unknown, context: IngestionContext): Nat
 type EaWarning = Row & { floodArea?: Row };
 const eaFloodAreaGeometryCache = new Map<string, unknown>();
 const MAX_EA_FLOOD_AREA_GEOMETRIES = 64;
+const MAX_EA_FLOOD_EVENTS = 500;
 
 function retainedEaGeometry(id: string, context: IngestionContext) {
   const frozen = context.state?.frozenEaFloodAreaGeometries[id];
@@ -221,10 +241,15 @@ export function parseEaFloodWarnings(value: unknown, geometries: ReadonlyMap<str
       sourceUrl: "https://check-for-flooding.service.gov.uk/", context }));
   }
   const ids = context.locations.filter(({ id }) => englandIds.has(id)).map(({ id }) => id);
-  return { status: missingGeometry.size ? "partial" : "ok", sourceUpdatedAt: events.map(({ sourceUpdatedAt }) => sourceUpdatedAt).sort().at(-1) || context.now.toISOString(),
-    events, error: missingGeometry.size ? `${missingGeometry.size} active flood areas had no valid geometry` : null,
-    limitationCode: missingGeometry.size ? "flood_area_geometry_unavailable" : undefined, checkedLocationIds: missingGeometry.size ? [] : ids,
-    unavailableLocationIds: missingGeometry.size ? ids : [], removedEventPrefixes: missingGeometry.size
+  const limited = events.length > MAX_EA_FLOOD_EVENTS;
+  const partial = missingGeometry.size > 0 || limited;
+  const boundedEvents = events.sort((left, right) => left.id.localeCompare(right.id)).slice(0, MAX_EA_FLOOD_EVENTS);
+  return { status: partial ? "partial" : "ok", sourceUpdatedAt: boundedEvents.map(({ sourceUpdatedAt }) => sourceUpdatedAt).sort().at(-1) || context.now.toISOString(),
+    events: boundedEvents, error: missingGeometry.size ? `${missingGeometry.size} active flood areas had no valid geometry`
+      : limited ? `Environment Agency warning event limit of ${MAX_EA_FLOOD_EVENTS} was reached` : null,
+    limitationCode: missingGeometry.size ? "flood_area_geometry_unavailable" : limited ? "warning_event_limit_reached" : undefined,
+    checkedLocationIds: partial ? [] : ids,
+    unavailableLocationIds: partial ? ids : [], removedEventPrefixes: partial
       ? [...withdrawn].map((id) => `national:ea-flood:${id}:`) : ["national:ea-flood:"] };
 }
 
@@ -232,7 +257,7 @@ async function fetchEaPages(context: IngestionContext) {
   const all: EaWarning[] = []; const limit = 500;
   for (let page = 0; page < 4; page += 1) {
     const response = await fetchAllowlisted(context.fetch, `https://environment.data.gov.uk/flood-monitoring/id/floods?_limit=${limit}&_offset=${page * limit}`,
-      ["environment.data.gov.uk"], 2, { maxBytes: 2 * 1024 * 1024, timeoutMs: 5_000, diagnosticsCategory: "ea_floods" });
+      ["environment.data.gov.uk"], 2, { signal: context.signal, maxBytes: 2 * 1024 * 1024, timeoutMs: 5_000, diagnosticsCategory: "ea_floods" });
     const payload = await readJsonWithLimit(response, 2 * 1024 * 1024) as { items?: unknown };
     if (!Array.isArray(payload.items)) throw new Error("Environment Agency page has no items");
     all.push(...payload.items as EaWarning[]);
@@ -244,15 +269,15 @@ async function fetchEaPages(context: IngestionContext) {
 export async function fetchEaFloodWarnings(context: IngestionContext): Promise<NationalPartition> {
   const warnings = await fetchEaPages(context);
   const activeIds = [...new Set(warnings.filter((warning) => Number(warning.severityLevel) !== 4).map((warning) => text(warning.floodAreaID)).filter(Boolean))];
-  if (activeIds.length > 100) throw new Error("Environment Agency active warning geometry limit exceeded");
   const geometries = new Map<string, unknown>(activeIds.flatMap((id) => {
     const geometry = eaFloodAreaGeometryCache.get(id) || retainedEaGeometry(id, context);
     return geometry ? [[id, geometry] as const] : [];
   }));
   await mapConcurrent(activeIds.filter((id) => !geometries.has(id)), 8, async (id) => {
+    if (context.signal?.aborted) return;
     try {
       const response = await fetchAllowlisted(context.fetch, `https://environment.data.gov.uk/flood-monitoring/id/floodAreas/${encodeURIComponent(id)}/polygon`,
-        ["environment.data.gov.uk"], 2, { maxBytes: 512 * 1024, timeoutMs: 4_000, diagnosticsCategory: "ea_polygon" });
+        ["environment.data.gov.uk"], 2, { signal: context.signal, maxBytes: 512 * 1024, timeoutMs: 4_000, diagnosticsCategory: "ea_polygon" });
       const payload = await readJsonWithLimit(response, 512 * 1024) as Row;
       const geometry = payload.type === "Feature" ? payload.geometry : payload.items && typeof payload.items === "object" ? (payload.items as Row).geometry || payload.items : payload;
       polygonRings(geometry);
@@ -261,8 +286,9 @@ export async function fetchEaFloodWarnings(context: IngestionContext): Promise<N
       geometries.set(id, geometry);
     } catch { /* Missing geometry is reported as partial without discarding other areas. */ }
   });
+  const frozen = [...geometries].sort(([left], [right]) => left.localeCompare(right)).slice(0, 100);
   return { ...parseEaFloodWarnings({ items: warnings }, geometries, context),
-    frozenEaFloodAreaGeometries: Object.fromEntries([...geometries].map(([id, geometry]) => [id,
+    frozenEaFloodAreaGeometries: Object.fromEntries(frozen.map(([id, geometry]) => [id,
       polygonRings(geometry).map((coordinates) => ({ kind: "polygon" as const, coordinates }))])),
   };
 }
@@ -301,20 +327,34 @@ export async function fetchMetOffice(context: IngestionContext): Promise<Nationa
   const document = await readJsonWithLimit(detail, 2 * 1024 * 1024) as { features?: Row[] };
   if (!Array.isArray(document.features) || document.features.length > 500) throw new Error("Met Office warning response is malformed");
   const events: NormalizedEvent[] = [];
-  for (const feature of document.features) {
-    const properties = feature.properties as Row; const state = text(properties.state || properties.status).toUpperCase();
+  let limited = false;
+  const features = document.features.slice().sort((left, right) => {
+    const leftProperties = left.properties as Row | undefined; const rightProperties = right.properties as Row | undefined;
+    return text(leftProperties?.warningId || leftProperties?.id || left.id).localeCompare(text(rightProperties?.warningId || rightProperties?.id || right.id));
+  });
+  for (const feature of features) {
+    const properties = feature.properties as Row; const state = text(properties.warningStatus || properties.state || properties.status).toUpperCase();
     if (["CANCELLED", "EXPIRED"].includes(state)) continue;
-    const starts = timestamp(properties.validFrom || properties.onset); const ends = timestamp(properties.validTo || properties.expires);
-    const updated = timestamp(properties.modified || properties.updated || properties.issuedAt);
-    const hazard = weatherHazard(text(properties.warningType || properties.event)); const hazardLevel = level(properties.severity || properties.impact);
-    const id = text(properties.id || feature.id); if (!id || !hazardLevel || starts >= ends) throw new Error("Met Office warning fields are invalid");
-    for (const [index, coordinates] of polygonRings(feature.geometry).entries()) events.push(event({ id: `national:met-office:${id}:${index}`, type: hazard,
-      level: hazardLevel, area: text(properties.headline || properties.area || "United Kingdom warning area"), starts, ends, updated,
-      geometry: { kind: "polygon", coordinates }, sourceName: "Met Office", sourceUrl: "https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings", context }));
+    const starts = timestamp(properties.validFromDate || properties.validFrom || properties.onset);
+    const ends = timestamp(properties.validToDate || properties.validTo || properties.expires);
+    const updated = timestamp(properties.modifiedDate || properties.modified || properties.updated || properties.issuedAt);
+    const hazardLevel = level(properties.warningLevel || properties.severity || properties.impact);
+    const id = text(properties.warningId || properties.id || feature.id);
+    const types = rows(properties.weatherType || properties.warningType || properties.event).map(text).filter(Boolean);
+    if (!id || !hazardLevel || !types.length || starts >= ends) throw new Error("Met Office warning fields are invalid");
+    const hazards = [...new Set(types.map(weatherHazard))].sort();
+    for (const hazard of hazards) for (const [index, coordinates] of polygonRings(feature.geometry).entries()) {
+      if (events.length >= 500) { limited = true; continue; }
+      events.push(event({ id: `national:met-office:${id}:${hazard}:${index}`, type: hazard, level: hazardLevel,
+        area: text(properties.headline || properties.area || "United Kingdom warning area"), starts, ends, updated,
+        geometry: { kind: "polygon", coordinates }, sourceName: "Met Office", sourceUrl: "https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings", context }));
+    }
   }
   const ids = context.locations.filter(({ countryCode }) => countryCode === "GB").map(({ id }) => id);
-  return { status: "ok", sourceUpdatedAt: events.map(({ sourceUpdatedAt }) => sourceUpdatedAt).sort().at(-1) || context.now.toISOString(), events,
-    error: null, checkedLocationIds: ids, unavailableLocationIds: [], removedEventPrefixes: ["national:met-office:"] };
+  return { status: limited ? "partial" : "ok", sourceUpdatedAt: events.map(({ sourceUpdatedAt }) => sourceUpdatedAt).sort().at(-1) || context.now.toISOString(), events,
+    error: limited ? "Met Office warning event limit of 500 was reached" : null,
+    limitationCode: limited ? "warning_event_limit_reached" : undefined, checkedLocationIds: limited ? [] : ids,
+    unavailableLocationIds: limited ? ids : [], removedEventPrefixes: limited ? [] : ["national:met-office:"] };
 }
 
 export async function fetchNrw(context: IngestionContext): Promise<NationalPartition> {

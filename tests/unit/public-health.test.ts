@@ -120,6 +120,21 @@ describe("public production health", () => {
     expect(await f.check()).toMatchObject({ status: "ok", checks: { transports: { status: "ok", failed: [] } } });
   });
 
+  it("fails when an applicable required transport is absent", async () => {
+    const f = fixture();
+    f.snapshot.providers["national-civil-alerts"].partitions!.GB.transports = [];
+    f.bodies.set(snapshotUrl, JSON.stringify(f.snapshot));
+    expect(await f.check()).toMatchObject({ status: "degraded", checks: { transports: { status: "failed" } } });
+  });
+
+  it("rejects a valid condition file served from another country's path", async () => {
+    const f = fixture(); const germany = f.files.find(({ countryCode }) => countryCode === "DE")!;
+    f.bodies.set("https://unit.public.blob.vercel-storage.com/catalogs/3/conditions/v3/AT.json", JSON.stringify(germany));
+    expect(await f.check()).toMatchObject({ status: "degraded", checks: { conditions: {
+      status: "failed", present: 44, overdueCountryCodes: ["AT"],
+    } } });
+  });
+
   it("keeps a failed required transport viable only while retained success remains fresh", async () => {
     const f = fixture();
     const transport = f.snapshot.providers["national-civil-alerts"].partitions!.GB.transports!

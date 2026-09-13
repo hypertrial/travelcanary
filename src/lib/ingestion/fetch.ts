@@ -69,6 +69,7 @@ export async function fetchWithRetry(
 ): Promise<Response> {
   let lastError: unknown;
   for (let attempt = 0; attempt < attempts; attempt += 1) {
+    if (init.signal?.aborted) throw init.signal.reason instanceof Error ? init.signal.reason : new DOMException("Aborted", "AbortError");
     const controller = new AbortController();
     let reservedBytes = 0;
     let consumedBytes = 0;
@@ -125,6 +126,7 @@ export async function fetchWithRetry(
     } catch (error) {
       clearTimeout(timeout);
       lastError = error;
+      if (init.signal?.aborted) throw init.signal.reason instanceof Error ? init.signal.reason : new DOMException("Aborted", "AbortError");
       if (error instanceof DOMException && error.name === "AbortError") throw error;
       if (attempt < attempts - 1) await new Promise((resolve) => setTimeout(resolve, attempt === 0 ? 250 : 1_000));
     } finally {

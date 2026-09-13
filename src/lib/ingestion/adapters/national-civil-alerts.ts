@@ -7,6 +7,7 @@ import { locationPolygon } from "../../geospatial";
 import { nationalWarningSources, runtimeNationalSystems } from "../../national-warning-sources";
 import { fetchWithRetry, isAllowlistedHttpsUrl, mapConcurrent, withFetchByteBudget } from "../fetch";
 import { recordSourceDiagnostics, type IngestionContext, type SourceAdapter } from "../types";
+import { MAX_EVENTS_PER_PARTITION } from "../limits";
 import { fetchAtPartition } from "./national-civil-alerts-at";
 import { fetchFrPartition } from "./national-civil-alerts-fr";
 import { fetchLuPartition } from "./national-civil-alerts-lu";
@@ -153,7 +154,7 @@ export class NationalCivilAlertsAdapter implements SourceAdapter {
         const boundedFetch = ((input: RequestInfo | URL, init: RequestInit = {}) => context.fetch(input, {
           ...init, signal: init.signal ? AbortSignal.any([init.signal, controller.signal]) : controller.signal,
         })) as typeof fetch;
-        partition = await fetchTransport({ ...context, fetch: boundedFetch });
+        partition = await fetchTransport({ ...context, fetch: boundedFetch, signal: controller.signal });
       } catch (error) { partition = partitionFailure(context, code, error); }
       finally { clearTimeout(timeout); }
       results.set(system.id, { ...partition, events: partition.events.map((event) => ({ ...event, transportId: system.id })) });
@@ -172,9 +173,13 @@ export class NationalCivilAlertsAdapter implements SourceAdapter {
       const status = !enabled.length ? "disabled" : enabled.every((result) => result.status === "ok") ? "ok"
         : enabled.some((result) => result.status === "ok" || result.status === "partial") ? "partial" : "failed";
       const unavailable = new Set(enabled.flatMap((result) => result.unavailableLocationIds || []));
+      const roleRank = { coverage: 0, fallback: 1, context: 2, blocked: 3 } as const;
+      const events = systems.slice().sort((left, right) => roleRank[left.role] - roleRank[right.role] || left.id.localeCompare(right.id))
+        .flatMap(({ id }) => (results.get(id)?.events || []).slice().sort((left, right) => left.id.localeCompare(right.id)))
+        .slice(0, MAX_EVENTS_PER_PARTITION);
       return [code, {
         status, sourceUpdatedAt: enabled.map((result) => result.sourceUpdatedAt).filter(Boolean).sort().at(-1) || null,
-        events: effective.flatMap((result) => result.events || []),
+        events,
         error: status === "failed" || status === "partial" ? "Some national transports unavailable" : null,
         limitationCode: status === "disabled" ? disabledCountries.has(code) ? "runtime_country_disabled" : nationalWarningSources[code].limitationCode || "runtime_transport_disabled" : null,
         checkedLocationIds: [...new Set(enabled.flatMap((result) => result.checkedLocationIds || []))].filter((id) => !unavailable.has(id)),

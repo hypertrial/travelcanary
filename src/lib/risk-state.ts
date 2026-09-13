@@ -61,7 +61,8 @@ export function createEmptyState(now = new Date()): IngestionState {
 
 function updateHealth(
   previous: SourceHealth,
-  result: { status: "ok" | "partial" | "failed" | "disabled" | "not_due"; checkedAt: string; sourceUpdatedAt: string | null; itemCount: number; error: string | null; limitationCode?: string | null },
+  result: { status: "ok" | "partial" | "failed" | "disabled" | "not_due"; checkedAt: string; sourceUpdatedAt: string | null; itemCount: number; error: string | null;
+    limitationCode?: string | null; checkedLocationIds?: string[]; unavailableLocationIds?: string[] },
   cadence: number | null,
   countPartialFailure = false,
 ): SourceHealth {
@@ -73,10 +74,13 @@ function updateHealth(
   };
   if (result.status === "partial") {
     const consecutiveFailures = countPartialFailure ? previous.consecutiveFailures + 1 : 0;
+    const checkedNothing = result.checkedLocationIds?.length === 0 && Boolean(result.unavailableLocationIds?.length);
     return {
       status: consecutiveFailures >= 2 ? "delayed" : "partial",
-      lastAttempt: result.checkedAt, lastSuccess: result.checkedAt, sourceUpdatedAt: result.sourceUpdatedAt,
-      nextExpectedUpdate, itemCount: result.itemCount, consecutiveFailures, error: result.error,
+      lastAttempt: result.checkedAt, lastSuccess: checkedNothing ? previous.lastSuccess : result.checkedAt,
+      sourceUpdatedAt: result.sourceUpdatedAt,
+      nextExpectedUpdate: checkedNothing && previous.lastSuccess ? previous.nextExpectedUpdate : nextExpectedUpdate,
+      itemCount: result.itemCount, consecutiveFailures, error: result.error,
     };
   }
   if (result.status === "disabled") return {
@@ -362,8 +366,10 @@ export function mergeSourceResults(state: IngestionState, results: CatalogSource
   let events = nextState.events.filter((event) => Date.parse(event.expiresAt) > now.getTime());
   for (const result of results) {
     const previousAttempt = nextState.sources[result.sourceId].lastAttempt;
-    if (!("partitions" in result) && previousAttempt
-      && Date.parse(result.checkedAt) < Date.parse(previousAttempt)) continue;
+    const expandedAttempt = !("partitions" in result) && Object.hasOwn(expandedReceiptLocationIds, result.sourceId)
+      ? nextState.expandedSourceHealth[result.sourceId as keyof typeof expandedReceiptLocationIds]?.health.lastAttempt : null;
+    if (expandedAttempt && Date.parse(result.checkedAt) <= Date.parse(expandedAttempt)) continue;
+    if (!("partitions" in result) && previousAttempt && Date.parse(result.checkedAt) < Date.parse(previousAttempt)) continue;
     events = "partitions" in result
       ? mergePartitionedResult(events, nextState, result)
       : mergeAggregateResult(events, nextState, result);
