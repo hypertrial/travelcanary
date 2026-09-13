@@ -13,6 +13,8 @@ import { ConditionsV3Schema, SnapshotV11Schema } from "../src/lib/domain/catalog
 import { catalogV3Paths } from "../src/lib/catalog-paths";
 import { catalogV3CountryCodes } from "../src/lib/domain/contract-identities";
 import { PRIVATE_STATE_HARD_LIMIT_BYTES } from "../src/lib/ingestion/limits";
+// @ts-expect-error Shared JavaScript CLI helper has no declaration file.
+import { fetchHealth } from "./fetch-health.mjs";
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const controlDirectory = join(repository, ".travelcanary");
@@ -82,7 +84,7 @@ async function status() {
   const install = readInstall();
   if (install) {
     try {
-      const response = await fetch(`http://127.0.0.1:${install.port}/api/v1/health`, { signal: AbortSignal.timeout(3000) });
+      const response = await fetchHealth(install.port);
       console.log(JSON.stringify(await response.json(), null, 2));
       if (!response.ok) process.exitCode = 1;
       return;

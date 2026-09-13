@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { fetchHealth } from "../scripts/fetch-health.mjs";
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const controlDirectory = join(repository, ".travelcanary");
@@ -54,7 +55,7 @@ if (command === "setup" && args[runtimeIndex + 1] === "docker") {
   const outsideDocker = current?.runtime === "docker" && !process.env.TRAVELCANARY_DATA_DIR;
   if (outsideDocker && command === "status") {
     try {
-      const response = await fetch(`http://127.0.0.1:${current.port}/api/v1/health`, { signal: AbortSignal.timeout(3000) });
+      const response = await fetchHealth(current.port);
       console.log(JSON.stringify(await response.json(), null, 2)); if (!response.ok) process.exitCode = 1;
     } catch { fail(`TravelCanary is unavailable at http://127.0.0.1:${current.port}`); }
   } else if (outsideDocker && command === "policy") {

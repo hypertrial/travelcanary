@@ -3,6 +3,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { nativeUnitFiles, writeNativeFiles } from "@/lib/native-setup";
+// @ts-expect-error Shared JavaScript CLI helper has no declaration file.
+import { fetchHealth } from "../../scripts/fetch-health.mjs";
 
 describe("native self-host setup", () => {
   it("generates rootless loopback user services in an isolated home", () => {
@@ -32,6 +34,9 @@ describe("native self-host setup", () => {
     const packageJson = JSON.parse(await import("node:fs/promises").then(({ readFile }) => readFile("package.json", "utf8")));
     expect(compose).toContain('"127.0.0.1:${TRAVELCANARY_PORT:-3000}:3000"');
     expect(compose).toContain("command: npm run start:container");
+    expect(compose).toContain("http://127.0.0.1:3000/api/v1/plugin/summary");
+    expect(compose).not.toContain("http://127.0.0.1:3000/api/v1/health");
+    expect(compose).toContain("if(!r.ok)process.exit(1)");
     expect(compose).toContain('command: ["node", "--import", "tsx", "scripts/collector.ts"]');
     expect(compose).toContain("stop_grace_period: 60s");
     expect(compose.match(/image: travelcanary:local/g)).toHaveLength(2);
@@ -42,7 +47,33 @@ describe("native self-host setup", () => {
     expect(dockerfile).toContain('CMD ["npm", "run", "start:container"]');
     expect(cli).toMatch(/plugin\.status === 0[\s\S]+docker-compose/);
     expect(cli).toContain('current?.runtime === "docker" && !process.env.TRAVELCANARY_DATA_DIR');
+    expect(cli).toContain("const response = await fetchHealth(current.port)");
     expect(innerCli.match(/install\?\.runtime === "docker" && !process\.env\.TRAVELCANARY_DATA_DIR/g)).toHaveLength(3);
+    expect(innerCli).toContain("const response = await fetchHealth(install.port)");
     expect(collector).toContain('void scheduler.start(completedAt); status("idle");');
+  });
+
+  it("retries through delayed startup and returns strict degraded health", async () => {
+    let attempts = 0;
+    const response = await fetchHealth(3000, { deadlineMs: 1_000, retryMs: 1, fetchImpl: async () => {
+      attempts += 1;
+      if (attempts < 3) throw new Error("Server is starting");
+      return Response.json({ schemaVersion: 1, status: "degraded" }, { status: 503 });
+    } });
+    expect(attempts).toBe(3);
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({ schemaVersion: 1, status: "degraded" });
+  });
+
+  it("bounds retries when the local server remains unavailable", async () => {
+    const startedAt = Date.now();
+    let attempts = 0;
+    await expect(fetchHealth(3000, { deadlineMs: 100, retryMs: 20, fetchImpl: async () => {
+      attempts += 1;
+      throw new Error("Server is unavailable");
+    } })).rejects.toThrow("Server is unavailable");
+    expect(attempts).toBeGreaterThan(1);
+    expect(Date.now() - startedAt).toBeGreaterThanOrEqual(80);
+    expect(Date.now() - startedAt).toBeLessThan(500);
   });
 });
