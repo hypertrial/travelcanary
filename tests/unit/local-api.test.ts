@@ -31,8 +31,9 @@ describe("local public APIs", () => {
 
   it("returns bounded health and plugin summaries without private diagnostics", async () => {
     const health = await (await import("../../src/app/api/v1/health/route")).GET();
-    expect([200, 503]).toContain(health.status);
+    expect(health.status).toBe(503);
     const healthBody = await health.json();
+    expect(healthBody).toMatchObject({ status: "degraded", checks: { transports: { status: "failed" } } });
     expect(JSON.stringify(healthBody)).not.toContain("travelcanary.db");
     const summary = await (await import("../../src/app/api/v1/plugin/summary/route")).GET();
     const body = await summary.json();

@@ -204,7 +204,7 @@ export function parseNveWarnings(value: unknown, context: IngestionContext): Nat
     removedEventPrefixes: unavailable.size ? [] : ["national:nve:"] };
 }
 
-type EaWarning = Row & { floodArea?: Row };
+type EaWarning = Row;
 const eaFloodAreaGeometryCache = new Map<string, unknown>();
 const MAX_EA_FLOOD_AREA_GEOMETRIES = 64;
 const MAX_EA_FLOOD_EVENTS = 500;

@@ -6,8 +6,7 @@ import { catalogV2CountryCodes, catalogV3CountryCodes, snapshotV10ProviderIds } 
 import { LocationStateV10Schema, PublicLocationSchema, PublicProviderV10StateSchema, SnapshotV10Schema, parseSnapshot, type LocationState } from "./schemas";
 import { ConditionsV2Schema } from "./conditions";
 
-// These catalog 3 preparation contracts retain the existing provider and condition identities.
-// New source identities require a deliberate new wire version, not enum mutation.
+// V11 retains V10 provider identities; new identities require a new wire version.
 export const SnapshotV11ProviderIdSchema = z.enum([...snapshotV10ProviderIds]);
 const country = z.enum(catalogV3CountryCodes);
 const partition = PublicProviderV10StateSchema.shape.partitions.unwrap().valueType;
@@ -31,8 +30,7 @@ function exactMembership(actual: string[], expected: { count: number; hash: stri
   return actual.length === expected.count && new Set(actual).size === actual.length && catalogMembershipHash(actual) === expected.hash;
 }
 
-// Catalog 3 has not been published. Its explicit pending flag distinguishes an
-// unactivated destination from a checked destination in a fresh publication.
+// Pending distinguishes destinations not yet collected after catalog activation.
 const pending = { updatePending: z.literal(true).optional() };
 export const LocationStateV11Schema = z.union([
   LocationStateV10Schema.options[0].safeExtend(pending),

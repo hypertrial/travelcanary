@@ -58,7 +58,7 @@ jobs:
           sudo systemctl daemon-reload
           trap 'sudo systemctl stop travelcanary-web.service travelcanary-collector.service || true' EXIT
           sudo systemctl start travelcanary-web.service travelcanary-collector.service
-          if ! curl --fail --retry 20 --retry-delay 1 --retry-all-errors http://127.0.0.1:3199/api/v1/health; then
+          if ! curl --fail --retry 20 --retry-delay 1 --retry-all-errors http://127.0.0.1:3199/api/v1/plugin/summary; then
             sudo systemctl status travelcanary-web.service travelcanary-collector.service --no-pager || true
             sudo journalctl -u travelcanary-web.service -u travelcanary-collector.service --no-pager -n 100 || true
             exit 1
