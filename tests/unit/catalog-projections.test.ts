@@ -5,7 +5,7 @@ import { buildPendingCatalog3Snapshot, buildPendingCatalog3Conditions } from "@/
 import { buildSnapshot, createEmptyState } from "@/lib/risk";
 import { projectCatalog2Snapshot } from "@/lib/risk-snapshot";
 import { buildConditionsFiles, projectCatalog2Conditions } from "@/lib/conditions/state";
-import { CollectionChangedError, IngestionStateV14Schema, type NormalizedEventV13 } from "@/lib/domain/catalog-state";
+import { CollectionChangedError, IngestionStateV15Schema, type NormalizedEventV13 } from "@/lib/domain/catalog-state";
 import { ConditionsV2Schema, conditionRecords, emptyConditions } from "@/lib/domain/conditions";
 import { SnapshotV11Schema, ConditionsV3Schema, PublicCatalogV3Schema, catalogLocationState } from "@/lib/domain/catalog-public";
 import { applySnapshotStaleness } from "@/lib/snapshot-health";
@@ -35,7 +35,7 @@ function populated() {
   for (const code of ["AT", "FI", "PL"]) Object.assign(state.conditions.locations,
     ConditionsV2Schema.parse(JSON.parse(readFileSync(`public/conditions/v2/${code}.json`, "utf8"))).locations);
   state.conditions.reservations = [{ at: now.toISOString(), weight: 200 }]; state.fingerprints.retained = now.toISOString();
-  return IngestionStateV14Schema.parse(state);
+  return IngestionStateV15Schema.parse(state);
 }
 
 describe("inactive shared catalog3 data", () => {
@@ -84,7 +84,7 @@ describe("pure pending catalog projections", () => {
     state.events.push(event("usgs:cross-border", { kind: "locations", ids: ["at-vienna", "gb-london"] }),
       event("usgs:global", { kind: "polygon", coordinates: [[[-30, 25], [45, 25], [45, 72], [-30, 72], [-30, 25]]] }),
       event("usgs:new-country", { kind: "regions", countryCode: "GB", codes: ["GB:country"] }));
-    expect(IngestionStateV14Schema.safeParse(state).success).toBe(true);
+    expect(IngestionStateV15Schema.safeParse(state).success).toBe(true);
     const before = structuredClone(state); const snapshot = buildPendingCatalog3Snapshot(state, now);
     expect(snapshot.locations["at-vienna"].hazards.length).toBeGreaterThan(0);
     for (const id of addedIds) {

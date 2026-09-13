@@ -69,7 +69,7 @@ describe("Western Balkans reviewed country acceptance", () => {
     }
   });
 
-  it("rejects shared flood and avalanche evidence without inventing Balkan monitoring", () => {
+  it("rejects shared MeteoAlarm and avalanche evidence without reviewed country capability", () => {
     const committed = state();
     const base = fcdoEvent(page("albania", true), "AL", { now, locations, fetch: globalThis.fetch })!;
     committed.events = [
@@ -79,9 +79,9 @@ describe("Western Balkans reviewed country acceptance", () => {
     for (const source of ["meteoalarm", "slf-avalanche"] as const) Object.assign(committed.sources[source], { status: "ok", lastAttempt: now.toISOString(), lastSuccess: now.toISOString() });
     const snapshot = buildCatalog3Snapshot(committed, now);
     for (const { id } of locations) {
-      expect(snapshot.locations[id].hazards).toEqual([]);
+      expect(snapshot.locations[id].hazards.map(({ providerId, type }) => [providerId, type])).toEqual([]);
       expect(snapshot.locations[id].coverageGaps).toEqual(expect.arrayContaining(["flood", "avalanche"]));
-      expect(snapshot.locations[id].delayedHazards.filter((hazard) => hazard === "flood" || hazard === "avalanche")).toEqual([]);
+      expect(snapshot.locations[id].hazards.some(({ type }) => type === "avalanche")).toBe(false);
       expect(snapshot.locations[id].level).toBe("UNKNOWN");
     }
   });

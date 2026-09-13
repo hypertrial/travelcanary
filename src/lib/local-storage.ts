@@ -8,7 +8,7 @@ import { catalog3ConditionsCountryLimit } from "./conditions/publication-budget"
 import { serializeCatalog3Conditions } from "./conditions/serialization";
 import { captureStateControl, assertStateControlChange } from "./publication-control";
 import { createEmptyState } from "./risk";
-import { IngestionStateV14Schema, parseCatalogState, type IngestionStateV14 } from "./domain/catalog-state";
+import { IngestionStateV15Schema, parseCatalogState, type IngestionStateV15 } from "./domain/catalog-state";
 import { CONDITIONS_COUNTRY_LIMIT, CONDITIONS_TOTAL_LIMIT, ConditionsSchema, type Conditions } from "./domain/conditions";
 import { ConditionsV3Schema, SnapshotV11Schema } from "./domain/catalog-public";
 import { catalogV3CountryCodes } from "./domain/contract-identities";
@@ -191,8 +191,8 @@ export class LocalStateStore implements StateStore {
     const data = parseCatalogState(JSON.parse(row.value));
     return { data, etag: String(row.revision), ...captureStateControl(data) };
   }
-  async write(state: IngestionStateV14, expected: Versioned<IngestionStateV14>) {
-    const validated = IngestionStateV14Schema.parse(state);
+  async write(state: IngestionStateV15, expected: Versioned<IngestionStateV15>) {
+    const validated = IngestionStateV15Schema.parse(state);
     assertStateControlChange(validated, expected);
     const value = JSON.stringify(validated);
     const revision = this.database.compareAndSwap("private", STATE_KEY, value, Number(expected.etag), PRIVATE_STATE_HARD_LIMIT_BYTES);
@@ -311,7 +311,7 @@ export function initializeLocalRuntime(database: LocalDatabase, now = new Date()
   const state = createEmptyState(now);
   state.collection = { catalogVersion: 3, revision: 1 };
   state.publicationTransition = null;
-  const validatedState = IngestionStateV14Schema.parse(state);
+  const validatedState = IngestionStateV15Schema.parse(state);
   const snapshot = buildCatalog3Snapshot(validatedState, now);
   const conditionEnv = { ...environment, LOCAL_CONDITIONS_ENABLED: "true", NONCOMMERCIAL_DATA_ENABLED: "false" };
   const conditions = buildCatalog3Conditions(validatedState, now, conditionEnv);

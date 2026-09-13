@@ -1,7 +1,6 @@
 import { catalogLocationsV3 } from "../catalog-data";
 import { locations } from "../data";
-import { ExpandedAggregateSourceResultSchema, expandedReceiptLocationIds } from "../domain/catalog-state";
-import type { SourceResult } from "../domain/schemas";
+import { ExpandedAggregateSourceResultSchema, expandedReceiptLocationIds, type CatalogSourceResult as SourceResult } from "../domain/catalog-state";
 import { isExpandedSourceAdapter, type ExpandedSourceAdapter, type SourceAdapter } from "./types";
 
 export function expandedAdapterLocations(adapter: ExpandedSourceAdapter, catalogVersion: 2 | 3) {
@@ -17,7 +16,14 @@ export function expandedAdapterLocations(adapter: ExpandedSourceAdapter, catalog
 // retained evidence or make their independent receipts appear freshly checked.
 export function scopeAdapterResult(adapter: SourceAdapter, catalogVersion: 2 | 3, result: SourceResult): SourceResult {
   if (result.sourceId !== adapter.id) throw new Error("Adapter result source identity mismatch");
-  if (!isExpandedSourceAdapter(adapter)) return result;
+  if (!isExpandedSourceAdapter(adapter)) {
+    if (catalogVersion !== 3 || "partitions" in result) return result;
+    const targets = catalogLocationsV3.map(({ id }) => id);
+    const checkedLocationIds = result.checkedLocationIds || (result.status === "ok" ? targets : []);
+    const checked = new Set(checkedLocationIds);
+    const unavailableLocationIds = result.unavailableLocationIds || targets.filter((id) => !checked.has(id));
+    return ExpandedAggregateSourceResultSchema.parse({ ...result, checkedLocationIds, unavailableLocationIds });
+  }
   if ("partitions" in result) throw new Error("Expanded adapter requires a scoped aggregate result");
   const targets = new Set(expandedAdapterLocations(adapter, catalogVersion).map(({ id }) => id));
   if ((result.candidates?.length || 0) > 0) throw new Error("Approved expanded adapters do not emit discovery candidates");

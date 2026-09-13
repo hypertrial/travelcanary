@@ -40,10 +40,9 @@ test("a valid legacy V2 snapshot keeps newly listed destinations UNKNOWN and upd
     const coverage = briefing.getByRole("region", { name: `What TravelCanary checks for ${location(id).name}`, exact: true });
     await expect(coverage.locator("p[data-status]")).toHaveAttribute("data-status", "unavailable");
     await expect(coverage.locator("p[data-status]")).toContainText("Source updates unavailable. Last update time unavailable.");
-    await expect(coverage.getByText(/^Monitoring coverage: 0 fully checked, 0 partly checked,/)).toHaveCount(1);
-    // A glossary may define Fully checked; no actual checked-category section is allowed.
-    await expect(briefing.locator("summary").filter({ hasText: /^Fully checked \(/ })).toHaveCount(0);
+    await expect(coverage.getByText(/^Monitoring coverage: 0 monitored, 0 partly monitored,/)).toHaveCount(1);
+    // A glossary may define Monitored; no actual monitored-category section is allowed.
+    await expect(briefing.locator("summary").filter({ hasText: /^Monitored \(/ })).toHaveCount(0);
     if (id === "gb-london") { await close(page); await select(page, "va-vatican-city"); }
   }
 });
-

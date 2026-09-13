@@ -149,7 +149,7 @@ describe("national civil alert country partitions", () => {
 
   it("keeps every country without active national runtime current, sourced, and fail-closed", () => {
     const disabled = Object.values(nationalWarningSources).filter(({ enabled }) => !enabled);
-    expect(disabled).toHaveLength(18);
+    expect(disabled).toHaveLength(33);
     expect(disabled.every(({ reviewedAt, evidenceUrls, limitationCode }) =>
       Date.parse(reviewedAt) >= Date.parse("2026-08-30") && evidenceUrls.length > 0 && Boolean(limitationCode))).toBe(true);
   });

@@ -159,10 +159,9 @@ test("desktop expanded coverage evidence is visually stable", async ({ page }) =
   await hideDevelopmentChrome(page);
   await selectBudapest(page);
   const panel = page.getByRole("complementary", { name: /Budapest/ });
-  await panel.getByText("Fully checked (3)").click();
   await panel.getByText("Air quality", { exact: true }).first().click();
   await expect(panel.getByRole("link", { name: /Official provider site/ }).first()).toBeVisible();
-  const airQuality = panel.locator('details[data-status="available"]').filter({ hasText: "Air quality" });
+  const airQuality = panel.locator('details[data-status="limited"]').filter({ hasText: "Air quality" });
   await expect(airQuality).toHaveScreenshot("desktop-coverage-expanded.png", {
     maxDiffPixelRatio: 0.03,
   });
@@ -175,7 +174,7 @@ test("desktop delayed destination coverage is visually stable", async ({ page })
   await hideDevelopmentChrome(page);
   await selectBudapest(page);
   const panel = page.getByRole("complementary", { name: /Budapest/ });
-  await expect(panel.getByText("Update delayed", { exact: true }).first()).toBeVisible();
+  await expect(panel.getByText("Partly monitored — update delayed", { exact: true }).first()).toBeVisible();
   await expect(panel.getByRole("region", { name: "What TravelCanary checks for Budapest" })).toHaveScreenshot("desktop-coverage-delayed.png", {
     maxDiffPixelRatio: 0.03,
   });

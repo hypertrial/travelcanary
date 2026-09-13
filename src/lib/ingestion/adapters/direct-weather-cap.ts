@@ -17,7 +17,7 @@ const hash = (value: string) => createHash("sha256").update(value).digest("hex")
 const levels = { Moderate: "ELEVATED", Severe: "HIGH", Extreme: "SEVERE" } as const;
 const aemetHazards: Record<string, HazardType> = {
   AT: "extreme-heat", BT: "extreme-cold", NE: "snow-ice", AL: "avalanche", VI: "severe-weather",
-  LL: "severe-weather", TO: "severe-weather", NI: "severe-weather", CO: "coastal", DE: "snow-ice",
+  LL: "severe-weather", TO: "severe-weather", NI: "severe-weather", VS: "severe-weather", CO: "coastal", DE: "snow-ice",
 };
 const dhmzHazards: Record<string, HazardType> = {
   "1": "severe-weather", "2": "snow-ice", "3": "severe-weather", "4": "severe-weather", "5": "extreme-heat",

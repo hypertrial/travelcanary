@@ -1,16 +1,16 @@
 import { aggregatePartitionHealth } from "./partition-health";
 import catalogV2 from "../../data/catalog-releases/2.json";
-import { expandedReceiptLocationIds, IngestionStateV14Schema, parseCatalogState, type IngestionStateV14 as IngestionState, type NormalizedEventV13 as NormalizedEvent } from "./domain/catalog-state";
+import { EA_FLOOD_GEOMETRY_CACHE_LIMIT, expandedReceiptLocationIds, IngestionStateV15Schema, parseCatalogState, type RuntimePartitionedSourceResult,
+  type CatalogSourceResult, type CatalogTransportResult, type IngestionStateV15 as IngestionState, type NormalizedEventV13 as NormalizedEvent } from "./domain/catalog-state";
 import { createHash } from "node:crypto";
 import {
-  countryCodes,
   providerIdForSourceId, sourceIds, type AggregateSourceResult, type CountryCode,
-  type PartitionedSourceResult, type SourceHealth,
-  type SourceId, type SourceResult,
+  type SourceHealth, type SourceId,
 } from "./domain/schemas";
+import { catalogV3CountryCodes } from "./domain/contract-identities";
 import { distanceKm } from "./geospatial";
 import { hazardLevelRank } from "./hazard-lifecycle";
-import { nationalWarningSources } from "./national-warning-sources";
+import { meteoalarmPrimarySystem, nationalWarningSources } from "./national-warning-sources";
 import { providerRegistry } from "./provider-registry";
 import { enabledSources, sourceCadenceMinutes } from "./risk-policy";
 import { MAX_RETAINED_EVENTS, MAX_RETAINED_FINGERPRINTS } from "./ingestion/limits";
@@ -26,9 +26,9 @@ function emptyHealth(sourceId: SourceId): SourceHealth {
 
 export function createEmptyState(now = new Date()): IngestionState {
   const sources = Object.fromEntries(sourceIds.map((id) => [id, emptyHealth(id)]));
-  const meteoalarm = Object.fromEntries(countryCodes.map((countryCode) => [countryCode, emptyHealth("meteoalarm")]));
-  const eea = Object.fromEntries(countryCodes.map((countryCode) => [countryCode, emptyHealth("eea")]));
-  const nationalCivilAlerts = Object.fromEntries(countryCodes.map((countryCode) => [countryCode, nationalWarningSources[countryCode].enabled
+  const meteoalarm = Object.fromEntries(catalogV3CountryCodes.map((countryCode) => [countryCode, emptyHealth("meteoalarm")]));
+  const eea = Object.fromEntries(catalogV3CountryCodes.map((countryCode) => [countryCode, emptyHealth("eea")]));
+  const nationalCivilAlerts = Object.fromEntries(catalogV3CountryCodes.map((countryCode) => [countryCode, nationalWarningSources[countryCode].enabled
     ? emptyHealth("national-civil-alerts")
     : { ...emptyHealth("national-civil-alerts"), status: "not_monitored" as const, error: nationalWarningSources[countryCode].limitationCode }])) as Record<CountryCode, SourceHealth>;
   sources["national-civil-alerts"] = aggregatePartitionHealth(nationalCivilAlerts);
@@ -36,23 +36,25 @@ export function createEmptyState(now = new Date()): IngestionState {
     ...(active ? emptyHealth(sourceId) : { ...emptyHealth(sourceId), status: "not_monitored" as const, error: limitationCode }),
     checkedLocationIds: [], unavailableLocationIds: [],
   });
-  const meteoalarmTransports = Object.fromEntries(countryCodes.map((countryCode) => [countryCode,
+  const meteoalarmTransports = Object.fromEntries(catalogV3CountryCodes.map((countryCode) => [countryCode,
     Object.fromEntries(nationalWarningSources[countryCode].systems
-      .filter(({ runtimeTarget }) => runtimeTarget === "meteoalarm-fallback")
+      .filter(({ runtimeTarget }) => runtimeTarget === "meteoalarm-primary" || runtimeTarget === "meteoalarm-fallback")
       .map((system) => [system.id, transportHealth("meteoalarm", system.status === "active", system.limitationCode)])),
   ]));
-  const nationalTransports = Object.fromEntries(countryCodes.map((countryCode) => [countryCode,
+  const nationalTransports = Object.fromEntries(catalogV3CountryCodes.map((countryCode) => [countryCode,
     Object.fromEntries(nationalWarningSources[countryCode].systems
-      .filter(({ runtimeTarget }) => runtimeTarget !== "meteoalarm-fallback")
+      .filter(({ runtimeTarget }) => runtimeTarget === "national-civil-alerts")
       .map((system) => [system.id, transportHealth("national-civil-alerts", system.status === "active", system.limitationCode)])),
   ]));
   const providers = Object.fromEntries(Object.keys(providerRegistry).map((id) => [
     id, structuredClone(sources[providerRegistry[id as keyof typeof providerRegistry].sourceId]),
   ]));
   return parseCatalogState({
-    schemaVersion: 12, updatedAt: now.toISOString(), events: [], candidates: [], sources, providers,
+    schemaVersion: 15, updatedAt: now.toISOString(), events: [], candidates: [], sources, providers,
+    collection: { catalogVersion: 2, revision: 0 }, publicationTransition: null, expandedSourceHealth: {}, collectionReceipts: { 2: {}, 3: {} },
+    frozenEaFloodAreaGeometries: {},
     sourcePartitions: { meteoalarm, eea, nationalCivilAlerts }, providerCoverage: {}, fingerprints: {},
-    partitionTransports: { meteoalarm: meteoalarmTransports, nationalCivilAlerts: nationalTransports, eea: Object.fromEntries(countryCodes.map((code) => [code, {}])) },
+    partitionTransports: { meteoalarm: meteoalarmTransports, nationalCivilAlerts: nationalTransports, eea: Object.fromEntries(catalogV3CountryCodes.map((code) => [code, {}])) },
     conditions: ConditionsCacheSchema.parse({}),
   });
 }
@@ -183,13 +185,15 @@ function mergeAggregateResult(events: NormalizedEvent[], state: IngestionState, 
   return events;
 }
 
-function eventBelongsToCountry(event: NormalizedEvent, countryCode: CountryCode) {
+function eventBelongsToCountry(event: NormalizedEvent, countryCode: string) {
+  if (event.partitionCountryCode) return event.partitionCountryCode === countryCode;
   if (event.geometry.kind === "regions") return event.geometry.countryCode === countryCode;
-  return event.geometry.kind === "locations" && event.geometry.ids.some((id) => id.startsWith(`${countryCode.toLowerCase()}-`));
+  if (event.geometry.kind === "locations") return event.geometry.ids.some((id) => id.startsWith(`${countryCode.toLowerCase()}-`));
+  return false;
 }
 
 function partitionTransportCadence(
-  countryCode: CountryCode,
+  countryCode: keyof typeof nationalWarningSources,
   transportId: string,
   sourceId: SourceId,
 ) {
@@ -197,14 +201,14 @@ function partitionTransportCadence(
   return system?.cadenceMinutes ?? sourceCadenceMinutes[sourceId];
 }
 
-function mergePartitionedResult(events: NormalizedEvent[], state: IngestionState, result: PartitionedSourceResult): NormalizedEvent[] {
+function mergePartitionedResult(events: NormalizedEvent[], state: IngestionState, result: RuntimePartitionedSourceResult): NormalizedEvent[] {
   const partitionKey = result.sourceId === "national-civil-alerts" ? "nationalCivilAlerts" : result.sourceId;
   const partitions = state.sourcePartitions[partitionKey];
   const providerId = providerIdForSourceId(result.sourceId);
   const previousCoverage = state.providerCoverage[providerId];
   const checkedLocationIds = new Set<string>();
   const unavailableLocationIds = new Set<string>();
-  for (const countryCode of countryCodes) {
+  for (const countryCode of Object.keys(result.partitions) as Array<keyof typeof result.partitions>) {
     const partition = result.partitions[countryCode];
     if (partitions[countryCode].lastAttempt && Date.parse(result.checkedAt) < Date.parse(partitions[countryCode].lastAttempt)) {
       const prefix = `${countryCode.toLowerCase()}-`;
@@ -216,12 +220,12 @@ function mergePartitionedResult(events: NormalizedEvent[], state: IngestionState
       partitions[countryCode],
       { ...partition, checkedAt: result.checkedAt, itemCount: partition.events.length },
       sourceCadenceMinutes[result.sourceId],
-      partition.limitationCode !== "ifrc_fallback" && partition.limitationCode !== "national_authority_fallback",
+      !["ifrc_fallback", "national_authority_fallback", "observation_only_partial_coverage"].includes(partition.limitationCode || ""),
     );
     const obsoleteTransports = new Set<string>();
     if (partition.transports) {
       const transportState = state.partitionTransports[partitionKey][countryCode];
-      for (const [transportId, transport] of Object.entries(partition.transports)) {
+      for (const [transportId, transport] of Object.entries(partition.transports as Record<string, CatalogTransportResult>)) {
         if (transport.status === "not_due") continue;
         const previous = transportState[transportId] || {
           ...emptyHealth(result.sourceId), checkedLocationIds: [], unavailableLocationIds: [],
@@ -232,15 +236,30 @@ function mergePartitionedResult(events: NormalizedEvent[], state: IngestionState
         }
         transportState[transportId] = {
           ...updateHealth(previous, { ...transport, checkedAt: result.checkedAt, itemCount: transport.events?.length ?? partition.events.length },
-            partitionTransportCadence(countryCode, transportId, result.sourceId), true),
+            partitionTransportCadence(countryCode, transportId, result.sourceId), partition.limitationCode !== "observation_only_partial_coverage"),
           checkedLocationIds: [...new Set(transport.checkedLocationIds || [])].sort(),
           unavailableLocationIds: [...new Set(transport.unavailableLocationIds || [])].sort(),
         };
+        if (transportId === "ea-flood" && transport.frozenEaFloodAreaGeometries) {
+          const byId = ([left]: [string, unknown], [right]: [string, unknown]) => left.localeCompare(right);
+          const current = Object.entries(state.frozenEaFloodAreaGeometries).sort(byId);
+          const incoming = Object.entries(transport.frozenEaFloodAreaGeometries).sort(byId);
+          const retained: typeof state.frozenEaFloodAreaGeometries = {};
+          let bytes = 2;
+          for (const [id, polygons] of [...incoming, ...current.filter(([id]) => !transport.frozenEaFloodAreaGeometries![id])]) {
+            if (Object.keys(retained).length >= 128) break;
+            const entryBytes = Buffer.byteLength(`${Object.keys(retained).length ? "," : ""}${JSON.stringify(id)}:${JSON.stringify(polygons)}`);
+            if (bytes + entryBytes > EA_FLOOD_GEOMETRY_CACHE_LIMIT) continue;
+            retained[id] = polygons; bytes += entryBytes;
+          }
+          // ponytail: retain a 1 MB/128-area cache; add a dedicated geometry store if reviewed destination scope exceeds it.
+          state.frozenEaFloodAreaGeometries = retained;
+        }
       }
     }
     (partition.checkedLocationIds || []).forEach((id) => checkedLocationIds.add(id));
     (partition.unavailableLocationIds || []).forEach((id) => unavailableLocationIds.add(id));
-    const owned = Object.entries(partition.transports || {}).filter(([, transport]) => transport.events !== undefined);
+    const owned = Object.entries((partition.transports || {}) as Record<string, CatalogTransportResult>).filter(([, transport]) => transport.events !== undefined);
     if (owned.length) {
       for (const [transportId, transport] of owned) {
         if (obsoleteTransports.has(transportId) || transport.status === "not_due" || transport.status === "failed") continue;
@@ -251,13 +270,13 @@ function mergePartitionedResult(events: NormalizedEvent[], state: IngestionState
           return !eventTargetsLocations(event, checked) && !(transport.removedEventPrefixes || []).some((prefix) => eventMatchesRemovalPrefix(event.id, prefix));
         });
         if (transport.status !== "disabled") {
-          const previousById = new Map(events.filter((event) => event.sourceId === result.sourceId).map((event) => [event.id, event]));
+          const previousById = new Map(events.filter((event) => event.sourceId === result.sourceId && eventBelongsToCountry(event, countryCode)).map((event) => [event.id, event]));
           events.push(...transport.events!.map((event) => {
             const previous = previousById.get(event.id);
             // An incomplete AQI sample set can raise the known worst category, but cannot lower it.
             if (result.sourceId === "eea" && transport.status === "partial" && previous
               && hazardLevelRank[previous.level] > hazardLevelRank[event.level]) return previous;
-            return { ...event, transportId };
+            return { ...event, transportId, partitionCountryCode: countryCode };
           }));
         }
       }
@@ -267,8 +286,10 @@ function mergePartitionedResult(events: NormalizedEvent[], state: IngestionState
       const superseded = result.sourceId === "meteoalarm" ? owned.flatMap(([id, transport]) => {
         if (obsoleteTransports.has(id) || !["ok", "partial"].includes(transport.status)) return [];
         const removed = transport.removedEventPrefixes || [];
-        if (["meteoalarm-primary", "ifrc-meteoalarm"].includes(id)) return removed;
-        const root = id === "aemet-cap" ? "meteoalarm:aemet:" : id === "dhmz-cap" ? "meteoalarm:dhmz:" : null;
+        const primaryId = meteoalarmPrimarySystem(countryCode)?.id || "meteoalarm-primary";
+        if ([primaryId, "ifrc-meteoalarm"].includes(id)) return removed;
+        const root = id === "aemet-cap" ? "meteoalarm:aemet:" : id === "dhmz-cap" ? "meteoalarm:dhmz:"
+          : id === "meteoalarm-edr" ? "meteoalarm:edr:" : null;
         return root ? removed.filter((prefix) => prefix.startsWith(root) && prefix.length > root.length)
           .map((prefix) => `meteoalarm:${prefix.slice(root.length)}`) : [];
       }) : [];
@@ -280,12 +301,12 @@ function mergePartitionedResult(events: NormalizedEvent[], state: IngestionState
     }
     if (partition.status === "ok" || partition.status === "disabled") {
       events = events.filter((event) => event.sourceId !== result.sourceId || !eventBelongsToCountry(event, countryCode));
-      if (partition.status === "ok") events.push(...partition.events);
+      if (partition.status === "ok") events.push(...partition.events.map((event) => ({ ...event, partitionCountryCode: countryCode })));
     } else if (partition.status === "partial") {
       const replaced = new Set(partition.checkedLocationIds || []);
       events = events.filter((event) => event.sourceId !== result.sourceId
         || (!(partition.removedEventPrefixes || []).some((prefix) => eventMatchesRemovalPrefix(event.id, prefix)) && !eventTargetsLocations(event, replaced)));
-      events.push(...partition.events);
+      events.push(...partition.events.map((event) => ({ ...event, partitionCountryCode: countryCode })));
     }
   }
   state.sources[result.sourceId] = aggregatePartitionHealth(partitions);
@@ -298,6 +319,35 @@ function mergePartitionedResult(events: NormalizedEvent[], state: IngestionState
   return events;
 }
 
+function mergeCatalogReceipt(state: IngestionState, result: CatalogSourceResult) {
+  const catalogVersion = state.collection.catalogVersion;
+  const receipts = state.collectionReceipts[catalogVersion];
+  const previous = receipts[result.sourceId];
+  if (previous && Date.parse(previous.checkedAt) >= Date.parse(result.checkedAt)) return;
+  let checkedLocationIds: string[];
+  let unavailableLocationIds: string[];
+  if ("partitions" in result) {
+    const enabled = Object.values(result.partitions).filter((partition) => partition.status !== "disabled");
+    checkedLocationIds = [...new Set(enabled.flatMap((partition) => partition.checkedLocationIds || []))].sort();
+    unavailableLocationIds = [...new Set(enabled.flatMap((partition) => partition.unavailableLocationIds || []))]
+      .filter((id) => !checkedLocationIds.includes(id)).sort();
+  } else {
+    checkedLocationIds = [...new Set(result.checkedLocationIds || [])].sort();
+    unavailableLocationIds = [...new Set(result.unavailableLocationIds || [])].filter((id) => !checkedLocationIds.includes(id)).sort();
+  }
+  const status = "partitions" in result ? (() => {
+    const enabled = Object.values(result.partitions).filter((partition) => partition.status !== "disabled");
+    return !enabled.length ? "disabled" as const : enabled.every((partition) => partition.status === "ok") ? "ok" as const
+      : enabled.some((partition) => partition.status === "ok" || partition.status === "partial") ? "partial" as const : "failed" as const;
+  })() : result.status;
+  receipts[result.sourceId] = {
+    catalogVersion, collectionRevision: state.collection.revision, checkedAt: result.checkedAt, status,
+    checkedLocationIds: status === "failed" || status === "disabled" ? [] : checkedLocationIds,
+    unavailableLocationIds: status === "failed" || status === "disabled"
+      ? [...new Set([...checkedLocationIds, ...unavailableLocationIds])].sort() : unavailableLocationIds,
+  };
+}
+
 function earthquakeEventsMatch(usgs: NormalizedEvent, emsc: NormalizedEvent): boolean {
   if (!usgs.earthquake || !emsc.earthquake) return false;
   const usgsIds = new Set(usgs.earthquake.ids.map((id) => id.toLowerCase()));
@@ -307,7 +357,7 @@ function earthquakeEventsMatch(usgs: NormalizedEvent, emsc: NormalizedEvent): bo
     && Math.abs(usgs.earthquake.magnitude - emsc.earthquake.magnitude) <= 0.5;
 }
 
-export function mergeSourceResults(state: IngestionState, results: SourceResult[], now: Date): IngestionState {
+export function mergeSourceResults(state: IngestionState, results: CatalogSourceResult[], now: Date): IngestionState {
   const nextState = structuredClone(state);
   let events = nextState.events.filter((event) => Date.parse(event.expiresAt) > now.getTime());
   for (const result of results) {
@@ -317,6 +367,7 @@ export function mergeSourceResults(state: IngestionState, results: SourceResult[
     events = "partitions" in result
       ? mergePartitionedResult(events, nextState, result)
       : mergeAggregateResult(events, nextState, result);
+    mergeCatalogReceipt(nextState, result);
     if (!("partitions" in result) && result.candidates && result.status !== "failed") {
       const providerId = providerIdForSourceId(result.sourceId);
       const retained = result.status === "ok" && providerId !== "gdelt"
@@ -364,8 +415,8 @@ export function mergeSourceResults(state: IngestionState, results: SourceResult[
   const boundedFingerprints = Object.fromEntries(Object.entries(fingerprints)
     .sort(([, a], [, b]) => Date.parse(b) - Date.parse(a))
     .slice(0, MAX_RETAINED_FINGERPRINTS));
-  return IngestionStateV14Schema.parse({
-    ...nextState, schemaVersion: 14,
+  return IngestionStateV15Schema.parse({
+    ...nextState, schemaVersion: 15,
     updatedAt: Date.parse(nextState.updatedAt) > now.getTime() ? nextState.updatedAt : now.toISOString(),
     events: unique, fingerprints: boundedFingerprints,
   });

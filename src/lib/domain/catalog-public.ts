@@ -1,8 +1,8 @@
 import { z } from "zod";
 import { expandedProviderApplies, expandedProviderIds } from "../expanded-coverage";
-import catalogV2 from "../../../data/catalog-releases/2.json";
-import catalogV3 from "../../../data/catalog-releases/3.json";
-import { catalogV3CountryCodes, snapshotV10ProviderIds } from "./contract-identities";
+import membershipJson from "../../../data/catalog-membership.json";
+import { catalogMembershipHash } from "../catalog-membership";
+import { catalogV2CountryCodes, catalogV3CountryCodes, snapshotV10ProviderIds } from "./contract-identities";
 import { LocationStateV10Schema, PublicLocationSchema, PublicProviderV10StateSchema, SnapshotV10Schema, parseSnapshot, type LocationState } from "./schemas";
 import { ConditionsV2Schema } from "./conditions";
 
@@ -21,12 +21,14 @@ const provider = PublicProviderV10StateSchema.extend({
   partitions: z.record(country, partition).optional(),
   expandedCoverage: ExpandedPublicCoverageSchema.optional(),
 });
-const idsV2 = new Set<string>(catalogV2.locationIds);
-const idsV3 = new Set<string>(catalogV3.locationIds);
+const membership = membershipJson.releases;
 const partitioned = new Set(["meteoalarm", "eea-aqi", "national-civil-alerts"]);
 
 function exactIds(actual: string[], expected: Set<string>) {
   return actual.length === expected.size && new Set(actual).size === actual.length && actual.every((id) => expected.has(id));
+}
+function exactMembership(actual: string[], expected: { count: number; hash: string }) {
+  return actual.length === expected.count && new Set(actual).size === actual.length && catalogMembershipHash(actual) === expected.hash;
 }
 
 // Catalog 3 has not been published. Its explicit pending flag distinguishes an
@@ -48,11 +50,11 @@ export const SnapshotV11Schema = z.object({
   locations: z.record(z.string(), LocationStateV11Schema),
   providers: z.record(SnapshotV11ProviderIdSchema, provider),
 }).superRefine((value, context) => {
-  if (!exactIds(Object.keys(value.locations), idsV3)) context.addIssue({ code: "custom", path: ["locations"], message: "Snapshot must contain exact catalog 3 membership" });
+  if (!exactMembership(Object.keys(value.locations), membership[3])) context.addIssue({ code: "custom", path: ["locations"], message: "Snapshot must contain exact catalog 3 membership" });
   for (const [id, health] of Object.entries(value.providers)) {
     if (health.expandedCoverage) {
       const receipt = health.expandedCoverage;
-      const expected = new Set(catalogV3.locationIds.filter((locationId) => expandedProviderApplies(id, { id: locationId, countryCode: locationId.slice(0, 2).toUpperCase() })));
+      const expected = new Set(Object.keys(value.locations).filter((locationId) => expandedProviderApplies(id, { id: locationId, countryCode: locationId.slice(0, 2).toUpperCase() })));
       const all = [...receipt.checkedLocationIds, ...receipt.unavailableLocationIds];
       if (!(expandedProviderIds as readonly string[]).includes(id) || !exactIds(all, expected)
         || (receipt.status === "ok" && receipt.unavailableLocationIds.length)
@@ -73,8 +75,9 @@ export const ConditionsV3Schema = z.object({
   // original wire identity or claiming that this payload is a V2 publication.
   const validated = ConditionsV2Schema.safeParse({ ...value, schemaVersion: 2, catalogVersion: 2 });
   if (!validated.success) for (const issue of validated.error.issues) context.addIssue({ code: "custom", path: issue.path, message: issue.message });
-  const expected = new Set(catalogV3.locationIds.filter((id) => id.startsWith(`${value.countryCode.toLowerCase()}-`)));
-  if (!exactIds(Object.keys(value.locations), expected)) context.addIssue({ code: "custom", path: ["locations"], message: "Conditions must contain exact country catalog 3 membership" });
+  if (!exactMembership(Object.keys(value.locations), membership[3].countries[value.countryCode])) {
+    context.addIssue({ code: "custom", path: ["locations"], message: "Conditions must contain exact country catalog 3 membership" });
+  }
 });
 
 export const PublicCatalogV3LocationSchema = PublicLocationSchema.extend({
@@ -83,15 +86,15 @@ export const PublicCatalogV3LocationSchema = PublicLocationSchema.extend({
   scopeNote: z.string().min(1).max(300).optional(),
 });
 export const PublicCatalogV3Schema = PublicCatalogV3LocationSchema.array().superRefine((value, context) => {
-  if (!exactIds(value.map(({ id }) => id), idsV3)) context.addIssue({ code: "custom", message: "Catalog must contain exact release 3 membership" });
+  if (!exactMembership(value.map(({ id }) => id), membership[3])) context.addIssue({ code: "custom", message: "Catalog must contain exact release 3 membership" });
   for (const [index, location] of value.entries()) {
     if (!location.id.startsWith(`${location.countryCode.toLowerCase()}-`)) context.addIssue({ code: "custom", path: [index, "countryCode"], message: "Catalog destination country mismatch" });
-    if (!idsV2.has(location.id) && ["island", "park", "mountain"].includes(location.type) && location.scope !== "local-area") context.addIssue({ code: "custom", path: [index, "scope"], message: "New regional destinations require reviewed local-area scope" });
+    if (!(catalogV2CountryCodes as readonly string[]).includes(location.countryCode) && ["island", "park", "mountain"].includes(location.type) && location.scope !== "local-area") context.addIssue({ code: "custom", path: [index, "scope"], message: "New regional destinations require reviewed local-area scope" });
     if (Boolean(location.scope) !== Boolean(location.scopeNote)) context.addIssue({ code: "custom", path: [index, "scope"], message: "Local scope requires its description" });
   }
 });
 export const PublicCatalogV2Schema = PublicLocationSchema.array().superRefine((value, context) => {
-  if (!exactIds(value.map(({ id }) => id), idsV2)) context.addIssue({ code: "custom", message: "Catalog must contain exact release 2 membership" });
+  if (!exactMembership(value.map(({ id }) => id), membership[2])) context.addIssue({ code: "custom", message: "Catalog must contain exact release 2 membership" });
 });
 export type PublicCatalogLocation = z.infer<typeof PublicCatalogV3LocationSchema>;
 export type CatalogSnapshot = z.infer<typeof SnapshotV10Schema> | z.infer<typeof SnapshotV11Schema>;
@@ -99,7 +102,7 @@ export type CatalogSnapshot = z.infer<typeof SnapshotV10Schema> | z.infer<typeof
 export function parseCatalogSnapshot(value: unknown): CatalogSnapshot {
   if (value && typeof value === "object" && "schemaVersion" in value && value.schemaVersion === 11) return SnapshotV11Schema.parse(value);
   const legacy = parseSnapshot(value);
-  if (!exactIds(Object.keys(legacy.locations), idsV2)) throw new Error("Snapshot must contain exact catalog 2 membership");
+  if (!exactMembership(Object.keys(legacy.locations), membership[2])) throw new Error("Snapshot must contain exact catalog 2 membership");
   return legacy;
 }
 

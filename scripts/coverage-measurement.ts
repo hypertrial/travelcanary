@@ -13,31 +13,39 @@ import { HazardTypeSchema, type Snapshot } from "../src/lib/domain/schemas";
 // Bump when coverage-presentation/risk-policy measurement semantics change.
 const measurementPolicyRevision = 2;
 const counts = () => ({ applicable: 0, fullyChecked: 0, partlyChecked: 0, notChecked: 0, freshFullyChecked: 0, freshPartlyChecked: 0, delayed: 0 });
-export function measureCoverage(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date) {
+export function coveragePairStates(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date) {
   if (!Number.isFinite(now.getTime())) throw new Error("Invalid measurement time");
   const ids = catalog.map(({ id }) => id).sort();
   if (new Set(ids).size !== ids.length || ids.join(",") !== Object.keys(snapshot.locations).sort().join(",")) throw new Error("Coverage measurement catalog mismatch");
+  const snapshotFresh = now.getTime() - Date.parse(snapshot.generatedAt) <= 30 * 60_000
+    && Date.parse(snapshot.generatedAt) <= now.getTime() + 5 * 60_000;
+  return catalog.flatMap((location) => {
+    const presentation = locationCoveragePresentation({ location, state: snapshot.locations[location.id], snapshot, now });
+    return presentation.categories.flatMap(({ subchecks }) => subchecks).flatMap((check) => {
+      if (!isExpandedDestination(location) && !hazardAppliesToLocation(check.hazard, location)) return [];
+      const status = check.coverageStatus === "available" ? "monitored" as const : check.coverageStatus === "limited" ? "partial" as const : "unavailable" as const;
+      return [{ key: `${location.id}|${check.hazard}`, locationId: location.id, countryCode: location.countryCode, hazard: check.hazard, status,
+        delayed: status !== "unavailable" && (!snapshotFresh || check.freshnessStatus === "delayed") }];
+    });
+  }).sort((left, right) => left.key.localeCompare(right.key));
+}
+
+export function measureCoverage(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date) {
   const totals = counts();
   const byCountry: Record<string, ReturnType<typeof counts>> = {};
   const byHazard: Record<string, ReturnType<typeof counts>> = {};
-  const snapshotFresh = now.getTime() - Date.parse(snapshot.generatedAt) <= 30 * 60_000
-    && Date.parse(snapshot.generatedAt) <= now.getTime() + 5 * 60_000;
-  for (const location of catalog) {
-    const presentation = locationCoveragePresentation({ location, state: snapshot.locations[location.id], snapshot, now });
-    for (const check of presentation.categories.flatMap(({ subchecks }) => subchecks)) {
-      if (!isExpandedDestination(location) && !hazardAppliesToLocation(check.hazard, location)) continue;
-      const country = byCountry[location.countryCode] ||= counts();
-      const hazard = byHazard[check.hazard] ||= counts();
+  for (const pair of coveragePairStates(snapshot, catalog, now)) {
+      const country = byCountry[pair.countryCode] ||= counts();
+      const hazard = byHazard[pair.hazard] ||= counts();
       for (const count of [totals, country, hazard]) {
         count.applicable += 1;
-        const key = check.coverageStatus === "available" ? "fullyChecked" : check.coverageStatus === "limited" ? "partlyChecked" : "notChecked";
+        const key = pair.status === "monitored" ? "fullyChecked" : pair.status === "partial" ? "partlyChecked" : "notChecked";
         count[key] += 1;
         // A current timestamp on an unsupported hazard never creates coverage.
         if (key === "notChecked") continue;
-        if (!snapshotFresh || check.freshnessStatus === "delayed") count.delayed += 1;
+        if (pair.delayed) count.delayed += 1;
         else count[key === "fullyChecked" ? "freshFullyChecked" : "freshPartlyChecked"] += 1;
       }
-    }
   }
   return { schemaVersion: 1 as const, measuredAt: now.toISOString(), snapshotAt: snapshot.generatedAt,
     catalogVersion: snapshot.catalogVersion,

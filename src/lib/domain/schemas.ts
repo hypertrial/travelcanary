@@ -179,7 +179,9 @@ export const PublicTransportStateSchema = z.object({
   name: z.string().min(2).max(120),
   role: z.enum(["coverage", "fallback", "context", "blocked"]),
   status: z.enum(["ok", "partial", "delayed", "failed", "disabled"]),
+  lastSuccess: z.string().datetime({ offset: true }).nullable().optional(),
   sourceUpdatedAt: z.string().datetime({ offset: true }).nullable(),
+  nextExpectedUpdate: z.string().datetime({ offset: true }).nullable().optional(),
   limitationCode: z.string().max(100).nullable(),
   officialUrl: HttpUrlSchema,
 }).strict();
@@ -585,7 +587,7 @@ export const AggregateSourceResultSchema = z.object({
   }
 });
 
-const SourcePartitionTransportResultSchema = z.object({
+export const SourcePartitionTransportResultSchema = z.object({
   status: z.enum(["ok", "partial", "failed", "disabled", "not_due"]),
   sourceUpdatedAt: z.string().datetime({ offset: true }).nullable(),
   error: z.string().max(300).nullable(),
@@ -599,7 +601,7 @@ const SourcePartitionTransportResultSchema = z.object({
   if (transport.unavailableLocationIds?.some((id) => checked.has(id))) context.addIssue({ code: "custom", message: "Transport checked and unavailable destinations must be disjoint" });
 });
 
-const SourcePartitionResultSchema = z.object({
+export const SourcePartitionResultSchema = z.object({
   status: z.enum(["ok", "partial", "failed", "disabled"]),
   sourceUpdatedAt: z.string().datetime({ offset: true }).nullable(),
   events: z.array(NormalizedEventV12Schema),
@@ -629,9 +631,10 @@ export const PartitionedSourceResultSchema = z.object({
     const groups = [{ path: ["events"], events: partition.events, transportId: null as string | null },
       ...Object.entries(partition.transports || {}).map(([id, transport]) => ({ path: ["transports", id, "events"], events: transport.events || [], transportId: id }))];
     for (const group of groups) for (const [index, event] of group.events.entries()) {
-      const regionalCountryMatches = event.geometry.kind === "regions" && event.geometry.countryCode === countryCode;
-      const locationCountryMatches = event.geometry.kind === "locations" && event.geometry.ids.every((id) => id.startsWith(`${countryCode.toLowerCase()}-`));
-      if (event.sourceId !== result.sourceId || (!regionalCountryMatches && !locationCountryMatches)
+      const geometryMatches = event.geometry.kind === "polygon" || event.geometry.kind === "point"
+        || event.geometry.kind === "regions" && event.geometry.countryCode === countryCode
+        || event.geometry.kind === "locations" && event.geometry.ids.every((id) => id.startsWith(`${countryCode.toLowerCase()}-`));
+      if (event.sourceId !== result.sourceId || !geometryMatches
         || (group.transportId && event.transportId && event.transportId !== group.transportId)) {
         context.addIssue({
           code: "custom",

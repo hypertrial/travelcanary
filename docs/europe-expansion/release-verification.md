@@ -2,10 +2,10 @@
 
 ## Scope and current state
 
-The implemented catalog contains 679 destinations in 45 countries: all original
-503 IDs plus the reviewed 176 additions. Production is still on the original
-28-country release at `8910e91261bf8f9ec8bc0841c2020d605b5506b1` as last verified
-on 2026-09-09. No expanded production activation or 24-hour observation is claimed.
+The production candidate contains 679 destinations in 45 countries: all original
+503 IDs plus the reviewed 176 additions. This ledger records deterministic release
+evidence; it does not claim an external deployment that this repository cannot
+observe.
 
 | Country group | Destinations | Marine mappings | FCDO destinations | Country PR |
 | --- | ---: | ---: | ---: | --- |
@@ -74,19 +74,18 @@ needed by the selected operation; do not download the full environment or print
 secret values. Record authorization and outstanding operational gates in the
 private project tracker.
 
-Follow `publication.md`: effective old-runtime scheduling pause and drain before
-the first V14 write; compatible catalog2 deployment and verified rollback target;
-verified catalog3 rollback deployment; second pause/drain; forward CAS activation retaining state/quota; staggered
-collection; complete dual publication; verified catalog3 client switch before
-legacy retirement. Prepare the tested catalog3 client before activation.
+Follow `publication.md`: deploy the compatible commit with the catalog 2 client;
+forward-CAS activate catalog 3 while retaining state/quota; run one fast, slow,
+conditions, and maintenance initialization; verify complete dual publication; and
+redeploy the same commit with the catalog 3 client immediately. Revision fencing
+rejects stale writers, so no scheduling pause, drain, soak, or observation gate is
+part of the cutover.
 
-There are two independent clocks. `dualStartedAt` begins only after complete
-dual-file acknowledgment and controls the immutable 24-hour compatibility period.
-Each country's observation starts when its approved runtime paths are verified
-operational after warm-up. It must continue for at least 24 hours and can finish
-after the client switch. Pending files can satisfy publication membership but
-cannot satisfy monitoring readiness. Do not wait for country observation to finish
-before starting a client deployment at the retirement deadline.
+`dualStartedAt` begins only after complete dual-file acknowledgment and controls
+the immutable 24-hour compatibility period. It exists solely to keep older clients
+working in the background. The client switches immediately after deterministic
+publication and health verification. Pending files can satisfy publication
+membership but cannot be represented as monitored.
 
 ## Required deployed evidence
 
@@ -95,11 +94,11 @@ outstanding and are never inferred from local tests or from another country's fe
 
 | Evidence | Required record |
 | --- | --- |
-| Deployment | URL, exact commit, catalog release, configuration and effective pause/drain evidence |
+| Deployment | URL, exact commit, catalog release and configuration |
 | Publication | Snapshot exact membership, 45 matching conditions partitions, source timestamps and producer agreement |
 | Compatibility | Both snapshot families and 45+28 conditions outputs, acknowledgment time and immutable retirement deadline |
 | Runtime sources | Bounded approved-source checks, receipt scope, attribution, geographic matches, nonempty lifecycle fixtures and verified empty semantics |
-| Country observation | Operational-readiness time, start/end at least 24 hours apart, repeated publication/expiry samples and any recovery |
+| Bounded source smoke | One read-only result per required keyless source and each configured optional source, with any fallback or disable decision |
 | Quota and storage | Actual rolling-day/minute/hour use, reservations, country/product starvation checks and measured wire/state/cache limits |
 | Results | Separate fresh, expired, missing, unsupported and healthy-empty counts; any source disabled and its reason |
 | Rollback | Compatible deployment identity, retained collection revision/evidence/quota, independent source-disable verification |

@@ -8,6 +8,7 @@ import { hazardApplicability } from "../src/lib/hazard-applicability";
 import { meteoAlarmFeedSlugs } from "../src/lib/ingestion/adapters/meteoalarm";
 import { conditionSources } from "../src/lib/conditions/sources";
 import dhmzMapping from "../data/dhmz-warning-mapping.json";
+import { catalogLocationsV3 } from "../src/lib/catalog-data";
 
 const locations = LocationSchema.array().parse(JSON.parse(await readFile("data/locations.json", "utf8")));
 const publicLocations = PublicLocationSchema.array().parse(JSON.parse(await readFile("public/locations.json", "utf8")));
@@ -46,7 +47,7 @@ const verifiedCoreHazards = HazardTypeSchema.array().nonempty().parse(meteoalarm
 const implementedNationalTransports = new Set([
   "at-alert", "chmi-hydrology", "fmi-cap", "fr-alert", "ipma-warnings-json", "lhp-flood", "met-eireann-json",
   "dpc-flood-bulletin", "lu-alert", "imgw-hydrology", "catalonia-plans", "krisinformation",
-  "aemet-cap", "dhmz-cap", "lvgmc-flood",
+  "aemet-cap", "dhmz-cap", "lvgmc-flood", "meteoalarm-atom", "met-norway-alerts", "nve-flood", "ea-flood", "dwd-cap",
 ]);
 if (Number.isNaN(Date.parse(meteoalarmCapabilities.reviewedAt))) throw new Error("MeteoAlarm capability review date is invalid");
 
@@ -54,6 +55,7 @@ if (locations.length !== 503) throw new Error(`Catalog must contain exactly 503 
 if (publicLocations.length !== 503) throw new Error("Public catalog count differs from internal catalog");
 
 const ids = new Set<string>();
+const catalog3Ids = new Set(catalogLocationsV3.map(({ id }) => id));
 const searchKeys = new Set<string>();
 let countryFallbackOnly = 0;
 for (const location of locations) {
@@ -103,7 +105,7 @@ for (const [countryCode, country] of Object.entries(nationalWarningManifest.coun
   if (Date.parse(system.nextReviewAt) <= Date.parse(system.reviewedAt)) throw new Error(`${countryCode}/${system.id} next review must follow its review date`);
   if (system.status === "active" && !implementedNationalTransports.has(system.id)) throw new Error(`${countryCode}/${system.id} is active without a typed runtime adapter`);
   for (const locationId of system.coverageLocationIds || []) {
-    if (!ids.has(locationId) || !locationId.startsWith(`${countryCode.toLowerCase()}-`)) throw new Error(`${countryCode}/${system.id} has an invalid coverage destination ${locationId}`);
+    if (!catalog3Ids.has(locationId) || !locationId.startsWith(`${countryCode.toLowerCase()}-`)) throw new Error(`${countryCode}/${system.id} has an invalid coverage destination ${locationId}`);
   }
 }
 if (dhmzMapping.schemaVersion !== 1 || dhmzMapping.mappings.length !== 14 || dhmzMapping.sources.length !== 2
@@ -118,7 +120,9 @@ for (const region of dhmzMapping.mappings) {
   }
 }
 if (locations.some((location) => location.countryCode === "HR" && !dhmzIds.has(location.id))) throw new Error("Croatian catalog changes require a DHMZ mapping review");
-if (Object.keys(meteoalarmCapabilities.countries).length !== countryCodes.length) throw new Error("MeteoAlarm capability audit must contain exactly 28 countries");
+if (JSON.stringify(Object.keys(meteoalarmCapabilities.countries).sort()) !== JSON.stringify(Object.keys(meteoAlarmFeedSlugs).sort())) {
+  throw new Error("MeteoAlarm capability audit must match every supported catalog 3 feed country");
+}
 if (countryFallbackOnly !== 0) throw new Error(`Catalog still has ${countryFallbackOnly} fallback-only MeteoAlarm mappings`);
 if (Object.values(catalogMetadata.provenance).some((value) => value.length < 20)) throw new Error("Catalog metadata provenance is incomplete");
 for (const id of [

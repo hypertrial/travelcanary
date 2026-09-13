@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { CollectionChangedError, parseCatalogState, type IngestionStateV14 } from "@/lib/domain/catalog-state";
+import { CollectionChangedError, parseCatalogState, type IngestionStateV15 } from "@/lib/domain/catalog-state";
 import { conditionSourceIds } from "@/lib/domain/conditions";
 import { createEmptyState } from "@/lib/risk";
 import { runConditions } from "@/lib/conditions/worker";
@@ -42,7 +42,7 @@ describe("conditions collection fences", () => {
 
   it.each(["successful responses", "failed batch", "foreign lease"] as const)("discards %s after a revision change without refunding quota or clearing newer ownership", async (mode) => {
     const store = new MemoryStateStore(initial()); const publish = vi.fn();
-    let changed = false; let concurrent: IngestionStateV14 | undefined; let newerMarker = "";
+    let changed = false; let concurrent: IngestionStateV15 | undefined; let newerMarker = "";
     const fetchMock = vi.fn<typeof fetch>().mockImplementation(async (input) => {
       if (!changed) {
         changed = true;
@@ -123,7 +123,7 @@ describe("conditions collection fences", () => {
   it("discards forecast updates when control changes during the final merge CAS retry", async () => {
     class MergeRaceStore extends MemoryStateStore {
       writes = 0;
-      override async write(state: IngestionStateV14, expected: Versioned<IngestionStateV14>): Promise<{ etag: string }> {
+      override async write(state: IngestionStateV15, expected: Versioned<IngestionStateV15>): Promise<{ etag: string }> {
         this.writes += 1;
         if (this.writes === 2) {
           const latest = await super.read(); latest.data.collection.revision = 1; latest.data.fingerprints.concurrent = now.toISOString();

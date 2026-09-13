@@ -46,61 +46,48 @@ deadline is never reset. At the exact deadline, legacy writes stop. Existing
 legacy files retain their original evidence times and expire through the frozen
 reader's normal rules; retirement never manufactures freshness.
 
-Maintenance currently runs daily. Therefore an unacknowledged transition can
-remain in dual publication longer than24 hours. Observe the actual recorded
-window; do not infer completion from elapsed time since deployment. A bounded
-manual authenticated maintenance invocation can repair/acknowledge earlier.
+The release initialization invokes maintenance once after the fast, slow, and
+conditions collectors. That bounded repair verifies the complete dual generation
+and records the immutable 24-hour deadline immediately. The normal daily cadence
+is unchanged and can repair any later partial publication.
 
-## Drained activation and rollback
+## Revision-fenced activation and rollback
 
 1. Pass shared/catalog/country implementation gates, independent review,
-   exact-SHA `scripts/verify`, and automatic GitHub `check:fast`. Prepare the final patched tree, not intermediate PR commits.
-   Before its first schema-writing deployment, disable scheduling using a control
-   effective on the old production runtime and drain existing invocations. The old
-   runtime does not honor `INGESTION_PAUSED`; setting that flag alone is not a
-   first-deployment drain. Confirm no old writer remains before deploying the
-   compatible runtime with private collection2 and client catalog2. Verify legacy
-   publication and save this compatible code revision as the rollback target.
-   Prepare and verify its catalog3 build/deployment before activation; a
-   catalog2-only rollback client is insufficient after legacy retirement.
-2. Set `INGESTION_PAUSED=true` in the deployed environment. Authenticated cron
-   calls then return503 before opening stores or issuing requests. Drain all old
-   invocations; a local environment flag alone does not pause deployed workers.
-3. Verify the deployed pause, absence of active invocations and absence of a live
-   conditions lease. The configured60-second invocation duration is not proof of
-   drainage. With matching private
-   storage configuration and local `INGESTION_PAUSED=true`, run
-   `node --import tsx scripts/activate-catalog3.ts --drained`. It checks the active
-   conditions lease and CAS-changes2→3 with a higher revision, retaining all
-   evidence/quota. Repeating it on3 does not restart the transition. The flag is
-   an operator assertion of the externally verified drain, not an automatic
-   guarantee that no warning worker is still running.
-4. Resume the deployed schedule. Verify expanded namespaces, exact memberships,
-   producer/release agreement and complete dual acknowledgment. Prepare and test
-   the catalog3 client before activation so it can be switched after these early
-   runtime checks and warm-up, within the recorded compatibility window. Verify
-   the actual client switch before `dualUntil`; do not wait until that deadline to
-   initiate deployment. The immutable deadline is not extended by a late switch.
-5. Observe each country for at least24 hours from its verified operational
-   readiness, recording fresh, expired, missing, unsupported and healthy-empty
-   separately. This window can finish after client rollout. A complete dual-file
-   acknowledgment may contain update-pending forecasts and does not start or
-   satisfy country acceptance by itself. Record readiness and observation times
-   separately from `dualStartedAt`/`dualUntil`. Countries remain incomplete until
-   this evidence passes; the UI continues to expose pending or degraded data.
+   exact-SHA `scripts/verify`, and automatic GitHub `check:fast`. Deploy that same
+   compatible commit while `NEXT_PUBLIC_CATALOG_VERSION=2`, verify catalog 2, and
+   retain the commit as the rollback target. Prepare and verify its catalog 3 build
+   before activation; do not deploy an intermediate tree.
+2. With the deployed private storage configuration, run
+   `node --import tsx scripts/activate-catalog3.ts`. The command atomically
+   compare-and-swaps collection 2→3 with a higher revision while retaining evidence
+   and quota. Every collector and publication write carries the captured revision,
+   so work started before activation is rejected if it attempts to overwrite newer
+   catalog 3 state. Repeating the command on catalog 3 is a no-op.
+3. Invoke one fast, slow, and conditions initialization, then one maintenance
+   repair. Verify the 679-member Snapshot V11, all 45 Conditions V3 files, the
+   frozen catalog 2 Snapshot V10 and 28 Conditions V2 files, matching producer and
+   release identities, and the recorded 24-hour `dualUntil`. These are bounded,
+   deterministic release checks, not an observation or soak gate.
+4. Redeploy the same commit immediately with
+   `NEXT_PUBLIC_CATALOG_VERSION=3`, then run the production verifier and public
+   `/api/v1/health` check. Catalog 2 publication continues automatically in the
+   background until the exact recorded deadline; it does not delay the client
+   switch and does not change cron frequency.
 
 If the candidate client or rollback deployment is not ready, do not activate
-collection3. After activation, an anomalous source is disabled independently and
-the compatible catalog3 client displays its gaps. Do not keep a catalog2-only
-production client past legacy retirement, reset the deadline, or restore state2
-to manufacture additional transition time. Stop release completion and investigate
-any failed deployed gate. See `release-verification.md` for the release ledger.
+collection 3. After activation, an anomalous optional source is disabled
+independently; a required source uses its proven fallback or the catalog 3 client
+displays the gap honestly. Do not keep a catalog 2-only production client past
+legacy retirement, reset the deadline, or restore state 2 to manufacture more
+transition time. Stop release completion and investigate any failed deterministic
+gate. See `release-verification.md` for the release ledger.
 
 Revision checks cannot cancel public writes already issued by another process;
-public CAS protects each pathname, not collection control. A drained monotonic
-cutover is required. Rollback uses the679-capable compatible foundation with
-collection3 and its revision retained. Never restore an older private backup over
-new alert or quota state. Operational3→2 reversal is rejected; explicit catalog
+public CAS protects each pathname while collection fencing prevents stale state
+commits. Rollback uses the 679-capable compatible foundation with collection 3 and
+its revision retained. Never restore an older private backup over new alert or
+quota state. Operational 3→2 reversal is rejected; explicit catalog
 withdrawal would require a separately reviewed procedure.
 
 `INGESTION_DISABLED_SOURCES` accepts a comma-separated allowlist of existing

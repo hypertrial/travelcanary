@@ -1,16 +1,43 @@
 import { createHash } from "node:crypto";
 import { XMLParser } from "fast-xml-parser";
-import { PartitionedSourceResultSchema, type CountryCode, type HazardLevel, type NormalizedEvent, type PartitionedSourceResult } from "../../domain/schemas";
+import { PartitionedSourceResultSchema, type CountryCode, type HazardLevel } from "../../domain/schemas";
+import { CatalogPartitionedSourceResultSchema, type NormalizedEventV13, type RuntimePartitionedSourceResult } from "../../domain/catalog-state";
+import { catalogV2CountryCodes, catalogV3CountryCodes } from "../../domain/contract-identities";
+import capabilitiesJson from "../../../../data/meteoalarm-capabilities.json";
 import { eventAffectsLocation } from "../../geospatial";
 import { eventCopy, weatherHazard } from "../templates";
 import { fetchAllowlisted, fetchWithRetry, isAllowlistedHttpsUrl, mapConcurrent, withFetchByteBudget } from "../fetch";
 import { MAX_EVENTS_PER_PARTITION } from "../limits";
 import { recordSourceDiagnostics, type IngestionContext, type SourceAdapter } from "../types";
 import { fetchIfrcMeteoAlarmFallback } from "./ifrc-meteoalarm";
-import { fetchNationalWeatherFallback, nationalWeatherFallbackDisabled } from "./national-weather-fallback";
-import { meteoalarmFallbackSystem } from "../../national-warning-sources";
+import { fetchNationalWeatherFallback, nationalWeatherFallbackConfigured, nationalWeatherFallbackDisabled } from "./national-weather-fallback";
+import { meteoalarmPrimarySystem, meteoalarmRuntimeFallbackSystem, nationalWarningManifest } from "../../national-warning-sources";
 
-export const meteoAlarmFeedSlugs: Record<CountryCode, string> = {
+type CatalogCountryCode = (typeof catalogV3CountryCodes)[number];
+type MutableTransport = {
+  status: "ok" | "partial" | "failed" | "disabled" | "not_due";
+  sourceUpdatedAt: string | null;
+  events?: NormalizedEventV13[];
+  error: string | null;
+  limitationCode?: string;
+  removedEventPrefixes?: string[];
+  checkedLocationIds?: string[];
+  unavailableLocationIds?: string[];
+};
+type MutablePartition = {
+  status: "ok" | "partial" | "failed" | "disabled";
+  sourceUpdatedAt: string | null;
+  events: NormalizedEventV13[];
+  error: string | null;
+  limitationCode?: string;
+  removedEventPrefixes?: string[];
+  checkedLocationIds: string[];
+  unavailableLocationIds: string[];
+  transports?: Record<string, MutableTransport>;
+};
+export const meteoAlarmFeedSlugs: Partial<Record<CatalogCountryCode, string>> = {
+  AD: "andorra", BA: "bosnia-herzegovina", GB: "united-kingdom", IS: "iceland", MD: "moldova", ME: "montenegro",
+  MK: "republic-of-north-macedonia", NO: "norway", RS: "serbia",
   AT: "austria", BE: "belgium", BG: "bulgaria", HR: "croatia", CY: "cyprus", CZ: "czechia", DK: "denmark", EE: "estonia",
   FI: "finland", FR: "france", DE: "germany", GR: "greece", HU: "hungary", IE: "ireland", IT: "italy", LV: "latvia",
   LT: "lithuania", LU: "luxembourg", MT: "malta", NL: "netherlands", PL: "poland", PT: "portugal", RO: "romania",
@@ -93,7 +120,7 @@ function hasValidAlertPayload(raw: XmlRecord): boolean {
     && !Number.isNaN(Date.parse(endsAt))
     && !Number.isNaN(Date.parse(updatedAt))
     && Date.parse(startsAt) < Date.parse(endsAt)
-    && (geocodes.some((item) => stringValue(item.value)) || stringValue(raw.areaDesc)),
+    && (stringValue(raw.polygon) || geocodes.some((item) => stringValue(item.value)) || stringValue(raw.areaDesc)),
   );
 }
 
@@ -167,10 +194,10 @@ export function normalizeMeteoAlarmArea(value: string) {
 
 export function parseMeteoAlarmFeed(
   xml: string,
-  countryCode: CountryCode,
+  countryCode: CatalogCountryCode,
   checkedAt: Date,
   supplements: ReadonlyMap<string, CapSupplement> = new Map(),
-): { events: NormalizedEvent[]; updatedAt: string | null; invalid: number; supersededIdentifiers: string[]; recordsExamined: number; overflow: boolean } {
+): { events: NormalizedEventV13[]; updatedAt: string | null; invalid: number; supersededIdentifiers: string[]; recordsExamined: number; overflow: boolean } {
   const { feed, entries, totalEntries, overflow } = feedEntries(xml);
   const updated = feedUpdatedAt(feed, checkedAt);
   const superseded = new Set<string>();
@@ -193,7 +220,7 @@ export function parseMeteoAlarmFeed(
     for (const identifier of [...referencedIdentifiers(raw.references), ...(supplement?.references || [])]) superseded.add(identifier);
   }
   if (entries.length > 0 && parseable === 0) throw new Error("MeteoAlarm feed contains no parseable alert records");
-  const events: NormalizedEvent[] = [];
+  const events: NormalizedEventV13[] = [];
   for (const raw of entries) {
     const structuredLevel = severityLevel(stringValue(raw.severity));
     const status = stringValue(raw.status);
@@ -216,9 +243,27 @@ export function parseMeteoAlarmFeed(
     const area = sourceArea || countryCode;
     const areaCode = sourceArea ? normalizeMeteoAlarmArea(sourceArea) : null;
     if (areaCode) codes.push(areaCode);
-    // A missing regional code and area label is not proof that the alert covers the whole country.
-    if (codes.length === 0) continue;
+    const polygonText = stringValue(raw.polygon);
+    let polygonCoordinates: [number, number][][] | null = null;
+    if (polygonText) {
+      try {
+        const ring = polygonText.split(/\s+/).map((pair) => {
+          const [latitude, longitude] = pair.split(",").map(Number);
+          if (!Number.isFinite(latitude) || !Number.isFinite(longitude) || Math.abs(latitude) > 90 || Math.abs(longitude) > 180) throw new Error();
+          return [longitude, latitude] as [number, number];
+        });
+        if (ring.length < 4 || ring.length > 2_000 || ring[0][0] !== ring.at(-1)![0] || ring[0][1] !== ring.at(-1)![1]) throw new Error();
+        polygonCoordinates = [ring];
+      } catch { invalid += 1; continue; }
+    }
+    // Descriptive area text is retained for display and reviewed alias matching only;
+    // explicit CAP polygons always take precedence and no country-wide inference occurs.
+    const countryCapability = (capabilitiesJson.countries as Record<string, { supportedHazards?: string[]; regionalCodesVerified?: boolean }>)[countryCode];
+    if (!polygonCoordinates && countryCapability?.regionalCodesVerified === false) codes.length = 0;
+    if (!polygonCoordinates && codes.length === 0) { invalid += 1; continue; }
     const type = weatherHazard(stringValue(raw.event || raw.title || "weather"));
+    const capabilities = countryCapability?.supportedHazards;
+    if (capabilities && !capabilities.includes(type)) continue;
     const url = sourceUrl(raw);
     const instructions = [
       ...array(raw.instruction as unknown | unknown[] | undefined).map(stringValue),
@@ -229,11 +274,11 @@ export function parseMeteoAlarmFeed(
     const upcoming = Date.parse(startsAt) > checkedAt.getTime();
     const copy = eventCopy(type, level, area, upcoming);
     events.push({
-      id: `meteoalarm:${identifier}:${createHash("sha256").update(JSON.stringify([...new Set(codes)].sort())).digest("hex").slice(0, 12)}`,
+      id: `meteoalarm:${identifier}:${createHash("sha256").update(JSON.stringify(polygonCoordinates || [...new Set(codes)].sort())).digest("hex").slice(0, 12)}`,
       sourceId: "meteoalarm", providerId: "meteoalarm", type, level, timing: upcoming ? "UPCOMING" : "ACTIVE",
       headline: boundedText(copy.headline, 180), explanation: boundedText(copy.explanation, 500), action: boundedText(copy.action, 300),
       affectedArea: boundedText(area, 200),
-      geometry: { kind: "regions", countryCode, codes },
+      geometry: polygonCoordinates ? { kind: "polygon", coordinates: polygonCoordinates } : { kind: "regions", countryCode, codes },
       startsAt: new Date(startsAt).toISOString(), endsAt: new Date(endsAt).toISOString(),
       sourceUpdatedAt: new Date(stringValue(raw.updated || raw.sent || startsAt)).toISOString(), checkedAt: checkedAt.toISOString(),
       expiresAt: new Date(endsAt).toISOString(), sourceName: "MeteoAlarm", sourceUrl: url, confidence: "HIGH",
@@ -253,10 +298,19 @@ export class MeteoAlarmAdapter implements SourceAdapter {
   readonly id = "meteoalarm" as const;
   readonly cadence = "fast" as const;
 
-  async fetch(context: IngestionContext): Promise<PartitionedSourceResult> {
+  async fetch(context: IngestionContext): Promise<RuntimePartitionedSourceResult> {
     const checkedAt = context.now.toISOString();
     const byteBudget = { remaining: MAX_RUN_BYTES };
-    const feeds = await mapConcurrent(Object.entries(meteoAlarmFeedSlugs) as [CountryCode, string][], 10, async ([countryCode, slug]) => {
+    const expanded = context.state?.collection.catalogVersion === 3
+      || context.locations.some(({ countryCode }) => !(catalogV2CountryCodes as readonly string[]).includes(countryCode));
+    const codes = expanded ? catalogV3CountryCodes : catalogV2CountryCodes;
+    const feedTargets = codes.flatMap((countryCode) => {
+      if (!meteoAlarmFeedSlugs[countryCode]) return [];
+      const addedCountry = !(catalogV2CountryCodes as readonly string[]).includes(countryCode);
+      const capability = (capabilitiesJson.countries as Record<string, { supportedHazards?: string[] }>)[countryCode];
+      return addedCountry && !capability?.supportedHazards?.length ? [] : [[countryCode, meteoAlarmFeedSlugs[countryCode]!] as const];
+    });
+    const feeds = await mapConcurrent(feedTargets, 10, async ([countryCode, slug]) => {
       try {
         const response = await fetchWithRetry(
           context.fetch,
@@ -269,12 +323,12 @@ export class MeteoAlarmAdapter implements SourceAdapter {
       }
     });
 
-    const supplementCountries = new Map<string, Set<CountryCode>>();
+    const supplementCountries = new Map<string, Set<CatalogCountryCode>>();
     for (const feed of feeds) {
       if (!feed.xml) continue;
       try {
         for (const url of meteoAlarmSupplementUrls(feed.xml, context.now)) {
-          const countries = supplementCountries.get(url) || new Set<CountryCode>();
+          const countries = supplementCountries.get(url) || new Set<CatalogCountryCode>();
           countries.add(feed.countryCode);
           supplementCountries.set(url, countries);
         }
@@ -300,8 +354,19 @@ export class MeteoAlarmAdapter implements SourceAdapter {
       }
     });
 
-    const partitions = Object.fromEntries(feeds.map((feed) => {
-      if (!feed.xml) return [feed.countryCode, { status: "failed", sourceUpdatedAt: null, events: [], error: feed.error }];
+    const partitions = Object.fromEntries(codes.map((countryCode) => [countryCode, {
+      status: "disabled", sourceUpdatedAt: null, events: [], error: null, limitationCode: "not_supported",
+      checkedLocationIds: [], unavailableLocationIds: context.locations.filter((location) => location.countryCode === countryCode).map(({ id }) => id),
+    }])) as unknown as Record<CatalogCountryCode, MutablePartition>;
+    for (const feed of feeds) {
+      const countryLocationIds = context.locations.filter((location) => location.countryCode === feed.countryCode).map(({ id }) => id);
+      if (!feed.xml) {
+        partitions[feed.countryCode] = {
+          status: "failed", sourceUpdatedAt: null, events: [], error: feed.error,
+          checkedLocationIds: [], unavailableLocationIds: countryLocationIds,
+        };
+        continue;
+      }
       try {
         const parsed = parseMeteoAlarmFeed(feed.xml, feed.countryCode, context.now, supplements);
         recordSourceDiagnostics(context, {
@@ -313,22 +378,43 @@ export class MeteoAlarmAdapter implements SourceAdapter {
           parsed.overflow ? "MeteoAlarm feed exceeded its bounded record limit" : null,
           supplementOverflowCountries.has(feed.countryCode) ? "MeteoAlarm CAP supplement queue exceeded its bounded limit" : null,
         ].filter(Boolean);
-        return [feed.countryCode, {
+        partitions[feed.countryCode] = {
           status: partialReasons.length ? "partial" : "ok", sourceUpdatedAt: parsed.updatedAt, events: parsed.events,
           error: partialReasons.join("; ").slice(0, 300) || null,
           removedEventPrefixes: parsed.supersededIdentifiers.map((identifier) => `meteoalarm:${identifier}:`),
-        }];
+          checkedLocationIds: countryLocationIds, unavailableLocationIds: [],
+        };
       } catch (error) {
-        return [feed.countryCode, {
+        partitions[feed.countryCode] = {
           status: "failed", sourceUpdatedAt: null, events: [],
           error: (error instanceof Error ? error.message : "MeteoAlarm feed was malformed").slice(0, 300),
-        }];
+          checkedLocationIds: [], unavailableLocationIds: countryLocationIds,
+        };
       }
-    }));
-    const failedCountries = (Object.entries(partitions) as [CountryCode, { status: string; events: NormalizedEvent[]; error: string | null }][]).filter(([, partition]) => partition.status === "failed").map(([countryCode]) => countryCode);
+    }
+    const failedCountries = (Object.entries(partitions) as [CatalogCountryCode, MutablePartition][])
+      .filter(([, partition]) => partition.status === "failed").map(([countryCode]) => countryCode);
     const primaryPartitions = structuredClone(partitions);
-    const nationallyRecovered = new Set<CountryCode>();
-    await mapConcurrent(failedCountries.filter((countryCode) => meteoalarmFallbackSystem(countryCode)), 2, async (countryCode) => {
+    const nationallyRecovered = new Set<CatalogCountryCode>();
+    const retainedFallback = new Set<CatalogCountryCode>();
+    const fallbackDue = (countryCode: CatalogCountryCode) => {
+      const system = meteoalarmRuntimeFallbackSystem(countryCode);
+      const previous = system && context.state?.partitionTransports.meteoalarm[countryCode]?.[system.id];
+      return !previous?.nextExpectedUpdate || Date.parse(previous.nextExpectedUpdate) <= context.now.getTime();
+    };
+    const reviewedFallbacks = failedCountries.filter((countryCode) => nationalWeatherFallbackConfigured(countryCode));
+    for (const countryCode of reviewedFallbacks.filter((countryCode) => !fallbackDue(countryCode))) {
+      const system = meteoalarmRuntimeFallbackSystem(countryCode)!;
+      const previous = context.state!.partitionTransports.meteoalarm[countryCode][system.id];
+      retainedFallback.add(countryCode);
+      partitions[countryCode] = {
+        status: "partial", sourceUpdatedAt: previous.sourceUpdatedAt, events: [],
+        error: `Primary MeteoAlarm feed failed; ${system.systemName} retained until its next bounded check`, limitationCode: "national_authority_fallback",
+        transports: { [system.id]: { status: "not_due", sourceUpdatedAt: previous.sourceUpdatedAt, error: null } },
+        checkedLocationIds: context.locations.filter((location) => location.countryCode === countryCode).map(({ id }) => id), unavailableLocationIds: [],
+      };
+    }
+    await mapConcurrent(reviewedFallbacks.filter(fallbackDue), 2, async (countryCode) => {
       try {
         const recovered = await withFetchByteBudget(byteBudget, () => fetchNationalWeatherFallback(countryCode, context));
         if (!recovered) return;
@@ -338,16 +424,20 @@ export class MeteoAlarmAdapter implements SourceAdapter {
           removedEventPrefixes: recovered.removedEventPrefixes,
           error: `Primary MeteoAlarm feed failed; ${countryCode} national authority fallback succeeded`, limitationCode: "national_authority_fallback",
           transports: { [recovered.transportId]: { status: "ok", sourceUpdatedAt: recovered.sourceUpdatedAt, error: null } },
+          checkedLocationIds: context.locations.filter((location) => location.countryCode === countryCode).map(({ id }) => id),
+          unavailableLocationIds: [],
         };
       } catch (error) {
-        const system = meteoalarmFallbackSystem(countryCode)!.id;
+        const system = meteoalarmRuntimeFallbackSystem(countryCode)!.id;
         partitions[countryCode].transports = { [system]: {
           status: "failed", sourceUpdatedAt: null,
           error: (error instanceof Error ? error.message : "National weather fallback failed").slice(0, 300),
         } };
       }
     });
-    const ifrcCountries = failedCountries.filter((countryCode) => !nationallyRecovered.has(countryCode));
+    const ifrcCountries = failedCountries.filter((countryCode): countryCode is CountryCode => (
+      !nationallyRecovered.has(countryCode) && !retainedFallback.has(countryCode) && (catalogV2CountryCodes as readonly string[]).includes(countryCode)
+    ));
     const fallback = await fetchIfrcMeteoAlarmFallback(ifrcCountries, context).catch((error) => {
       for (const countryCode of ifrcCountries) {
         partitions[countryCode].transports ||= {};
@@ -363,16 +453,20 @@ export class MeteoAlarmAdapter implements SourceAdapter {
       partitions[countryCode] = { status: "partial", sourceUpdatedAt: recovered.events.map(({ sourceUpdatedAt }) => sourceUpdatedAt).sort().at(-1) || checkedAt, events: recovered.events,
         transports: partitions[countryCode].transports,
         removedEventPrefixes: recovered.supersededIdentifiers.map((identifier) => `meteoalarm:${identifier}:`),
-        error: `Primary MeteoAlarm feed failed; IFRC Alert Hub fallback checked ${recovered.events.length} originating alert${recovered.events.length === 1 ? "" : "s"}`, limitationCode: "ifrc_fallback" };
+        error: `Primary MeteoAlarm feed failed; IFRC Alert Hub fallback checked ${recovered.events.length} originating alert${recovered.events.length === 1 ? "" : "s"}`, limitationCode: "ifrc_fallback",
+        checkedLocationIds: context.locations.filter((location) => location.countryCode === countryCode).map(({ id }) => id),
+        unavailableLocationIds: [],
+      };
     }
-    for (const countryCode of Object.keys(partitions) as CountryCode[]) {
+    for (const countryCode of Object.keys(partitions) as CatalogCountryCode[]) {
       const partition = partitions[countryCode]; const primary = primaryPartitions[countryCode];
-      const tag = (events: NormalizedEvent[], transportId: string) => events.map((event) => ({ ...event, transportId }));
+      const tag = (events: NormalizedEventV13[], transportId: string) => events.map((event) => ({ ...event, transportId }));
+      const primaryTransportId = meteoalarmPrimarySystem(countryCode as CountryCode)?.id || "meteoalarm-primary";
       partition.transports ||= {};
-      partition.transports["meteoalarm-primary"] = { status: primary.status, sourceUpdatedAt: primary.sourceUpdatedAt,
-        error: primary.error, events: tag(primary.events, "meteoalarm-primary"), removedEventPrefixes: primary.removedEventPrefixes || [] };
+      partition.transports[primaryTransportId] = { status: primary.status, sourceUpdatedAt: primary.sourceUpdatedAt,
+        error: primary.error, events: tag(primary.events, primaryTransportId), removedEventPrefixes: primary.removedEventPrefixes || [] };
       if (nationallyRecovered.has(countryCode)) {
-        const id = meteoalarmFallbackSystem(countryCode)!.id;
+        const id = meteoalarmRuntimeFallbackSystem(countryCode)!.id;
         Object.assign(partition.transports[id], { events: tag(partition.events, id), removedEventPrefixes: partition.removedEventPrefixes || [] });
       } else if (partition.limitationCode === "ifrc_fallback") {
         partition.transports["ifrc-meteoalarm"] = { status: "ok", sourceUpdatedAt: partition.sourceUpdatedAt, error: null,
@@ -381,17 +475,22 @@ export class MeteoAlarmAdapter implements SourceAdapter {
       if (primary.status === "ok") {
         // Complete primary replacement retires alternative delivery, never a second warning provider.
         for (const id of Object.keys(context.state?.partitionTransports.meteoalarm[countryCode] || {})) {
-          if ([meteoalarmFallbackSystem(countryCode)?.id, "ifrc-meteoalarm"].includes(id)) partition.transports[id] = {
+          const fallbackIds = new Set([
+            ...nationalWarningManifest.countries[countryCode].systems.filter(({ runtimeTarget }) => runtimeTarget === "meteoalarm-fallback").map(({ id }) => id),
+            "ifrc-meteoalarm",
+          ]);
+          if (fallbackIds.has(id)) partition.transports[id] = {
             status: "disabled", sourceUpdatedAt: null, events: [], error: null,
           };
         }
       }
-      const nationalFallback = meteoalarmFallbackSystem(countryCode);
-      if (nationalFallback && nationalWeatherFallbackDisabled(countryCode)) partition.transports[nationalFallback.id] = {
+      const nationalFallback = meteoalarmRuntimeFallbackSystem(countryCode);
+      if (nationalFallback && (nationalWeatherFallbackDisabled(countryCode) || !nationalWeatherFallbackConfigured(countryCode))) partition.transports[nationalFallback.id] = {
         status: "disabled", sourceUpdatedAt: null, events: [], error: null, limitationCode: "runtime_transport_disabled",
       };
     }
-    const result = PartitionedSourceResultSchema.parse({ sourceId: this.id, checkedAt, partitions });
+    const result = (expanded ? CatalogPartitionedSourceResultSchema : PartitionedSourceResultSchema)
+      .parse({ sourceId: this.id, checkedAt, partitions }) as RuntimePartitionedSourceResult;
     const events = Object.values(result.partitions).flatMap((partition) => partition.events);
     recordSourceDiagnostics(context, {
       matchedLocations: context.locations.filter((location) => events.some((event) => eventAffectsLocation(event, location))).length,

@@ -1,6 +1,10 @@
 import sourcesJson from "../../data/national-warning-sources.json";
 import { z } from "zod";
-import { CountryCodeSchema, HazardTypeSchema, countryCodes, type CountryCode, type HazardType } from "./domain/schemas";
+import { HazardTypeSchema, type HazardType } from "./domain/schemas";
+import { CatalogV3CountryCodeSchema } from "./domain/catalog-state";
+import { catalogV3CountryCodes } from "./domain/contract-identities";
+
+export type WarningCountryCode = z.infer<typeof CatalogV3CountryCodeSchema>;
 
 const GateSchema = z.enum(["approved", "partial", "credential_required", "unverified", "blocked"]);
 const NationalWarningSystemSchema = z.object({
@@ -8,7 +12,7 @@ const NationalWarningSystemSchema = z.object({
   reviewedAt: z.string().date(), nextReviewAt: z.string().date(),
   evidenceUrls: z.array(z.string().url()).min(1).max(6),
   authority: z.string().min(2), systemName: z.string().min(2), officialUrl: z.string().url(),
-  runtimeTarget: z.enum(["national-civil-alerts", "meteoalarm-fallback", "none"]),
+  runtimeTarget: z.enum(["national-civil-alerts", "meteoalarm-primary", "meteoalarm-fallback", "none"]),
   role: z.enum(["coverage", "fallback", "context", "blocked"]),
   status: z.enum(["active", "credential_gated", "evidence_gated", "blocked"]),
   endpoint: z.string().url().nullable(),
@@ -43,17 +47,17 @@ const NationalWarningSystemSchema = z.object({
   if (system.status === "credential_gated" && !system.credentialEnvVar) context.addIssue({ code: "custom", path: ["credentialEnvVar"], message: "Credential-gated systems require an environment variable" });
 });
 
-const NationalWarningCountrySchema = z.object({ reviewedAt: z.string().date(), systems: z.array(NationalWarningSystemSchema).min(1).max(4) }).superRefine((country, context) => {
+const NationalWarningCountrySchema = z.object({ reviewedAt: z.string().date(), systems: z.array(NationalWarningSystemSchema).min(1).max(6) }).superRefine((country, context) => {
   if (Date.now() - Date.parse(country.reviewedAt) > 370 * 24 * 60 * 60_000) context.addIssue({ code: "custom", path: ["reviewedAt"], message: "Country review must be refreshed at least annually" });
   const ids = country.systems.map(({ id }) => id);
   if (new Set(ids).size !== ids.length) context.addIssue({ code: "custom", path: ["systems"], message: "System IDs must be unique within a country" });
 });
 
 export const NationalWarningSourcesSchema = z.object({
-  schemaVersion: z.literal(3), reviewedAt: z.string().date(), discoveryInventory: z.string().url(),
-  countries: z.record(CountryCodeSchema, NationalWarningCountrySchema),
+  schemaVersion: z.literal(4), reviewedAt: z.string().date(), discoveryInventory: z.string().url(),
+  countries: z.record(CatalogV3CountryCodeSchema, NationalWarningCountrySchema),
 }).superRefine((manifest, context) => {
-  for (const countryCode of countryCodes) if (!manifest.countries[countryCode]) {
+  for (const countryCode of catalogV3CountryCodes) if (!manifest.countries[countryCode]) {
     context.addIssue({ code: "custom", path: ["countries", countryCode], message: "Every catalog country requires a reviewed national warning outcome" });
   }
 });
@@ -61,19 +65,35 @@ export const NationalWarningSourcesSchema = z.object({
 export const nationalWarningManifest = NationalWarningSourcesSchema.parse(sourcesJson);
 export type NationalWarningSystem = z.infer<typeof NationalWarningSystemSchema>;
 
-export function activeNationalSystems(countryCode: CountryCode) {
+export function activeNationalSystems(countryCode: WarningCountryCode) {
   return nationalWarningManifest.countries[countryCode].systems.filter((system) => system.status === "active" && system.runtimeTarget === "national-civil-alerts");
 }
 
-export function meteoalarmFallbackSystem(countryCode: CountryCode) {
+export function runtimeNationalSystems(countryCode: WarningCountryCode) {
+  return nationalWarningManifest.countries[countryCode].systems.filter((system) => (
+    ["active", "credential_gated"].includes(system.status) && system.runtimeTarget === "national-civil-alerts"
+  ));
+}
+
+export function meteoalarmPrimarySystem(countryCode: WarningCountryCode) {
+  return nationalWarningManifest.countries[countryCode].systems.find((system) => system.status === "active" && system.runtimeTarget === "meteoalarm-primary") || null;
+}
+
+export function meteoalarmFallbackSystem(countryCode: WarningCountryCode) {
   return nationalWarningManifest.countries[countryCode].systems.find((system) => system.status === "active" && system.runtimeTarget === "meteoalarm-fallback") || null;
+}
+
+export function meteoalarmRuntimeFallbackSystem(countryCode: WarningCountryCode) {
+  return nationalWarningManifest.countries[countryCode].systems.find((system) => (
+    ["active", "credential_gated"].includes(system.status) && system.runtimeTarget === "meteoalarm-fallback"
+  )) || null;
 }
 
 export const nationalWarningSources = Object.fromEntries(Object.entries(nationalWarningManifest.countries).map(([countryCode, country]) => {
   const systems = country.systems;
   const runtime = systems.filter((system) => system.status === "active" && system.runtimeTarget === "national-civil-alerts");
   const coverage = runtime.filter((system) => system.coverageContribution !== "none");
-  const primary = runtime[0] || systems.find(({ runtimeTarget }) => runtimeTarget !== "meteoalarm-fallback") || systems[0];
+  const primary = runtime[0] || systems.find(({ runtimeTarget }) => runtimeTarget !== "meteoalarm-fallback" && runtimeTarget !== "meteoalarm-primary") || systems[0];
   const hazards = [...new Set(coverage.flatMap((system) => system.hazards))] as HazardType[];
   const coverageLocationIds = [...new Set(coverage.flatMap((system) => system.coverageLocationIds || []))];
   return [countryCode, {
@@ -88,7 +108,7 @@ export const nationalWarningSources = Object.fromEntries(Object.entries(national
     satisfiesCoverage: coverage.length > 0, coverageLocationIds: coverageLocationIds.length ? coverageLocationIds : undefined,
     systems,
   }];
-})) as Record<CountryCode, {
+})) as Record<WarningCountryCode, {
   reviewedAt: string; evidenceUrls: string[]; authority: string; systemName: string; officialUrl: string;
   enabled: boolean; endpoint: string | null; format: string | null; cadenceMinutes: number | null; hazards: HazardType[];
   reuseStatus: "approved" | "not_approved" | "unverified"; severityStatus: "approved" | "unverified";

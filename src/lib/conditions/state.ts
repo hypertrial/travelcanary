@@ -1,4 +1,4 @@
-import { assertCatalog2Collection, type IngestionStateV14 as IngestionState } from "../domain/catalog-state";
+import { assertCatalog2Collection, type IngestionStateV15 as IngestionState } from "../domain/catalog-state";
 import { countryCodes, } from "../domain/schemas";
 import { locations } from "../data";
 import { CONDITIONS_CACHE_LIMIT, CONDITIONS_COUNTRY_LIMIT, CONDITIONS_TOTAL_LIMIT, ConditionsSchema, conditionRecords, conditionSourceAppliesToCountry, emptyConditions, type Conditions, type LocationConditions } from "../domain/conditions";

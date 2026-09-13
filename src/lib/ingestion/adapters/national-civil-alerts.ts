@@ -1,8 +1,10 @@
 import booleanIntersects from "@turf/boolean-intersects";
 import { multiPolygon, polygon } from "@turf/helpers";
 import { PartitionedSourceResultSchema, countryCodes, type NormalizedEvent, type PartitionedSourceResult } from "../../domain/schemas";
+import { CatalogPartitionedSourceResultSchema, type RuntimePartitionedSourceResult } from "../../domain/catalog-state";
+import { catalogV2CountryCodes, catalogV3CountryCodes } from "../../domain/contract-identities";
 import { locationPolygon } from "../../geospatial";
-import { activeNationalSystems, nationalWarningSources } from "../../national-warning-sources";
+import { nationalWarningSources, runtimeNationalSystems } from "../../national-warning-sources";
 import { fetchWithRetry, isAllowlistedHttpsUrl, mapConcurrent, withFetchByteBudget } from "../fetch";
 import { recordSourceDiagnostics, type IngestionContext, type SourceAdapter } from "../types";
 import { fetchAtPartition } from "./national-civil-alerts-at";
@@ -15,6 +17,7 @@ import { fetchPlPartition } from "./national-civil-alerts-pl";
 import { fetchCzPartition } from "./national-civil-alerts-cz";
 import { fetchItPartition } from "./national-civil-alerts-it";
 import { fetchLvPartition } from "./national-civil-alerts-lv";
+import { expandedNationalFetcher, optionalCredentialConfigured } from "./national-civil-alerts-expanded";
 
 type Vma = {
   Identifier?: unknown; Updated?: unknown; Published?: unknown; Headline?: unknown; Preamble?: unknown;
@@ -111,17 +114,25 @@ export class NationalCivilAlertsAdapter implements SourceAdapter {
   readonly id = "national-civil-alerts" as const;
   readonly cadence = "fast" as const;
 
-  async fetch(context: IngestionContext): Promise<PartitionedSourceResult> {
+  async fetch(context: IngestionContext): Promise<RuntimePartitionedSourceResult> {
     const checkedAt = context.now.toISOString();
+    const expanded = context.state?.collection.catalogVersion === 3
+      || context.locations.some(({ countryCode }) => !(catalogV2CountryCodes as readonly string[]).includes(countryCode));
+    const codes = expanded ? catalogV3CountryCodes : countryCodes;
     const disabledCountries = parseNationalAlertsDisabledCountries(process.env.NATIONAL_ALERTS_DISABLED_COUNTRIES);
     const disabledTransports = disabledNationalTransports();
     type Transport = NonNullable<PartitionedSourceResult["partitions"]["AT"]["transports"]>[string];
     const results = new Map<string, Transport>();
-    const tasks = countryCodes.flatMap((code) => activeNationalSystems(code).map((system) => ({ code, system })));
+    const tasks = codes.flatMap((code) => runtimeNationalSystems(code).map((system) => ({ code, system })));
     recordSourceDiagnostics(context, { targetsScheduled: tasks.filter(({ code, system }) => !disabledCountries.has(code) && !disabledTransports.has(system.id)).length });
     await withFetchByteBudget({ remaining: 24 * 1024 * 1024 }, () => mapConcurrent(tasks, 8, async ({ code, system }) => {
       if (disabledCountries.has(code) || disabledTransports.has(system.id)) {
         results.set(system.id, { status: "disabled", sourceUpdatedAt: null, events: [], error: null, limitationCode: "runtime_transport_disabled" });
+        return;
+      }
+      if (!optionalCredentialConfigured(system.id, system.credentialEnvVar)) {
+        results.set(system.id, { status: "disabled", sourceUpdatedAt: null, events: [], error: null, limitationCode: "credential_not_configured",
+          checkedLocationIds: [], unavailableLocationIds: [] });
         return;
       }
       const previous = context.state?.partitionTransports.nationalCivilAlerts[code]?.[system.id];
@@ -132,11 +143,12 @@ export class NationalCivilAlertsAdapter implements SourceAdapter {
         return;
       }
       let partition: NationalPartition;
+      const transportBudgetMs = system.id === "ea-flood" ? 20_000 : 8_000;
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(new Error("National transport exceeded its eight-second budget")), 8_000);
+      const timeout = setTimeout(() => controller.abort(new Error(`National transport exceeded its ${transportBudgetMs / 1_000}-second budget`)), transportBudgetMs);
       try {
-        if (context.deadlineAt && context.deadlineAt - Date.now() < 8_000) throw new Error("Source deadline leaves less than the transport budget");
-        const fetchTransport = transportFetchers[system.id];
+        if (context.deadlineAt && context.deadlineAt - Date.now() < transportBudgetMs) throw new Error("Source deadline leaves less than the transport budget");
+        const fetchTransport = transportFetchers[system.id] || expandedNationalFetcher(system.id);
         if (!fetchTransport) throw new Error("No approved parser for national transport");
         const boundedFetch = ((input: RequestInfo | URL, init: RequestInit = {}) => context.fetch(input, {
           ...init, signal: init.signal ? AbortSignal.any([init.signal, controller.signal]) : controller.signal,
@@ -146,8 +158,8 @@ export class NationalCivilAlertsAdapter implements SourceAdapter {
       finally { clearTimeout(timeout); }
       results.set(system.id, { ...partition, events: partition.events.map((event) => ({ ...event, transportId: system.id })) });
     }));
-    const partitions = Object.fromEntries(countryCodes.map((code) => {
-      const systems = activeNationalSystems(code);
+    const partitions = Object.fromEntries(codes.map((code) => {
+      const systems = runtimeNationalSystems(code);
       const transports = Object.fromEntries(systems.map(({ id }) => [id, results.get(id)!]));
       const effective = systems.map(({ id }) => {
         const result = results.get(id)!;
@@ -171,7 +183,8 @@ export class NationalCivilAlertsAdapter implements SourceAdapter {
     }));
     recordSourceDiagnostics(context, { targetsCompleted: results.size,
       matchedLocations: new Set([...results.values()].flatMap((result) => (result.events || []).flatMap((event) => event.geometry.kind === "locations" ? event.geometry.ids : []))).size });
-    return PartitionedSourceResultSchema.parse({ sourceId: this.id, checkedAt, partitions });
+    return (expanded ? CatalogPartitionedSourceResultSchema : PartitionedSourceResultSchema)
+      .parse({ sourceId: this.id, checkedAt, partitions }) as RuntimePartitionedSourceResult;
   }
 }
 

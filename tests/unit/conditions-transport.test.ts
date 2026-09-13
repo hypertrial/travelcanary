@@ -56,7 +56,7 @@ describe("bounded conditions transports", () => {
     expect(publish.mock.calls[0][0].flatMap((file: { locations: Record<string, unknown> }) => Object.keys(file.locations))).toHaveLength(503);
   });
 
-  it("recovers one whole failed forecast batch through one quota-accounted split", async () => {
+  it("recovers one transient whole-batch failure with one bounded transport retry", async () => {
     const env = { LOCAL_CONDITIONS_ENABLED: "true", NONCOMMERCIAL_DATA_ENABLED: "true",
       CONDITIONS_DISABLED_SOURCES: conditionSourceIds.filter((id) => id !== "open-meteo-weather").join(",") };
     const store = new MemoryStateStore(createEmptyState(now)); let calls = 0;
@@ -64,14 +64,13 @@ describe("bounded conditions transports", () => {
       const url = new URL(String(input)); const latitude = url.searchParams.get("latitude")!.split(",").map(Number);
       const longitude = url.searchParams.get("longitude")!.split(",").map(Number);
       if (++calls === 1) throw new Error("batch transport failed");
-      if (latitude.length === 20) expect((await store.read()).data.conditions.reservations.map(({ weight }) => weight)).toContain(40);
       return Response.json(latitude.map((lat, index) => ({ ...structuredClone(forecast), latitude: lat, longitude: longitude[index] })));
     });
     const result = await runConditions({ now, stateStore: store, publish: successfulPublish, fetch: fetchMock, env });
-    expect(fetchMock).toHaveBeenCalledTimes(7);
-    expect(result.diagnostics!.forecasts.weather).toMatchObject({ attempted: 200, matched: 200, failed: 0, splitRetried: 40, recovered: 40, skipped: 0,
-      failureCodes: { unknown_failure: 1 }, affectedCountries: [] });
-    expect((await store.read()).data.conditions.reservations.map(({ weight }) => weight)).toEqual([200, 40]);
+    expect(fetchMock).toHaveBeenCalledTimes(6);
+    expect(result.diagnostics!.forecasts.weather).toMatchObject({ attempted: 200, matched: 200, failed: 0, splitRetried: 0, recovered: 0, skipped: 0,
+      failureCodes: {}, affectedCountries: [] });
+    expect((await store.read()).data.conditions.reservations.map(({ weight }) => weight)).toEqual([200]);
     expect((await store.read()).data.conditions.health["open-meteo-weather"]).toMatchObject({ status: "ok", matched: 200 });
   });
 
@@ -79,12 +78,16 @@ describe("bounded conditions transports", () => {
     const env = { LOCAL_CONDITIONS_ENABLED: "true", NONCOMMERCIAL_DATA_ENABLED: "true",
       CONDITIONS_DISABLED_SOURCES: conditionSourceIds.filter((id) => id !== "open-meteo-weather").join(",") };
     const initial = createEmptyState(now); const firstBatch = forecastBatches(initial, now, env)[0]; const failedIds = firstBatch.ids.slice(20);
-    const store = new MemoryStateStore(initial); let initialFailed = false; let splitCalls = 0;
+    const firstLatitude = locations.find(({ id }) => id === firstBatch.ids[0])!.centroid[1].toFixed(4);
+    const failedLatitude = locations.find(({ id }) => id === failedIds[0])!.centroid[1].toFixed(4);
+    const store = new MemoryStateStore(initial); let initialFailures = 0; let splitFailures = 0;
     const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
       const url = new URL(String(input)); const latitude = url.searchParams.get("latitude")!.split(",").map(Number);
       const longitude = url.searchParams.get("longitude")!.split(",").map(Number);
-      if (!initialFailed && latitude.length === 40) { initialFailed = true; throw new Error("batch transport failed"); }
-      if (latitude.length === 20 && ++splitCalls === 2) throw new Error("second half failed");
+      if (latitude.length === 40 && url.searchParams.get("latitude")!.startsWith(firstLatitude)
+        && initialFailures++ < 2) throw new Error("batch transport failed");
+      if (latitude.length === 20 && url.searchParams.get("latitude")!.startsWith(failedLatitude)
+        && splitFailures++ < 2) throw new Error("second half failed");
       return Response.json(latitude.map((lat, index) => ({ ...structuredClone(forecast), latitude: lat, longitude: longitude[index] })));
     });
     const result = await runConditions({ now, stateStore: store, publish: successfulPublish, fetch: fetchMock, env });
@@ -103,15 +106,16 @@ describe("bounded conditions transports", () => {
     const env = { LOCAL_CONDITIONS_ENABLED: "true", NONCOMMERCIAL_DATA_ENABLED: "true",
       CONDITIONS_DISABLED_SOURCES: conditionSourceIds.filter((id) => id !== "open-meteo-weather").join(",") };
     const initial = createEmptyState(now); initial.conditions.reservations.push({ at: now.toISOString(), weight: 180 });
-    const store = new MemoryStateStore(initial); let calls = 0;
+    const store = new MemoryStateStore(initial); const failedBatch = forecastBatches(initial, now, env)[0]; let failures = 0;
+    const failedLatitude = locations.find(({ id }) => id === failedBatch.ids[0])!.centroid[1].toFixed(4);
     const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
       const url = new URL(String(input)); const latitude = url.searchParams.get("latitude")!.split(",").map(Number);
       const longitude = url.searchParams.get("longitude")!.split(",").map(Number);
-      if (++calls === 1) throw new Error("batch transport failed");
+      if (url.searchParams.get("latitude")!.startsWith(failedLatitude) && failures++ < 2) throw new Error("batch transport failed");
       return Response.json(latitude.map((lat, index) => ({ ...structuredClone(forecast), latitude: lat, longitude: longitude[index] })));
     });
     const result = await runConditions({ now, stateStore: store, publish: successfulPublish, fetch: fetchMock, env });
-    expect(fetchMock).toHaveBeenCalledTimes(5);
+    expect(fetchMock).toHaveBeenCalledTimes(6);
     expect(result.diagnostics!.forecasts.weather).toMatchObject({ splitRetried: 0, skipped: 40, failed: 40 });
     expect((await store.read()).data.conditions.reservations.map(({ weight }) => weight)).toEqual([180, 200]);
   });
@@ -167,14 +171,14 @@ describe("bounded conditions transports", () => {
     const env = { LOCAL_CONDITIONS_ENABLED: "true", NONCOMMERCIAL_DATA_ENABLED: "true",
       CONDITIONS_DISABLED_SOURCES: conditionSourceIds.filter((id) => id !== "autobahn-traffic").join(",") };
     const initial = createEmptyState(now); const before = buildSnapshot(initial, now); const store = new MemoryStateStore(initial);
-    let failed = false;
+    let failures = 0;
     const firstFetch = vi.fn(async (input: RequestInfo | URL) => {
       const url = String(input); const key = url.endsWith("/closure") ? "closure" : "warning";
-      if (!failed && url.includes("/A100/") && key === "closure") { failed = true; throw new Error("one road failed"); }
+      if (url.includes("/A100/") && key === "closure" && failures++ < 2) throw new Error("one road failed");
       return Response.json({ [key]: [] });
     });
     const first = await runConditions({ now, stateStore: store, publish: successfulPublish, fetch: firstFetch, env });
-    expect(firstFetch).toHaveBeenCalledTimes(48);
+    expect(firstFetch).toHaveBeenCalledTimes(49);
     expect(first.diagnostics).toMatchObject({ infrastructureRequests: 48, infrastructureSkipped: 0,
       infrastructure: { "autobahn-traffic": { attempted: 48, succeeded: 47, failed: 1, skipped: 0, healthyEmpty: false,
         failureCodes: { unknown_failure: 1 }, targetExamples: [{ target: "A100:closure", code: "unknown_failure" }], omittedTargets: 0 } } });

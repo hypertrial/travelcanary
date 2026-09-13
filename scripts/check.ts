@@ -232,6 +232,7 @@ async function fastLane() {
     () => npmRun("data:validate"),
     () => npmRun("catalog:check"),
     () => npmRun("coverage:check"),
+    () => npmRun("coverage:upgrade-check"),
     () => npmRun("sources:check"),
     () => npmRun("conditions:check"),
     () => vitestLight(),

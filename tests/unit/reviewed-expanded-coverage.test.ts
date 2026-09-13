@@ -8,7 +8,7 @@ import { expandedHazardCoverage } from "@/lib/expanded-coverage";
 import { locationCoveragePresentation } from "@/lib/coverage-presentation";
 import { SnapshotV11Schema, catalogLocationState } from "@/lib/domain/catalog-public";
 import { HazardTypeSchema, type NormalizedEvent } from "@/lib/domain/schemas";
-import type { IngestionStateV14 } from "@/lib/domain/catalog-state";
+import type { IngestionStateV15 } from "@/lib/domain/catalog-state";
 import release2 from "../../data/catalog-releases/2.json";
 import release3 from "../../data/catalog-releases/3.json";
 
@@ -16,7 +16,7 @@ const now = new Date("2026-09-08T12:00:00Z");
 const added = release3.locationIds.filter((id) => !release2.locationIds.includes(id));
 const scopes = { usgs: added, emsc: added, "slf-avalanche": ["li-malbun"], "fcdo-travel-advice": added.filter((id) => !id.startsWith("gb-") && !id.startsWith("va-")) };
 function state() { const value = createEmptyState(now); value.collection = { catalogVersion: 3, revision: 1 }; return value; }
-function receipt(value: IngestionStateV14, source: keyof typeof scopes, checked = scopes[source]) {
+function receipt(value: IngestionStateV15, source: keyof typeof scopes, checked = scopes[source]) {
   value.expandedSourceHealth[source] = { health: { ...value.sources[source], status: checked.length === scopes[source].length ? "ok" : checked.length ? "partial" : "failed",
     lastAttempt: now.toISOString(), lastSuccess: checked.length ? now.toISOString() : null, sourceUpdatedAt: checked.length ? now.toISOString() : null,
     nextExpectedUpdate: "2026-09-08T12:10:00Z", error: checked.length === scopes[source].length ? null : "private adapter failure detail" },
@@ -33,14 +33,21 @@ function view(snapshot: ReturnType<typeof buildCatalog3Snapshot>, id: string, at
 }
 
 describe("reviewed expanded monitoring coverage", () => {
-  it("leaves all20 hazard capabilities unmonitored except reviewed earthquakes and Malbun avalanche", () => {
+  it("classifies all20 hazards while preserving earthquake monitoring and reviewed partial/direct additions", () => {
     expect(HazardTypeSchema.options).toHaveLength(20);
     for (const location of catalogLocationsV3.filter(({ id }) => added.includes(id))) {
       const coverage = expandedHazardCoverage(location); expect(Object.keys(coverage).sort()).toEqual([...HazardTypeSchema.options].sort());
-      for (const hazard of HazardTypeSchema.options) {
-        if (hazard === "earthquake" || (location.id === "li-malbun" && hazard === "avalanche")) expect(coverage[hazard].status).toBe("monitored");
-        else expect(coverage[hazard]).toEqual({ status: "not_monitored", providerIds: [] });
+      expect(coverage.earthquake).toEqual({ status: "monitored", providerIds: ["usgs", "emsc"] });
+      if (location.id === "li-malbun") expect(coverage.avalanche.status).toBe("monitored");
+      if (["AD", "IS", "NO"].includes(location.countryCode)) {
+        expect(coverage["severe-weather"].status).not.toBe("not_monitored");
+      } else if (["BA", "GB", "MD", "ME", "MK", "RS"].includes(location.countryCode)) {
+        expect(coverage["severe-weather"].status).toBe("not_monitored");
       }
+      if (location.countryCode === "NO") {
+        expect(coverage["fire-danger"].status).toBe("monitored"); expect(coverage.flood.status).toBe("partial");
+      }
+      expect(Object.values(coverage).every(({ status }) => ["monitored", "partial", "not_monitored"].includes(status))).toBe(true);
     }
   });
 
@@ -61,8 +68,9 @@ describe("reviewed expanded monitoring coverage", () => {
     receipt(value, "usgs", []); const failed = buildCatalog3Snapshot(value, now);
     expect(failed.locations["gb-london"].level).toBe("UNKNOWN"); expect(view(failed, "gb-london").freshness.status).not.toBe("current");
     receipt(value, "usgs"); const recovered = buildCatalog3Snapshot(value, now);
-    expect(recovered.locations["gb-london"].level).toBe("NORMAL"); expect(recovered.locations["gb-london"].hazards).toEqual([]);
-    expect(view(recovered, "gb-london").freshness.status).toBe("current");
+    expect(recovered.locations["gb-london"].level).toBe("UNKNOWN"); expect(recovered.locations["gb-london"].hazards).toEqual([]);
+    const earthquake = view(recovered, "gb-london").categories.flatMap(({ subchecks }) => subchecks).find(({ hazard }) => hazard === "earthquake")!;
+    expect(earthquake).toMatchObject({ coverageStatus: "available", freshnessStatus: "current" });
   });
 
   it.each(["quake only", "avalanche only"] as const)("keeps independent Malbun provider coverage: %s", (mode) => {
@@ -88,8 +96,8 @@ describe("reviewed expanded monitoring coverage", () => {
     expect(snapshot.locations["gb-london"].level).toBe("UNKNOWN");
     expect(view(snapshot, "gb-london").freshness.status).toBe("unavailable");
     const checkedId = scopes.usgs.find((id) => id !== "gb-london" && id !== "li-malbun")!;
-    expect(snapshot.locations[checkedId].level).toBe("NORMAL");
-    expect(view(snapshot, checkedId).freshness.status).toBe("current");
+    expect(view(snapshot, checkedId).categories.flatMap(({ subchecks }) => subchecks)
+      .find(({ hazard }) => hazard === "earthquake")!.freshnessStatus).toBe("current");
   });
 
   it("expires the same public USGS receipt immediately after its twenty-minute cadence window", () => {
@@ -97,14 +105,15 @@ describe("reviewed expanded monitoring coverage", () => {
     for (const [offset, expected] of [[20 * 60_000, "current"], [20 * 60_000 + 1, "delayed"]] as const) {
       const presentation = view(snapshot, "gb-london", new Date(now.getTime() + offset));
       expect(presentation.categories.flatMap(({ subchecks }) => subchecks).find(({ hazard }) => hazard === "earthquake")!.freshnessStatus).toBe(expected);
-      expect(presentation.freshness.status).toBe(expected);
+      expect(presentation.freshness.status).toBe("delayed");
     }
   });
 
   it.each([20 * 60_000, 20 * 60_000 + 1, 2 * 3600_000 + 1])("reassesses scoped monitoring without inventing unsupported delayed hazards at age %s", (age) => {
     const value = state(); receipt(value, "usgs"); const snapshot = buildCatalog3Snapshot(value, now); const before = structuredClone(snapshot);
     const aged = applySnapshotStaleness(snapshot, new Date(now.getTime() + age), catalogLocationsV3);
-    expect(aged.locations["gb-london"]).toMatchObject({ level: age === 20 * 60_000 ? "NORMAL" : "UNKNOWN", hazards: [], delayedHazards: age === 20 * 60_000 ? [] : ["earthquake"] });
+    expect(aged.locations["gb-london"]).toMatchObject({ level: "UNKNOWN", hazards: [] });
+    expect(aged.locations["gb-london"].delayedHazards).toEqual(expect.arrayContaining(age === 20 * 60_000 ? ["flood"] : ["earthquake", "flood"]));
     expect(aged.locations["gb-london"].coverageGaps).toEqual(snapshot.locations["gb-london"].coverageGaps);
     expect(aged.locations["li-malbun"].delayedHazards.slice().sort()).toEqual(age === 20 * 60_000 ? ["avalanche"] : ["avalanche", "earthquake"]);
     expect(snapshot).toEqual(before);
@@ -126,7 +135,7 @@ describe("reviewed expanded monitoring coverage", () => {
     expect(view(snapshot, "gb-london").freshness.status).not.toBe("current");
   });
 
-  it("ignores unsupported source events, broad geometry, and ineligible FCDO country evidence", () => {
+  it("shows EONET context but ignores broad quake geometry and ineligible FCDO country evidence", () => {
     const value = state(); receipt(value, "usgs");
     value.events = [
       { ...advice(["gb-london"]), id: "eonet:fire", sourceId: "eonet", providerId: "eonet", type: "wildfire" },
@@ -134,8 +143,9 @@ describe("reviewed expanded monitoring coverage", () => {
       advice(["gb-london"]), advice(["va-vatican-city"]),
     ];
     const snapshot = buildCatalog3Snapshot(value, now);
-    for (const id of added) expect(snapshot.locations[id].hazards).toEqual([]);
-    expect(snapshot.locations["gb-london"].level).toBe("NORMAL");
+    expect(snapshot.locations["gb-london"].hazards.map(({ providerId, type }) => [providerId, type])).toEqual([["eonet", "wildfire"]]);
+    expect(snapshot.locations["gb-london"].coverageGaps).toContain("wildfire");
+    for (const id of added.filter((id) => id !== "gb-london")) expect(snapshot.locations[id].hazards).toEqual([]);
   });
 
   it("preserves old503 location and provider presentations byte-for-byte and does not mutate private state", () => {

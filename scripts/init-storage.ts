@@ -1,4 +1,4 @@
-import { parseCatalogState, assertCatalog2Collection, type IngestionStateV14 as IngestionState } from "../src/lib/domain/catalog-state";
+import { parseCatalogState, assertCatalog2Collection, type IngestionStateV15 as IngestionState } from "../src/lib/domain/catalog-state";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { get, put, BlobNotFoundError } from "@vercel/blob";

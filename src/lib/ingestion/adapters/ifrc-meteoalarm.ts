@@ -47,7 +47,7 @@ export function parseIfrcMeteoAlarm(value: unknown, requested: CountryCode[], no
     })));
     const xml = `<feed><updated>${now.toISOString()}</updated>${entries.join("")}</feed>`;
     const parsed = parseMeteoAlarmFeed(xml, countryCode, now);
-    results.set(countryCode, { events: parsed.events, supersededIdentifiers: parsed.supersededIdentifiers });
+    results.set(countryCode, { events: parsed.events as NormalizedEvent[], supersededIdentifiers: parsed.supersededIdentifiers });
   }
   return results;
 }

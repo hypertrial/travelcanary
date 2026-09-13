@@ -192,6 +192,7 @@ export async function verifyProduction(options: VerifyProductionOptions = {}): P
   const catalogVersion = catalogMeta === "3" ? 3 : 2;
   const paths = catalogVersion === 3 ? catalogV3Paths : catalogV2Paths;
   const locations = catalogVersion === 3 ? catalogLocationsV3 : legacyLocations;
+  const catalogCountries = new Set<string>(locations.map(({ countryCode }) => countryCode));
   const countryCount = new Set(locations.map(({ countryCode }) => countryCode)).size;
   const marineEligibleLocationIds = catalogVersion === 3 ? new Set(catalog3MarineMappingByLocation.keys()) : legacyMarineEligibleLocationIds;
   const legacyCountries = new Set<string>(catalogV2CountryCodes);
@@ -261,9 +262,8 @@ export async function verifyProduction(options: VerifyProductionOptions = {}): P
             checkedDestinations: receipt.checkedLocationIds.length, unavailableDestinations: receipt.unavailableLocationIds.length };
           if (receipt.status !== "ok") warnings.push({ code: "expanded_provider_health", message: `${id}: ${receipt.status}; ${receipt.checkedLocationIds.length} checked, ${receipt.unavailableLocationIds.length} unavailable destinations` });
         }
-        for (const [country, partition] of Object.entries(provider.partitions || {})) if (!legacyCountries.has(country) && partition.status !== "disabled") {
-          blockers.push({ code: "expanded_partition_unauthorized", message: `${country}/${id} has no approved expanded country transport but reports ${partition.status}` });
-        }
+        // Catalog 3 partitions are authorized by warning-manifest V4 and the
+        // catalog-scoped collection receipts, not by legacy-country membership.
       }
     }
     const unhealthy = Object.entries(snapshot.providers).filter(([, state]) => state.status !== "ok" && state.status !== "disabled")
@@ -273,14 +273,14 @@ export async function verifyProduction(options: VerifyProductionOptions = {}): P
     if (snapshot.providers.gdelt.status === "disabled") warnings.push({ code: "gdelt_reliability_gate", message: "GDELT is disabled pending its reliability gate; context only, no monitoring coverage lost" });
     if (disabledSteadyState.length) blockers.push({ code: "steady_state_provider_disabled", message: `Expected enabled providers are disabled: ${disabledSteadyState.join(", ")}` });
     const national = snapshot.providers["national-civil-alerts"].partitions;
-    const disabledNational = Object.entries(nationalWarningSources).filter(([, source]) => source.enabled)
+    const disabledNational = Object.entries(nationalWarningSources).filter(([countryCode, source]) => catalogCountries.has(countryCode) && source.enabled)
       .filter(([countryCode]) => national?.[countryCode as keyof typeof national]?.status === "disabled").map(([countryCode]) => countryCode).sort();
     if (disabledNational.length) blockers.push({ code: "national_partition_disabled", message: `Enabled national partitions are disabled: ${disabledNational.join(", ")}` });
-    for (const [countryCode, country] of Object.entries(nationalWarningManifest.countries)) for (const system of country.systems) {
+    if (catalogVersion === 3) for (const [countryCode, country] of Object.entries(nationalWarningManifest.countries).filter(([countryCode]) => catalogCountries.has(countryCode))) for (const system of country.systems) {
       if (system.runtimeTarget === "none") continue;
-      const providerId = system.runtimeTarget === "meteoalarm-fallback" ? "meteoalarm" : "national-civil-alerts";
-      const transport = snapshot.providers[providerId].partitions?.[countryCode as keyof typeof nationalWarningManifest.countries]
-        ?.transports?.find(({ id }) => id === system.id);
+      const providerId = system.runtimeTarget.startsWith("meteoalarm-") ? "meteoalarm" : "national-civil-alerts";
+      const partitions = snapshot.providers[providerId].partitions as Record<string, { transports?: Array<{ id: string; status: string }> }> | undefined;
+      const transport = partitions?.[countryCode]?.transports?.find(({ id }) => id === system.id);
       if (system.status === "active" && (!transport || transport.status === "disabled")) {
         blockers.push({ code: "active_transport_missing", message: `${countryCode}/${system.id} is approved but not exposed as enabled transport health` });
       }

@@ -1,6 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 
-const [locations, meteoalarmCapabilities, vigicruesMapping, avalancheReportMapping, ehydMapping, nationalWarningManifest, catalogMetadata] = await Promise.all([
+const [locations, meteoalarmCapabilities, vigicruesMapping, avalancheReportMapping, ehydMapping, nationalWarningManifest, catalogMetadata, eeaStationMapping, catalog3Release] = await Promise.all([
   readFile("data/locations.json", "utf8").then(JSON.parse),
   readFile("data/meteoalarm-capabilities.json", "utf8").then(JSON.parse),
   readFile("data/vigicrues-section-mapping.json", "utf8").then(JSON.parse),
@@ -8,8 +8,11 @@ const [locations, meteoalarmCapabilities, vigicruesMapping, avalancheReportMappi
   readFile("data/ehyd-station-mapping.json", "utf8").then(JSON.parse),
   readFile("data/national-warning-sources.json", "utf8").then(JSON.parse),
   readFile("data/catalog-metadata.json", "utf8").then(JSON.parse),
+  readFile("data/eea-station-mapping.json", "utf8").then(JSON.parse),
+  readFile("data/catalog-releases/3.json", "utf8").then(JSON.parse),
 ]);
 const countries = [...new Set(locations.map(({ countryCode }) => countryCode))].sort();
+const legacyLocationIds = new Set(locations.map(({ id }) => id));
 const fallbackIds = locations
   .filter((location) => location.sourceRegionCodes.meteoalarm.every((code) => code.endsWith(":country") || code.startsWith("area:")))
   .map(({ id }) => id);
@@ -25,7 +28,10 @@ const hazardCoverage = {
   "extreme-cold": entry("monitored", ["meteoalarm"]),
   wildfire: entry("partial", ["meteoalarm", "cems-rapid-mapping", "effis-active-fire"]),
   "fire-danger": entry("monitored", ["effis-fire-danger"]),
-  "air-quality": entry("monitored", ["eea-aqi"]),
+  // The official viewer combines observations with modelled/gap-filled values.
+  // Only observation-backed poor-or-worse station details can create alerts, so
+  // even mapped destinations remain explicitly partial and never imply all-clear.
+  "air-quality": entry("partial", ["eea-aqi"]),
   earthquake: entry("monitored", ["usgs", "emsc"]),
   volcano: entry("not_monitored", ["eonet"]),
   drought: entry("not_monitored", ["edo-drought"]),
@@ -89,6 +95,7 @@ const coverage = {
 };
 
 for (const [countryCode, nationalCountry] of Object.entries(nationalWarningManifest.countries)) {
+  if (!coverage.countries[countryCode]) continue;
   for (const system of coverageSystems(nationalCountry)) {
     if (!system.coverageLocationIds?.length) continue;
     for (const locationId of system.coverageLocationIds) for (const hazard of system.hazards) {
@@ -100,9 +107,25 @@ for (const [countryCode, nationalCountry] of Object.entries(nationalWarningManif
 }
 
 const serialized = `${JSON.stringify(coverage, null, 2)}\n`;
+const eeaMappedIds = new Set(Object.keys(eeaStationMapping.locations));
+const addedByCountry = Map.groupBy(catalog3Release.locationIds.filter((id) => !legacyLocationIds.has(id)), (id) => id.slice(0, 2).toUpperCase());
+const fullCountryCodes = [];
+const partialLocationIds = [];
+for (const [countryCode, countryLocations] of addedByCountry) {
+  const mapped = countryLocations.filter((id) => eeaMappedIds.has(id));
+  if (mapped.length === countryLocations.length) fullCountryCodes.push(countryCode);
+  else if (mapped.length) partialLocationIds.push(...mapped);
+}
+const eeaCoverageSerialized = `${JSON.stringify({
+  schemaVersion: 1, fullCountryCodes: fullCountryCodes.sort(), locationIds: partialLocationIds.sort(),
+})}\n`;
 if (process.argv.includes("--check")) {
-  const current = await readFile("data/coverage.json", "utf8");
-  if (current !== serialized) throw new Error("data/coverage.json is stale; run npm run coverage:generate");
+  const [current, eeaCoverageCurrent] = await Promise.all([
+    readFile("data/coverage.json", "utf8"), readFile("data/eea-station-covered-locations.json", "utf8"),
+  ]);
+  if (current !== serialized || eeaCoverageCurrent !== eeaCoverageSerialized) throw new Error("Coverage artifacts are stale; run npm run coverage:generate");
 } else {
-  await writeFile("data/coverage.json", serialized);
+  await Promise.all([
+    writeFile("data/coverage.json", serialized), writeFile("data/eea-station-covered-locations.json", eeaCoverageSerialized),
+  ]);
 }

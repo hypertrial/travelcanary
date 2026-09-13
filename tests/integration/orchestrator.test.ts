@@ -1,4 +1,4 @@
-import type { IngestionStateV14 as IngestionState } from "@/lib/domain/catalog-state";
+import type { IngestionStateV15 as IngestionState } from "@/lib/domain/catalog-state";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildSnapshot, createEmptyState } from "@/lib/risk";
 import { ConcurrencyError, MemorySnapshotStore, MemoryStateStore, type SnapshotStore, type StateStore, type Versioned } from "@/lib/storage";

@@ -1,5 +1,5 @@
 import { publishCommittedCatalog, type CatalogPublicationStores } from "../catalog-publication";
-import { assertSupportedCollection, assertCatalog2Collection, CollectionChangedError, type CollectionControl, type IngestionStateV14 as IngestionState } from "../domain/catalog-state";
+import { assertSupportedCollection, assertCatalog2Collection, CollectionChangedError, type CollectionControl, type IngestionStateV15 as IngestionState } from "../domain/catalog-state";
 import { randomUUID } from "node:crypto";
 import { gunzipSync } from "node:zlib";
 import { locations } from "../data";
@@ -32,7 +32,7 @@ function sourceIsDue(last: string | undefined, cadenceHours: number, now: Date) 
   return !last || now.getTime() - Date.parse(last) >= cadenceHours * 3_600_000 - SCHEDULER_JITTER_MS;
 }
 class ConditionsFailure extends Error {
-  constructor(readonly code: FailureCode, readonly splitRetry = true) { super(code); }
+  constructor(readonly code: FailureCode, readonly splitRetry = true, readonly transient = false) { super(code); }
 }
 function failureCode(error: unknown): FailureCode {
   if (error instanceof ConditionsFailure) return error.code;
@@ -143,39 +143,57 @@ export async function runConditions(options: {
     if (forecastFailure) throw forecastFailure;
     const target = new URL(url);
     if (target.protocol !== "https:" || target.username || target.password || !hosts.has(target.hostname)) throw new ConditionsFailure("contract_mismatch", false);
-    if (Date.now() + 4000 > Math.min(deadline, taskDeadline)) { diagnostics.skipped += 1; throw new ConditionsFailure("deadline_exhausted", false); }
-    if (diagnostics.requests >= 128 || remainingBytes < maxBytes) { diagnostics.skipped += 1; throw new ConditionsFailure("quota_exhausted", false); }
-    diagnostics.requests += 1; remainingBytes -= maxBytes;
-    let consumed = 0;
-    try {
-      const headers = new Headers(init.headers);
-      if (!headers.has("User-Agent")) headers.set("User-Agent", "TravelCanary/1.0 (+https://travelcanary.org/)");
-      if (target.hostname === "tie.digitraffic.fi") headers.set("Digitraffic-User", "TravelCanary/1.0");
-      const response = await (options.fetch || fetch)(url, { ...init, redirect: "error", signal: AbortSignal.timeout(Math.min(4000, deadline - Date.now())), headers });
-      if (response.status === 429 && target.hostname.endsWith("open-meteo.com")) {
-        const retry = response.headers.get("retry-after");
-        const until = retry && /^\d+$/.test(retry) ? now.getTime() + Number(retry) * 1000 : retry ? Date.parse(retry) : NaN;
-        const retryAt = Math.min(now.getTime() + 7 * 86400000, Math.max(now.getTime() + 3_600_000, Number.isFinite(until) ? until : 0));
-        cooldown = new Date(Math.max(retryAt, cooldown ? Date.parse(cooldown) : 0)).toISOString();
-        await response.body?.cancel();
-        throw new ConditionsFailure("http_error", false);
-      }
-      if (!response.ok) { await response.body?.cancel(); throw new ConditionsFailure("http_error"); }
-      let bytes: Uint8Array;
-      try { bytes = await readBytesWithLimit(response, maxBytes, (size) => { consumed += size; diagnostics.bytes += size; }); }
-      catch (error) {
-        if (error instanceof Error && /(?:too large|exceeds|limit)/i.test(error.message)) throw new ConditionsFailure("response_too_large");
-        throw new ConditionsFailure(failureCode(error));
-      }
-      const text = new TextDecoder().decode(bytes);
-      let body: unknown;
-      try { body = format === "bytes" ? bytes : format === "xml" ? text : bytes.length ? JSON.parse(text) : []; }
-      catch { throw new ConditionsFailure("parse_failed"); }
-      return { body, headers: response.headers, bytes: consumed };
-    } catch (error) {
-      if (error instanceof ConditionsFailure) throw error;
-      throw new ConditionsFailure(failureCode(error));
-    } finally { remainingBytes += Math.max(0, maxBytes - consumed); }
+    let lastError: ConditionsFailure = new ConditionsFailure("unknown_failure");
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      if (Date.now() + 4000 > Math.min(deadline, taskDeadline)) { diagnostics.skipped += 1; throw new ConditionsFailure("deadline_exhausted", false); }
+      if (diagnostics.requests >= 128 || remainingBytes < maxBytes) { diagnostics.skipped += 1; throw new ConditionsFailure("quota_exhausted", false); }
+      diagnostics.requests += 1; remainingBytes -= maxBytes;
+      let consumed = 0;
+      try {
+        const headers = new Headers(init.headers);
+        if (!headers.has("User-Agent")) headers.set("User-Agent", "TravelCanary/1.0 (+https://travelcanary.org/)");
+        if (target.hostname === "tie.digitraffic.fi") headers.set("Digitraffic-User", "TravelCanary/1.0");
+        const response = await (options.fetch || fetch)(url, { ...init, redirect: "error", signal: AbortSignal.timeout(Math.min(4000, deadline - Date.now())), headers });
+        const transientStatus = response.status === 408 || response.status === 429 || response.status >= 500;
+        if (!response.ok) {
+          const retry = response.headers.get("retry-after");
+          const until = retry && /^\d+$/.test(retry) ? now.getTime() + Number(retry) * 1000 : retry ? Date.parse(retry) : NaN;
+          const retryDelay = Number.isFinite(until) ? Math.max(0, until - now.getTime()) : 0;
+          await response.body?.cancel();
+          if (transientStatus && attempt === 0 && retryDelay <= 1_000
+            && Date.now() + retryDelay + 4_000 <= Math.min(deadline, taskDeadline)) {
+            // A response can arrive after activation or rollback. Recheck the
+            // collection fence before spending a second request on stale work.
+            assertCollection((await options.stateStore.read()).data, collection);
+            if (retryDelay) await new Promise((resolve) => setTimeout(resolve, retryDelay));
+            lastError = new ConditionsFailure("http_error", true, true);
+            continue;
+          }
+          if (response.status === 429 && target.hostname.endsWith("open-meteo.com")) {
+            const retryAt = Math.min(now.getTime() + 7 * 86400000, Math.max(now.getTime() + 3_600_000, Number.isFinite(until) ? until : 0));
+            cooldown = new Date(Math.max(retryAt, cooldown ? Date.parse(cooldown) : 0)).toISOString();
+          }
+          throw new ConditionsFailure("http_error", response.status !== 429, false);
+        }
+        let bytes: Uint8Array;
+        try { bytes = await readBytesWithLimit(response, maxBytes, (size) => { consumed += size; diagnostics.bytes += size; }); }
+        catch (error) {
+          if (error instanceof Error && /(?:too large|exceeds|limit)/i.test(error.message)) throw new ConditionsFailure("response_too_large");
+          throw new ConditionsFailure(failureCode(error));
+        }
+        const text = new TextDecoder().decode(bytes);
+        let body: unknown;
+        try { body = format === "bytes" ? bytes : format === "xml" ? text : bytes.length ? JSON.parse(text) : []; }
+        catch { throw new ConditionsFailure("parse_failed"); }
+        return { body, headers: response.headers, bytes: consumed };
+      } catch (error) {
+        if (error instanceof CollectionChangedError) throw error;
+        const failure = error instanceof ConditionsFailure ? error : new ConditionsFailure(failureCode(error), true, true);
+        lastError = failure;
+        if (!failure.transient || attempt === 1) throw failure;
+      } finally { remainingBytes += Math.max(0, maxBytes - consumed); }
+    }
+    throw lastError;
   };
   const updateHealth = (sourceId: ConditionSourceId, matched: number, failed: boolean) => {
     const previous = health[sourceId];

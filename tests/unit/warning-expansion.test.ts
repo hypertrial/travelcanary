@@ -120,6 +120,13 @@ describe("direct AEMET and DHMZ CAP", () => {
     expect(result.events).toHaveLength(1);
     expect(result.events[0]).toMatchObject({ startsAt: "2026-09-09T09:00:00.000Z", timing: "UPCOMING", geometry: { kind: "locations", ids: ["es-las-palmas-de-gran-canaria"] } });
   });
+  it("maps AEMET suspended-dust visibility warnings without rejecting the complete archive", () => {
+    const xml = fixture("aemet-1.xml").toString()
+      .replaceAll("AT;Temperaturas máximas", "VS;Polvo en suspensión");
+    const result = parseDirectWeatherCap(xml, "ES", { ...context, now: new Date("2026-09-08T12:00:00Z") });
+    expect(result.events).toHaveLength(1);
+    expect(result.events[0].type).toBe("severe-weather");
+  });
   it("parses all Croatian areas and deduplicates languages, including coastal warnings", () => {
     const result = parseDirectWeatherCap(fixture("dhmz-today.xml").toString(), "HR", { ...context, now: new Date("2026-09-07T05:00:00Z") });
     expect(result.events.filter((e) => e.type === "extreme-heat")).toHaveLength(3);

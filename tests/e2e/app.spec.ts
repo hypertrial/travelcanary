@@ -74,7 +74,7 @@ test("the coverage legend does not equate monitoring completeness with freshness
   await page.goto("/");
   await selectDestination(page, "Vienna", /Vienna/);
   await destinationDetails(page).locator("summary").filter({ hasText: "What these labels mean" }).click();
-  await expect(destinationDetails(page).getByText("Approved sources monitor this check. See Source updates for freshness.", { exact: true })).toBeVisible();
+  await expect(destinationDetails(page).getByText("Approved sources monitor this check. See Source updates for the check time and freshness.", { exact: true })).toBeVisible();
 });
 
 test("searches and explains a destination", { tag: "@smoke" }, async ({ page }) => {
@@ -134,7 +134,7 @@ test("supports keyboard-only search and selection", { tag: "@smoke" }, async ({ 
   await expect(panel.getByText("No major alert found in checked sources", { exact: true }).locator("svg")).toHaveCount(1);
   await expect(panel.getByText("Review source freshness and monitoring gaps for Vienna below.")).toHaveCount(1);
   await expect(panel.getByText("Current · updated just now")).toBeVisible();
-  await expect(panel.getByText("3 fully checked · 3 partly checked · 2 not checked")).toBeVisible();
+  await expect(panel.getByText("2 monitored · 4 partly monitored · 2 unavailable")).toBeVisible();
 });
 
 test("commits an exact destination search with Enter before moving through suggestions", async ({ page }) => {
@@ -269,23 +269,22 @@ test("shows issue-first coverage for Budapest and reveals successful checks", as
   const panel = destinationDetails(page);
   await expect(panel.getByRole("heading", { name: "What TravelCanary checks for Budapest" })).toBeVisible();
   await expect(panel.getByText("Current · updated just now")).toBeVisible();
-  await expect(panel.getByText("3 fully checked · 3 partly checked · 2 not checked")).toBeVisible();
+  await expect(panel.getByText("2 monitored · 4 partly monitored · 2 unavailable")).toBeVisible();
   await expect(panel.getByRole("heading", { name: "Monitoring gaps" })).toBeVisible();
   await expect(panel.getByText("Flooding", { exact: true }).first()).toBeVisible();
   await expect(panel.getByText("Weather", { exact: true }).first()).toBeHidden();
-  await expect(panel.getByText("Air quality", { exact: true }).first()).toBeHidden();
+  await expect(panel.getByText("Air quality", { exact: true }).first()).toBeVisible();
   await expect(panel.getByText("Earthquakes", { exact: true })).toBeHidden();
   await expect(panel.getByText("Additional context sources (7)")).toBeVisible();
   await expect(panel.getByText("Copernicus Global Flood Monitoring", { exact: true })).toBeHidden();
   const issueCopySize = await panel.getByText(/Official flood warnings and Copernicus-mapped emergencies/)
     .evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize));
   expect(issueCopySize).toBeGreaterThanOrEqual(12);
-  await panel.getByText("Fully checked (3)").click();
+  await panel.getByText("Monitored (2)").click();
   await expect(panel.getByText("Weather", { exact: true }).first()).toBeVisible();
-  await expect(panel.getByText("Air quality", { exact: true }).first()).toBeVisible();
   await expect(panel.getByText("Earthquakes", { exact: true })).toBeVisible();
   const earthquakeChecks = panel.getByLabel("Earthquakes checks");
-  await expect(earthquakeChecks).toContainText("Earthquake activityFully checked");
+  await expect(earthquakeChecks).toContainText("Earthquake activityMonitored");
   await expect(earthquakeChecks).not.toContainText("Volcanic activity");
   await panel.getByText("Air quality", { exact: true }).first().click();
   await expect(panel.getByText("European Environment Agency", { exact: true })).toBeVisible();
@@ -294,7 +293,7 @@ test("shows issue-first coverage for Budapest and reveals successful checks", as
   await expect(panel.getByText("These sources may add useful evidence, but they cannot make monitoring complete.")).toBeVisible();
   await expect(panel.getByText("Copernicus Global Flood Monitoring", { exact: true })).toBeVisible();
   await expect(panel.getByRole("link", { name: /Official provider site/ }).last()).toHaveAttribute("target", "_blank");
-  await panel.getByText("Fully checked (3)").click();
+  await panel.getByText("Monitored (2)").click();
   await expect(panel.getByText("Weather", { exact: true }).first()).toBeHidden();
 });
 
@@ -305,13 +304,13 @@ test("partial weather delivery preserves monitoring counts and exposes the provi
   await page.goto("/");
   await selectDestination(page, "Budapest", /Budapest/);
   const panel = destinationDetails(page);
-  await expect(panel.getByText("Monitoring coverage:", { exact: true }).locator("..")).toContainText("3 fully checked · 3 partly checked · 2 not checked");
+  await expect(panel.getByText("Monitoring coverage:", { exact: true }).locator("..")).toContainText("2 monitored · 4 partly monitored · 2 unavailable");
   await expect(panel.getByRole("heading", { name: "Update problems" })).toHaveCount(0);
-  await panel.getByText("Fully checked (3)").click();
+  await panel.getByText("Monitored (2)").click();
   await panel.getByText("Weather", { exact: true }).click();
   const weather = panel.locator('details[data-status="available"]').filter({ has: page.getByText("Weather", { exact: true }) });
   await expect(weather.getByText("MeteoAlarm", { exact: true })).toBeVisible();
-  await expect(weather.getByText("Partly checked", { exact: true })).toBeVisible();
+  await expect(weather.getByText("Partly monitored", { exact: true })).toBeVisible();
 });
 
 test("scopes delayed MeteoAlarm coverage to the affected destination country", async ({ page }) => {
@@ -323,7 +322,7 @@ test("scopes delayed MeteoAlarm coverage to the affected destination country", a
   const budapest = destinationDetails(page);
   await expect(budapest.getByText("Weather", { exact: true })).toBeVisible();
   await expect(budapest.getByRole("heading", { name: "Update problems" })).toBeVisible();
-  await expect(budapest.getByText("Update delayed", { exact: true }).first()).toBeVisible();
+  await expect(budapest.getByText("Partly monitored — update delayed", { exact: true }).first()).toBeVisible();
   await expect(budapest.getByText(/Some updates delayed/)).toBeVisible();
   await expect(budapest.getByText("This source is normally checked, but its latest Budapest update is late.").first()).toBeVisible();
   await page.getByRole("button", { name: "Close destination details" }).click();
@@ -351,7 +350,7 @@ test("renders an older Snapshot V2 conservatively without country partitions", a
   const panel = destinationDetails(page);
   await expect(panel.getByRole("heading", { name: "What TravelCanary checks for Budapest" })).toBeVisible();
   await expect(panel.getByLabel("Update problems").getByText("Weather", { exact: true })).toBeVisible();
-  await expect(panel.getByText("Update delayed", { exact: true }).first()).toBeVisible();
+  await expect(panel.getByText("Partly monitored — update delayed", { exact: true }).first()).toBeVisible();
 });
 
 test("uses the dedicated desktop briefing column for normal and active-alert destinations", async ({ page }, testInfo) => {
@@ -366,7 +365,7 @@ test("uses the dedicated desktop briefing column for normal and active-alert des
   await expect(normal.getByRole("heading", { name: "What TravelCanary checks for Vienna", exact: true })).toBeVisible();
   const coverageSummary = normal.getByText("Monitoring coverage:", { exact: true }).locator("..");
   await expect(coverageSummary).toBeVisible();
-  await expect(coverageSummary).toContainText("3 fully checked · 3 partly checked · 2 not checked");
+  await expect(coverageSummary).toContainText("2 monitored · 4 partly monitored · 2 unavailable");
   expect(await normal.evaluate((root) => {
     const summary = root.querySelector("#location-coverage-heading");
     const localConditions = [...root.querySelectorAll("h3")].find((heading) => heading.textContent === "Local conditions");
@@ -491,7 +490,6 @@ test("has no serious automated accessibility violations", { tag: "@smoke" }, asy
   } else await expect(search).toBeFocused();
   await selectDestination(page, "Budapest", /Budapest/);
   const coverage = destinationDetails(page);
-  await coverage.getByText("Fully checked (3)").click();
   await coverage.getByText("Air quality", { exact: true }).first().click();
   expect((await new AxeBuilder({ page }).exclude(".maplibregl-canvas").analyze()).violations).toEqual([]);
 });
@@ -538,4 +536,3 @@ test("edits a selected destination directly and keeps search focus and history u
   await page.goForward();
   await expect(page).toHaveURL(/destination=fr-paris/);
 });
-

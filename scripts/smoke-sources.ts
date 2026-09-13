@@ -2,9 +2,10 @@ import { performance } from "node:perf_hooks";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { sourceAdapters } from "../src/lib/ingestion/adapters";
-import { locations } from "../src/lib/data";
+import { catalogLocationsV3 } from "../src/lib/catalog-data";
 import { eventAffectsLocation } from "../src/lib/geospatial";
-import { providerIdForSourceId, type SourceId, type SourceResult } from "../src/lib/domain/schemas";
+import { providerIdForSourceId, type SourceId } from "../src/lib/domain/schemas";
+import type { CatalogSourceResult as SourceResult, CatalogTransportResult } from "../src/lib/domain/catalog-state";
 import { providerRegistry } from "../src/lib/provider-registry";
 import { nationalWarningManifest } from "../src/lib/national-warning-sources";
 import { withFetchDiagnostics } from "../src/lib/ingestion/fetch";
@@ -14,6 +15,7 @@ import {
 } from "../src/lib/ingestion/types";
 
 const MAX_PARTITION_PROBLEMS = 12;
+const smokeLocations = catalogLocationsV3;
 
 type PartitionProblem = {
   id: string;
@@ -101,8 +103,13 @@ export function summarizeSourceSmoke(
   }]).sort((a, b) => priority[a.status] - priority[b.status] || a.id.localeCompare(b.id));
   const counts = (value: "ok" | "partial" | "failed" | "disabled") => entries.filter(([, partition]) => partition.status === value).length;
   const events = entries.flatMap(([, partition]) => partition.events);
-  const failed = sourceExecutionFailsSmoke(status, entries.map(([, partition]) => partition));
-  const transportEntries = entries.flatMap(([countryCode, partition]) => Object.entries(partition.transports || {})
+  const expectedObservationPartial = result.sourceId === "eea"
+    && entries.every(([, partition]) => partition.status === "disabled"
+      || partition.status === "partial" && partition.limitationCode === "observation_only_partial_coverage");
+  const unavailableEnabledPartition = entries.some(([, partition]) => partition.status !== "disabled"
+    && (partition.unavailableLocationIds?.length || 0) > 0);
+  const failed = !expectedObservationPartial && (entries.some(([, partition]) => partition.status === "failed") || unavailableEnabledPartition);
+  const transportEntries = entries.flatMap(([countryCode, partition]) => Object.entries((partition.transports || {}) as Record<string, CatalogTransportResult>)
     .map(([id, transport]) => ({ countryCode, id, transport, events: transport.events?.length ?? partition.events.length })));
   const transportProblems = transportEntries.filter(({ transport }) => transport.status === "failed" || transport.status === "partial")
     .map(({ countryCode, id, transport }) => ({ country: countryCode, id, status: transport.status,
@@ -157,10 +164,10 @@ export async function executeSourceSmoke(
   const started = performance.now();
   try {
     const result = await withFetchDiagnostics(diagnostics, () => adapter.fetch({
-      now: options.now || new Date(), locations, fetch: options.fetch || fetch, diagnostics,
+      now: options.now || new Date(), locations: smokeLocations, fetch: options.fetch || fetch, diagnostics,
     }));
     const events = "partitions" in result ? Object.values(result.partitions).flatMap((partition) => partition.events) : result.events;
-    const affectedLocations = new Set(events.flatMap((event) => locations
+    const affectedLocations = new Set(events.flatMap((event) => smokeLocations
       .filter((location) => eventAffectsLocation(event, location)).map((location) => location.id))).size;
     return summarizeSourceSmoke(result, diagnostics, performance.now() - started, affectedLocations);
   } catch (error) {
@@ -175,7 +182,7 @@ async function main() {
   for (const adapter of adapters) {
     const summary = await executeSourceSmoke(adapter);
     console.log(JSON.stringify(summary));
-    if (summary.outcome === "failed") process.exitCode = 1;
+    if (summary.outcome === "failed" && summary.healthScope !== "non_blocking") process.exitCode = 1;
   }
 }
 

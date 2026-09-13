@@ -22,4 +22,4 @@ Client-foundation measurements at `e41eae7` (historical; rerun budgets for the r
 
 ## Rollout status
 
-This implementation is a gated client foundation. No expanded client, collection or publication is deployed by these source changes. Deployment must follow `publication.md`, with compatible producers first, drained forward-only state activation, verified versioned outputs and the documented 24-hour compatibility window. Country completion additionally requires approved integrations, explicit gap presentation and production observation evidence.
+This implementation is the catalog 3 client foundation. Deployment follows `publication.md`: compatible producers first, revision-fenced forward-only state activation, verified versioned outputs, immediate client cutover, and the automatic 24-hour catalog 2 compatibility window. Country completion requires approved integrations and explicit gap presentation; no soak or manual observation gate delays the client switch.

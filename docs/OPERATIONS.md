@@ -41,6 +41,8 @@ If collection is unhealthy, check `bin/travelcanary status` and service logs. Do
 
 Loopback is the default security boundary. LAN exposure is an explicit configuration change. Internet exposure additionally requires a maintained TLS reverse proxy, host firewalling, and the operator's own authentication/access decision. Never expose the SQLite volume, environment file, collector process, or authenticated cron routes without appropriate controls.
 
+`GET /api/v1/health` is the sole public production-health surface. It performs no upstream requests: it reads the selected snapshot, catalog identity, all expected country condition files, and required transport health through fixed internal paths. It returns 503 for a snapshot older than 120 minutes, a missing or older-than-75-minute condition file, a catalog/release mismatch, or an applicable partition with no viable required transport. Optional keyed and context-only providers cannot fail health. Responses contain only aggregate provider/country/transport identifiers, are cached for at most 60 seconds with mandatory revalidation, and never expose request URLs, upstream bodies, credentials, private state, or destination-level operations.
+
 ## 6. Verification
 
 During development run:

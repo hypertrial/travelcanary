@@ -1,5 +1,12 @@
 # WORK-53 independent MeteoAlarm mapping review
 
+> Historical review record. Manifest V4 resolved only the capabilities supported
+> by retained evidence: AD storms/heat and IS wind use exact CAP polygons. BA, GB,
+> MD, ME, MK, NO, and RS remain evidence-gated for this transport; NO's retained
+> polygons are marine gales and do not establish land coverage. Authenticated EDR
+> is an optional bounded fallback only for already-proven capabilities. The
+> remaining text is retained as provenance.
+
 Verdict: proceed with a small polygon-capable MeteoAlarm path, keep unresolved static-region countries blocked, and do not use NUTS as an unverified substitute for provider regions. No activation approved by this review.
 
 ## Scope and evidence

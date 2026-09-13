@@ -1,10 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
-import { CollectionChangedError, parseCatalogState, type IngestionStateV14 } from "@/lib/domain/catalog-state";
-import { buildSnapshot, createEmptyState } from "@/lib/risk";
+import { CatalogPartitionedSourceResultSchema, CollectionChangedError, parseCatalogState, type IngestionStateV15 } from "@/lib/domain/catalog-state";
+import { buildSnapshot, createEmptyState, mergeSourceResults } from "@/lib/risk";
 import { runIngestion, runMaintenance } from "@/lib/ingestion/orchestrator";
 import type { SourceAdapter } from "@/lib/ingestion/types";
 import { ConcurrencyError, MemorySnapshotStore, MemoryStateStore, type Versioned } from "@/lib/storage";
 import type { AggregateSourceResult, NormalizedEvent } from "@/lib/domain/schemas";
+import { catalogV3CountryCodes } from "@/lib/domain/contract-identities";
 
 const now = new Date("2026-08-31T17:45:00Z");
 function warning(id = "usgs:collected"): NormalizedEvent {
@@ -17,6 +18,44 @@ const result = (): AggregateSourceResult => ({ sourceId: "usgs", checkedAt: now.
 const initial = () => parseCatalogState(createEmptyState(now));
 
 describe("canonical collection fences", () => {
+  it("keeps polygon events owned by their catalog country across sequential partition replacement", () => {
+    const state = initial(); state.collection = { catalogVersion: 3, revision: 1 };
+    const event = (country: "AD" | "IS"): NormalizedEvent => ({ ...warning(`meteoalarm:${country}`), sourceId: "meteoalarm", providerId: "meteoalarm",
+      type: "severe-weather", geometry: { kind: "polygon", coordinates: [[[0, 0], [1, 0], [1, 1], [0, 0]]] }, affectedArea: country,
+      sourceName: "MeteoAlarm", sourceUrl: "https://meteoalarm.org/" });
+    const failedPartitions = () => Object.fromEntries(catalogV3CountryCodes.map((code) => [code,
+      { status: "failed", sourceUpdatedAt: null, events: [], error: "not collected in fixture" }]));
+    const firstPartitions = failedPartitions(); Object.assign(firstPartitions, {
+      AD: { status: "ok", sourceUpdatedAt: now.toISOString(), events: [event("AD")], error: null },
+      IS: { status: "ok", sourceUpdatedAt: now.toISOString(), events: [event("IS")], error: null },
+    });
+    const first = CatalogPartitionedSourceResultSchema.parse({ sourceId: "meteoalarm", checkedAt: now.toISOString(), partitions: firstPartitions });
+    const merged = mergeSourceResults(state, [first], now);
+    expect(merged.events.map(({ id, partitionCountryCode }) => [id, partitionCountryCode]).sort()).toEqual([
+      ["meteoalarm:AD", "AD"], ["meteoalarm:IS", "IS"],
+    ]);
+    const later = new Date(now.getTime() + 60_000);
+    const secondPartitions = failedPartitions(); Object.assign(secondPartitions, {
+      IS: { status: "ok", sourceUpdatedAt: later.toISOString(), events: [], error: null },
+    });
+    const second = CatalogPartitionedSourceResultSchema.parse({ sourceId: "meteoalarm", checkedAt: later.toISOString(), partitions: secondPartitions });
+    expect(mergeSourceResults(merged, [second], later).events.map(({ id }) => id)).toEqual(["meteoalarm:AD"]);
+  });
+
+  it("retains migrated unowned polygons when a sibling country refresh succeeds", () => {
+    const state = initial(); state.collection = { catalogVersion: 3, revision: 1 };
+    state.events = [{ ...warning("meteoalarm:legacy-polygon"), sourceId: "meteoalarm", providerId: "meteoalarm",
+      transportId: "meteoalarm-atom", type: "severe-weather", geometry: { kind: "polygon", coordinates: [[[0, 0], [1, 0], [1, 1], [0, 0]]] },
+      sourceName: "MeteoAlarm", sourceUrl: "https://meteoalarm.org/" }];
+    const partitions = Object.fromEntries(catalogV3CountryCodes.map((code) => [code,
+      { status: "failed", sourceUpdatedAt: null, events: [], error: "not collected in fixture" }]));
+    Object.assign(partitions, { AD: { status: "ok", sourceUpdatedAt: now.toISOString(), events: [], error: null,
+      transports: { "meteoalarm-atom": { status: "ok", sourceUpdatedAt: now.toISOString(), events: [], error: null } } } });
+    const refresh = CatalogPartitionedSourceResultSchema.parse({ sourceId: "meteoalarm", checkedAt: now.toISOString(), partitions });
+
+    expect(mergeSourceResults(state, [refresh], now).events.map(({ id }) => id)).toEqual(["meteoalarm:legacy-polygon"]);
+  });
+
   it.each(["ingestion", "maintenance"] as const)("rejects catalog3 before %s mutations or publication", async (operation) => {
     const base = initial();
     const snapshots = new MemorySnapshotStore(buildSnapshot(base, now));
@@ -34,7 +73,7 @@ describe("canonical collection fences", () => {
 
   it.each(["revision", "catalog"] as const)("discards collected source results after a concurrent %s change", async (change) => {
     const base = initial(); const store = new MemoryStateStore(base); const snapshots = new MemorySnapshotStore(buildSnapshot(base, now));
-    let concurrent: IngestionStateV14 | undefined;
+    let concurrent: IngestionStateV15 | undefined;
     const collect = vi.fn<SourceAdapter["fetch"]>().mockImplementation(async () => {
       const latest = await store.read(); latest.data.collection.revision += 1;
       if (change === "catalog") {
@@ -55,7 +94,7 @@ describe("canonical collection fences", () => {
   it("rechecks the captured control after a private CAS conflict instead of rebasing stale results", async () => {
     class CutoverOnWrite extends MemoryStateStore {
       attempts = 0;
-      override async write(state: IngestionStateV14, expected: Versioned<IngestionStateV14>) {
+      override async write(state: IngestionStateV15, expected: Versioned<IngestionStateV15>) {
         this.attempts += 1;
         if (this.attempts === 1) {
           const latest = await super.read(); latest.data.collection.revision += 1; latest.data.events = [warning("usgs:concurrent")];
@@ -97,7 +136,7 @@ describe("canonical collection fences", () => {
     await runMaintenance({ stateStore: store, snapshotStore: snapshots, now });
     const repaired = (await store.read()).data;
     expect(repaired.events).toEqual(committed.events); expect(repaired.conditions.reservations).toEqual(base.conditions.reservations);
-    expect(repaired.collection).toEqual(base.collection); expect(repaired.schemaVersion).toBe(14);
+    expect(repaired.collection).toEqual(base.collection); expect(repaired.schemaVersion).toBe(15);
     expect(collect).toHaveBeenCalledOnce();
     expect((await snapshots.readLatest()).data.locations["at-vienna"].hazards.length).toBeGreaterThan(0);
   });

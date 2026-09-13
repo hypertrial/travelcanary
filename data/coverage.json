@@ -44,7 +44,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -175,7 +175,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -306,7 +306,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -438,7 +438,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -569,7 +569,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -700,7 +700,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -832,7 +832,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -963,7 +963,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -1094,7 +1094,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -1225,7 +1225,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -1356,7 +1356,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -1487,7 +1487,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -1618,7 +1618,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -1749,7 +1749,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -1880,7 +1880,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -2011,7 +2011,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -2142,7 +2142,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -2273,7 +2273,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -2404,7 +2404,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -2536,7 +2536,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -2667,7 +2667,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -2798,7 +2798,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -2929,7 +2929,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -3060,7 +3060,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -3191,7 +3191,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -3322,7 +3322,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -3453,7 +3453,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]
@@ -3584,7 +3584,7 @@
           ]
         },
         "air-quality": {
-          "status": "monitored",
+          "status": "partial",
           "providerIds": [
             "eea-aqi"
           ]

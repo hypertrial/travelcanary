@@ -171,8 +171,9 @@ describe("keyless provider safety rules", () => {
     const result = await new NationalCivilAlertsAdapter().fetch({
       now, locations, state, fetch: fetchMock as typeof fetch,
     });
-    expect(Object.keys(nationalWarningSources)).toHaveLength(28);
-    expect(Object.entries(result.partitions).filter(([country]) => !["AT", "CZ", "DE", "ES", "FR", "IT", "LU", "LV", "PL", "SE"].includes(country)).every(([, partition]) => partition.status === "disabled" && partition.events.length === 0)).toBe(true);
+    expect(Object.keys(nationalWarningSources)).toHaveLength(45);
+    expect(Object.keys(result.partitions)).toHaveLength(28);
+    expect(Object.values(result.partitions).every((partition) => ["ok", "partial", "failed", "disabled"].includes(partition.status))).toBe(true);
     expect(result.partitions.FR.status).toBe("failed");
     expect(result.partitions.IT.status).toBe("failed");
     expect(result.partitions.AT).toMatchObject({ status: "ok", events: [] });

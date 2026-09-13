@@ -11,11 +11,25 @@ import {
   type PublicProviderState} from "./domain/schemas";
 import { providerRegistry } from "./provider-registry";
 import { hazardAppliesToLocation, weatherFamily } from "./risk-policy";
-import { nationalWarningManifest, nationalWarningSources } from "./national-warning-sources";
+import nationalWarningPresentationJson from "../../data/national-warning-presentation.json";
 import { hazardLabels } from "./ui-presentation";
 
-const nationalSourcesByCountry = new Map(Object.entries(nationalWarningSources));
-const nationalSystemsByCountry = new Map(Object.entries(nationalWarningManifest.countries));
+type NationalPresentationSystem = {
+  id: string; systemName: string; officialUrl: string; role: "coverage" | "fallback" | "context" | "blocked";
+  status: "active" | "credential_gated" | "evidence_gated" | "blocked"; hazards: HazardType[];
+  coverageContribution: "none" | "partial" | "complete"; coverageLocationIds?: string[]; blocker?: string;
+};
+type NationalPresentationCountry = {
+  reviewedAt: string;
+  source: { systemName: string; officialUrl: string; enabled: boolean; hazards: HazardType[]; limitationCode: string | null;
+    satisfiesCoverage: boolean; coverageLocationIds?: string[] };
+  systems: NationalPresentationSystem[];
+};
+const nationalWarningPresentation = nationalWarningPresentationJson as unknown as {
+  schemaVersion: 1; countries: Record<string, NationalPresentationCountry>;
+};
+const nationalSourcesByCountry = new Map(Object.entries(nationalWarningPresentation.countries).map(([code, country]) => [code, country.source]));
+const nationalSystemsByCountry = new Map(Object.entries(nationalWarningPresentation.countries));
 
 export type CoverageCategoryKey =
   | "weather"
@@ -102,10 +116,10 @@ export const coverageCategoryDefinitions: Array<{
 
 const coverageMatrix = CoverageMatrixSchema.parse(coverageJson);
 const statusLabels: Record<Exclude<CoveragePresentationStatus, "not_applicable">, string> = {
-  available: "Fully checked",
-  limited: "Partly checked",
-  delayed: "Update delayed",
-  not_monitored: "Not checked",
+  available: "Monitored",
+  limited: "Partly monitored",
+  delayed: "Partly monitored — update delayed",
+  not_monitored: "Monitoring unavailable",
 };
 
 function relativeUpdatePhrase(iso: string | null, now: Date): string | null {
@@ -131,8 +145,12 @@ function providerStateForLocation(snapshot: Snapshot | null, providerId: Provide
   if (!provider) return null;
   if (isExpandedDestination(location)) {
     if (!expandedProviderApplies(providerId, location)) return { ...provider, status: "disabled", lastSuccess: null, sourceUpdatedAt: null, nextExpectedUpdate: null, partitions: undefined };
+    if (provider.partitions) {
+      const partition = Object.entries(provider.partitions).find(([code]) => code === location.countryCode)?.[1];
+      return partition ? { ...provider, ...partition, partitions: undefined } : null;
+    }
     const receipt = "expandedCoverage" in provider ? provider.expandedCoverage : undefined;
-    if (!receipt) return null;
+    if (!receipt) return provider;
     const checked = receipt.checkedLocationIds.includes(location.id) && !receipt.unavailableLocationIds.includes(location.id);
     const current = expandedCheckIsCurrent(receipt, location.id, providerRegistry[providerId].cadenceMinutes, now);
     return { ...provider, status: receipt.status === "disabled" ? "disabled" : current ? "ok" : checked ? "delayed" : "failed",
@@ -292,9 +310,9 @@ function contextProviderPresentation(
     key: providerId,
     id: providerId,
     name: nationalSource?.systemName || definition.displayName,
-    role: "Additional context",
+    role: "Context only",
     status,
-    statusLabel: disabled ? "Not enabled" : delayed ? "Update delayed" : "Context available",
+    statusLabel: disabled ? "Context unavailable" : delayed ? "Context delayed — not an all-clear" : "Context only — not an all-clear",
     updateLabel: isExpandedDestination(location)
       ? state?.lastSuccess ? `Checked ${relativeUpdatePhrase(state.lastSuccess, now) || "time unavailable"}` : null
       : relativeUpdate(state?.sourceUpdatedAt || state?.lastSuccess || null, now),
@@ -319,7 +337,7 @@ function nationalSystemGapPresentation(location: PublicLocation): CoverageProvid
   if (!system) return null;
   return {
     key: `national-gap:${system.id}`, id: "national-civil-alerts", name: "National system not connected",
-    role: system.systemName, status: "not_monitored", statusLabel: "Not checked", updateLabel: null,
+    role: system.systemName, status: "not_monitored", statusLabel: "Monitoring unavailable — official information", updateLabel: null,
     limitation: `${system.blocker || "No approved live reader transport is connected."} Reviewed ${country.reviewedAt}.`,
     officialUrl: system.officialUrl,
   };
@@ -412,7 +430,7 @@ export function locationCoveragePresentation({
         }
       }
       const freshnessStatus: FreshnessStatus = hazardWasDelayed(state, hazard)
-        || primaryStatuses.some((candidate) => candidate === "delayed")
+        || primaryStatuses.length > 0 && primaryStatuses.every((candidate) => candidate === "delayed" || candidate === "not_monitored")
         ? "delayed"
         : "current";
       const status = freshnessStatus === "delayed" ? "delayed" : coverageStatus;
@@ -462,10 +480,10 @@ export function locationCoveragePresentation({
     not_monitored: categories.filter(({ coverageStatus }) => coverageStatus === "not_monitored").length,
   };
   const summaryParts = [
-    `${counts.available} fully checked`,
-    `${counts.limited} partly checked`,
-    `${counts.not_monitored} not checked`,
-    ...(expanded && counts.delayed ? [`${counts.delayed} checks delayed`] : []),
+    `${counts.available} monitored`,
+    `${counts.limited} partly monitored`,
+    `${counts.not_monitored} unavailable`,
+    ...(expanded && counts.delayed ? [`${counts.delayed} updates delayed`] : []),
   ];
   const applicableHazards = new Set(categories.flatMap(({ subchecks }) => subchecks.map(({ hazard }) => hazard)));
   const matrixProviderIds = new Set(categories.flatMap(({ subchecks }) => subchecks.flatMap(({ hazard }) => coverage[hazard].providerIds)));
@@ -508,7 +526,7 @@ export function locationCoveragePresentation({
     .map((category) => ({ ...category, status: "available" as const, statusLabel: statusLabels.available }));
   let freshnessSnapshot = catalogLocationState(snapshot, location.id).updatePending ? null : snapshot;
   if (expanded && freshnessSnapshot) {
-    const checks = (["usgs", "slf-avalanche"] as const).filter((providerId) => expandedProviderApplies(providerId, location))
+    const checks = (["usgs", "slf-avalanche", "meteoalarm", "national-civil-alerts"] as const).filter((providerId) => expandedProviderApplies(providerId, location))
       .map((providerId) => providerStateForLocation(snapshot, providerId, location, now)?.lastSuccess)
       .filter((value): value is string => Boolean(value)).sort((a, b) => Date.parse(b) - Date.parse(a));
     freshnessSnapshot = checks.length ? { ...freshnessSnapshot, generatedAt: checks[0] } : null;

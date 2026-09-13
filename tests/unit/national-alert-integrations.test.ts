@@ -13,12 +13,13 @@ const context = { now, locations, fetch };
 
 describe("aggressive national alert integrations", () => {
   it("records a current, explicit outcome for every reviewed country without promoting gated transports", () => {
-    expect(Object.keys(nationalWarningManifest.countries)).toHaveLength(28);
+    expect(Object.keys(nationalWarningManifest.countries)).toHaveLength(45);
     for (const country of Object.values(nationalWarningManifest.countries)) for (const system of country.systems) {
       expect(Date.parse(system.nextReviewAt)).toBeGreaterThan(Date.parse(system.reviewedAt));
       expect(system.evidenceUrls.length).toBeGreaterThan(0);
       if (system.coverageContribution !== "none") {
-        expect(system).toMatchObject({ status: "active", role: "coverage", runtimeTarget: "national-civil-alerts" });
+        expect(system).toMatchObject({ status: "active", role: "coverage" });
+        expect(["national-civil-alerts", "meteoalarm-primary"]).toContain(system.runtimeTarget);
       }
       if (system.status !== "active") expect(system).toMatchObject({ limitationCode: expect.any(String), blocker: expect.any(String) });
     }

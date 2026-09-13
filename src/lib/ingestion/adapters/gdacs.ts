@@ -1,6 +1,7 @@
 import booleanIntersects from "@turf/boolean-intersects";
 import { multiPolygon, polygon } from "@turf/helpers";
-import { AggregateSourceResultSchema, DiscoveryGeometrySchema, type AggregateSourceResult, type DiscoveryCandidate, type Location } from "../../domain/schemas";
+import { AggregateSourceResultSchema, DiscoveryGeometrySchema, type AggregateSourceResult, type DiscoveryCandidate } from "../../domain/schemas";
+import type { CatalogLocation as Location } from "../../catalog-data";
 import { fetchAllowlisted, readJsonWithLimit } from "../fetch";
 import { recordSourceDiagnostics, type IngestionContext, type SourceAdapter } from "../types";
 import { distanceKm, locationPolygon } from "../../geospatial";

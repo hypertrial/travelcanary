@@ -1,175 +1,119 @@
-import { describe, expect, it } from "vitest";
-import { coverageByLocation, locations } from "@/lib/data";
-import { EeaAdapter, eeaLevel, eeaTargetTime, parseCanaryFeatureInfo, parseEeaSamples } from "@/lib/ingestion/adapters/eea";
+import { describe, expect, it, vi } from "vitest";
+import { locations } from "@/lib/data";
+import {
+  EeaAdapter, eeaLevel, eeaTargetTime, observationBackedEeaDetail, parseCanaryFeatureInfo, parseEeaHourlyMap,
+  parseEeaSamples, parseEeaStationIndex, selectEeaDetailStations,
+} from "@/lib/ingestion/adapters/eea";
 import { createSourceDiagnostics } from "@/lib/ingestion/types";
-import { buildSnapshot, createEmptyState, mergeSourceResults } from "@/lib/risk";
+import { createEmptyState, mergeSourceResults } from "@/lib/risk";
 
 const now = new Date("2026-08-26T18:38:00Z");
 const sourceTime = eeaTargetTime(now);
-const selected = ["at-vienna", "hu-budapest"].map((id) => locations.find((location) => location.id === id)!);
+const vienna = locations.find(({ id }) => id === "at-vienna")!;
+const revision = "raw_stations.json.26091100";
+const stations = [
+  { code: "AT9STEF", operational: 1, lon: 16.373254, lat: 48.20815 },
+  { code: "AT90TAB", operational: 1, lon: 16.380918, lat: 48.216739 },
+];
 
-function eeaFetch(samples: unknown[]): typeof fetch {
-  return (async (input) => {
+function stationFetch(options: { category?: number; modelled?: boolean; omitMap?: boolean; detailFailure?: boolean } = {}): typeof fetch {
+  return vi.fn(async (input) => {
     const url = String(input);
-    if (url.endsWith("/getSamples")) return new Response(JSON.stringify({ samples }), { status: 200 });
-    if (url.endsWith("/42?f=json")) return new Response(JSON.stringify({ attributes: { StdTime: sourceTime.getTime() } }), { status: 200 });
+    if (url.endsWith("/content/index.json")) return Response.json({ contents: [revision] });
+    if (url.endsWith(`/content/${revision}`)) return Response.json(stations);
+    if (url.includes("/map/")) return Response.json(options.omitMap ? {} : { AT9STEF: options.category ?? 4, AT9STEF_cp: 1 });
+    if (url.endsWith("/current/AT9STEF.json")) {
+      if (options.detailFailure) throw new Error("station detail offline");
+      return Response.json({ [sourceTime.toISOString()]: {
+      aqi: options.category ?? 4, culprit: "PM10", val_PM10: 55, modelled_PM10: options.modelled ? 1 : 0,
+      } });
+    }
     throw new Error(`Unexpected URL: ${url}`);
   }) as typeof fetch;
 }
 
-describe("EEA air-quality adapter", () => {
-  it("does not make unsupported Canary destinations unavailable when the continental raster fails", async () => {
-    const canary = locations.find(({ id }) => id === "es-las-palmas-de-gran-canaria")!;
-    const requested: string[] = [];
-    const result = await new EeaAdapter().fetch({ now, locations: [...selected, canary],
-      fetch: (async (input) => { requested.push(String(input)); return new Response("upstream failure", { status: 503 }); }) as typeof fetch });
-    expect(result.partitions.AT.status).toBe("failed");
-    expect(result.partitions.ES).toMatchObject({ status: "ok", events: [], checkedLocationIds: [], unavailableLocationIds: [] });
-    expect(result.partitions.ES.transports?.["canary-air"]?.status).toBe("ok");
-    expect(requested.some((url) => url.includes("idecan2.grafcan.es"))).toBe(false);
-  });
-  it("uses exact official AQI category thresholds", () => {
+describe("EEA observation-backed air-quality adapter", () => {
+  it("uses exact official AQI thresholds and a lagged bounded hourly artifact", () => {
     expect([1, 2, 3, 4, 5, 6].map(eeaLevel)).toEqual([null, null, null, "ELEVATED", "HIGH", "SEVERE"]);
     expect(sourceTime.toISOString()).toBe("2026-08-26T15:00:00.000Z");
   });
 
-  it("rejects malformed and out-of-range samples", () => {
-    expect(parseEeaSamples({ samples: [
-      { locationId: 0, value: "4.000000", rasterId: 42 },
-      { locationId: 2, value: 6, rasterId: 42 },
-      { locationId: 1, value: 7, rasterId: 42 },
-    ] }, 2)).toEqual([{ pointIndex: 0, category: 4, rasterId: 42 }]);
+  it("validates station metadata, hourly maps, and observation provenance", () => {
+    expect(parseEeaStationIndex([...stations, { code: "ATBAD", operational: 0, lon: 16, lat: 48 }]).size).toBe(2);
+    expect([...parseEeaHourlyMap({ AT9STEF: 4.2, AT9STEF_cp: 1, bad: 6 }).entries()]).toEqual([["AT9STEF", 4.2]]);
+    const observed = { [sourceTime.toISOString()]: { aqi: 4.2, culprit: "PM10", val_PM10: 55, modelled_PM10: 0 } };
+    expect(observationBackedEeaDetail(observed, sourceTime)).toEqual({ category: 4.2, pollutant: "PM10" });
+    expect(observationBackedEeaDetail({ [sourceTime.toISOString()]: { ...observed[sourceTime.toISOString()], modelled_PM10: 1 } }, sourceTime)).toBeNull();
+    expect(observationBackedEeaDetail({ [sourceTime.toISOString()]: { aqi: 6, culprit: "PM10", val_PM10: null, modelled_PM10: null } }, sourceTime)).toBeNull();
+    expect(observationBackedEeaDetail({ [sourceTime.toISOString()]: { aqi: 999, culprit: "PM10", val_PM10: 55, modelled_PM10: 0 } }, sourceTime)).toBeNull();
   });
 
-  it("parses the official Canary feature palette and rejects stale readings", () => {
-    expect(parseCanaryFeatureInfo("Feature 0:\n level = '6'\n update_at = '2026-08-26 18:00:00'", now)).toMatchObject({ category: 6 });
-    expect(parseCanaryFeatureInfo("Feature 0:\n level = '4'\n update_at = '2026-08-25 18:00:00'", now)).toBeNull();
-    expect(() => parseCanaryFeatureInfo("Feature 0:\n level = '0'\n update_at = '2026-08-26 18:00:00'", now)).toThrow(/malformed/);
-    expect(() => parseCanaryFeatureInfo("Feature 0:\n level = 'unknown'", now)).toThrow(/malformed/);
-    expect(() => parseCanaryFeatureInfo("Feature 0:\n level = '4'\n request_at = '2026-08-26 18:00:00'", now)).toThrow(/malformed/);
-    expect(parseCanaryFeatureInfo("Feature 20:\n level = '2'\n request_at = '2026-08-31T19:54'\n update_at = '2026-08-31 19:54:13'", new Date("2026-08-31T18:58:00Z"))).toBeNull();
-  });
-
-  it("publishes location-specific risk and checked coverage", async () => {
-    const result = await new EeaAdapter().fetch({
-      now, locations: selected,
-      fetch: eeaFetch([
-        { locationId: 0, value: "4.000000000", rasterId: 42 },
-        { locationId: 1, value: "6.000000000", rasterId: 42 },
-      ]),
-    });
-
-    expect(result.partitions.AT).toMatchObject({ status: "ok", checkedLocationIds: ["at-vienna"], unavailableLocationIds: [] });
-    expect(result.partitions.HU).toMatchObject({ status: "ok", checkedLocationIds: ["hu-budapest"], unavailableLocationIds: [] });
-    expect(result.partitions.AT.events[0]).toMatchObject({ level: "ELEVATED", providerId: "eea-aqi", confidence: "MEDIUM" });
-    expect(result.partitions.HU.events[0]).toMatchObject({ level: "SEVERE", expiresAt: "2026-08-26T21:00:00.000Z" });
-  });
-
-  it("uses the worst valid sample for a destination", async () => {
-    const location = { ...selected[1], airQualitySamplePoints: [selected[1].centroid, [19.04, 47.5] as [number, number]] };
+  it("emits partial monitoring only for an observation-backed poor-or-worse culprit", async () => {
     const diagnostics = createSourceDiagnostics();
-    const result = await new EeaAdapter().fetch({
-      now, locations: [location],
-      fetch: eeaFetch([
-        { locationId: 0, value: 3, rasterId: 42 },
-        { locationId: 1, value: 5, rasterId: 42 },
-      ]),
-      diagnostics,
-    });
-    expect(result.partitions.HU.events[0]).toMatchObject({ level: "HIGH" });
-    expect(diagnostics).toMatchObject({
-      recordsExamined: 2, targetsScheduled: 2, targetsCompleted: 2, matchedLocations: 1,
-    });
+    const result = await new EeaAdapter().fetch({ now, locations: [vienna], fetch: stationFetch({ category: 5 }), diagnostics });
+    expect(result.partitions.AT).toMatchObject({ status: "partial", checkedLocationIds: ["at-vienna"], unavailableLocationIds: [],
+      limitationCode: "observation_only_partial_coverage" });
+    expect(result.partitions.AT.events[0]).toMatchObject({ level: "HIGH", providerId: "eea-aqi", confidence: "HIGH", transportId: "eea-stations" });
+    expect(result.partitions.AT.events[0].explanation).toMatch(/observation-backed PM10/);
+    expect(diagnostics).toMatchObject({ targetsScheduled: 1, targetsCompleted: 1, matchedLocations: 1 });
   });
 
-  it("bounds multipoint requests to 250 samples", async () => {
-    const requestedPointCounts: number[] = [];
-    const manyLocations = Array.from({ length: 251 }, (_, index) => ({ ...selected[0], id: `at-test-${index}` }));
-    const boundedFetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
-      const url = String(input);
-      if (url.endsWith("/getSamples")) {
-        const body = new URLSearchParams(String(init?.body));
-        const geometry = JSON.parse(body.get("geometry")!) as { points: unknown[] };
-        requestedPointCounts.push(geometry.points.length);
-        return new Response(JSON.stringify({ samples: geometry.points.map((_, index) => ({ locationId: index, value: 1, rasterId: 42 })) }), { status: 200 });
-      }
-      if (url.endsWith("/42?f=json")) return new Response(JSON.stringify({ attributes: { StdTime: sourceTime.getTime() } }), { status: 200 });
-      throw new Error(`Unexpected URL: ${url}`);
-    }) as typeof fetch;
-
-    const result = await new EeaAdapter().fetch({ now, locations: manyLocations, fetch: boundedFetch });
-
-    expect(requestedPointCounts).toEqual([250, 1]);
-    expect(result.partitions.AT.checkedLocationIds).toHaveLength(251);
+  it("keeps modeled poor values as context and never turns them into monitoring evidence", async () => {
+    const result = await new EeaAdapter().fetch({ now, locations: [vienna], fetch: stationFetch({ category: 5, modelled: true }) });
+    expect(result.partitions.AT).toMatchObject({ status: "partial", checkedLocationIds: [], unavailableLocationIds: ["at-vienna"], events: [] });
   });
 
-  it("marks only destinations without a valid pixel unavailable", async () => {
-    const result = await new EeaAdapter().fetch({
-      now, locations: selected,
-      fetch: eeaFetch([{ locationId: 0, value: "3.000000000", rasterId: 42 }]),
-    });
-    expect(result.partitions.AT.status).toBe("ok");
-    expect(result.partitions.HU).toMatchObject({ status: "partial", unavailableLocationIds: ["hu-budapest"] });
-    expect(result.partitions.HU.events).toEqual([]);
+  it("does not fetch station detail for fair values and cannot infer all-clear", async () => {
+    const fetchMock = stationFetch({ category: 2 });
+    const result = await new EeaAdapter().fetch({ now, locations: [vienna], fetch: fetchMock });
+    expect(result.partitions.AT).toMatchObject({ status: "partial", checkedLocationIds: [], unavailableLocationIds: ["at-vienna"], events: [] });
+    expect(vi.mocked(fetchMock).mock.calls.some(([input]) => String(input).includes("/current/"))).toBe(false);
   });
 
-  it("excludes permanently unsupported island destinations from EEA requests and health", async () => {
-    const canaryIds = ["es-las-palmas-de-gran-canaria", "es-santa-cruz-de-tenerife"];
-    const canaries = canaryIds.map((id) => locations.find((location) => location.id === id)!);
-    const azores = ["pt-ponta-delgada", "pt-horta", "pt-santa-cruz-das-flores"].map((id) => locations.find((location) => location.id === id)!);
-    const vienna = locations.find((location) => location.id === "at-vienna")!;
-    const requested: string[] = [];
-    const fetchMock = eeaFetch([{ locationId: 0, value: 2, rasterId: 42 }]);
-    const result = await new EeaAdapter().fetch({ now, locations: [...canaries, ...azores, vienna], fetch: (async (input, init) => {
-      requested.push(String(input)); return fetchMock(input, init);
-    }) as typeof fetch });
+  it("retains a fresh observation-backed alert when a later partial map is only fair context", async () => {
+    const adapter = new EeaAdapter();
+    const initial = await adapter.fetch({ now, locations: [vienna], fetch: stationFetch({ category: 5 }) });
+    const state = mergeSourceResults(createEmptyState(now), [initial], now);
+    const later = new Date(now.getTime() + 60 * 60_000);
+    const fair = await adapter.fetch({ now: later, locations: [vienna], fetch: stationFetch({ category: 2 }) });
 
-    expect(result.partitions.ES).toMatchObject({ status: "ok", checkedLocationIds: [], unavailableLocationIds: [], events: [] });
-    expect(result.partitions.PT).toMatchObject({ status: "ok", checkedLocationIds: [], unavailableLocationIds: [], events: [] });
-    expect(result.partitions.AT).toMatchObject({ status: "ok", checkedLocationIds: ["at-vienna"], unavailableLocationIds: [] });
-    expect([...canaryIds, ...azores.map(({ id }) => id)].every((id) => coverageByLocation[id]?.["air-quality"]?.status === "not_monitored")).toBe(true);
-    expect(requested.some((url) => url.includes("idecan2.grafcan.es"))).toBe(false);
+    expect(mergeSourceResults(state, [fair], later).events).toEqual(state.events);
   });
 
-  it("accepts bounded live-sized batches and exposes a catalog-wide severe snapshot to the hard size guard", async () => {
-    const allSevereFetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
-      const url = String(input);
-      if (url.endsWith("/getSamples")) {
-        const geometry = JSON.parse(new URLSearchParams(String(init?.body)).get("geometry")!) as { points: unknown[] };
-        return new Response(JSON.stringify({
-          samples: geometry.points.map((_, index) => ({ locationId: index, value: 6, rasterId: 42 })),
-          padding: "x".repeat(50_000),
-        }));
-      }
-      if (url.endsWith("/42?f=json")) return new Response(JSON.stringify({ attributes: { StdTime: sourceTime.getTime() } }));
-      throw new Error(`Unexpected URL: ${url}`);
-    }) as typeof fetch;
-    const result = await new EeaAdapter().fetch({ now, locations, fetch: allSevereFetch });
-    const state = mergeSourceResults(createEmptyState(now), [result], now);
-    const bytes = Buffer.byteLength(JSON.stringify(buildSnapshot(state, now)));
+  it("keeps expected station partial coverage current across consecutive healthy polls", async () => {
+    const adapter = new EeaAdapter();
+    let state = createEmptyState(now);
+    state = mergeSourceResults(state, [await adapter.fetch({ now, locations: [vienna], fetch: stationFetch({ category: 5 }) })], now);
+    state = mergeSourceResults(state, [await adapter.fetch({ now, locations: [vienna], fetch: stationFetch({ category: 5 }) })], now);
 
-    expect(Object.values(result.partitions).flatMap((partition) => partition.events)).toHaveLength(locations.length - 5);
-    expect(bytes).toBeGreaterThan(500_000);
-    expect(bytes).toBeLessThan(700_000);
+    expect(state.sourcePartitions.eea.AT.status).toBe("partial");
+    expect(state.partitionTransports.eea.AT["eea-stations"].status).toBe("partial");
   });
-});
 
+  it("fails closed when the reviewed metadata revision or hourly station value is unavailable", async () => {
+    const missingRevision = vi.fn(async (input) => String(input).endsWith("index.json") ? Response.json({ contents: [] }) : Response.json([])) as typeof fetch;
+    expect((await new EeaAdapter().fetch({ now, locations: [vienna], fetch: missingRevision })).partitions.AT).toMatchObject({ status: "failed", checkedLocationIds: [], unavailableLocationIds: ["at-vienna"] });
+    expect((await new EeaAdapter().fetch({ now, locations: [vienna], fetch: stationFetch({ omitMap: true }) })).partitions.AT).toMatchObject({ status: "partial", checkedLocationIds: [], unavailableLocationIds: ["at-vienna"] });
+    expect((await new EeaAdapter().fetch({ now, locations: [vienna], fetch: stationFetch({ category: 5, detailFailure: true }) })).partitions.AT)
+      .toMatchObject({ status: "partial", checkedLocationIds: [], unavailableLocationIds: ["at-vienna"], events: [] });
+  });
 
-it.each([1, 4, 6])("marks missing sibling AQI points unavailable while retaining the worst known category (remaining=%i)", async (category) => {
-  const location = locations.find(({ id }) => id === "bg-bulgarian-black-sea-coast")!;
-  expect(location.airQualitySamplePoints).toHaveLength(2);
-  const adapter = new EeaAdapter();
-  const initial = await adapter.fetch({ now, locations: [location], fetch: eeaFetch([
-    { locationId: 0, value: 1, rasterId: 42 }, { locationId: 1, value: 5, rasterId: 42 },
-  ]) });
-  const state = mergeSourceResults(createEmptyState(now), [initial], now);
-  const partial = await adapter.fetch({ now, locations: [location], fetch: eeaFetch([{ locationId: 0, value: category, rasterId: 42 }]) });
-  expect(partial.partitions.BG).toMatchObject({ status: "partial", checkedLocationIds: [], unavailableLocationIds: [location.id],
-    transports: { "eea-raster": { status: "partial", checkedLocationIds: [], unavailableLocationIds: [location.id] } } });
-  expect(mergeSourceResults(state, [partial], now).events[0].level).toBe(category === 6 ? "SEVERE" : "HIGH");
-  const healthy = await adapter.fetch({ now, locations: [location], fetch: eeaFetch([
-    { locationId: 0, value: 1, rasterId: 42 }, { locationId: 1, value: 1, rasterId: 42 },
-  ]) });
-  expect(healthy.partitions.BG).toMatchObject({ status: "ok", checkedLocationIds: [location.id], unavailableLocationIds: [] });
-  expect(mergeSourceResults(state, [healthy], now).events).toEqual([]);
+  it("bounds poor-station detail work deterministically without failing unrelated candidates", () => {
+    const codes = Array.from({ length: 40 }, (_, index) => `AT${String(index).padStart(5, "0")}`);
+    const result = selectEeaDetailStations(codes.reverse());
+    expect(result.selected).toEqual([...codes].sort().slice(0, 32));
+    expect(result.unavailable).toEqual([...codes].sort().slice(32));
+  });
+
+  it("keeps deprecated raster and Canary parsers deterministic without using either transport", () => {
+    expect(parseEeaSamples({ samples: [{ locationId: 0, value: "4.000000", rasterId: 42 }, { locationId: 2, value: 6, rasterId: 42 }] }, 1))
+      .toEqual([{ pointIndex: 0, category: 4, rasterId: 42 }]);
+    expect(parseCanaryFeatureInfo("Feature 0:\n level = '6'\n update_at = '2026-08-26 18:00:00'", now)).toMatchObject({ category: 6 });
+  });
+
+  it("rejects malformed and unbounded station artifacts", () => {
+    expect(() => parseEeaStationIndex({})).toThrow(/malformed/);
+    expect(() => parseEeaHourlyMap([])).toThrow(/malformed/);
+    expect(() => observationBackedEeaDetail(Object.fromEntries(Array.from({ length: 1001 }, (_, index) => [String(index), {}])), sourceTime)).toThrow(/unbounded/);
+  });
 });

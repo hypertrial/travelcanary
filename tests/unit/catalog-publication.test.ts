@@ -180,6 +180,13 @@ describe("committed catalog3 publication", () => {
 
 
 describe("operational publication transport controls", () => {
+  it("maintenance closes the compatibility transition at the exact deadline", async () => {
+    const h = harness(); await publishCommittedCatalog(h.options);
+    const deadline = (await h.stateStore.read()).data.publicationTransition!.dualUntil!;
+    await runMaintenance({ stateStore: h.stateStore, snapshotStore: h.stores.snapshotStore, catalogPublication: h.stores, now: new Date(deadline) });
+    expect((await h.stateStore.read()).data.publicationTransition).toBeNull();
+  });
+
   it("runs the real expanded orchestrator over679 inputs and maintenance repairs publication without collecting again", async () => {
     vi.useFakeTimers(); vi.setSystemTime(new Date(now.getTime() + 45000));
     const h = harness(); const fetchSource = vi.fn<ExpandedSourceAdapter["fetch"]>().mockResolvedValue({ sourceId: "usgs", status: "ok", checkedAt: now.toISOString(), sourceUpdatedAt: null, events: [], error: null });

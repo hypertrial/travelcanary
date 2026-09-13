@@ -1,5 +1,5 @@
 import { aggregatePartitionHealth } from "./partition-health";
-import { assertCatalog2Collection, type IngestionStateV14 as IngestionState, type NormalizedEventV13 as NormalizedEvent } from "./domain/catalog-state";
+import { assertCatalog2Collection, type IngestionStateV15 as IngestionState, type NormalizedEventV13 as NormalizedEvent } from "./domain/catalog-state";
 import { coverageByCountry, coverageByLocation, locations, locationsById } from "./data";
 import {
   countryCodes, providerIdForSourceId, SnapshotSchema, type HazardType,

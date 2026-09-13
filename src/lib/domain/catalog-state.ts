@@ -4,8 +4,9 @@ import { z } from "zod";
 import { catalogV2CountryCodes, catalogV3CountryCodes } from "./contract-identities";
 import { ConditionSourceIdV2Schema, ConditionsCacheV2Schema } from "./conditions";
 import {
-  AggregateSourceResultSchema, IngestionStateV12Schema, NormalizedEventV12Schema, ProviderCoverageStateSchema,
-  SnapshotV10ProviderIdSchema, SourceHealthSchema, parseIngestionState, providerIdForSourceId,
+  AggregateSourceResultSchema, IngestionStateV12Schema, NormalizedEventV12Schema, PartitionedSourceResultSchema, ProviderCoverageStateSchema,
+  SnapshotV10ProviderIdSchema, SnapshotV10SourceIdSchema, SourceHealthSchema, SourcePartitionResultSchema,
+  SourcePartitionTransportResultSchema, parseIngestionState, providerIdForSourceId,
 } from "./schemas";
 
 // Historical schemas stay frozen. Canonical runtime imports this module directly;
@@ -15,6 +16,9 @@ const locationIds = z.array(z.string().min(1)).max(679);
 const geometry = NormalizedEventV12Schema.shape.geometry.options;
 export const NormalizedEventV13Schema = z.object({
   ...NormalizedEventV12Schema.shape,
+  // Private merge ownership only. Public snapshot projections rebuild hazards
+  // field-by-field and never expose this partition marker.
+  partitionCountryCode: CatalogV3CountryCodeSchema.optional(),
   geometry: z.discriminatedUnion("kind", [geometry[0], geometry[1], geometry[2].extend({ countryCode: CatalogV3CountryCodeSchema }), geometry[3]]),
 }).refine((event) => Date.parse(event.startsAt) < Date.parse(event.endsAt), {
   message: "Event end time must be after its start time", path: ["endsAt"],
@@ -163,7 +167,7 @@ export const IngestionStateV14Schema = IngestionStateV13Schema.extend({
 });
 export type IngestionStateV14 = z.infer<typeof IngestionStateV14Schema>;
 
-export function parseCatalogState(value: unknown): IngestionStateV14 {
+export function parseCatalogStateV14(value: unknown): IngestionStateV14 {
   if (value && typeof value === "object" && "schemaVersion" in value && value.schemaVersion === 14) return IngestionStateV14Schema.parse(value);
   return IngestionStateV14Schema.parse({ ...parseCatalogStateV13(value), schemaVersion: 14, publicationTransition: null, expandedSourceHealth: {} });
 }
@@ -173,3 +177,109 @@ export const ExpandedAggregateSourceResultSchema = AggregateSourceResultSchema.s
   checkedLocationIds: z.array(z.string().min(1)).max(679).optional(),
   unavailableLocationIds: z.array(z.string().min(1)).max(679).optional(),
 });
+
+const CatalogTransportResultSchema = z.object({ ...SourcePartitionTransportResultSchema.shape,
+  checkedLocationIds: locationIds.optional(), unavailableLocationIds: locationIds.optional(),
+  events: z.array(NormalizedEventV13Schema).max(500).optional(),
+  frozenEaFloodAreaGeometries: z.record(z.string().min(1).max(100), z.array(geometry[1]).min(1).max(64)).refine((value) => Object.keys(value).length <= 100).optional(),
+}).superRefine((transport, context) => {
+  const checked = new Set(transport.checkedLocationIds || []);
+  if (transport.unavailableLocationIds?.some((id) => checked.has(id))) context.addIssue({ code: "custom", message: "Transport checked and unavailable destinations must be disjoint" });
+});
+export type CatalogTransportResult = z.infer<typeof CatalogTransportResultSchema>;
+const CatalogPartitionResultSchema = z.object({ ...SourcePartitionResultSchema.shape,
+  checkedLocationIds: locationIds.optional(), unavailableLocationIds: locationIds.optional(),
+  events: z.array(NormalizedEventV13Schema), transports: z.record(z.string(), CatalogTransportResultSchema).optional(),
+}).superRefine((partition, context) => {
+  const checked = new Set(partition.checkedLocationIds || []);
+  if (partition.unavailableLocationIds?.some((id) => checked.has(id))) context.addIssue({ code: "custom", message: "Partition checked and unavailable destinations must be disjoint" });
+  if (partition.status === "disabled" && !partition.limitationCode) context.addIssue({ code: "custom", path: ["limitationCode"], message: "Disabled partitions require a limitation code" });
+  if (partition.transports && Object.keys(partition.transports).length > 6) context.addIssue({ code: "custom", path: ["transports"], message: "Country partitions support at most six transports" });
+});
+
+/** Runtime partition result for the full catalog. The historical 28-country result schema remains frozen. */
+export const CatalogPartitionedSourceResultSchema = z.object({
+  sourceId: z.enum(["meteoalarm", "eea", "national-civil-alerts"]),
+  checkedAt: timestamp,
+  partitions: z.record(CatalogV3CountryCodeSchema, CatalogPartitionResultSchema),
+}).superRefine((result, context) => {
+  for (const [countryCode, partition] of Object.entries(result.partitions)) {
+    const groups = [{ path: ["events"] as (string | number)[], events: partition.events, transportId: null as string | null },
+      ...Object.entries(partition.transports || {}).map(([id, transport]) => ({ path: ["transports", id, "events"] as (string | number)[], events: transport.events || [], transportId: id }))];
+    for (const group of groups) for (const [index, event] of group.events.entries()) {
+      const scoped = event.geometry.kind === "polygon" || event.geometry.kind === "point"
+        || event.geometry.kind === "regions" && event.geometry.countryCode === countryCode
+        || event.geometry.kind === "locations" && event.geometry.ids.every((id) => id.startsWith(`${countryCode.toLowerCase()}-`));
+      if (event.sourceId !== result.sourceId || !scoped || (group.transportId && event.transportId && event.transportId !== group.transportId)) {
+        context.addIssue({ code: "custom", path: ["partitions", countryCode, ...group.path, index], message: "Partition events must remain inside their catalog country transport" });
+      }
+    }
+  }
+});
+export type CatalogPartitionedSourceResult = z.infer<typeof CatalogPartitionedSourceResultSchema>;
+export type RuntimePartitionedSourceResult = z.infer<typeof PartitionedSourceResultSchema> | CatalogPartitionedSourceResult;
+export const CatalogSourceResultSchema = z.union([ExpandedAggregateSourceResultSchema, PartitionedSourceResultSchema, CatalogPartitionedSourceResultSchema]);
+export type CatalogSourceResult = z.infer<typeof CatalogSourceResultSchema>;
+
+const CatalogReceiptSchema = z.object({
+  catalogVersion: z.union([z.literal(2), z.literal(3)]),
+  collectionRevision: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+  checkedAt: timestamp,
+  status: z.enum(["ok", "partial", "failed", "disabled"]),
+  checkedLocationIds: locationIds,
+  unavailableLocationIds: locationIds,
+}).superRefine((receipt, context) => {
+  const allowed = new Set<string>((receipt.catalogVersion === 3 ? catalogV3 : catalogV2).locationIds);
+  const checked = new Set(receipt.checkedLocationIds);
+  const all = [...receipt.checkedLocationIds, ...receipt.unavailableLocationIds];
+  if (new Set(all).size !== all.length || all.some((id) => !allowed.has(id))) {
+    context.addIssue({ code: "custom", message: "Catalog receipt locations must be unique members of its release" });
+  }
+  if (receipt.unavailableLocationIds.some((id) => checked.has(id))
+    || receipt.status === "ok" && receipt.unavailableLocationIds.length
+    || ["failed", "disabled"].includes(receipt.status) && receipt.checkedLocationIds.length) {
+    context.addIssue({ code: "custom", message: "Catalog receipt status and classified scope disagree" });
+  }
+});
+export const CatalogScopedReceiptsSchema = z.object({
+  2: z.partialRecord(SnapshotV10SourceIdSchema, CatalogReceiptSchema),
+  3: z.partialRecord(SnapshotV10SourceIdSchema, CatalogReceiptSchema),
+});
+
+export const EA_FLOOD_GEOMETRY_CACHE_LIMIT = 1_000_000;
+const EaFloodAreaGeometryCacheSchema = z.record(z.string().min(1).max(100), z.array(geometry[1]).min(1).max(64))
+  .refine((value) => Object.keys(value).length <= 128 && new TextEncoder().encode(JSON.stringify(value)).byteLength <= EA_FLOOD_GEOMETRY_CACHE_LIMIT);
+
+export const IngestionStateV15Schema = z.object({ ...IngestionStateV14Schema.shape,
+  schemaVersion: z.literal(15),
+  collectionReceipts: CatalogScopedReceiptsSchema,
+  frozenEaFloodAreaGeometries: EaFloodAreaGeometryCacheSchema,
+}).superRefine((value, context) => {
+  if (value.publicationTransition && (value.publicationTransition.to !== value.collection.catalogVersion
+    || value.publicationTransition.revision !== value.collection.revision)) {
+    context.addIssue({ code: "custom", path: ["publicationTransition"], message: "Publication transition must match collection control" });
+  }
+  for (const [catalogVersion, receipts] of Object.entries(value.collectionReceipts)) for (const [sourceId, receipt] of Object.entries(receipts)) {
+    if (receipt.catalogVersion !== Number(catalogVersion) || receipt.collectionRevision > value.collection.revision) {
+      context.addIssue({ code: "custom", path: ["collectionReceipts", catalogVersion, sourceId], message: "Receipt must match its catalog and cannot be newer than collection control" });
+    }
+  }
+});
+export type IngestionStateV15 = z.infer<typeof IngestionStateV15Schema>;
+
+/** Deterministic V14→V15 migration. Existing expanded receipts become catalog-3-scoped evidence. */
+export function parseCatalogState(value: unknown): IngestionStateV15 {
+  if (value && typeof value === "object" && "schemaVersion" in value && value.schemaVersion === 15) return IngestionStateV15Schema.parse(value);
+  const legacy = parseCatalogStateV14(value);
+  const receipts: IngestionStateV15["collectionReceipts"] = { 2: {}, 3: {} };
+  if (legacy.collection.catalogVersion === 3) for (const [sourceId, receipt] of Object.entries(legacy.expandedSourceHealth)) {
+    if (!receipt?.health.lastAttempt) continue;
+    receipts[3][sourceId as keyof typeof receipts[3]] = {
+      catalogVersion: 3, collectionRevision: legacy.collection.revision, checkedAt: receipt.health.lastAttempt,
+      status: receipt.health.status === "not_monitored" ? "disabled"
+        : receipt.health.status === "delayed" ? receipt.checkedLocationIds.length ? "partial" : "failed" : receipt.health.status,
+      checkedLocationIds: receipt.checkedLocationIds, unavailableLocationIds: receipt.unavailableLocationIds,
+    };
+  }
+  return IngestionStateV15Schema.parse({ ...legacy, schemaVersion: 15, collectionReceipts: receipts, frozenEaFloodAreaGeometries: {} });
+}

@@ -489,11 +489,14 @@
     }
   ],
   "schemaVersion": 3,
-  "reviewedAt": "2026-09-08",
+  "reviewedAt": "2026-09-13",
   "credentials": {
     "required": [],
     "optional": [
-      "effis-active-fire"
+      "FIRMS_MAP_KEY",
+      "METEOALARM_API_TOKEN",
+      "MET_OFFICE_API_KEY",
+      "NRW_FLOOD_API_KEY"
     ],
     "environmentGated": [
       "gfm",
@@ -674,7 +677,7 @@
       "healthScope": "coverage",
       "satisfiesCoverage": true,
       "officialUrl": "https://airindex.eea.europa.eu/",
-      "limitationCode": null
+      "limitationCode": "station_observations_partial"
     },
     {
       "providerId": "gdelt",
@@ -810,6 +813,164 @@
   ],
   "nationalWarningPartitions": [
     {
+      "countryCode": "AD",
+      "authority": "Andorra public authorities",
+      "systemName": "Andorra weather alerts",
+      "reviewedAt": "2026-09-13",
+      "evidenceUrls": [
+        "https://www.meteo.ad/en/Alerts",
+        "https://www.meteo.ad/estatneu/general"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "official_link_only",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "meteoalarm-atom",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm keyless Atom warning feed",
+          "policy": "open",
+          "runtimeTarget": "meteoalarm-primary",
+          "role": "coverage",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "atom",
+          "hazards": [
+            "severe-weather",
+            "extreme-heat"
+          ],
+          "coverageContribution": "partial",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "partial",
+          "completenessStatus": "partial",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://feeds.meteoalarm.org/",
+            "https://api.meteoalarm.org/edr/v1/docs?f=html"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": null
+        },
+        {
+          "id": "meteoalarm-edr",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm authenticated EDR recovery",
+          "policy": "gated",
+          "runtimeTarget": "meteoalarm-fallback",
+          "role": "fallback",
+          "status": "credential_gated",
+          "cadenceMinutes": 360,
+          "format": "json",
+          "hazards": [
+            "severe-weather",
+            "extreme-heat"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "credential_required",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "approved",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://api.meteoalarm.org/edr/v1/docs?f=html",
+            "https://api.meteoalarm.org/edr/v1/authentication"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "credential_not_configured"
+        },
+        {
+          "id": "ad-official-information",
+          "authority": "Andorra public authorities",
+          "systemName": "Andorra weather alerts",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.meteo.ad/en/Alerts",
+          "evidenceUrls": [
+            "https://www.meteo.ad/en/Alerts",
+            "https://www.meteo.ad/estatneu/general"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
+        }
+      ]
+    },
+    {
+      "countryCode": "AL",
+      "authority": "Albania public authorities",
+      "systemName": "Institute of Geosciences",
+      "reviewedAt": "2026-09-13",
+      "evidenceUrls": [
+        "https://geo.edu.al/",
+        "https://akmc.gov.al/",
+        "https://www.geo.edu.al/Monitorim_Parashikim/Parashikimi_Hidrologjik_dhe_Meteorologjik/",
+        "https://www.arrsh.gov.al/situata-ne-akset-rrugore.html"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "official_link_only",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "al-official-information",
+          "authority": "Albania public authorities",
+          "systemName": "Institute of Geosciences",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://geo.edu.al/",
+          "evidenceUrls": [
+            "https://geo.edu.al/",
+            "https://akmc.gov.al/",
+            "https://www.geo.edu.al/Monitorim_Parashikim/Parashikimi_Hidrologjik_dhe_Meteorologjik/",
+            "https://www.arrsh.gov.al/situata-ne-akset-rrugore.html"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
+        }
+      ]
+    },
+    {
       "countryCode": "AT",
       "authority": "Austrian Federal Ministry of the Interior",
       "systemName": "AT-Alert",
@@ -858,6 +1019,111 @@
           "reviewedAt": "2026-08-30",
           "nextReviewAt": "2027-08-30",
           "limitationCode": null
+        }
+      ]
+    },
+    {
+      "countryCode": "BA",
+      "authority": "MeteoAlarm / EUMETNET members",
+      "systemName": "MeteoAlarm keyless Atom warning feed",
+      "reviewedAt": "2026-09-13",
+      "evidenceUrls": [
+        "https://feeds.meteoalarm.org/",
+        "https://api.meteoalarm.org/edr/v1/docs?f=html"
+      ],
+      "enabled": false,
+      "endpoint": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-bosnia-herzegovina",
+      "hazards": [],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "MeteoAlarm public warning redistribution",
+        "url": "https://www.meteoalarm.org/en/live/terms-and-conditions/"
+      },
+      "limitationCode": "mapping_not_verified",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "meteoalarm-atom",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm keyless Atom warning feed",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 10,
+          "format": "atom",
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://feeds.meteoalarm.org/",
+            "https://api.meteoalarm.org/edr/v1/docs?f=html"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "mapping_not_verified"
+        },
+        {
+          "id": "meteoalarm-edr",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm authenticated EDR recovery",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 360,
+          "format": "json",
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "credential_required",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "approved",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://api.meteoalarm.org/edr/v1/docs?f=html",
+            "https://api.meteoalarm.org/edr/v1/authentication"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "mapping_not_verified"
+        },
+        {
+          "id": "ba-official-information",
+          "authority": "Bosnia and Herzegovina public authorities",
+          "systemName": "Federal Hydrometeorological Institute",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.fhmzbih.gov.ba/",
+          "evidenceUrls": [
+            "https://www.fhmzbih.gov.ba/",
+            "https://rhmzrs.com/",
+            "https://rhmzrs.com/index.php/page/hidrologija-saradnja"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
         }
       ]
     },
@@ -965,26 +1231,71 @@
       ]
     },
     {
-      "countryCode": "HR",
-      "authority": "Croatian Civil Protection Directorate",
-      "systemName": "SRUUK",
-      "reviewedAt": "2026-09-07",
+      "countryCode": "BY",
+      "authority": "Belarus public authorities",
+      "systemName": "Belhydromet weather information",
+      "reviewedAt": "2026-09-13",
       "evidenceUrls": [
-        "https://civilna-zastita.gov.hr/"
+        "https://pogoda.by/"
       ],
       "enabled": false,
       "endpoint": null,
       "hazards": [],
       "reuseStatus": "unverified",
       "license": null,
-      "limitationCode": "no_supported_machine_feed",
+      "limitationCode": "official_link_only",
       "satisfiesCoverage": false,
       "coverageLocationIds": [],
       "systems": [
         {
-          "id": "hr-public-warning",
-          "authority": "Croatian Civil Protection Directorate",
-          "systemName": "SRUUK",
+          "id": "by-official-information",
+          "authority": "Belarus public authorities",
+          "systemName": "Belhydromet weather information",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://pogoda.by/",
+          "evidenceUrls": [
+            "https://pogoda.by/"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
+        }
+      ]
+    },
+    {
+      "countryCode": "CH",
+      "authority": "Swiss Federal Office for Civil Protection",
+      "systemName": "Alertswiss",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://www.alert.swiss/en/home.html"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "undocumented_machine_feed",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "ch-public-warning",
+          "authority": "Swiss Federal Office for Civil Protection",
+          "systemName": "Alertswiss",
           "policy": "blocked",
           "runtimeTarget": "none",
           "role": "blocked",
@@ -999,49 +1310,13 @@
           "lifecycleStatus": "unverified",
           "geometryStatus": "unverified",
           "completenessStatus": "unverified",
-          "officialUrl": "https://civilna-zastita.gov.hr/",
+          "officialUrl": "https://www.alert.swiss/en/home.html",
           "evidenceUrls": [
-            "https://civilna-zastita.gov.hr/"
+            "https://www.alert.swiss/en/home.html"
           ],
           "reviewedAt": "2026-08-30",
           "nextReviewAt": "2027-08-30",
-          "limitationCode": "no_supported_machine_feed"
-        },
-        {
-          "id": "dhmz-cap",
-          "authority": "Croatian Meteorological and Hydrological Service",
-          "systemName": "DHMZ direct CAP warnings",
-          "policy": "open",
-          "runtimeTarget": "meteoalarm-fallback",
-          "role": "fallback",
-          "status": "active",
-          "cadenceMinutes": 10,
-          "format": "cap",
-          "hazards": [
-            "severe-weather",
-            "extreme-heat",
-            "extreme-cold",
-            "snow-ice",
-            "coastal",
-            "fire-danger",
-            "avalanche",
-            "flood"
-          ],
-          "coverageContribution": "none",
-          "accessStatus": "approved",
-          "reuseStatus": "approved",
-          "severityStatus": "approved",
-          "lifecycleStatus": "approved",
-          "geometryStatus": "approved",
-          "completenessStatus": "partial",
-          "officialUrl": "https://meteo.hr/proizvodi.php?section=podaci&param=xml_korisnici",
-          "evidenceUrls": [
-            "https://meteo.hr/proizvodi.php?section=podaci&param=xml_korisnici",
-            "https://meteo.hr/upozorenja/cap_hr_today.xml"
-          ],
-          "reviewedAt": "2026-09-07",
-          "nextReviewAt": "2026-12-06",
-          "limitationCode": null
+          "limitationCode": "undocumented_machine_feed"
         }
       ]
     },
@@ -1170,6 +1445,125 @@
       ]
     },
     {
+      "countryCode": "DE",
+      "authority": "Länderübergreifendes Hochwasserportal",
+      "systemName": "LHP flood warnings",
+      "reviewedAt": "2026-09-08",
+      "evidenceUrls": [
+        "https://www.hochwasserzentralen.de/"
+      ],
+      "enabled": true,
+      "endpoint": "https://api.hochwasserzentralen.de/public/v1/data/alerts?format=geojson&lang=en",
+      "hazards": [
+        "flood"
+      ],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "limitationCode": null,
+      "satisfiesCoverage": true,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "lhp-flood",
+          "authority": "Länderübergreifendes Hochwasserportal",
+          "systemName": "LHP flood warnings",
+          "policy": "open",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "flood"
+          ],
+          "coverageContribution": "complete",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "approved",
+          "officialUrl": "https://www.hochwasserzentralen.de/",
+          "evidenceUrls": [
+            "https://www.hochwasserzentralen.de/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": null
+        },
+        {
+          "id": "bbk-mowas-rss",
+          "authority": "Bundesamt für Bevölkerungsschutz und Katastrophenhilfe",
+          "systemName": "BBK civil-protection RSS",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 10,
+          "format": "rss",
+          "hazards": [
+            "civil-emergency",
+            "industrial",
+            "nuclear",
+            "security",
+            "wildfire"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.bbk.bund.de/DE/Warnung-Vorsorge/Warn-App-NINA/warn-app-nina_node.html",
+          "evidenceUrls": [
+            "https://www.bbk.bund.de/DE/Warnung-Vorsorge/Warn-App-NINA/warn-app-nina_node.html",
+            "https://warnung.bund.de/api/appdata/gsb/html/DE/app/impressum.html",
+            "https://warnung.bund.de/api31/mowas/rss/110000000000.rss"
+          ],
+          "reviewedAt": "2026-09-08",
+          "nextReviewAt": "2026-12-07",
+          "limitationCode": "source_contract_incomplete"
+        },
+        {
+          "id": "dwd-cap",
+          "authority": "Deutscher Wetterdienst",
+          "systemName": "DWD direct CAP recovery",
+          "policy": "open",
+          "runtimeTarget": "meteoalarm-fallback",
+          "role": "fallback",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "cap",
+          "hazards": [
+            "severe-weather",
+            "extreme-heat",
+            "extreme-cold",
+            "snow-ice",
+            "coastal"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "approved",
+          "officialUrl": "https://opendata.dwd.de/weather/alerts/cap/COMMUNEUNION_EVENT_STAT/",
+          "evidenceUrls": [
+            "https://opendata.dwd.de/weather/alerts/cap/COMMUNEUNION_EVENT_STAT/",
+            "https://github.com/advisories/GHSA-px8p-9vwx-vf98"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": null
+        }
+      ]
+    },
+    {
       "countryCode": "DK",
       "authority": "Danish Emergency Management Agency",
       "systemName": "S!RENEN",
@@ -1261,6 +1655,92 @@
           "reviewedAt": "2026-08-30",
           "nextReviewAt": "2027-08-30",
           "limitationCode": "no_supported_machine_feed"
+        }
+      ]
+    },
+    {
+      "countryCode": "ES",
+      "authority": "Protecció Civil de Catalunya",
+      "systemName": "Catalonia civil-protection plans",
+      "reviewedAt": "2026-09-07",
+      "evidenceUrls": [
+        "https://interior.gencat.cat/ca/arees_dactuacio/proteccio_civil/",
+        "https://analisi.transparenciacatalunya.cat/"
+      ],
+      "enabled": true,
+      "endpoint": "https://analisi.transparenciacatalunya.cat/resource/wj9c-j6vf.json",
+      "hazards": [],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "CC BY 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "limitationCode": null,
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "catalonia-plans",
+          "authority": "Protecció Civil de Catalunya",
+          "systemName": "Catalonia civil-protection plans",
+          "policy": "open",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "context",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "civil-emergency"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://interior.gencat.cat/ca/arees_dactuacio/proteccio_civil/",
+          "evidenceUrls": [
+            "https://interior.gencat.cat/ca/arees_dactuacio/proteccio_civil/",
+            "https://analisi.transparenciacatalunya.cat/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": null
+        },
+        {
+          "id": "aemet-cap",
+          "authority": "Agencia Estatal de Meteorología",
+          "systemName": "AEMET direct CAP warnings",
+          "policy": "open",
+          "runtimeTarget": "meteoalarm-fallback",
+          "role": "fallback",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "atom",
+          "hazards": [
+            "severe-weather",
+            "extreme-heat",
+            "extreme-cold",
+            "snow-ice",
+            "coastal",
+            "avalanche"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://www.aemet.es/es/rss_info/avisos/esp",
+          "evidenceUrls": [
+            "https://www.aemet.es/es/rss_info/avisos/esp",
+            "https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/rss/CAP_AFAE_ATOM.xml"
+          ],
+          "reviewedAt": "2026-09-07",
+          "nextReviewAt": "2026-12-06",
+          "limitationCode": null
         }
       ]
     },
@@ -1438,72 +1918,136 @@
       ]
     },
     {
-      "countryCode": "DE",
-      "authority": "Länderübergreifendes Hochwasserportal",
-      "systemName": "LHP flood warnings",
-      "reviewedAt": "2026-09-08",
+      "countryCode": "GB",
+      "authority": "Environment Agency",
+      "systemName": "England flood warnings",
+      "reviewedAt": "2026-09-13",
       "evidenceUrls": [
-        "https://www.hochwasserzentralen.de/"
+        "https://environment.data.gov.uk/flood-monitoring/doc/reference"
       ],
       "enabled": true,
-      "endpoint": "https://api.hochwasserzentralen.de/public/v1/data/alerts?format=geojson&lang=en",
+      "endpoint": "https://environment.data.gov.uk/flood-monitoring/id/floods",
       "hazards": [
         "flood"
       ],
       "reuseStatus": "approved",
       "license": {
-        "name": "CC BY 4.0",
-        "url": "https://creativecommons.org/licenses/by/4.0/"
+        "name": "Open Government Licence v3.0",
+        "url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
       },
       "limitationCode": null,
       "satisfiesCoverage": true,
-      "coverageLocationIds": [],
+      "coverageLocationIds": [
+        "gb-bath",
+        "gb-birmingham",
+        "gb-brighton",
+        "gb-cambridge",
+        "gb-exeter",
+        "gb-lake-district-national-park",
+        "gb-leeds",
+        "gb-liverpool",
+        "gb-london",
+        "gb-manchester",
+        "gb-newcastle-upon-tyne",
+        "gb-oxford",
+        "gb-plymouth",
+        "gb-portsmouth",
+        "gb-york"
+      ],
       "systems": [
         {
-          "id": "lhp-flood",
-          "authority": "Länderübergreifendes Hochwasserportal",
-          "systemName": "LHP flood warnings",
+          "id": "ea-flood",
+          "authority": "Environment Agency",
+          "systemName": "England flood warnings",
           "policy": "open",
           "runtimeTarget": "national-civil-alerts",
           "role": "coverage",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 15,
           "format": "json",
           "hazards": [
             "flood"
           ],
-          "coverageContribution": "complete",
+          "coverageContribution": "partial",
           "accessStatus": "approved",
           "reuseStatus": "approved",
           "severityStatus": "approved",
           "lifecycleStatus": "approved",
-          "geometryStatus": "approved",
+          "geometryStatus": "partial",
           "completenessStatus": "approved",
-          "officialUrl": "https://www.hochwasserzentralen.de/",
+          "officialUrl": "https://check-for-flooding.service.gov.uk/",
           "evidenceUrls": [
-            "https://www.hochwasserzentralen.de/"
+            "https://environment.data.gov.uk/flood-monitoring/doc/reference"
           ],
-          "reviewedAt": "2026-08-30",
-          "nextReviewAt": "2027-08-30",
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
           "limitationCode": null
         },
         {
-          "id": "bbk-mowas-rss",
-          "authority": "Bundesamt für Bevölkerungsschutz und Katastrophenhilfe",
-          "systemName": "BBK civil-protection RSS",
+          "id": "meteoalarm-atom",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm keyless Atom warning feed",
           "policy": "gated",
           "runtimeTarget": "none",
           "role": "context",
           "status": "evidence_gated",
           "cadenceMinutes": 10,
-          "format": "rss",
-          "hazards": [
-            "civil-emergency",
-            "industrial",
-            "nuclear",
-            "security",
-            "wildfire"
+          "format": "atom",
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://feeds.meteoalarm.org/",
+            "https://api.meteoalarm.org/edr/v1/docs?f=html"
           ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "mapping_not_verified"
+        },
+        {
+          "id": "meteoalarm-edr",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm authenticated EDR recovery",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 360,
+          "format": "json",
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "credential_required",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "approved",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://api.meteoalarm.org/edr/v1/docs?f=html",
+            "https://api.meteoalarm.org/edr/v1/authentication"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "mapping_not_verified"
+        },
+        {
+          "id": "gb-official-information",
+          "authority": "United Kingdom public authorities",
+          "systemName": "Met Office UK weather warnings",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
           "coverageContribution": "none",
           "accessStatus": "approved",
           "reuseStatus": "unverified",
@@ -1511,47 +2055,79 @@
           "lifecycleStatus": "unverified",
           "geometryStatus": "unverified",
           "completenessStatus": "unverified",
-          "officialUrl": "https://www.bbk.bund.de/DE/Warnung-Vorsorge/Warn-App-NINA/warn-app-nina_node.html",
+          "officialUrl": "https://weather.metoffice.gov.uk/warnings-and-advice/uk-warnings",
           "evidenceUrls": [
-            "https://www.bbk.bund.de/DE/Warnung-Vorsorge/Warn-App-NINA/warn-app-nina_node.html",
-            "https://warnung.bund.de/api/appdata/gsb/html/DE/app/impressum.html",
-            "https://warnung.bund.de/api31/mowas/rss/110000000000.rss"
+            "https://weather.metoffice.gov.uk/warnings-and-advice/uk-warnings",
+            "https://check-for-flooding.service.gov.uk/",
+            "https://floodline.sepa.org.uk/live-flood-information/",
+            "https://naturalresourceswales.gov.uk/evidence-and-data/maps/check-flood-warnings/?lang=en",
+            "https://www.infrastructure-ni.gov.uk/",
+            "https://nationalhighways.co.uk/roads-and-travel/live-travel-updates/"
           ],
-          "reviewedAt": "2026-09-08",
-          "nextReviewAt": "2026-12-07",
-          "limitationCode": "source_contract_incomplete"
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
         },
         {
-          "id": "dwd-cap",
-          "authority": "Deutscher Wetterdienst",
-          "systemName": "DWD direct CAP recovery",
+          "id": "met-office-nswws",
+          "authority": "Met Office",
+          "systemName": "National Severe Weather Warning Service",
           "policy": "gated",
-          "runtimeTarget": "none",
+          "runtimeTarget": "national-civil-alerts",
           "role": "fallback",
-          "status": "evidence_gated",
+          "status": "credential_gated",
           "cadenceMinutes": 10,
-          "format": "cap",
+          "format": "atom",
           "hazards": [
             "severe-weather",
             "extreme-heat",
             "extreme-cold",
             "snow-ice",
+            "flood",
             "coastal"
           ],
           "coverageContribution": "none",
-          "accessStatus": "approved",
-          "reuseStatus": "unverified",
-          "severityStatus": "unverified",
-          "lifecycleStatus": "unverified",
-          "geometryStatus": "unverified",
-          "completenessStatus": "unverified",
-          "officialUrl": "https://opendata.dwd.de/weather/alerts/cap/COMMUNEUNION_EVENT_STAT/",
+          "accessStatus": "credential_required",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "approved",
+          "officialUrl": "https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings",
           "evidenceUrls": [
-            "https://opendata.dwd.de/weather/alerts/cap/COMMUNEUNION_EVENT_STAT/"
+            "https://metoffice.github.io/nswws-public-api/atom-feed.html"
           ],
-          "reviewedAt": "2026-09-07",
-          "nextReviewAt": "2026-12-06",
-          "limitationCode": "source_contract_incomplete"
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "credential_not_configured"
+        },
+        {
+          "id": "nrw-flood",
+          "authority": "Natural Resources Wales",
+          "systemName": "Wales flood warnings",
+          "policy": "gated",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "fallback",
+          "status": "credential_gated",
+          "cadenceMinutes": 15,
+          "format": "json",
+          "hazards": [
+            "flood"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "credential_required",
+          "reuseStatus": "approved",
+          "severityStatus": "partial",
+          "lifecycleStatus": "partial",
+          "geometryStatus": "partial",
+          "completenessStatus": "partial",
+          "officialUrl": "https://naturalresources.wales/flooding/check-flood-warnings/?lang=en",
+          "evidenceUrls": [
+            "https://naturalresources.wales/flooding/check-flood-warnings/?lang=en"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "credential_not_configured"
         }
       ]
     },
@@ -1609,6 +2185,87 @@
           "reviewedAt": "2026-09-08",
           "nextReviewAt": "2026-12-07",
           "limitationCode": "evidence_review_required"
+        }
+      ]
+    },
+    {
+      "countryCode": "HR",
+      "authority": "Croatian Civil Protection Directorate",
+      "systemName": "SRUUK",
+      "reviewedAt": "2026-09-07",
+      "evidenceUrls": [
+        "https://civilna-zastita.gov.hr/"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "no_supported_machine_feed",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "hr-public-warning",
+          "authority": "Croatian Civil Protection Directorate",
+          "systemName": "SRUUK",
+          "policy": "blocked",
+          "runtimeTarget": "none",
+          "role": "blocked",
+          "status": "blocked",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "blocked",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://civilna-zastita.gov.hr/",
+          "evidenceUrls": [
+            "https://civilna-zastita.gov.hr/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "no_supported_machine_feed"
+        },
+        {
+          "id": "dhmz-cap",
+          "authority": "Croatian Meteorological and Hydrological Service",
+          "systemName": "DHMZ direct CAP warnings",
+          "policy": "open",
+          "runtimeTarget": "meteoalarm-fallback",
+          "role": "fallback",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "cap",
+          "hazards": [
+            "severe-weather",
+            "extreme-heat",
+            "extreme-cold",
+            "snow-ice",
+            "coastal",
+            "fire-danger",
+            "avalanche",
+            "flood"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://meteo.hr/proizvodi.php?section=podaci&param=xml_korisnici",
+          "evidenceUrls": [
+            "https://meteo.hr/proizvodi.php?section=podaci&param=xml_korisnici",
+            "https://meteo.hr/upozorenja/cap_hr_today.xml"
+          ],
+          "reviewedAt": "2026-09-07",
+          "nextReviewAt": "2026-12-06",
+          "limitationCode": null
         }
       ]
     },
@@ -1733,6 +2390,115 @@
           "reviewedAt": "2026-08-30",
           "nextReviewAt": "2027-08-30",
           "limitationCode": null
+        }
+      ]
+    },
+    {
+      "countryCode": "IS",
+      "authority": "Iceland public authorities",
+      "systemName": "Icelandic Met Office",
+      "reviewedAt": "2026-09-13",
+      "evidenceUrls": [
+        "https://en.vedur.is/",
+        "https://en.vedur.is/avalanches/forecast/",
+        "https://umferdin.is/en",
+        "https://www.veitur.is/en/outages"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "official_link_only",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "meteoalarm-atom",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm keyless Atom warning feed",
+          "policy": "open",
+          "runtimeTarget": "meteoalarm-primary",
+          "role": "coverage",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "atom",
+          "hazards": [
+            "severe-weather"
+          ],
+          "coverageContribution": "partial",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "partial",
+          "completenessStatus": "partial",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://feeds.meteoalarm.org/",
+            "https://api.meteoalarm.org/edr/v1/docs?f=html"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": null
+        },
+        {
+          "id": "meteoalarm-edr",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm authenticated EDR recovery",
+          "policy": "gated",
+          "runtimeTarget": "meteoalarm-fallback",
+          "role": "fallback",
+          "status": "credential_gated",
+          "cadenceMinutes": 360,
+          "format": "json",
+          "hazards": [
+            "severe-weather"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "credential_required",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "approved",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://api.meteoalarm.org/edr/v1/docs?f=html",
+            "https://api.meteoalarm.org/edr/v1/authentication"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "credential_not_configured"
+        },
+        {
+          "id": "is-official-information",
+          "authority": "Iceland public authorities",
+          "systemName": "Icelandic Met Office",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://en.vedur.is/",
+          "evidenceUrls": [
+            "https://en.vedur.is/",
+            "https://en.vedur.is/avalanches/forecast/",
+            "https://umferdin.is/en",
+            "https://www.veitur.is/en/outages"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
         }
       ]
     },
@@ -1878,87 +2644,49 @@
       ]
     },
     {
-      "countryCode": "LV",
-      "authority": "Latvian Environment, Geology and Meteorology Centre",
-      "systemName": "LVĢMC hydrological warnings",
-      "reviewedAt": "2026-09-07",
+      "countryCode": "LI",
+      "authority": "Liechtenstein public authorities",
+      "systemName": "Liechtenstein government information",
+      "reviewedAt": "2026-09-13",
       "evidenceUrls": [
-        "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi",
-        "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi/resource/01dc7d3c-34e5-4cc3-8f1a-aaf022872a02"
+        "https://www.llv.li/",
+        "https://www.llv.li/de/privatpersonen/notfall-und-katastrophenfall/katastrophen-und-notfall/naturgefahren"
       ],
-      "enabled": true,
-      "endpoint": "https://data.gov.lv/dati/api/3/action/package_show?id=hidrometeorologiskie-bridinajumi",
-      "hazards": [
-        "flood"
-      ],
-      "reuseStatus": "approved",
-      "license": {
-        "name": "CC0-1.0",
-        "url": "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi"
-      },
-      "limitationCode": null,
-      "satisfiesCoverage": true,
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "official_link_only",
+      "satisfiesCoverage": false,
       "coverageLocationIds": [],
       "systems": [
         {
-          "id": "lv-112-active",
-          "authority": "Latvian State Fire and Rescue Service",
-          "systemName": "Latvia public warning system",
+          "id": "li-official-information",
+          "authority": "Liechtenstein public authorities",
+          "systemName": "Liechtenstein government information",
           "policy": "gated",
           "runtimeTarget": "none",
           "role": "context",
           "status": "evidence_gated",
-          "cadenceMinutes": 60,
-          "format": "html",
-          "hazards": [
-            "civil-emergency",
-            "security",
-            "industrial",
-            "wildfire"
-          ],
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
           "coverageContribution": "none",
           "accessStatus": "approved",
           "reuseStatus": "unverified",
-          "severityStatus": "partial",
-          "lifecycleStatus": "partial",
-          "geometryStatus": "partial",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
           "completenessStatus": "unverified",
-          "officialUrl": "https://www.vugd.gov.lv/en",
+          "officialUrl": "https://www.llv.li/",
           "evidenceUrls": [
-            "https://www.vugd.gov.lv/en"
+            "https://www.llv.li/",
+            "https://www.llv.li/de/privatpersonen/notfall-und-katastrophenfall/katastrophen-und-notfall/naturgefahren"
           ],
-          "reviewedAt": "2026-08-30",
-          "nextReviewAt": "2027-08-30",
-          "limitationCode": "evidence_review_required"
-        },
-        {
-          "id": "lvgmc-flood",
-          "authority": "Latvian Environment, Geology and Meteorology Centre",
-          "systemName": "LVĢMC hydrological warnings",
-          "policy": "open",
-          "runtimeTarget": "national-civil-alerts",
-          "role": "coverage",
-          "status": "active",
-          "cadenceMinutes": 10,
-          "format": "json",
-          "hazards": [
-            "flood"
-          ],
-          "coverageContribution": "partial",
-          "accessStatus": "approved",
-          "reuseStatus": "approved",
-          "severityStatus": "approved",
-          "lifecycleStatus": "approved",
-          "geometryStatus": "approved",
-          "completenessStatus": "partial",
-          "officialUrl": "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi",
-          "evidenceUrls": [
-            "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi",
-            "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi/resource/01dc7d3c-34e5-4cc3-8f1a-aaf022872a02"
-          ],
-          "reviewedAt": "2026-09-07",
-          "nextReviewAt": "2026-12-06",
-          "limitationCode": null
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
         }
       ]
     },
@@ -2070,6 +2798,453 @@
       ]
     },
     {
+      "countryCode": "LV",
+      "authority": "Latvian Environment, Geology and Meteorology Centre",
+      "systemName": "LVĢMC hydrological warnings",
+      "reviewedAt": "2026-09-07",
+      "evidenceUrls": [
+        "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi",
+        "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi/resource/01dc7d3c-34e5-4cc3-8f1a-aaf022872a02"
+      ],
+      "enabled": true,
+      "endpoint": "https://data.gov.lv/dati/api/3/action/package_show?id=hidrometeorologiskie-bridinajumi",
+      "hazards": [
+        "flood"
+      ],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "CC0-1.0",
+        "url": "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi"
+      },
+      "limitationCode": null,
+      "satisfiesCoverage": true,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "lv-112-active",
+          "authority": "Latvian State Fire and Rescue Service",
+          "systemName": "Latvia public warning system",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 60,
+          "format": "html",
+          "hazards": [
+            "civil-emergency",
+            "security",
+            "industrial",
+            "wildfire"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "partial",
+          "lifecycleStatus": "partial",
+          "geometryStatus": "partial",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.vugd.gov.lv/en",
+          "evidenceUrls": [
+            "https://www.vugd.gov.lv/en"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "evidence_review_required"
+        },
+        {
+          "id": "lvgmc-flood",
+          "authority": "Latvian Environment, Geology and Meteorology Centre",
+          "systemName": "LVĢMC hydrological warnings",
+          "policy": "open",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "flood"
+          ],
+          "coverageContribution": "partial",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "partial",
+          "officialUrl": "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi",
+          "evidenceUrls": [
+            "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi",
+            "https://data.gov.lv/dati/dataset/hidrometeorologiskie-bridinajumi/resource/01dc7d3c-34e5-4cc3-8f1a-aaf022872a02"
+          ],
+          "reviewedAt": "2026-09-07",
+          "nextReviewAt": "2026-12-06",
+          "limitationCode": null
+        }
+      ]
+    },
+    {
+      "countryCode": "MC",
+      "authority": "Monaco public authorities",
+      "systemName": "Monaco government information",
+      "reviewedAt": "2026-09-13",
+      "evidenceUrls": [
+        "https://www.gouv.mc/",
+        "https://journaldemonaco.gouv.mc/"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "official_link_only",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "mc-official-information",
+          "authority": "Monaco public authorities",
+          "systemName": "Monaco government information",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.gouv.mc/",
+          "evidenceUrls": [
+            "https://www.gouv.mc/",
+            "https://journaldemonaco.gouv.mc/"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
+        }
+      ]
+    },
+    {
+      "countryCode": "MD",
+      "authority": "MeteoAlarm / EUMETNET members",
+      "systemName": "MeteoAlarm keyless Atom warning feed",
+      "reviewedAt": "2026-09-13",
+      "evidenceUrls": [
+        "https://feeds.meteoalarm.org/",
+        "https://api.meteoalarm.org/edr/v1/docs?f=html"
+      ],
+      "enabled": false,
+      "endpoint": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-moldova",
+      "hazards": [],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "MeteoAlarm public warning redistribution",
+        "url": "https://www.meteoalarm.org/en/live/terms-and-conditions/"
+      },
+      "limitationCode": "mapping_not_verified",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "meteoalarm-atom",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm keyless Atom warning feed",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 10,
+          "format": "atom",
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://feeds.meteoalarm.org/",
+            "https://api.meteoalarm.org/edr/v1/docs?f=html"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "mapping_not_verified"
+        },
+        {
+          "id": "meteoalarm-edr",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm authenticated EDR recovery",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 360,
+          "format": "json",
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "credential_required",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "approved",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://api.meteoalarm.org/edr/v1/docs?f=html",
+            "https://api.meteoalarm.org/edr/v1/authentication"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "mapping_not_verified"
+        },
+        {
+          "id": "md-official-information",
+          "authority": "Moldova public authorities",
+          "systemName": "Moldova weather warnings",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.meteo.md/index.php/ro/weather/current-warnings/",
+          "evidenceUrls": [
+            "https://www.meteo.md/index.php/ro/weather/current-warnings/",
+            "https://igsu.gov.md/ro?page=0"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
+        }
+      ]
+    },
+    {
+      "countryCode": "ME",
+      "authority": "MeteoAlarm / EUMETNET members",
+      "systemName": "MeteoAlarm keyless Atom warning feed",
+      "reviewedAt": "2026-09-13",
+      "evidenceUrls": [
+        "https://feeds.meteoalarm.org/",
+        "https://api.meteoalarm.org/edr/v1/docs?f=html"
+      ],
+      "enabled": false,
+      "endpoint": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-montenegro",
+      "hazards": [],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "MeteoAlarm public warning redistribution",
+        "url": "https://www.meteoalarm.org/en/live/terms-and-conditions/"
+      },
+      "limitationCode": "mapping_not_verified",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "meteoalarm-atom",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm keyless Atom warning feed",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 10,
+          "format": "atom",
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://feeds.meteoalarm.org/",
+            "https://api.meteoalarm.org/edr/v1/docs?f=html"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "mapping_not_verified"
+        },
+        {
+          "id": "meteoalarm-edr",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm authenticated EDR recovery",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 360,
+          "format": "json",
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "credential_required",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "approved",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://api.meteoalarm.org/edr/v1/docs?f=html",
+            "https://api.meteoalarm.org/edr/v1/authentication"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "mapping_not_verified"
+        },
+        {
+          "id": "me-official-information",
+          "authority": "Montenegro public authorities",
+          "systemName": "Montenegro Hydrometeorological and Seismological Service",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.meteo.co.me/",
+          "evidenceUrls": [
+            "https://www.meteo.co.me/",
+            "https://www.gov.me/",
+            "https://www.meteo.co.me/page.php?id=164",
+            "https://www.gov.me/mup/vanredne-situacije"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
+        }
+      ]
+    },
+    {
+      "countryCode": "MK",
+      "authority": "MeteoAlarm / EUMETNET members",
+      "systemName": "MeteoAlarm keyless Atom warning feed",
+      "reviewedAt": "2026-09-13",
+      "evidenceUrls": [
+        "https://feeds.meteoalarm.org/",
+        "https://api.meteoalarm.org/edr/v1/docs?f=html"
+      ],
+      "enabled": false,
+      "endpoint": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-republic-of-north-macedonia",
+      "hazards": [],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "MeteoAlarm public warning redistribution",
+        "url": "https://www.meteoalarm.org/en/live/terms-and-conditions/"
+      },
+      "limitationCode": "mapping_not_verified",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "meteoalarm-atom",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm keyless Atom warning feed",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 10,
+          "format": "atom",
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://feeds.meteoalarm.org/",
+            "https://api.meteoalarm.org/edr/v1/docs?f=html"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "mapping_not_verified"
+        },
+        {
+          "id": "meteoalarm-edr",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm authenticated EDR recovery",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 360,
+          "format": "json",
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "credential_required",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "approved",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://api.meteoalarm.org/edr/v1/docs?f=html",
+            "https://api.meteoalarm.org/edr/v1/authentication"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "mapping_not_verified"
+        },
+        {
+          "id": "mk-official-information",
+          "authority": "North Macedonia public authorities",
+          "systemName": "North Macedonia Hydrometeorological Service",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://uhmr.gov.mk/",
+          "evidenceUrls": [
+            "https://uhmr.gov.mk/",
+            "https://cuk.gov.mk/",
+            "https://cuk.gov.mk/?page_id=23136"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
+        }
+      ]
+    },
+    {
       "countryCode": "MT",
       "authority": "Malta Civil Protection Department",
       "systemName": "Malta public warning system",
@@ -2161,6 +3336,175 @@
           "reviewedAt": "2026-08-30",
           "nextReviewAt": "2027-08-30",
           "limitationCode": "supported_contract_required"
+        }
+      ]
+    },
+    {
+      "countryCode": "NO",
+      "authority": "Norwegian Meteorological Institute",
+      "systemName": "Norwegian Meteorological Institute national warning sources",
+      "reviewedAt": "2026-09-13",
+      "evidenceUrls": [
+        "https://api.met.no/weatherapi/metalerts/2.0/documentation"
+      ],
+      "enabled": true,
+      "endpoint": "https://api.met.no/weatherapi/metalerts/2.0/current.json",
+      "hazards": [
+        "severe-weather",
+        "coastal",
+        "snow-ice",
+        "fire-danger",
+        "flood"
+      ],
+      "reuseStatus": "approved",
+      "license": {
+        "name": "Norwegian Licence for Open Government Data 2.0 / CC BY 4.0",
+        "url": "https://api.met.no/doc/TermsOfService"
+      },
+      "limitationCode": null,
+      "satisfiesCoverage": true,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "met-norway-alerts",
+          "authority": "Norwegian Meteorological Institute",
+          "systemName": "MET Norway MetAlerts",
+          "policy": "open",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "active",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "severe-weather",
+            "coastal",
+            "snow-ice",
+            "fire-danger"
+          ],
+          "coverageContribution": "complete",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "approved",
+          "officialUrl": "https://www.met.no/en/weather-and-climate/text-forecast-and-warnings",
+          "evidenceUrls": [
+            "https://api.met.no/weatherapi/metalerts/2.0/documentation"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": null
+        },
+        {
+          "id": "nve-flood",
+          "authority": "Norwegian Water Resources and Energy Directorate",
+          "systemName": "NVE flood warnings",
+          "policy": "open",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "active",
+          "cadenceMinutes": 30,
+          "format": "json",
+          "hazards": [
+            "flood"
+          ],
+          "coverageContribution": "partial",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "partial",
+          "completenessStatus": "approved",
+          "officialUrl": "https://www.varsom.no/en/flood-and-landslide-warning-service/",
+          "evidenceUrls": [
+            "https://api.nve.no/doc/flomvarsling/"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": null
+        },
+        {
+          "id": "meteoalarm-atom",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm keyless Atom warning feed",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 10,
+          "format": "atom",
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "partial",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://feeds.meteoalarm.org/",
+            "https://api.meteoalarm.org/edr/v1/docs?f=html"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "mapping_not_verified"
+        },
+        {
+          "id": "meteoalarm-edr",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm authenticated EDR recovery",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 360,
+          "format": "json",
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "credential_required",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "approved",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://api.meteoalarm.org/edr/v1/docs?f=html",
+            "https://api.meteoalarm.org/edr/v1/authentication"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "mapping_not_verified"
+        },
+        {
+          "id": "no-official-information",
+          "authority": "Norway public authorities",
+          "systemName": "Varsom natural hazard warnings",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.varsom.no/en/",
+          "evidenceUrls": [
+            "https://www.varsom.no/en/",
+            "https://www.vegvesen.no/trafikk/",
+            "https://www.elvia.no/strombruddskart/"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
         }
       ]
     },
@@ -2437,214 +3781,106 @@
       ]
     },
     {
-      "countryCode": "SK",
-      "authority": "Slovak Ministry of Interior",
-      "systemName": "Slovakia public warning system",
-      "reviewedAt": "2026-08-30",
+      "countryCode": "RS",
+      "authority": "MeteoAlarm / EUMETNET members",
+      "systemName": "MeteoAlarm keyless Atom warning feed",
+      "reviewedAt": "2026-09-13",
       "evidenceUrls": [
-        "https://www.minv.sk/"
+        "https://feeds.meteoalarm.org/",
+        "https://api.meteoalarm.org/edr/v1/docs?f=html"
       ],
       "enabled": false,
-      "endpoint": null,
+      "endpoint": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-serbia",
       "hazards": [],
-      "reuseStatus": "unverified",
-      "license": null,
-      "limitationCode": "insufficient_geometry_or_lifecycle",
+      "reuseStatus": "approved",
+      "license": {
+        "name": "MeteoAlarm public warning redistribution",
+        "url": "https://www.meteoalarm.org/en/live/terms-and-conditions/"
+      },
+      "limitationCode": "mapping_not_verified",
       "satisfiesCoverage": false,
       "coverageLocationIds": [],
       "systems": [
         {
-          "id": "sk-public-warning",
-          "authority": "Slovak Ministry of Interior",
-          "systemName": "Slovakia public warning system",
-          "policy": "blocked",
-          "runtimeTarget": "none",
-          "role": "blocked",
-          "status": "blocked",
-          "cadenceMinutes": null,
-          "format": null,
-          "hazards": [],
-          "coverageContribution": "none",
-          "accessStatus": "blocked",
-          "reuseStatus": "unverified",
-          "severityStatus": "unverified",
-          "lifecycleStatus": "unverified",
-          "geometryStatus": "unverified",
-          "completenessStatus": "unverified",
-          "officialUrl": "https://www.minv.sk/",
-          "evidenceUrls": [
-            "https://www.minv.sk/"
-          ],
-          "reviewedAt": "2026-08-30",
-          "nextReviewAt": "2027-08-30",
-          "limitationCode": "insufficient_geometry_or_lifecycle"
-        },
-        {
-          "id": "sk-crisis-rest",
-          "authority": "Slovak Ministry of Interior",
-          "systemName": "Crisis-management REST service",
-          "policy": "gated",
-          "runtimeTarget": "national-civil-alerts",
-          "role": "coverage",
-          "status": "credential_gated",
-          "cadenceMinutes": 10,
-          "format": "json",
-          "hazards": [
-            "civil-emergency",
-            "security",
-            "industrial",
-            "wildfire",
-            "flood"
-          ],
-          "coverageContribution": "none",
-          "accessStatus": "credential_required",
-          "reuseStatus": "unverified",
-          "severityStatus": "unverified",
-          "lifecycleStatus": "unverified",
-          "geometryStatus": "unverified",
-          "completenessStatus": "unverified",
-          "officialUrl": "https://portal.minv.sk/wps/esispz-api/docs/index.html",
-          "evidenceUrls": [
-            "https://pes.minv.sk/wps/wcm/connect/sk/site/main/zivotne-situacie/Sluzby-policajneho-zboru/Publikovanie-a-ziskavanie-informacii/"
-          ],
-          "reviewedAt": "2026-08-30",
-          "nextReviewAt": "2027-08-30",
-          "limitationCode": "official_credential_required"
-        }
-      ]
-    },
-    {
-      "countryCode": "SI",
-      "authority": "Slovenian Administration for Civil Protection and Disaster Relief",
-      "systemName": "Slovenia public warning system",
-      "reviewedAt": "2026-08-30",
-      "evidenceUrls": [
-        "https://www.gov.si/en/state-authorities/bodies-within-ministries/administration-for-civil-protection-and-disaster-relief/"
-      ],
-      "enabled": false,
-      "endpoint": "https://www.gov.si/en/state-authorities/bodies-within-ministries/administration-for-civil-protection-and-disaster-relief/",
-      "hazards": [],
-      "reuseStatus": "unverified",
-      "license": null,
-      "limitationCode": "evidence_review_required",
-      "satisfiesCoverage": false,
-      "coverageLocationIds": [],
-      "systems": [
-        {
-          "id": "si-spin-incidents",
-          "authority": "Slovenian Administration for Civil Protection and Disaster Relief",
-          "systemName": "Slovenia public warning system",
+          "id": "meteoalarm-atom",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm keyless Atom warning feed",
           "policy": "gated",
           "runtimeTarget": "none",
           "role": "context",
           "status": "evidence_gated",
-          "cadenceMinutes": 60,
-          "format": "html",
-          "hazards": [
-            "civil-emergency",
-            "industrial",
-            "wildfire"
+          "cadenceMinutes": 10,
+          "format": "atom",
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://feeds.meteoalarm.org/",
+            "https://api.meteoalarm.org/edr/v1/docs?f=html"
           ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "mapping_not_verified"
+        },
+        {
+          "id": "meteoalarm-edr",
+          "authority": "MeteoAlarm / EUMETNET members",
+          "systemName": "MeteoAlarm authenticated EDR recovery",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 360,
+          "format": "json",
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "credential_required",
+          "reuseStatus": "approved",
+          "severityStatus": "approved",
+          "lifecycleStatus": "approved",
+          "geometryStatus": "approved",
+          "completenessStatus": "approved",
+          "officialUrl": "https://www.meteoalarm.org/",
+          "evidenceUrls": [
+            "https://api.meteoalarm.org/edr/v1/docs?f=html",
+            "https://api.meteoalarm.org/edr/v1/authentication"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "mapping_not_verified"
+        },
+        {
+          "id": "rs-official-information",
+          "authority": "Serbia public authorities",
+          "systemName": "Serbia hydrometeorological warnings",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
           "coverageContribution": "none",
           "accessStatus": "approved",
           "reuseStatus": "unverified",
-          "severityStatus": "partial",
-          "lifecycleStatus": "partial",
-          "geometryStatus": "partial",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
           "completenessStatus": "unverified",
-          "officialUrl": "https://www.gov.si/en/state-authorities/bodies-within-ministries/administration-for-civil-protection-and-disaster-relief/",
+          "officialUrl": "https://www.hidmet.gov.rs/latin/upozorenja/index.php",
           "evidenceUrls": [
-            "https://www.gov.si/en/state-authorities/bodies-within-ministries/administration-for-civil-protection-and-disaster-relief/"
+            "https://www.hidmet.gov.rs/latin/upozorenja/index.php",
+            "https://upozorenje.mup.gov.rs/"
           ],
-          "reviewedAt": "2026-08-30",
-          "nextReviewAt": "2027-08-30",
-          "limitationCode": "evidence_review_required"
-        }
-      ]
-    },
-    {
-      "countryCode": "ES",
-      "authority": "Protecció Civil de Catalunya",
-      "systemName": "Catalonia civil-protection plans",
-      "reviewedAt": "2026-09-07",
-      "evidenceUrls": [
-        "https://interior.gencat.cat/ca/arees_dactuacio/proteccio_civil/",
-        "https://analisi.transparenciacatalunya.cat/"
-      ],
-      "enabled": true,
-      "endpoint": "https://analisi.transparenciacatalunya.cat/resource/wj9c-j6vf.json",
-      "hazards": [],
-      "reuseStatus": "approved",
-      "license": {
-        "name": "CC BY 4.0",
-        "url": "https://creativecommons.org/licenses/by/4.0/"
-      },
-      "limitationCode": null,
-      "satisfiesCoverage": false,
-      "coverageLocationIds": [],
-      "systems": [
-        {
-          "id": "catalonia-plans",
-          "authority": "Protecció Civil de Catalunya",
-          "systemName": "Catalonia civil-protection plans",
-          "policy": "open",
-          "runtimeTarget": "national-civil-alerts",
-          "role": "context",
-          "status": "active",
-          "cadenceMinutes": 10,
-          "format": "json",
-          "hazards": [
-            "civil-emergency"
-          ],
-          "coverageContribution": "none",
-          "accessStatus": "approved",
-          "reuseStatus": "approved",
-          "severityStatus": "approved",
-          "lifecycleStatus": "approved",
-          "geometryStatus": "approved",
-          "completenessStatus": "partial",
-          "officialUrl": "https://interior.gencat.cat/ca/arees_dactuacio/proteccio_civil/",
-          "evidenceUrls": [
-            "https://interior.gencat.cat/ca/arees_dactuacio/proteccio_civil/",
-            "https://analisi.transparenciacatalunya.cat/"
-          ],
-          "reviewedAt": "2026-08-30",
-          "nextReviewAt": "2027-08-30",
-          "limitationCode": null
-        },
-        {
-          "id": "aemet-cap",
-          "authority": "Agencia Estatal de Meteorología",
-          "systemName": "AEMET direct CAP warnings",
-          "policy": "open",
-          "runtimeTarget": "meteoalarm-fallback",
-          "role": "fallback",
-          "status": "active",
-          "cadenceMinutes": 10,
-          "format": "atom",
-          "hazards": [
-            "severe-weather",
-            "extreme-heat",
-            "extreme-cold",
-            "snow-ice",
-            "coastal",
-            "avalanche"
-          ],
-          "coverageContribution": "none",
-          "accessStatus": "approved",
-          "reuseStatus": "approved",
-          "severityStatus": "approved",
-          "lifecycleStatus": "approved",
-          "geometryStatus": "approved",
-          "completenessStatus": "partial",
-          "officialUrl": "https://www.aemet.es/es/rss_info/avisos/esp",
-          "evidenceUrls": [
-            "https://www.aemet.es/es/rss_info/avisos/esp",
-            "https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/rss/CAP_AFAE_ATOM.xml"
-          ],
-          "reviewedAt": "2026-09-07",
-          "nextReviewAt": "2026-12-06",
-          "limitationCode": null
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
         }
       ]
     },
@@ -2729,26 +3965,75 @@
       ]
     },
     {
-      "countryCode": "CH",
-      "authority": "Swiss Federal Office for Civil Protection",
-      "systemName": "Alertswiss",
+      "countryCode": "SI",
+      "authority": "Slovenian Administration for Civil Protection and Disaster Relief",
+      "systemName": "Slovenia public warning system",
       "reviewedAt": "2026-08-30",
       "evidenceUrls": [
-        "https://www.alert.swiss/en/home.html"
+        "https://www.gov.si/en/state-authorities/bodies-within-ministries/administration-for-civil-protection-and-disaster-relief/"
+      ],
+      "enabled": false,
+      "endpoint": "https://www.gov.si/en/state-authorities/bodies-within-ministries/administration-for-civil-protection-and-disaster-relief/",
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "evidence_review_required",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "si-spin-incidents",
+          "authority": "Slovenian Administration for Civil Protection and Disaster Relief",
+          "systemName": "Slovenia public warning system",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": 60,
+          "format": "html",
+          "hazards": [
+            "civil-emergency",
+            "industrial",
+            "wildfire"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "partial",
+          "lifecycleStatus": "partial",
+          "geometryStatus": "partial",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.gov.si/en/state-authorities/bodies-within-ministries/administration-for-civil-protection-and-disaster-relief/",
+          "evidenceUrls": [
+            "https://www.gov.si/en/state-authorities/bodies-within-ministries/administration-for-civil-protection-and-disaster-relief/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "evidence_review_required"
+        }
+      ]
+    },
+    {
+      "countryCode": "SK",
+      "authority": "Slovak Ministry of Interior",
+      "systemName": "Slovakia public warning system",
+      "reviewedAt": "2026-08-30",
+      "evidenceUrls": [
+        "https://www.minv.sk/"
       ],
       "enabled": false,
       "endpoint": null,
       "hazards": [],
       "reuseStatus": "unverified",
       "license": null,
-      "limitationCode": "undocumented_machine_feed",
+      "limitationCode": "insufficient_geometry_or_lifecycle",
       "satisfiesCoverage": false,
       "coverageLocationIds": [],
       "systems": [
         {
-          "id": "ch-public-warning",
-          "authority": "Swiss Federal Office for Civil Protection",
-          "systemName": "Alertswiss",
+          "id": "sk-public-warning",
+          "authority": "Slovak Ministry of Interior",
+          "systemName": "Slovakia public warning system",
           "policy": "blocked",
           "runtimeTarget": "none",
           "role": "blocked",
@@ -2763,13 +4048,229 @@
           "lifecycleStatus": "unverified",
           "geometryStatus": "unverified",
           "completenessStatus": "unverified",
-          "officialUrl": "https://www.alert.swiss/en/home.html",
+          "officialUrl": "https://www.minv.sk/",
           "evidenceUrls": [
-            "https://www.alert.swiss/en/home.html"
+            "https://www.minv.sk/"
           ],
           "reviewedAt": "2026-08-30",
           "nextReviewAt": "2027-08-30",
-          "limitationCode": "undocumented_machine_feed"
+          "limitationCode": "insufficient_geometry_or_lifecycle"
+        },
+        {
+          "id": "sk-crisis-rest",
+          "authority": "Slovak Ministry of Interior",
+          "systemName": "Crisis-management REST service",
+          "policy": "gated",
+          "runtimeTarget": "national-civil-alerts",
+          "role": "coverage",
+          "status": "credential_gated",
+          "cadenceMinutes": 10,
+          "format": "json",
+          "hazards": [
+            "civil-emergency",
+            "security",
+            "industrial",
+            "wildfire",
+            "flood"
+          ],
+          "coverageContribution": "none",
+          "accessStatus": "credential_required",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://portal.minv.sk/wps/esispz-api/docs/index.html",
+          "evidenceUrls": [
+            "https://pes.minv.sk/wps/wcm/connect/sk/site/main/zivotne-situacie/Sluzby-policajneho-zboru/Publikovanie-a-ziskavanie-informacii/"
+          ],
+          "reviewedAt": "2026-08-30",
+          "nextReviewAt": "2027-08-30",
+          "limitationCode": "official_credential_required"
+        }
+      ]
+    },
+    {
+      "countryCode": "SM",
+      "authority": "San Marino public authorities",
+      "systemName": "San Marino civil protection orders",
+      "reviewedAt": "2026-09-13",
+      "evidenceUrls": [
+        "https://www.gov.sm/pub1/GovSM/Circolari-e-Ordinanze/Ordinanze-Protezione-Civile.html"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "official_link_only",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "sm-official-information",
+          "authority": "San Marino public authorities",
+          "systemName": "San Marino civil protection orders",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.gov.sm/pub1/GovSM/Circolari-e-Ordinanze/Ordinanze-Protezione-Civile.html",
+          "evidenceUrls": [
+            "https://www.gov.sm/pub1/GovSM/Circolari-e-Ordinanze/Ordinanze-Protezione-Civile.html"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
+        }
+      ]
+    },
+    {
+      "countryCode": "TR",
+      "authority": "Türkiye public authorities",
+      "systemName": "Türkiye meteorological information",
+      "reviewedAt": "2026-09-13",
+      "evidenceUrls": [
+        "https://www.mgm.gov.tr/",
+        "https://www.afad.gov.tr/"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "official_link_only",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "tr-official-information",
+          "authority": "Türkiye public authorities",
+          "systemName": "Türkiye meteorological information",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.mgm.gov.tr/",
+          "evidenceUrls": [
+            "https://www.mgm.gov.tr/",
+            "https://www.afad.gov.tr/"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
+        }
+      ]
+    },
+    {
+      "countryCode": "VA",
+      "authority": "Vatican City public authorities",
+      "systemName": "Vatican City State information",
+      "reviewedAt": "2026-09-13",
+      "evidenceUrls": [
+        "https://www.vaticanstate.va/en/"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "official_link_only",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "va-official-information",
+          "authority": "Vatican City public authorities",
+          "systemName": "Vatican City State information",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://www.vaticanstate.va/en/",
+          "evidenceUrls": [
+            "https://www.vaticanstate.va/en/"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
+        }
+      ]
+    },
+    {
+      "countryCode": "XK",
+      "authority": "Kosovo public authorities",
+      "systemName": "Kosovo Hydrometeorological Institute",
+      "reviewedAt": "2026-09-13",
+      "evidenceUrls": [
+        "https://ihmk-rks.net/",
+        "https://ame.rks-gov.net/"
+      ],
+      "enabled": false,
+      "endpoint": null,
+      "hazards": [],
+      "reuseStatus": "unverified",
+      "license": null,
+      "limitationCode": "official_link_only",
+      "satisfiesCoverage": false,
+      "coverageLocationIds": [],
+      "systems": [
+        {
+          "id": "xk-official-information",
+          "authority": "Kosovo public authorities",
+          "systemName": "Kosovo Hydrometeorological Institute",
+          "policy": "gated",
+          "runtimeTarget": "none",
+          "role": "context",
+          "status": "evidence_gated",
+          "cadenceMinutes": null,
+          "format": null,
+          "hazards": [],
+          "coverageContribution": "none",
+          "accessStatus": "approved",
+          "reuseStatus": "unverified",
+          "severityStatus": "unverified",
+          "lifecycleStatus": "unverified",
+          "geometryStatus": "unverified",
+          "completenessStatus": "unverified",
+          "officialUrl": "https://ihmk-rks.net/",
+          "evidenceUrls": [
+            "https://ihmk-rks.net/",
+            "https://ame.rks-gov.net/"
+          ],
+          "reviewedAt": "2026-09-13",
+          "nextReviewAt": "2027-03-13",
+          "limitationCode": "official_link_only"
         }
       ]
     }

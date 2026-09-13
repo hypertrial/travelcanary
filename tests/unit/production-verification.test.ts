@@ -32,7 +32,8 @@ function healthySnapshot() {
   }
   const nationalPartitions = snapshot.providers["national-civil-alerts"].partitions;
   for (const [countryCode, source] of Object.entries(nationalWarningSources)) {
-    if (source.enabled && nationalPartitions) nationalPartitions[countryCode as CountryCode].status = "ok";
+    const partition = nationalPartitions?.[countryCode as CountryCode];
+    if (source.enabled && partition) partition.status = "ok";
   }
   for (const [id, state] of Object.entries(snapshot.locations)) {
     if (state.level === "UNKNOWN") snapshot.locations[id] = {

@@ -161,7 +161,7 @@ describe("public snapshot publication", () => {
     const blob = memoryPublicStore(); const old = downgradeIngestionStateV12(projectLegacyState(createEmptyState()));
     blob.seed("ingestion-state.json", old, "initial");
     const store = new BlobStateStore("private", "ingestion-state.json", blob.getBlob, blob.putBlob);
-    const initial = await store.read(); expect(initial.data.schemaVersion).toBe(14);
+    const initial = await store.read(); expect(initial.data.schemaVersion).toBe(15);
     await store.write(initial.data, initial);
     const backup = blob.values.get("ingestion-state-v11-backup.json")!.body;
     expect(JSON.parse(backup)).toEqual(old);

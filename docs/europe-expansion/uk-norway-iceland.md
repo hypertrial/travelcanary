@@ -1,4 +1,11 @@
 # WORK-53 independent UK/Norway/Iceland source review
+
+> Historical review record. Catalog 3 subsequently activated the proven Iceland
+> wind polygon capability, direct MET Norway and NVE transports for Norway, and
+> Environment Agency flood warnings for England. GB Atom remains evidence-gated,
+> and Norway's retained marine gales do not establish land coverage. Met Office NSWWS and Natural
+> Resources Wales remain optional credentialed enhancements. The remaining text is
+> retained as source-decision provenance, not current runtime status.
 Reviewed 2026-09-08. Decisions concern the anonymous-source scope. No credentials, account creation, outreach or repository edits. `blocked` means the listed contract is not ready for runtime; it does not mean the hazard is inapplicable. `activate-candidate` means source semantics are feasible, not that an adapter or release is approved.
 
 ## Completed shared assessments
@@ -16,7 +23,7 @@ Existing saved GB/NO/IS Atom fixtures and linked CAP are usable. GB empty only d
 ## United Kingdom: four nations
 
 ### ea-flood — activate-candidate, England only
-Official anonymous JSON https://environment.data.gov.uk/flood-monitoring/id/floods ; contract https://environment.data.gov.uk/flood-monitoring/doc/reference . OGL; attribute Environment Agency real-time flood/river API.15-minute updates. Grain is current flood-area warning; severity1 severe,2 warning,3 alert,4 withdrawn. Area ID can be reused after withdrawal; timeRaised is last review, not guaranteed onset. Use complete successful replacement and preserve unexpired prior state on failure. Freeze linked WGS84 flood polygons offline, resolve pagination (area lists default500) and exact destination intersections. No blanket UK/England county exposure. Earlier three bounded requests timed out: runtime acceptance remains blocked until a successful bounded current response and positive/withdrawal/reactivation/partial fixtures exist. Data availability failure is not proof that England is unmonitored by its authority.
+Official anonymous JSON https://environment.data.gov.uk/flood-monitoring/id/floods ; contract https://environment.data.gov.uk/flood-monitoring/doc/reference . OGL; attribute Environment Agency real-time flood/river API.15-minute updates. Grain is current flood-area warning; severity1 severe,2 warning,3 alert,4 withdrawn. Area ID can be reused after withdrawal; timeRaised is last review, not guaranteed onset. The runtime completes bounded pagination, validates linked WGS84 polygons, retains those polygons with canonical event state across process cold starts, and preserves unexpired evidence when a warning or individual geometry refresh fails. Exact polygon intersections cover the 15 English destinations only; no blanket UK/England county exposure is inferred. The bounded 2026-09-13 release smoke timed out, so live release verification remains blocked even though deterministic positive, withdrawal, reactivation, partial, and cold-start fixtures pass. Data availability failure is not proof that England is unmonitored by its authority.
 
 ### sepa-flood — excluded keyed route; link-only Scotland warnings
 Floodline API access request remains outside anonymous scope. https://www.sepa.org.uk/environment/environmental-data/ . Public official warning links can be supplied without asserting ingestion. Do not conflate this exclusion with the following open observation route.

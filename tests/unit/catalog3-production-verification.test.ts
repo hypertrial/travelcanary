@@ -4,11 +4,9 @@ import { verifyProduction } from "../../scripts/verify-production";
 import { createEmptyState } from "@/lib/risk-state";
 import { buildPendingCatalog3Snapshot, buildCatalog3Conditions } from "@/lib/catalog-projections";
 import { serializeCatalog3Conditions } from "@/lib/conditions/serialization";
-import { catalogLocationsV3 } from "@/lib/catalog-data";
 import { conditionAttribution } from "@/lib/conditions/sources";
 import { ConditionsV3Schema } from "@/lib/domain/catalog-public";
 import { catalog3ConditionsCountryLimit } from "@/lib/conditions/publication-budget";
-import release2 from "../../data/catalog-releases/2.json";
 
 const origin = "https://travelcanary.test"; const url = "https://unit.public.blob.vercel-storage.com/catalogs/3/latest.json";
 const now = new Date("2026-09-09T00:00:00Z"); const sha = "a".repeat(40);
@@ -34,11 +32,10 @@ describe("catalog3 production contract verification", () => {
     expect(f.fetch.mock.calls.filter(([input]) => String(input).includes("/conditions/v3/"))).toHaveLength(45);
     expect(f.fetch.mock.calls.some(([input]) => /\/conditions\/v2\/|\/locations\.json$/.test(String(input)) && !String(input).includes("/catalogs/3/"))).toBe(false);
     expect(report.blockers.some(({ code }) => ["snapshot_invalid", "catalog_invalid", "conditions_publication_invalid"].includes(code))).toBe(false);
-    // Every added destination contributes unsupported volcano and fire-danger
-    // pairs even though the legacy applicability map has no entries for them.
-    const added = catalogLocationsV3.filter(({ id }) => !release2.locationIds.includes(id)).length;
-    expect(report.metrics.coverageMeasurement!.byHazard.volcano.notChecked).toBeGreaterThanOrEqual(added);
-    expect(report.metrics.coverageMeasurement!.byHazard["fire-danger"].notChecked).toBeGreaterThanOrEqual(added);
+    // The pending projection remains honest about unsupported capabilities;
+    // reviewed applicability excludes non-relevant destination/hazard pairs.
+    expect(report.metrics.coverageMeasurement!.byHazard.volcano.notChecked).toBeGreaterThan(0);
+    expect(report.metrics.coverageMeasurement!.byHazard["fire-danger"].notChecked).toBeGreaterThan(0);
   });
 
   it.each(["namespace", "wire version", "catalog IDs", "metadata version"])("rejects a wrong %s contract", async (mode) => {

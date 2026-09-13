@@ -1,4 +1,4 @@
-import type { IngestionStateV14 as IngestionState } from "@/lib/domain/catalog-state";
+import type { IngestionStateV15 as IngestionState } from "@/lib/domain/catalog-state";
 import { describe, expect, it } from "vitest";
 import {
   coverageCategoryDefinitions,
@@ -73,23 +73,23 @@ describe("location coverage presentation", () => {
 
   it("derives Budapest coverage from the matrix and provider health", () => {
     const result = presentation(buildSnapshot(healthyState(), now), "hu-budapest");
-    expect(result.counts).toEqual({ available: 3, limited: 3, delayed: 0, not_monitored: 2 });
-    expect(result.summaryLabel).toBe("3 fully checked · 3 partly checked · 2 not checked");
+    expect(result.counts).toEqual({ available: 2, limited: 4, delayed: 0, not_monitored: 2 });
+    expect(result.summaryLabel).toBe("2 monitored · 4 partly monitored · 2 unavailable");
     expect(result.freshness).toEqual({
       status: "current",
       visibleLabel: "Current · updated just now",
       accessibleLabel: "Source updates are current. Updated just now.",
     });
     expect(result.delayed).toHaveLength(0);
-    expect(result.gaps).toHaveLength(5);
-    expect(result.fullyChecked).toHaveLength(3);
+    expect(result.gaps).toHaveLength(6);
+    expect(result.fullyChecked).toHaveLength(2);
     expect(Object.fromEntries(result.categories.map(({ key, status }) => [key, status]))).toEqual({
       weather: "available",
       "flood-coastal": "limited",
       fire: "limited",
       earthquake: "available",
       drought: "not_monitored",
-      "air-quality": "available",
+      "air-quality": "limited",
       "major-emergencies": "limited",
       "security-conflict": "not_monitored",
     });
@@ -147,7 +147,7 @@ describe("location coverage presentation", () => {
     snapshot.providers["national-civil-alerts"].partitions!.PL.status = "partial";
     const partialResult = presentation(snapshot, "pl-bydgoszcz");
     expect(partialResult.delayed[0].providers).toEqual([
-      expect.objectContaining({ id: "national-civil-alerts", status: "delayed", statusLabel: "Update delayed" }),
+      expect.objectContaining({ id: "national-civil-alerts", status: "delayed", statusLabel: "Partly monitored — update delayed" }),
     ]);
   });
 
@@ -166,7 +166,7 @@ describe("location coverage presentation", () => {
 
     const budapest = presentation(snapshot, "hu-budapest").categories.find(({ key }) => key === "air-quality");
     const debrecen = presentation(snapshot, "hu-debrecen").categories.find(({ key }) => key === "air-quality");
-    expect(budapest).toMatchObject({ status: "available", providers: [expect.objectContaining({ id: "eea-aqi", status: "available" })] });
+    expect(budapest).toMatchObject({ status: "limited", providers: [expect.objectContaining({ id: "eea-aqi", status: "available" })] });
     expect(debrecen).toMatchObject({ status: "delayed", providers: [expect.objectContaining({ id: "eea-aqi", status: "delayed" })] });
   });
 
@@ -221,7 +221,7 @@ describe("location coverage presentation", () => {
     const snapshot = buildSnapshot(healthyState(), now);
     const city = presentation(snapshot, "hu-budapest");
     expect(city.categories.find(({ key }) => key === "earthquake")?.subchecks).toEqual([
-      expect.objectContaining({ hazard: "earthquake", label: "Earthquake activity", status: "available", coverageStatus: "available", freshnessStatus: "current", statusLabel: "Fully checked" }),
+      expect.objectContaining({ hazard: "earthquake", label: "Earthquake activity", status: "available", coverageStatus: "available", freshnessStatus: "current", statusLabel: "Monitored" }),
     ]);
     expect(city.categories.find(({ key }) => key === "earthquake")?.label).toBe("Earthquakes");
     const volcanic = presentation(snapshot, "it-naples").categories.find(({ key }) => key === "earthquake")?.subchecks;
@@ -310,7 +310,7 @@ describe("location coverage presentation", () => {
   it("labels Catalonia plan status as context without satisfying local-warning coverage", () => {
     const result = presentation(buildSnapshot(healthyState(), now), "es-barcelona");
     const provider = result.contextProviders.find(({ id }) => id === "national-civil-alerts");
-    expect(provider).toMatchObject({ name: "Catalonia civil-protection plans", role: "Additional context" });
+    expect(provider).toMatchObject({ name: "Catalonia civil-protection plans", role: "Context only" });
     expect(provider?.limitation).toMatch(/does not establish complete monitoring/i);
     expect(result.categories.find(({ key }) => key === "major-emergencies")?.status).toBe("limited");
   });
@@ -320,10 +320,10 @@ describe("location coverage presentation", () => {
     expect(result.contextProviders.map(({ id }) => id)).toEqual(expect.arrayContaining([
       "gfm", "emsc", "effis-active-fire", "gdelt", "eonet", "edo-drought", "fcdo-travel-advice",
     ]));
-    expect(result.contextProviders.every(({ role }) => role === "Additional context")).toBe(true);
+    expect(result.contextProviders.every(({ role }) => role === "Context only")).toBe(true);
     expect(result.categories.flatMap(({ providers }) => providers).some(({ id }) => id === "gfm")).toBe(false);
     expect(result.categories.flatMap(({ providers }) => providers).some(({ id }) => id === "emsc")).toBe(false);
-    expect(result.counts).toEqual({ available: 3, limited: 3, delayed: 0, not_monitored: 2 });
+    expect(result.counts).toEqual({ available: 2, limited: 4, delayed: 0, not_monitored: 2 });
   });
 
   it("does not make Catalan destinations unknown when context-only plan status is delayed", () => {
@@ -337,7 +337,7 @@ describe("location coverage presentation", () => {
 
   it("shows eHYD and AT-Alert on Vienna without claiming complete flood or security coverage", () => {
     const result = presentation(buildSnapshot(healthyState(), now), "at-vienna");
-    expect(result.summaryLabel).toBe("3 fully checked · 3 partly checked · 2 not checked");
+    expect(result.summaryLabel).toBe("2 monitored · 4 partly monitored · 2 unavailable");
     expect(result.categories.find(({ key }) => key === "flood-coastal")).toMatchObject({ status: "limited", label: "Flooding" });
     expect(result.categories.find(({ key }) => key === "flood-coastal")?.providers.find(({ id }) => id === "ehyd-flood")).toMatchObject({
       name: "eHYD flood stages", status: "available",
@@ -349,26 +349,23 @@ describe("location coverage presentation", () => {
   });
 
   it("does not treat a newly enabled Austrian source as unmonitored before its first live check", () => {
-    const snapshot = structuredClone(buildSnapshot(healthyState(), now));
-    snapshot.providers["national-civil-alerts"].partitions!.AT = {
-      status: "disabled", lastSuccess: null, sourceUpdatedAt: null, nextExpectedUpdate: null,
-      limitationCode: "undocumented_machine_feed",
-    };
-    snapshot.providers["ehyd-flood"] = {
-      mode: "authoritative", status: "disabled", lastSuccess: null, sourceUpdatedAt: null,
-      nextExpectedUpdate: null, limitationCode: "not_yet_checked",
-    };
+    const state = healthyState();
+    const empty = createEmptyState(now);
+    state.sourcePartitions.nationalCivilAlerts.AT = empty.sourcePartitions.nationalCivilAlerts.AT;
+    state.partitionTransports.nationalCivilAlerts.AT = empty.partitionTransports.nationalCivilAlerts.AT;
+    state.sources["ehyd-flood"] = empty.sources["ehyd-flood"];
+    const snapshot = buildSnapshot(state, now);
     const result = presentation(snapshot, "at-vienna");
     expect(result.categories.find(({ key }) => key === "major-emergencies")).toMatchObject({
-      status: "delayed", coverageStatus: "limited", freshnessStatus: "delayed",
+      status: "limited", coverageStatus: "limited", freshnessStatus: "current",
     });
-    expect(result.delayed.map(({ key }) => key)).toContain("major-emergencies");
+    expect(result.delayed.map(({ key }) => key)).not.toContain("major-emergencies");
     expect(result.gaps.map(({ key }) => key)).toContain("major-emergencies");
     expect(result.categories.find(({ key }) => key === "major-emergencies")?.providers.find(({ id }) => id === "national-civil-alerts")).toMatchObject({
       name: "AT-Alert", status: "delayed",
     });
     expect(result.categories.find(({ key }) => key === "flood-coastal")).toMatchObject({
-      status: "delayed", coverageStatus: "limited", freshnessStatus: "delayed",
+      status: "limited", coverageStatus: "limited", freshnessStatus: "current",
     });
     expect(result.categories.find(({ key }) => key === "flood-coastal")?.providers.find(({ id }) => id === "ehyd-flood")).toMatchObject({
       name: "eHYD flood stages", status: "delayed",

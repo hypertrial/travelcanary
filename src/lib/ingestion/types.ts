@@ -1,12 +1,12 @@
 import type { CatalogLocation } from "../catalog-data";
-import { expandedReceiptSourceIds, type IngestionStateV14 as IngestionState } from "../domain/catalog-state";
-import type { CountryCode, Location, SourceId, SourceResult } from "../domain/schemas";
+import { expandedReceiptSourceIds, type CatalogSourceResult, type IngestionStateV15 as IngestionState } from "../domain/catalog-state";
+import type { CountryCode, SourceId } from "../domain/schemas";
 
 export type Cadence = "fast" | "slow" | "satellite" | "daily";
 
 export interface IngestionContext {
   now: Date;
-  locations: Location[];
+  locations: CatalogLocation[];
   fetch: typeof fetch;
   state?: IngestionState;
   deadlineAt?: number;
@@ -17,14 +17,14 @@ export interface SourceAdapter {
   readonly id: SourceId;
   readonly cadence: Cadence;
   readonly catalogVersion?: 2 | 3;
-  fetch(context: IngestionContext): Promise<SourceResult>;
+  fetch(context: IngestionContext): Promise<CatalogSourceResult>;
 }
 
 export type ExpandedIngestionContext = Omit<IngestionContext, "locations"> & { locations: CatalogLocation[] };
 export interface ExpandedSourceAdapter extends SourceAdapter {
   readonly id: (typeof expandedReceiptSourceIds)[number];
   readonly catalogVersion: 3;
-  fetch(context: ExpandedIngestionContext): Promise<SourceResult>;
+  fetch(context: ExpandedIngestionContext): Promise<CatalogSourceResult>;
 }
 export function isExpandedSourceAdapter(adapter: SourceAdapter): adapter is ExpandedSourceAdapter {
   return adapter.catalogVersion === 3 && (expandedReceiptSourceIds as readonly string[]).includes(adapter.id);

@@ -35,7 +35,7 @@ describe("storage initialization", () => {
     await expect(initializeStorage(options)).resolves.toMatchObject({ initialized: true, latestUrl: "https://blob.example/latest.json" });
     expect([...blob.values.keys()].sort()).toEqual(["ingestion-state.json", "latest.json", "previous.json"]);
     expect(JSON.parse(blob.values.get("ingestion-state.json")!)).toMatchObject({
-      schemaVersion: 14,
+      schemaVersion: 15,
       publicationTransition: null,
       collection: { catalogVersion: 2, revision: 0 },
       sourcePartitions: { meteoalarm: expect.any(Object), eea: expect.any(Object), nationalCivilAlerts: expect.any(Object) },

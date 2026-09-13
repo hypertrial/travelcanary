@@ -354,6 +354,11 @@ describe("published contracts", () => {
     // The source contract requires every country, even in isolated transport tests.
     for (const code of Object.keys(snapshot.providers.meteoalarm.partitions!)) if (code !== "AT") Object.assign(result.partitions, { [code]: { status: "ok", sourceUpdatedAt: null, events: [], error: null } });
     expect(PartitionedSourceResultSchema.safeParse(result).success).toBe(true);
+    const polygonResult = structuredClone(result);
+    polygonResult.partitions.AT.transports["meteoalarm-primary"].events[0].geometry = {
+      kind: "polygon", coordinates: [[[16, 48], [17, 48], [17, 49], [16, 48]]],
+    };
+    expect(PartitionedSourceResultSchema.safeParse(polygonResult).success).toBe(true);
     for (const patch of [{ transportId: "fmi-cap" }, { sourceId: "usgs", providerId: "usgs" }, { geometry: { kind: "locations", ids: ["de-berlin"] } }]) {
       const invalid = structuredClone(result);
       Object.assign(invalid.partitions.AT.transports["meteoalarm-primary"].events[0], patch);

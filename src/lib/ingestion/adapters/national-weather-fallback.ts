@@ -1,15 +1,16 @@
 import { createHash } from "node:crypto";
-import { XMLParser } from "fast-xml-parser";
-import type { CountryCode, HazardLevel, HazardType, NormalizedEvent } from "../../domain/schemas";
-import { meteoalarmFallbackSystem } from "../../national-warning-sources";
+import { XMLParser, XMLValidator } from "fast-xml-parser";
+import type { HazardLevel, HazardType, NormalizedEvent } from "../../domain/schemas";
+import { meteoalarmRuntimeFallbackSystem, type WarningCountryCode } from "../../national-warning-sources";
 import { fetchAllowlisted, fetchWithRetry, mapConcurrent } from "../fetch";
-import { eventCopy } from "../templates";
+import { eventCopy, weatherHazard } from "../templates";
 import type { IngestionContext } from "../types";
 import { capPolygon, matchingLocations, overlapsNextDay } from "./national-civil-alerts-shared";
 import ipmaMappingJson from "../../../../data/ipma-warning-mapping.json";
 import { z } from "zod";
 import { locations } from "../../data";
 import { fetchDirectWeatherCaps } from "./direct-weather-cap";
+import { fetchDwdCaps } from "./dwd-cap";
 
 type Recovery = { events: NormalizedEvent[]; removedEventPrefixes: string[]; sourceUpdatedAt: string; transportId: string };
 const parser = new XMLParser({ ignoreAttributes: false, removeNSPrefix: true, parseTagValue: false, trimValues: true });
@@ -51,6 +52,94 @@ const ipmaHazards: Record<string, HazardType> = {
 const ipmaRows = z.array(z.object({ idAreaAviso: z.string().regex(/^[A-Z]{3}$/), awarenessLevelID: z.string(), awarenessTypeName: z.string(),
   startTime: z.string(), endTime: z.string(), text: z.unknown().optional() }).passthrough()).max(500);
 const utc = (value: string) => Date.parse(/(?:Z|[+-]\d\d:\d\d)$/.test(value) ? value : `${value}Z`);
+
+const edrTimestamp = (value: unknown) => {
+  const raw = text(value);
+  if (!/(?:Z|[+-]\d\d:\d\d)$/.test(raw)) throw new Error("MeteoAlarm EDR CAP timestamp has no offset");
+  const parsed = Date.parse(raw);
+  if (!Number.isFinite(parsed)) throw new Error("MeteoAlarm EDR CAP timestamp is invalid");
+  return parsed;
+};
+
+export function parseMeteoalarmEdrCaps(xmlDocuments: string[], countryCode: WarningCountryCode, context: IngestionContext): Recovery {
+  if (xmlDocuments.length > 100) throw new Error("MeteoAlarm EDR CAP document limit exceeded");
+  const events: NormalizedEvent[] = []; const references = new Set<string>(); let newest = context.now.getTime();
+  for (const xml of xmlDocuments) {
+    if (Buffer.byteLength(xml) > 512 * 1024 || /<!DOCTYPE|<!ENTITY/i.test(xml) || XMLValidator.validate(xml) !== true) {
+      throw new Error("MeteoAlarm EDR CAP document is invalid or oversized");
+    }
+    const alert = (parser.parse(xml) as { alert?: Record<string, unknown> }).alert;
+    if (!alert || Array.isArray(alert)) throw new Error("MeteoAlarm EDR CAP document has no alert");
+    if (text(alert.status) !== "Actual" || text(alert.scope) !== "Public") continue;
+    const identifier = text(alert.identifier); const sent = edrTimestamp(alert.sent); newest = Math.max(newest, sent);
+    if (!identifier || sent > context.now.getTime() + 5 * 60_000) throw new Error("MeteoAlarm EDR CAP identity is invalid");
+    const lifecycle = text(alert.msgType).toLowerCase();
+    const referenced = text(alert.references).split(/\s+/).map((item) => item.split(",")[1]).filter(Boolean);
+    referenced.forEach((id) => references.add(id));
+    if (lifecycle === "cancel") continue;
+    if (!["alert", "update"].includes(lifecycle)) throw new Error("MeteoAlarm EDR CAP lifecycle is unsupported");
+    const infos = array(alert.info as Record<string, unknown> | Record<string, unknown>[] | undefined);
+    const info = infos.find((item) => text(item.language).toLowerCase().startsWith("en")) || infos[0];
+    if (!info || text(info.category) !== "Met") throw new Error("MeteoAlarm EDR CAP has no meteorological information");
+    const hazardLevel = severity(info.severity); const hazard = weatherHazard(text(info.event));
+    const starts = edrTimestamp(info.onset || info.effective); const ends = edrTimestamp(info.expires);
+    if (!hazardLevel || starts >= ends) throw new Error("MeteoAlarm EDR CAP severity or time range is invalid");
+    if (!overlapsNextDay(starts, ends, context.now)) continue;
+    const areas = array(info.area as Record<string, unknown> | Record<string, unknown>[] | undefined);
+    for (const area of areas) {
+      const polygons = array(area.polygon as unknown | unknown[] | undefined).map((value) => capPolygon(text(value)));
+      if (!polygons.length) throw new Error("MeteoAlarm EDR CAP area has no exact polygon");
+      const ids = matchingLocations(polygons, context.locations.filter((location) => location.countryCode === countryCode)).map(({ id }) => id);
+      if (!ids.length) continue;
+      const areaName = text(area.areaDesc) || `${countryCode} warning area`; const copy = eventCopy(hazard, hazardLevel, areaName, starts > context.now.getTime());
+      const areaId = createHash("sha256").update(`${identifier}|${hazard}|${ids.slice().sort().join(",")}`).digest("hex").slice(0, 20);
+      events.push({ id: `meteoalarm:edr:${identifier}:${areaId}`, sourceId: "meteoalarm", providerId: "meteoalarm", transportId: "meteoalarm-edr",
+        type: hazard, level: hazardLevel, timing: starts > context.now.getTime() ? "UPCOMING" : "ACTIVE", ...copy, affectedArea: areaName.slice(0, 200),
+        geometry: { kind: "locations", ids }, startsAt: new Date(starts).toISOString(), endsAt: new Date(ends).toISOString(),
+        sourceUpdatedAt: new Date(sent).toISOString(), checkedAt: context.now.toISOString(), expiresAt: new Date(ends).toISOString(),
+        sourceName: "MeteoAlarm", sourceUrl: "https://www.meteoalarm.org/", confidence: "HIGH" });
+    }
+  }
+  return { events, removedEventPrefixes: ["meteoalarm:edr:", ...[...references].map((id) => `meteoalarm:edr:${id}:`)],
+    sourceUpdatedAt: new Date(newest).toISOString(), transportId: "meteoalarm-edr" };
+}
+
+async function fetchMeteoalarmEdr(countryCode: WarningCountryCode, context: IngestionContext): Promise<Recovery> {
+  const token = process.env.METEOALARM_API_TOKEN?.trim();
+  if (!token) throw new Error("credential_not_configured");
+  const system = meteoalarmRuntimeFallbackSystem(countryCode);
+  if (!system || system.id !== "meteoalarm-edr" || !system.endpoint) throw new Error("MeteoAlarm EDR fallback is not configured");
+  const interval = `${new Date(context.now.getTime() - 24 * 60 * 60_000).toISOString()}/${new Date(context.now.getTime() + 24 * 60 * 60_000).toISOString()}`;
+  const features: Record<string, unknown>[] = [];
+  for (let page = 1; page <= 2; page += 1) {
+    const url = new URL(system.endpoint); url.searchParams.set("datetime", interval); url.searchParams.set("active", `${context.now.toISOString()}/`); url.searchParams.set("page", String(page));
+    const response = await fetchAllowlisted(context.fetch, url.toString(), ["api.meteoalarm.org"], 1, {
+      headers: { Authorization: `Bearer ${token}`, Accept: "application/geo+json" }, maxBytes: system.maxBytes || 2 * 1024 * 1024,
+      timeoutMs: 5_000, diagnosticsCategory: "meteoalarm_edr",
+    });
+    if (response.status === 204) break;
+    const document = await response.json() as { type?: unknown; features?: unknown; numberMatched?: unknown; numberReturned?: unknown };
+    if (document.type !== "FeatureCollection" || !Array.isArray(document.features) || document.features.length > 500) throw new Error("MeteoAlarm EDR response is malformed or excessive");
+    features.push(...document.features as Record<string, unknown>[]);
+    if (features.length > 500) throw new Error("MeteoAlarm EDR result limit exceeded");
+    const matched = Number(document.numberMatched); const returned = Number(document.numberReturned ?? document.features.length);
+    if (!Number.isFinite(matched) || !Number.isFinite(returned) || returned < 0 || matched <= features.length) break;
+    if (page === 2) throw new Error("MeteoAlarm EDR pagination exceeded two pages");
+  }
+  const urls = [...new Set(features.map((feature) => array(feature.links as Record<string, unknown> | Record<string, unknown>[] | undefined)
+    .find((link) => text(link.type) === "application/xml" || text(link.rel) === "xml")).map((link) => text(link?.href)).filter(Boolean))];
+  if (urls.length > 100) throw new Error("MeteoAlarm EDR linked CAP limit exceeded");
+  const documents = await mapConcurrent(urls, 4, async (url) => {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "https:" || parsed.hostname !== "storage.meteoalarm.org" || parsed.username || parsed.password || !/^\/api\/warnings\/[A-Za-z0-9_-]+\.xml$/.test(parsed.pathname)) {
+      throw new Error("MeteoAlarm EDR linked CAP URL is not allowlisted");
+    }
+    const response = await fetchAllowlisted(context.fetch, parsed.toString(), ["storage.meteoalarm.org"], 1,
+      { maxBytes: 512 * 1024, timeoutMs: 4_000, diagnosticsCategory: "meteoalarm_edr_cap" });
+    return response.text();
+  });
+  return parseMeteoalarmEdrCaps(documents, countryCode, context);
+}
 
 export function parseIpmaWarnings(value: unknown, context: IngestionContext, sourceUpdatedAt: string): Recovery {
   const rows = ipmaRows.parse(value); const updated = Date.parse(sourceUpdatedAt);
@@ -166,7 +255,7 @@ export function parseMetEireannWarnings(value: unknown, context: IngestionContex
 }
 
 async function fetchFinland(context: IngestionContext): Promise<Recovery> {
-  const system = meteoalarmFallbackSystem("FI")!;
+  const system = meteoalarmRuntimeFallbackSystem("FI")!;
   const rss = await fetchWithRetry(context.fetch, system.endpoint!, {}, 1, 256 * 1024, undefined, 4_000, "fmi_rss");
   const document = parser.parse(await rss.text()) as { rss?: { channel?: { item?: unknown } } };
   if (!document.rss?.channel) throw new Error("FMI RSS index has no channel");
@@ -186,16 +275,23 @@ async function fetchFinland(context: IngestionContext): Promise<Recovery> {
   };
 }
 
-export function nationalWeatherFallbackDisabled(countryCode: CountryCode) {
-  const system = meteoalarmFallbackSystem(countryCode);
+export function nationalWeatherFallbackDisabled(countryCode: WarningCountryCode) {
+  const system = meteoalarmRuntimeFallbackSystem(countryCode);
   return (process.env.NATIONAL_ALERTS_DISABLED_COUNTRIES || "").split(",").map((s) => s.trim()).includes(countryCode)
     || Boolean(system && (process.env.NATIONAL_ALERTS_DISABLED_TRANSPORTS || "").split(",").map((s) => s.trim()).includes(system.id));
 }
 
-export async function fetchNationalWeatherFallback(countryCode: CountryCode, context: IngestionContext): Promise<Recovery | null> {
-  const system = meteoalarmFallbackSystem(countryCode);
+export function nationalWeatherFallbackConfigured(countryCode: WarningCountryCode) {
+  const system = meteoalarmRuntimeFallbackSystem(countryCode);
+  return Boolean(system && (system.status === "active" || system.id === "meteoalarm-edr" && process.env.METEOALARM_API_TOKEN?.trim()));
+}
+
+export async function fetchNationalWeatherFallback(countryCode: WarningCountryCode, context: IngestionContext): Promise<Recovery | null> {
+  const system = meteoalarmRuntimeFallbackSystem(countryCode);
   if (!system || nationalWeatherFallbackDisabled(countryCode)) return null;
+  if (system.id === "meteoalarm-edr") return fetchMeteoalarmEdr(countryCode, context);
   if (countryCode === "ES" || countryCode === "HR") return fetchDirectWeatherCaps(countryCode, context);
+  if (countryCode === "DE") return fetchDwdCaps(context);
   if (countryCode === "FI") return fetchFinland(context);
   if (countryCode === "IE") {
     const response = await fetchWithRetry(context.fetch, system.endpoint!, {}, 1, system.maxBytes || 512 * 1024, undefined, 4_000, "met_eireann");

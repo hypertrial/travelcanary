@@ -2,9 +2,13 @@
 
 - Location names and city coordinates are derived from [GeoNames](https://www.geonames.org/) under CC BY 4.0. Regional matching areas are Travel Canary approximations released as CC0 and are not legal boundaries.
 - MeteoAlarm warning data is provided by EUMETNET members under CC BY 4.0-equivalent terms. Follow provider attribution and redistribution requirements.
+- MET Norway MetAlerts warning data is provided under the Norwegian Licence for Open Government Data. NVE flood-warning data is provided under NVE's API terms. Preserve issuer, update/cancel lifecycle, validity, and exact land or municipality scope.
+- Environment Agency flood warnings and frozen flood-area geometry are reused under the Open Government Licence. Optional Met Office NSWWS and Natural Resources Wales data remain credential-gated and are used only when configured under their published terms.
+- DWD CAP warnings are read from the official complete-state archive. Preserve DWD attribution, upstream identifiers, lifecycle, and exact warning geometry.
 - Eurostat GISCO NUTS 2024 level-2 geometry is used to verify MeteoAlarm regional catalog mappings under the European Commission reuse policy.
 - [Natural Earth 1:50m Admin-0 country polygons](https://www.naturalearthdata.com/downloads/50m-cultural-vectors/50m-admin-0-countries-2/) are simplified into the public coverage tint under the [Natural Earth public-domain terms](https://www.naturalearthdata.com/about/terms-of-use/). The overlay is cartographic only and is not a legal boundary.
 - European Environment Agency European AQI categories are sampled under the [EEA reuse policy](https://www.eea.europa.eu/en/legal-notice). Canary Islands categories come from the official IDECanarias air-quality WMS. Preserve attribution, source time, and the distinction between station and modelled estimates.
+- EEA AQI monitoring uses the official versioned station metadata and hourly station artifacts. Observation-backed pollutant values may provide partial monitoring; modelled or gap-filled values remain context and never establish an all-clear.
 - EFFIS and Copernicus EMS EU-owned content is generally reusable under CC BY 4.0 with attribution; individual products can contain third-party rights.
 - NASA FIRMS thermal-hotspot data is provided by NASA's Fire Information for Resource Management System. Preserve NASA/FIRMS acknowledgement, acquisition time, sensor, and the distinction between a satellite hotspot and a confirmed wildfire perimeter.
 - NASA EONET open-event metadata supplies recent wildfire and volcano context. Preserve NASA attribution and do not represent EONET as a local warning service.
@@ -32,4 +36,8 @@
 
 BBK MoWaS and EURDEP are not ingested. BBK's advertised RSS service remains gated pending an applicable reusable reader and issuer-content contract, district matching and lifecycle validation. Existing open sources provide hazard-specific evidence, but are not represented as equivalent national all-hazard or radiological-warning coverage. BE-Alert's noncommercial website reproduction permission is acknowledged; CAP gateway and issuer-content applicability remains unverified.
 
-New warning-source links and terms were reviewed on 2026-09-07; other notices retain their earlier review dates. Verify current terms before production launch.
+Catalog 3 warning-source links and terms were reviewed on 2026-09-13; other notices retain their earlier review dates. Verify current terms before production launch.
+
+## Third-party software added for catalog 3
+
+- [fflate 0.8.3](https://github.com/101arrowz/fflate) is used under the MIT License to read bounded DWD ZIP archives. The runtime additionally enforces compressed/decompressed byte, entry-count, filename, traversal, and XML limits.

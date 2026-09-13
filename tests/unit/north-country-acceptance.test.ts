@@ -32,7 +32,17 @@ describe("GB, Norway and Iceland reviewed jurisdiction acceptance", () => {
     expect(locations.filter(({ id }) => catalog3MarineMappingByLocation.has(id))).toHaveLength(marineCount);
     for (const location of locations) {
       const capabilities = expandedHazardCoverage(location);
-      expect(Object.entries(capabilities).filter(([, capability]) => capability.status === "monitored").map(([hazard]) => hazard)).toEqual(["earthquake"]);
+      expect(capabilities.earthquake.status).toBe("monitored");
+      if (country === "NO") {
+        for (const hazard of ["severe-weather", "fire-danger", "snow-ice"] as const) expect(capabilities[hazard].status).toBe("monitored");
+        expect(capabilities.coastal.status).toBe(location.isCoastal ? "monitored" : "not_monitored");
+        expect(capabilities.flood.status).toBe("partial");
+      } else if (country === "IS") {
+        expect(capabilities["severe-weather"].status).toBe("partial");
+      } else {
+        expect(capabilities["severe-weather"].status).toBe("not_monitored");
+        expect(capabilities.flood.status).toBe(location.id === "gb-london" || ["gb-bath", "gb-birmingham", "gb-brighton", "gb-cambridge", "gb-exeter", "gb-lake-district-national-park", "gb-leeds", "gb-liverpool", "gb-manchester", "gb-newcastle-upon-tyne", "gb-oxford", "gb-plymouth", "gb-portsmouth", "gb-york"].includes(location.id) ? "partial" : "not_monitored");
+      }
       expect(expandedProviderApplies("fcdo-travel-advice", location)).toBe(country !== "GB");
       expect(expandedProviderApplies("slf-avalanche", location)).toBe(false);
     }
@@ -62,7 +72,7 @@ describe("GB, Norway and Iceland reviewed jurisdiction acceptance", () => {
     expect(result.checkedLocationIds).toHaveLength(32);
   });
 
-  it("does not turn neighboring/global evidence into national flood, avalanche or volcanic monitoring", () => {
+  it("shows global context but rejects MeteoAlarm evidence outside reviewed country capability", () => {
     const state = createEmptyState(now); state.collection = { catalogVersion: 3, revision: 1 };
     for (const health of Object.values(state.sources)) Object.assign(health, { status: "ok", lastAttempt: now.toISOString(), lastSuccess: now.toISOString(), sourceUpdatedAt: now.toISOString() });
     state.expandedSourceHealth.usgs = { health: state.sources.usgs, checkedLocationIds: added, unavailableLocationIds: [] };
@@ -75,9 +85,10 @@ describe("GB, Norway and Iceland reviewed jurisdiction acceptance", () => {
     state.events = [event("meteoalarm", "meteoalarm", "flood"), event("slf-avalanche", "slf-avalanche", "avalanche"), event("eonet", "eonet", "volcano")];
     const snapshot = buildCatalog3Snapshot(state, now);
     for (const { id } of north) {
-      expect(snapshot.locations[id].hazards).toEqual([]); expect(snapshot.locations[id].level).toBe("NORMAL");
+      expect(snapshot.locations[id].hazards.map(({ providerId, type }) => [providerId, type])).toEqual([["eonet", "volcano"]]);
+      expect(snapshot.locations[id].hazards.some(({ type }) => type === "avalanche")).toBe(false);
+      expect(snapshot.locations[id].level).toBe("HIGH");
       expect(snapshot.locations[id].coverageGaps).toEqual(expect.arrayContaining(["flood", "avalanche", "volcano"]));
-      expect(snapshot.locations[id].delayedHazards).toEqual([]);
     }
   });
 
@@ -87,6 +98,7 @@ describe("GB, Norway and Iceland reviewed jurisdiction acceptance", () => {
       expect(parsed.protocol).toBe("https:"); expect(parsed.username).toBe(""); expect(parsed.password).toBe("");
       expect(Object.entries(links).filter(([code]) => code !== country).flatMap(([, entries]) => entries).some((entry) => entry.url === url)).toBe(false);
     }
-    expect(north.filter(({ countryCode }) => countryCode === country).every((location) => !expandedProviderApplies("national-civil-alerts", location))).toBe(true);
+    const direct = north.filter((location) => location.countryCode === country && expandedProviderApplies("national-civil-alerts", location));
+    expect(direct).toHaveLength(country === "NO" ? 20 : country === "GB" ? 15 : 0);
   });
 });

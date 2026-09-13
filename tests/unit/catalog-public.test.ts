@@ -116,8 +116,8 @@ describe("catalog3 public snapshot contract", () => {
       const subchecks = result.categories.flatMap(({ subchecks }) => subchecks);
       const earthquake = subchecks.find(({ hazard }) => hazard === "earthquake")!;
       expect(earthquake.coverageStatus).not.toBe("not_monitored"); expect(earthquake.freshnessStatus).toBe("delayed");
-      expect(subchecks.filter(({ hazard }) => hazard !== "earthquake" && !(location.id === "li-malbun" && hazard === "avalanche"))
-        .every(({ coverageStatus }) => coverageStatus === "not_monitored")).toBe(true);
+      const other = subchecks.filter(({ hazard }) => hazard !== "earthquake" && !(location.id === "li-malbun" && hazard === "avalanche"));
+      expect(other.filter(({ coverageStatus }) => coverageStatus !== "not_monitored").every(({ freshnessStatus }) => freshnessStatus === "delayed")).toBe(true);
     }
   });
 

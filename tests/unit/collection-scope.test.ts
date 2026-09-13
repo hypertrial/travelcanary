@@ -42,9 +42,13 @@ describe("approved adapter collection and replacement scopes", () => {
     }
   });
 
-  it("returns an unexpanded adapter result unchanged", () => {
+  it("adds a catalog-scoped receipt to global context adapters", () => {
     const original = result("gdacs"); const adapter: SourceAdapter = { id: "gdacs", cadence: "slow", async fetch() { return original; } };
-    expect(scopeAdapterResult(adapter, 3, original)).toBe(original);
+    expect(scopeAdapterResult(adapter, 3, original)).toEqual({
+      ...original,
+      checkedLocationIds: catalogLocationsV3.map(({ id }) => id),
+      unavailableLocationIds: [],
+    });
   });
 
   it.each(["source mismatch", "partitioned", "out of scope event", "nonlocal geometry", "multi-destination quake", "duplicate checked", "overlap", "out of scope checked"])("rejects invalid scoped result: %s", (mode) => {
@@ -128,12 +132,12 @@ describe("collector scope dispatch", () => {
     expect(collected.checkedLocationIds).toHaveLength(version === 3 ? 679 : 503);
   });
 
-  it("keeps unapproved adapters on503 legacy destinations even with collection3 state", async () => {
+  it("dispatches global context adapters across the complete catalog3 roster", async () => {
     const state = createEmptyState(at); state.collection.catalogVersion = 3;
     const fetch = vi.fn<SourceAdapter["fetch"]>().mockResolvedValue(result("gdacs"));
     const adapter: SourceAdapter = { id: "gdacs", cadence: "slow", fetch };
     await collectAdapterResult(adapter, state, context());
-    expect(fetch.mock.calls[0][0].locations).toEqual(locations);
+    expect(fetch.mock.calls[0][0].locations).toEqual(catalogLocationsV3);
   });
 
   it.each(["exception", "invalid source", "out-of-scope event"])("normalizes %s into a full unavailable receipt", async (mode) => {

@@ -51,6 +51,23 @@ describe("source smoke summaries", () => {
     expect(summary.transports?.problems[0]).toMatchObject({ id: "eea-raster", status: "failed", unavailableLocations: 1 });
     expect(summary.transports?.problems[0].error).toHaveLength(180);
   });
+  it("accepts EEA's explicit observation-only partial state as a successful live contract", () => {
+    const result = PartitionedSourceResultSchema.parse({ sourceId: "eea", checkedAt: now,
+      partitions: Object.fromEntries(countryCodes.map((country) => [country, {
+        status: "partial", sourceUpdatedAt: now, events: [], error: "Station observations are partial coverage",
+        limitationCode: "observation_only_partial_coverage",
+      }])) });
+    expect(summarizeSourceSmoke(result, createSourceDiagnostics(), 1, 0).outcome).toBe("passed");
+  });
+
+  it("accepts a partition parser partial when every destination remains checked", () => {
+    const result = PartitionedSourceResultSchema.parse({ sourceId: "meteoalarm", checkedAt: now,
+      partitions: Object.fromEntries(countryCodes.map((country) => [country, country === "AT" ? {
+        status: "partial", sourceUpdatedAt: now, events: [], error: "4 malformed warning records", limitationCode: "malformed_warning_records",
+        checkedLocationIds: ["at-vienna"], unavailableLocationIds: [],
+      } : { status: "disabled", sourceUpdatedAt: null, events: [], error: null, limitationCode: "not_supported" }])) });
+    expect(summarizeSourceSmoke(result, createSourceDiagnostics(), 1, 0)).toMatchObject({ status: "partial", outcome: "passed" });
+  });
 
   it("prioritizes and bounds partition problems", () => {
     const result = PartitionedSourceResultSchema.parse({ sourceId: "eea", checkedAt: now, partitions: Object.fromEntries(countryCodes.map((countryCode) => [countryCode, {
@@ -99,6 +116,6 @@ describe("source smoke summaries", () => {
     expect(summary.transports!.total).toBeGreaterThan(2);
     expect(summary.transports!.roles.coverage).toBeGreaterThan(0);
     expect(summary.transports!.evidenceBlocked).toBeGreaterThan(0);
-    expect(summary.transports!.credentialBlocked).toBe(1);
+    expect(summary.transports!.credentialBlocked).toBe(3);
   });
 });

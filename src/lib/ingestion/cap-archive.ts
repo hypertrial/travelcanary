@@ -1,4 +1,5 @@
 import { gunzipSync } from "node:zlib";
+import { unzipSync } from "fflate";
 
 // Read regular CAP files in memory only. No archive entry is written to disk.
 export function readCapArchive(compressed: Uint8Array): Array<{ name: string; xml: string }> {
@@ -36,4 +37,30 @@ export function readCapArchive(compressed: Uint8Array): Array<{ name: string; xm
     offset = next;
   }
   throw new Error("CAP tar has no complete terminator");
+}
+
+/** Read a bounded ZIP without writing archive entries to disk. Central-directory
+ * size metadata is rejected before fflate allocates decompressed buffers. */
+export function readCapZipArchive(compressed: Uint8Array): Array<{ name: string; xml: string }> {
+  if (compressed.byteLength < 22 || compressed.byteLength > 1024 * 1024) throw new Error("CAP ZIP compressed archive exceeds its 1 MiB limit");
+  let entries = 0; let decompressed = 0; let compressedEntries = 0;
+  const names = new Set<string>();
+  const files = unzipSync(compressed, { filter: (file) => {
+    entries += 1;
+    if (entries > 1_000 || file.originalSize < 1 || file.originalSize > 512 * 1024 || file.size < 1
+      || file.originalSize === 0xffffffff || file.size === 0xffffffff || (file.compression === 0 && file.size !== file.originalSize)
+      || decompressed + file.originalSize > 8 * 1024 * 1024
+      || compressedEntries + file.size > 1024 * 1024
+      || !/^[A-Za-z0-9][A-Za-z0-9_.-]*\.xml$/.test(file.name) || file.name.includes("..") || names.has(file.name)
+      || ![0, 8].includes(file.compression)) throw new Error("Unsafe or excessive CAP ZIP entry");
+    names.add(file.name); decompressed += file.originalSize; compressedEntries += file.size;
+    return true;
+  } });
+  const decoder = new TextDecoder("utf-8", { fatal: true });
+  let actualTotal = 0;
+  return Object.entries(files).map(([name, bytes]) => {
+    actualTotal += bytes.byteLength;
+    if (bytes.byteLength < 1 || bytes.byteLength > 512 * 1024 || actualTotal > 8 * 1024 * 1024) throw new Error("Unsafe or excessive CAP ZIP output");
+    return { name, xml: decoder.decode(bytes) };
+  });
 }

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { BlobPreconditionFailedError, type get, type put } from "@vercel/blob";
 import { describe, expect, it, vi } from "vitest";
-import { IngestionStateV13Schema, IngestionStateV14Schema, parseCatalogState, parseCatalogStateV13 } from "@/lib/domain/catalog-state";
+import { IngestionStateV13Schema, IngestionStateV15Schema, parseCatalogState, parseCatalogStateV13, parseCatalogStateV14 } from "@/lib/domain/catalog-state";
 import { ConditionsV2Schema } from "@/lib/domain/conditions";
 import { BlobStateStore, MemoryStateStore, ConcurrencyError } from "@/lib/storage";
 import release2 from "../../data/catalog-releases/2.json";
@@ -53,10 +53,10 @@ function transitioned() {
 }
 const started = now.toISOString(); const until = new Date(now.getTime() + 24 * 3600000).toISOString();
 
-describe("V14 compatible publication transition state", () => {
+describe("V15 compatible publication transition state", () => {
   it("migrates populated V13 without pruning, renewing, dropping, or aliasing any accepted state", () => {
     const old = populatedV13(); const before = structuredClone(old); const migrated = parseCatalogState(old);
-    expect(migrated).toEqual({ ...old, schemaVersion: 14, publicationTransition: null, expandedSourceHealth: {} });
+    expect(migrated).toMatchObject({ ...old, schemaVersion: 15, publicationTransition: null, expandedSourceHealth: {}, collectionReceipts: { 2: {}, 3: {} } });
     expect(parseCatalogState(migrated)).toEqual(migrated);
     expect(parseCatalogStateV13(old)).toEqual(old); expect(() => IngestionStateV13Schema.parse(migrated)).toThrow();
     migrated.events[0].headline = "Changed copy"; migrated.conditions.reservations[0].weight = 1;
@@ -74,7 +74,7 @@ describe("V14 compatible publication transition state", () => {
       transition.dualStartedAt = started;
       transition.dualUntil = new Date(now.getTime() + (mode === "short window" ? 24 * 3600000 - 1 : mode === "long window" ? 24 * 3600000 + 1 : -24 * 3600000)).toISOString();
     }
-    expect(() => IngestionStateV14Schema.parse(state)).toThrow();
+    expect(() => IngestionStateV15Schema.parse(state)).toThrow();
   });
 
   it("accepts only an exact24h acknowledged pair without applying wall-clock expiry during parsing", () => {
@@ -154,6 +154,20 @@ function receipt(source: keyof typeof scopes = "usgs", at = started) {
 }
 
 describe("durable expanded source receipts", () => {
+  it.each([
+    ["ok", 176, "ok"], ["partial", 50, "partial"], ["delayed", 50, "partial"], ["delayed", 0, "failed"],
+    ["failed", 0, "failed"], ["not_monitored", 0, "disabled"],
+  ] as const)("migrates V14 %s receipt with %s checked destinations to %s", (status, checkedCount, expected) => {
+    const legacy = parseCatalogStateV14(populatedV13()); legacy.collection = { catalogVersion: 3, revision: 9 };
+    legacy.expandedSourceHealth.usgs = receipt(); const value = legacy.expandedSourceHealth.usgs;
+    value.health.status = status;
+    value.checkedLocationIds = value.checkedLocationIds.slice(0, checkedCount);
+    value.unavailableLocationIds = scopes.usgs.filter((id) => !value.checkedLocationIds.includes(id));
+    if (!checkedCount) { value.health.lastSuccess = null; value.health.sourceUpdatedAt = null; }
+    expect(parseCatalogState(legacy).collectionReceipts[3].usgs).toMatchObject({ status: expected,
+      checkedLocationIds: value.checkedLocationIds, unavailableLocationIds: value.unavailableLocationIds });
+  });
+
   it.each([["usgs", 176], ["emsc", 176], ["fcdo-travel-advice", 145], ["slf-avalanche", 1]] as const)("retains exact reviewed %s scope of%s destinations", (source, count) => {
     const state = transitioned(); state.expandedSourceHealth[source] = receipt(source);
     expect(scopes[source]).toHaveLength(count);
@@ -172,14 +186,14 @@ describe("durable expanded source receipts", () => {
     if (mode === "ok unavailable") value.unavailableLocationIds = [value.checkedLocationIds.pop()!];
     if (mode === "failed checked") Object.assign(value.health, { status: "failed" });
     if (mode === "not monitored checked") Object.assign(value.health, { status: "not_monitored" });
-    expect(() => IngestionStateV14Schema.parse(state)).toThrow();
+    expect(() => IngestionStateV15Schema.parse(state)).toThrow();
   });
 
   it.each(["future success", "missing success", "old success with checked IDs"])("rejects %s in the receipt schema", (mode) => {
     const state = transitioned(); state.expandedSourceHealth.usgs = receipt();
     const health = state.expandedSourceHealth.usgs.health;
     health.lastSuccess = mode === "future success" ? "2026-08-31T17:46:00Z" : mode === "missing success" ? null : "2026-08-31T17:44:00Z";
-    expect(() => IngestionStateV14Schema.parse(state)).toThrow();
+    expect(() => IngestionStateV15Schema.parse(state)).toThrow();
   });
 
   it.each(["failed", "not_monitored", "partial"] as const)("preserves prior success for newer all-unavailable %s receipt", async (status) => {
@@ -193,7 +207,7 @@ describe("durable expanded source receipts", () => {
       if (mode === "rewind success") value.health.lastSuccess = "2026-08-31T17:44:00Z";
       if (mode === "invent success") value.health.lastSuccess = "2026-08-31T17:46:00Z";
       if (mode === "erase source update") value.health.sourceUpdatedAt = null;
-      expect(IngestionStateV14Schema.safeParse(changed).success).toBe(true);
+      expect(IngestionStateV15Schema.safeParse(changed).success).toBe(true);
       await expect(store.write(changed, expected)).rejects.toThrow();
       expect((await store.read()).data.expandedSourceHealth).toEqual(state.expandedSourceHealth);
     }

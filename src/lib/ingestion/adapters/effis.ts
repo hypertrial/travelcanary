@@ -1,7 +1,8 @@
 import { fromArrayBuffer } from "geotiff";
 import booleanIntersects from "@turf/boolean-intersects";
 import { polygon } from "@turf/helpers";
-import { AggregateSourceResultSchema, type AggregateSourceResult, type Location, type NormalizedEvent } from "../../domain/schemas";
+import { AggregateSourceResultSchema, type AggregateSourceResult, type NormalizedEvent } from "../../domain/schemas";
+import type { CatalogLocation as Location } from "../../catalog-data";
 import { locationPolygon } from "../../geospatial";
 import { fetchWithRetry } from "../fetch";
 import { recordSourceDiagnostics, type IngestionContext, type SourceAdapter } from "../types";

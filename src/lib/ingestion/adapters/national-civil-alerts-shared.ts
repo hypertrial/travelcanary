@@ -1,17 +1,20 @@
 import booleanIntersects from "@turf/boolean-intersects";
 import { polygon } from "@turf/helpers";
-import type { CountryCode, HazardLevel, HazardType, Location, NormalizedEvent, PartitionedSourceResult } from "../../domain/schemas";
+import type { CountryCode, HazardLevel, HazardType, NormalizedEvent, PartitionedSourceResult } from "../../domain/schemas";
+import type { CatalogLocation as Location } from "../../catalog-data";
 import { locationPolygon } from "../../geospatial";
 import { hazardLevelRank } from "../../hazard-lifecycle";
 import type { IngestionContext } from "../types";
 
-export type NationalPartition = PartitionedSourceResult["partitions"][CountryCode];
+export type NationalPartition = PartitionedSourceResult["partitions"][CountryCode] & {
+  frozenEaFloodAreaGeometries?: Record<string, Array<{ kind: "polygon"; coordinates: [number, number][][] }>>;
+};
 
-export function countryLocations(context: IngestionContext, countryCode: CountryCode): Location[] {
+export function countryLocations(context: IngestionContext, countryCode: string): Location[] {
   return context.locations.filter((location) => location.countryCode === countryCode).sort((a, b) => a.id.localeCompare(b.id));
 }
 
-export function retainedCountryEvents(context: IngestionContext, countryCode: CountryCode, idPrefix: string): NormalizedEvent[] {
+export function retainedCountryEvents(context: IngestionContext, countryCode: string, idPrefix: string): NormalizedEvent[] {
   const locationIds = new Set(countryLocations(context, countryCode).map(({ id }) => id));
   return (context.state?.events || []).filter((event): event is NormalizedEvent & { geometry: { kind: "locations"; ids: string[] } } => event.sourceId === "national-civil-alerts"
     && event.id.startsWith(idPrefix)
@@ -121,7 +124,7 @@ export function limitEvents(events: NormalizedEvent[]): NormalizedEvent[] {
   return [...selected.values()].sort((a, b) => a.id.localeCompare(b.id));
 }
 
-export function partitionFailure(context: IngestionContext, countryCode: CountryCode, error: unknown): NationalPartition {
+export function partitionFailure(context: IngestionContext, countryCode: string, error: unknown): NationalPartition {
   return {
     status: "failed", sourceUpdatedAt: null, events: [], error: String(error).slice(0, 300),
     checkedLocationIds: [], unavailableLocationIds: countryLocations(context, countryCode).map(({ id }) => id),

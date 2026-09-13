@@ -1,6 +1,6 @@
 # 30-Day Cost Model
 
-Reviewed 2026-09-01. Recalculate against current Vercel pricing before launch and quarterly thereafter.
+Reviewed 2026-09-13. Recalculate against current Vercel pricing before launch and quarterly thereafter.
 
 The Pro platform fee is $20/month and currently includes one deploying seat, $20 infrastructure credit, 1 TB Fast Data Transfer, and 10 million Edge Requests. Cron jobs themselves are included but invoke billable Vercel Functions. Public Blob delivery and operations have separate metering and draw from included usage/credit. See [Vercel Pro](https://vercel.com/docs/plans/pro-plan), [Cron pricing](https://vercel.com/docs/cron-jobs/usage-and-pricing), and [Blob pricing](https://vercel.com/docs/vercel-blob/usage-and-pricing).
 
@@ -18,7 +18,7 @@ The Pro platform fee is $20/month and currently includes one deploying seat, $20
 | Total scheduled function invocations | 6,180 |
 | Snapshot downloads, including open-page refreshes | 120,000 |
 | Public snapshot warning / hard limit | 300 KB / 500 KB |
-| Public catalog size | 111 KB measured, 150 KB budget |
+| Public catalog size | 147,057 bytes measured, 150 KB budget |
 | Compressed application and MapLibre worker assets through map readiness | 600 KB budget |
 | Compressed assets after destination selection | 650 KB budget |
 | Major per-adapter upstream budgets | National run 24 MB / Italy 3 MB / EAWS 9 MB / GFM 9 MB / EDO 3 MB / EFFIS perimeters 4 MB / IMGW 3 MB |
@@ -28,15 +28,15 @@ The production asset check launches the built route, captures the assets actuall
 
 Installability adds no runtime API request, service worker, cache, background sync, or visitor-time provider request. The static regular/maskable 192/512 icons and Apple touch icon total 353,990 raw bytes (41,673 + 171,381 + 103,820 + 37,116). They are outside the initial JavaScript budgets and are fetched according to browser manifest/install behavior; include them in ordinary CDN transfer monitoring rather than alert or conditions API usage.
 
-The location-specific coverage model bundles generated coverage, volcanic applicability, and Italian warning-zone intersections with the application rather than adding visitor requests. Snapshot V10 retains independently bounded delayed hazards, transport health, and up to five evidence links per incident. Demo and fixture snapshots must stay below 300 KB; Production warns from 300 KB and fails at 500 KB. The current generated demo is 154,911 bytes uncompressed and 7,742 bytes gzip; the 503-destination public catalog is 110,778 bytes.
+The location-specific coverage model bundles generated coverage, volcanic applicability, and Italian warning-zone intersections with the application rather than adding visitor requests. Snapshot V10/V11 retains independently bounded delayed hazards, transport health, and up to five evidence links per incident. Demo and fixture snapshots must stay below 300 KB; Production warns from 300 KB and fails at 500 KB. The catalog 3 demo is 193,675 bytes uncompressed and 10,081 bytes gzip; the 679-destination public catalog is 147,057 bytes.
 
 ## Transfer estimate
 
 - Blob snapshot transfer at the 300 KB warning threshold: `120,000 × 300 KB` = 36 GB; the absolute 500 KB envelope is 60 GB.
-- Static catalog transfer: `100,000 × 111 KB` = 11.1 GB worst case.
-- Coverage-tint GeoJSON: `100,000 × 119 KB` = 11.9 GB worst case.
+- Static catalog transfer: `100,000 × 147 KB` = 14.7 GB worst case.
+- Coverage-tint GeoJSON: `100,000 × 125 KB` = 12.5 GB worst case.
 - Application transfer: `100,000 × 650 KB` = 65 GB worst case if every visit selects a destination.
-- Total modeled delivery at the warning threshold is approximately 124 GB, under 13% of the current 1 TB Fast Data Transfer allocation; the 500 KB hard-envelope total is approximately 148 GB.
+- Total modeled delivery at the warning threshold is approximately 128 GB, under 13% of the current 1 TB Fast Data Transfer allocation; the 500 KB hard-envelope total is approximately 152 GB.
 - OpenFreeMap tiles are delivered by OpenFreeMap, not Vercel.
 
 ## Blob and function estimate
@@ -51,9 +51,9 @@ The location-specific coverage model bundles generated coverage, volcanic applic
 
 ## Local conditions addition
 
-The additional 720 scheduled runs write at most 28 country files and three private-state versions per normal pass: up to 22,320 advanced Blob writes/month before warm-up/retries. CAS/head/get reads are additional and bounded. The earlier 2 MB average-storage assumption must not be used for the expanded deployment: private state is capped at 5 MB, including ≤2 MiB optional payload; conditions publication is ≤1.5 MiB; two alerts snapshots add ≤1 MB. Immutable backups remain additional storage.
+The additional 720 scheduled runs publish at most 45 catalog 3 country files per normal pass. The generated capacity fixture measures 135 steady publication operations per pass; during the first 24 hours only, automatic catalog 2 compatibility increases this to 73 files and 219 publication operations. CAS/head/get reads and three bounded private-state writes are additional. The earlier 2 MB average-storage assumption must not be used for the expanded deployment: the generated catalog 3 conditions family is 1,483,530 bytes across 45 files, the cache representation is 1,484,758 bytes, and the bounded private representation is 1,529,363 bytes. Immutable backups remain additional storage.
 
-Open-Meteo baseline is `503 × 8 = 4,024` weather, `503 × 4 = 2,012` AQ and `131 × 4 = 524` marine location-weighted calls/day: **6,560/day**. Batching reduces HTTP requests, not quota weight. The shared application ceiling is 400/minute, 2,000/hour, 8,000/rolling day including failed attempts, leaving 1,440/day under the daily cap for failures/warm-up. A batch-level failure may add one non-recursive split: a full 40-location batch consumes 40 additional reserved weighted calls and two requests, so at most 36 such full-batch recoveries fit the daily headroom and other failures/warm-up reduce that number. The retry reservation is committed before network I/O and is never refunded after a failed request or crash. Per-row failures do not amplify requests. Failed mapped-location cadence markers are cleared for the next hourly pass, but their quota reservations are not refunded; 21 permanent marine exclusions are never reserved or retried. HTTP 429 and insufficient request, byte, quota, or deadline headroom suppress the split.
+The seven-day catalog 3 scheduler simulation covers 679 weather and air-quality destinations plus 161 reviewed marine destinations. With weather refreshed every five hours and AQ/marine every eight hours, its busiest rolling day uses **6,115 weighted calls**. Batching reduces HTTP requests, not quota weight. The shared application ceiling remains 400/minute, 2,000/hour, and 8,000/rolling day including failed attempts; the upstream free-service ceiling remains 10,000/day. The simulation stages a cold start within five hours and finds no missing country/product after warm-up. A batch-level failure may add one non-recursive split only when the already-persisted reservation, request, byte, quota, and deadline budgets permit it. Reservations are never refunded after a failed request or crash, per-row failures do not amplify requests, and permanent marine exclusions are never reserved or retried.
 
 The final 2026-08-31 island smoke measured 6,853 weather bytes, 5,752 AQ bytes and 4,967 marine bytes for five destinations per product. Together with airport, MET Norway and traffic responses: 176,298 bytes in seven requests. Forecast durations were 437/78/84 ms on the developer network, not production estimates. The 2026-09-01 Rijkswaterstaat smoke brought the combined eight-request transfer to 184,804 bytes and returned six current stations from seven reviewed mappings. Its Production ceiling is one 512 KiB request per hourly run, or 720 requests/month and a defensive 360 MiB/month. ARSO adds one hourly bulk request capped at 256 KiB, also 720 requests/month and a defensive 180 MiB/month; the 2026-09-02 review response was approximately 98 KiB, implying about 69 MiB/month before compression/cache effects. Scaling the forecast payloads alone suggests approximately 8.4 MB/day upstream; measure actual full-catalog batches after rollout. The 16 MiB/run defensive ceiling would permit 11.25 GiB/month if every run exhausted it, not expected usage.
 
@@ -61,7 +61,7 @@ The 2026-09-01 expanded smoke used 11 requests and 830,573 bytes. After excludin
 
 The 2026-09-03 reliability smoke used 20 requests and 1,145,772 bytes across all checked conditions sources. Galway's corrected offshore cell returned 24 non-null samples for wave height, wave period, and sea temperature at the requested coordinate; the 11-destination Swiss weather batch returned 24 aligned samples per destination. A separate five-island weather request timed out and the representative Autobahn request returned HTTP 502, demonstrating the bounded retry/partial-health paths rather than a higher steady-state baseline. A full 40-location unit-gated split adds exactly 40 persisted weighted calls and two HTTP attempts; there is no recursive retry.
 
-The Conditions V2 all-catalog demonstration is 947,293 bytes across 28 files, largest 60,524 bytes. It includes repeated forecast fixtures, selected observation fixtures, one active road closure, one planned power interruption, sanitized infrastructure health, and one national electricity advisory; these are demonstration values, not live availability measurements. At 100,000 destination selections and one file per selection, the 128 KiB country ceiling adds up to 13.1 GB transfer before cache effects. The four-country browser cache reduces repeats; map-only visits download no conditions.
+The Conditions V3 all-catalog demonstration is 1,483,530 bytes across 45 files; the largest country file is 96,207 bytes. It includes repeated forecast fixtures, selected observation fixtures, one active road closure, one planned power interruption, sanitized infrastructure health, and one national electricity advisory; these are demonstration values, not live availability measurements. At 100,000 destination selections and one file per selection, the 128 KiB country ceiling adds up to 13.1 GB transfer before cache effects. The four-country browser cache reduces repeats; map-only visits download no conditions.
 
 Infrastructure adds no cron run. The active source envelope is 54 requests per hourly pass (Digitraffic 2, Krisinformation 1, NDW 2, Autobahn up to 48, PSE 1), or 38,880 requests/month if every transport is due and every Autobahn endpoint is requested. A shared 64-request/8-MiB ceiling is stricter than the existing 128-request/16-MiB route budget; exhausting 8 MiB in all 720 monthly runs would be 5.625 GiB upstream, a defensive failure envelope rather than expected use. Cyprus EAC and Malta Enemalta make zero requests while their deadline/size blockers remain. `CONDITIONS_DISABLED_SOURCES` can remove one source without adding scheduled runs or changing alert delivery.
 
@@ -69,7 +69,7 @@ Re-run `perf:assets` for measured release assets; 600,000 map-ready and 650,000 
 
 ## Headroom decision
 
-The modeled delivery remains below the platform transfer allowance, but optional country-file reads/writes must be measured separately after rollout. Open-Meteo's 6,560/day baseline leaves 34.4% under its published 10,000/day free-service ceiling and 18% under our stricter 8,000/day application cap; warm-up and split retries share that cap. Function CPU is likely to vary because EFFIS decoding and source payload sizes change. Review measured usage against the 30-day model and investigate any platform category projected above 75% of its included allocation or credit.
+The modeled delivery remains below the platform transfer allowance, but optional country-file reads/writes must be measured separately after rollout. The simulated 6,115-call rolling-day peak leaves 38.85% under Open-Meteo's 10,000/day free-service ceiling and 23.56% under the stricter 8,000/day application cap; warm-up and split retries share that cap. Function CPU is likely to vary because EFFIS decoding and source payload sizes change. Review measured usage against the 30-day model and investigate any platform category projected above 75% of its included allocation or credit.
 
 Spend Management must pause Production at the lowest practical threshold. It is a fail-safe, not an exact invoice cap, because checks occur periodically.
 

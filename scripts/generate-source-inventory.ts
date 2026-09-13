@@ -29,7 +29,11 @@ const inventory = {
   localConditions: Object.entries(conditionSources).map(([id, source]) => ({ id, policy: conditionPolicy(source), ...source, role: "context", satisfiesCoverage: false })),
   schemaVersion: 3,
   reviewedAt: nationalWarningManifest.reviewedAt,
-  credentials: { required: [], optional: ["effis-active-fire"], environmentGated: ["gfm", "eonet", "edo-drought", "fcdo-travel-advice"] },
+  credentials: {
+    required: [],
+    optional: ["FIRMS_MAP_KEY", "METEOALARM_API_TOKEN", "MET_OFFICE_API_KEY", "NRW_FLOOD_API_KEY"],
+    environmentGated: ["gfm", "eonet", "edo-drought", "fcdo-travel-advice"],
+  },
   providers: Object.entries(providerRegistry).map(([providerId, definition]) => ({
     providerId,
     policy: providerPolicy(providerId, definition.mode),

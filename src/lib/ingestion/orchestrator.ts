@@ -1,8 +1,11 @@
 import { publishCommittedCatalog, type CatalogPublicationStores } from "../catalog-publication";
-import { assertSupportedCollection, assertCatalog2Collection, type CollectionControl, type IngestionStateV14 as IngestionState } from "../domain/catalog-state";
+import { CatalogPartitionedSourceResultSchema, ExpandedAggregateSourceResultSchema, assertSupportedCollection, assertCatalog2Collection,
+  type CatalogSourceResult as SourceResult, type CollectionControl, type IngestionStateV15 as IngestionState } from "../domain/catalog-state";
 import { performance } from "node:perf_hooks";
-import { AggregateSourceResultSchema, SnapshotV10SourceIdSchema, countryCodes, PartitionedSourceResultSchema, type CountryCode, type SourceId, type SourceResult } from "../domain/schemas";
+import { AggregateSourceResultSchema, SnapshotV10SourceIdSchema, countryCodes, PartitionedSourceResultSchema, type CountryCode, type SourceId } from "../domain/schemas";
+import { catalogV3CountryCodes } from "../domain/contract-identities";
 import { locations } from "../data";
+import { catalogLocationsV3 } from "../catalog-data";
 import { buildSnapshot, mergeSourceResults } from "../risk";
 import { snapshotProjectionMetrics } from "../risk-snapshot";
 import { ConcurrencyError, type SnapshotStore, type StateStore } from "../storage";
@@ -36,14 +39,16 @@ function assertSourceResultLimits(results: SourceResult[]) {
 
 function rounded(value: number) { return Math.max(0, Math.round(value)); }
 
-function failedSourceResult(sourceId: SourceId, checkedAt: string, error: unknown): SourceResult {
+function failedSourceResult(sourceId: SourceId, checkedAt: string, error: unknown, catalogVersion: 2 | 3): SourceResult {
   const message = (error instanceof Error ? error.message : String(error)).slice(0, 300) || "Source failed unexpectedly";
   if (sourceId === "meteoalarm" || sourceId === "eea" || sourceId === "national-civil-alerts") {
-    return PartitionedSourceResultSchema.parse({ sourceId, checkedAt, partitions: Object.fromEntries(countryCodes.map((countryCode) => [countryCode, {
+    const codes = catalogVersion === 3 ? catalogV3CountryCodes : countryCodes;
+    const schema = catalogVersion === 3 ? CatalogPartitionedSourceResultSchema : PartitionedSourceResultSchema;
+    return schema.parse({ sourceId, checkedAt, partitions: Object.fromEntries(codes.map((countryCode) => [countryCode, {
       status: "failed", sourceUpdatedAt: null, events: [], error: message,
     }])) });
   }
-  return AggregateSourceResultSchema.parse({ sourceId, checkedAt, sourceUpdatedAt: null, events: [], status: "failed", error: message });
+  return (catalogVersion === 3 ? ExpandedAggregateSourceResultSchema : AggregateSourceResultSchema).parse({ sourceId, checkedAt, sourceUpdatedAt: null, events: [], status: "failed", error: message });
 }
 
 // Also used by the catalog-3 runner: only explicitly reviewed adapters receive
@@ -55,10 +60,10 @@ export async function collectAdapterResult(adapter: SourceAdapter, state: Ingest
   try {
     const result = await withFetchDiagnostics(context.diagnostics, () => isExpandedSourceAdapter(adapter)
       ? adapter.fetch({ ...context, state, locations: expandedAdapterLocations(adapter, version) })
-      : adapter.fetch({ ...context, state, locations }));
+      : adapter.fetch({ ...context, state, locations: version === 3 ? catalogLocationsV3 : locations }));
     return scopeAdapterResult(adapter, version, result);
   } catch (error) {
-    return scopeAdapterResult(adapter, version, failedSourceResult(adapter.id, context.now.toISOString(), error));
+    return scopeAdapterResult(adapter, version, failedSourceResult(adapter.id, context.now.toISOString(), error, version));
   }
 }
 
@@ -148,7 +153,7 @@ export async function runIngestion(options: {
       // An operator transport stop consumes no request and retains unexpired
       // prior evidence through the existing failure lifecycle.
       const result = disabled.has(adapter.id)
-        ? scopeAdapterResult(adapter, collection.catalogVersion, failedSourceResult(adapter.id, now.toISOString(), new Error("transport_disabled")))
+        ? scopeAdapterResult(adapter, collection.catalogVersion, failedSourceResult(adapter.id, now.toISOString(), new Error("transport_disabled"), collection.catalogVersion))
         : await collectAdapterResult(adapter, initialState.data, {
           now, fetch: boundedFetch, deadlineAt, diagnostics,
         });
@@ -208,6 +213,8 @@ async function publishResults(options: {
         if (!committed) {
           phase = performance.now();
           const next = fitConditionsState(mergeSourceResults(current.data, options.results, options.now), options.now);
+          if (options.operation === "maintenance" && next.publicationTransition?.dualUntil
+            && options.now.getTime() >= Date.parse(next.publicationTransition.dualUntil)) next.publicationTransition = null;
           await options.stateStore.write(next, current); committed = true;
           mergeAndBuildMs += performance.now() - phase;
         }

@@ -122,7 +122,7 @@ export function LocationCoverageDetails({ location, state, snapshot, now }: Loca
     </section>}
 
     {presentation.fullyChecked.length > 0 && <details className={styles.collapsibleSection}>
-      <summary>Fully checked ({presentation.fullyChecked.length})<UiIcon name="chevron" /></summary>
+      <summary>Monitored ({presentation.fullyChecked.length})<UiIcon name="chevron" /></summary>
       <div className={styles.coverageRows}>
         {presentation.fullyChecked.map((category) => <CoverageRow key={category.key} category={category} />)}
       </div>
@@ -131,7 +131,7 @@ export function LocationCoverageDetails({ location, state, snapshot, now }: Loca
     {presentation.contextProviders.length > 0 && <details className={styles.contextSection}>
       <summary>Additional context sources ({presentation.contextProviders.length})<UiIcon name="chevron" /></summary>
       <div className={styles.contextDetails}>
-        <p>These sources may add useful evidence, but they cannot make monitoring complete.</p>
+        <p>Context only — not an all-clear. These sources may add useful evidence, but they cannot make monitoring complete.</p>
         <ProviderList providers={presentation.contextProviders} />
       </div>
     </details>}
@@ -151,10 +151,10 @@ export function LocationCoverageDetails({ location, state, snapshot, now }: Loca
     <details className={styles.legend}>
       <summary>What these labels mean<UiIcon name="chevron" /></summary>
       <dl>
-        <div><dt>Fully checked</dt><dd>Approved sources monitor this check. See Source updates for freshness.</dd></div>
-        <div><dt>Partly checked</dt><dd>Useful information is checked, but important monitoring gaps remain.</dd></div>
-        <div><dt>Update delayed</dt><dd>A normally used source has not updated on time.</dd></div>
-        <div><dt>Not checked</dt><dd>No approved live monitoring source is connected.</dd></div>
+        <div><dt>Monitored</dt><dd>Approved sources monitor this check. See Source updates for the check time and freshness.</dd></div>
+        <div><dt>Partly monitored</dt><dd>Useful information is checked, but the listed limitations prevent a complete check or all-clear.</dd></div>
+        <div><dt>Context only</dt><dd>Useful context may be available, but it is not an all-clear and does not close a monitoring gap.</dd></div>
+        <div><dt>Monitoring unavailable</dt><dd>No approved live monitoring source is connected. Use the linked official information.</dd></div>
       </dl>
     </details>
   </section>;

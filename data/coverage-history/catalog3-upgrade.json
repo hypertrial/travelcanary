@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-09-13",
+  "definition": "Deterministic capability coverage, not incident recall or upstream uptime. Modeled, satellite, advice, and discovery/context providers cannot satisfy monitoring.",
+  "baseline": {
+    "catalogVersion": 2,
+    "locations": 503,
+    "countries": 28,
+    "applicablePairs": 8392,
+    "monitoredOrPartlyMonitoredPairs": 5321,
+    "membershipSha256": "c2da0bc3d26e013d78596dbe429a64255fe58d7c380761f5f3ce9831df21f4c6"
+  },
+  "catalog2Projection": {
+    "applicablePairs": 8392,
+    "monitored": 2615,
+    "partlyMonitored": 2706,
+    "unavailable": 3071,
+    "monitoredOrPartlyMonitoredPairs": 5321,
+    "membershipSha256": "c2da0bc3d26e013d78596dbe429a64255fe58d7c380761f5f3ce9831df21f4c6"
+  },
+  "catalog3Projection": {
+    "catalogVersion": 3,
+    "locations": 679,
+    "countries": 45,
+    "applicablePairs": 11799,
+    "monitored": 2867,
+    "partlyMonitored": 2877,
+    "unavailable": 6055,
+    "monitoredOrPartlyMonitoredPairs": 5744
+  },
+  "deltaFromBaseline": {
+    "applicablePairs": 3407,
+    "monitoredOrPartlyMonitoredPairs": 423
+  },
+  "reclassifications": {
+    "eeaModeledFullToObservationPartial": 498,
+    "monitoredOrPartlyMonitoredLoss": 0,
+    "explanation": "EEA AQI remains visible but is partial: only observation-backed culprit pollutants can create monitoring evidence; modeled or gap-filled values are context and never all-clear."
+  },
+  "pairMembership": {
+    "regressedExistingPairs": [],
+    "gainedPairs": 423
+  },
+  "addedDestinations": {
+    "count": 176,
+    "earthquakeMonitored": 176,
+    "byHazard": {
+      "air-quality": {
+        "applicable": 176,
+        "monitored": 0,
+        "partlyMonitored": 113,
+        "unavailable": 63
+      },
+      "armed-conflict": {
+        "applicable": 176,
+        "monitored": 0,
+        "partlyMonitored": 0,
+        "unavailable": 176
+      },
+      "avalanche": {
+        "applicable": 176,
+        "monitored": 0,
+        "partlyMonitored": 1,
+        "unavailable": 175
+      },
+      "civil-emergency": {
+        "applicable": 176,
+        "monitored": 0,
+        "partlyMonitored": 0,
+        "unavailable": 176
+      },
+      "civil-unrest": {
+        "applicable": 176,
+        "monitored": 0,
+        "partlyMonitored": 0,
+        "unavailable": 176
+      },
+      "drought": {
+        "applicable": 176,
+        "monitored": 0,
+        "partlyMonitored": 0,
+        "unavailable": 176
+      },
+      "earthquake": {
+        "applicable": 176,
+        "monitored": 176,
+        "partlyMonitored": 0,
+        "unavailable": 0
+      },
+      "extreme-cold": {
+        "applicable": 176,
+        "monitored": 0,
+        "partlyMonitored": 0,
+        "unavailable": 176
+      },
+      "extreme-heat": {
+        "applicable": 176,
+        "monitored": 0,
+        "partlyMonitored": 5,
+        "unavailable": 171
+      },
+      "fire-danger": {
+        "applicable": 176,
+        "monitored": 20,
+        "partlyMonitored": 0,
+        "unavailable": 156
+      },
+      "flood": {
+        "applicable": 176,
+        "monitored": 0,
+        "partlyMonitored": 35,
+        "unavailable": 141
+      },
+      "industrial": {
+        "applicable": 176,
+        "monitored": 0,
+        "partlyMonitored": 0,
+        "unavailable": 176
+      },
+      "nuclear": {
+        "applicable": 176,
+        "monitored": 0,
+        "partlyMonitored": 0,
+        "unavailable": 176
+      },
+      "security": {
+        "applicable": 176,
+        "monitored": 0,
+        "partlyMonitored": 0,
+        "unavailable": 176
+      },
+      "severe-weather": {
+        "applicable": 176,
+        "monitored": 20,
+        "partlyMonitored": 17,
+        "unavailable": 139
+      },
+      "snow-ice": {
+        "applicable": 176,
+        "monitored": 20,
+        "partlyMonitored": 0,
+        "unavailable": 156
+      },
+      "terrorism": {
+        "applicable": 176,
+        "monitored": 0,
+        "partlyMonitored": 0,
+        "unavailable": 176
+      },
+      "volcano": {
+        "applicable": 176,
+        "monitored": 0,
+        "partlyMonitored": 0,
+        "unavailable": 176
+      },
+      "wildfire": {
+        "applicable": 176,
+        "monitored": 0,
+        "partlyMonitored": 0,
+        "unavailable": 176
+      },
+      "coastal": {
+        "applicable": 63,
+        "monitored": 16,
+        "partlyMonitored": 0,
+        "unavailable": 47
+      }
+    }
+  },
+  "remainingGapsByHazard": {
+    "air-quality": 68,
+    "armed-conflict": 679,
+    "avalanche": 175,
+    "civil-emergency": 176,
+    "civil-unrest": 679,
+    "drought": 679,
+    "extreme-cold": 176,
+    "extreme-heat": 171,
+    "fire-danger": 156,
+    "flood": 141,
+    "industrial": 176,
+    "nuclear": 644,
+    "security": 644,
+    "severe-weather": 139,
+    "snow-ice": 156,
+    "terrorism": 679,
+    "volcano": 294,
+    "wildfire": 176,
+    "coastal": 47
+  }
+}

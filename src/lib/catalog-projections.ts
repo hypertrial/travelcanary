@@ -6,15 +6,18 @@ import { expandedHazardCoverage, expandedProviderApplies, expandedProviderIds, t
 import { sourceHazards } from "./risk-policy";
 import { eventIsPublishable } from "./hazard-lifecycle";
 import { clusterPublicHazards, projectCatalog2Snapshot } from "./risk-snapshot";
-import { HazardTypeSchema, countryCodes } from "./domain/schemas";
+import { HazardTypeSchema, countryCodes, providerIdForSourceId, type SourceHealth } from "./domain/schemas";
 import { catalogV3CountryCodes } from "./domain/contract-identities";
-import type { IngestionStateV14 } from "./domain/catalog-state";
+import type { IngestionStateV15 } from "./domain/catalog-state";
 import { SnapshotV11Schema, ConditionsV3Schema } from "./domain/catalog-public";
 import { conditionAttribution, conditionSourceEnabled } from "./conditions/sources";
 import { marineConditionEligible } from "./conditions/marine";
 import { currentConditions } from "./conditions/presentation";
 import { conditionRecords, CONDITIONS_TOTAL_LIMIT, emptyConditions } from "./domain/conditions";
 import { projectCatalog2Conditions } from "./conditions/state";
+import { eventAffectsLocation } from "./geospatial";
+import { nationalWarningManifest, type NationalWarningSystem } from "./national-warning-sources";
+import { providerRegistry, publicProviderPartitionState } from "./provider-registry";
 
 const legacyCountries = new Set<string>(countryCodes);
 const addedCountries = catalogV3CountryCodes.filter((code) => !legacyCountries.has(code));
@@ -23,7 +26,7 @@ const addedLocations = catalogLocationsV3.filter(({ countryCode }) => !legacyCou
 // These pure preparation projections do not activate monitoring or publish.
 // Even if private state contains evidence for a new location, it is deliberately
 // withheld until that location's reviewed eligibility is activated.
-export function buildPendingCatalog3Snapshot(state: IngestionStateV14, now = new Date()) {
+export function buildPendingCatalog3Snapshot(state: IngestionStateV15, now = new Date()) {
   const legacy = projectCatalog2Snapshot(state, now);
   return SnapshotV11Schema.parse({
     ...legacy, schemaVersion: 11, catalogVersion: 3,
@@ -38,7 +41,7 @@ export function buildPendingCatalog3Snapshot(state: IngestionStateV14, now = new
   });
 }
 
-export function buildPendingCatalog3Conditions(state: IngestionStateV14, now: Date, env: Record<string, string | undefined> = process.env) {
+export function buildPendingCatalog3Conditions(state: IngestionStateV15, now: Date, env: Record<string, string | undefined> = process.env) {
   const legacy = projectCatalog2Conditions(state, now, env);
   const files = [
     ...legacy.map((file) => ConditionsV3Schema.parse({ ...file, schemaVersion: 3, catalogVersion: 3 })),
@@ -58,7 +61,7 @@ export function buildPendingCatalog3Conditions(state: IngestionStateV14, now: Da
 // selecting this output for publication. Only approved, destination-scoped
 // evidence can affect additions; neighboring polygons and legacy global health
 // never grant expanded coverage.
-export function buildCatalog3Snapshot(state: IngestionStateV14, now = new Date()) {
+export function buildCatalog3Snapshot(state: IngestionStateV15, now = new Date()) {
   const snapshot = buildPendingCatalog3Snapshot(state, now);
   for (const providerId of expandedProviderIds) {
     const receipt = state.expandedSourceHealth[providerId];
@@ -70,19 +73,38 @@ export function buildCatalog3Snapshot(state: IngestionStateV14, now = new Date()
       unavailableLocationIds: receipt.unavailableLocationIds.slice(),
     };
   }
-  for (const country of addedCountries) for (const provider of Object.values(snapshot.providers)) {
-    if (provider.partitions) provider.partitions[country] = {
-      status: "disabled", lastSuccess: null, sourceUpdatedAt: null, nextExpectedUpdate: null, limitationCode: "not_supported",
-    };
+  const transportState = (health: SourceHealth | undefined, system: NationalWarningSystem, fallback: ReturnType<typeof publicProviderPartitionState>["status"]) => {
+    const status = system.status !== "active" || health?.status === "not_monitored" ? "disabled" as const
+      : health?.status === "ok" || health?.status === "partial" || health?.status === "delayed" ? health.status
+        : health?.status === "failed" ? "failed" as const : fallback;
+    return { id: system.id, name: system.systemName, role: system.role, status,
+      lastSuccess: health?.lastSuccess || null, sourceUpdatedAt: health?.sourceUpdatedAt || null,
+      nextExpectedUpdate: health?.nextExpectedUpdate || null,
+      limitationCode: status === "disabled" ? system.limitationCode || "credential_not_configured" : null,
+      officialUrl: system.officialUrl };
+  };
+  for (const country of addedCountries) for (const providerId of ["meteoalarm", "eea-aqi", "national-civil-alerts"] as const) {
+    const group = providerId === "meteoalarm" ? "meteoalarm" : providerId === "eea-aqi" ? "eea" : "nationalCivilAlerts";
+    const health = state.sourcePartitions[group][country];
+    const partition = publicProviderPartitionState(health);
+    const target = providerId === "meteoalarm" ? ["meteoalarm-primary", "meteoalarm-fallback"] : providerId === "national-civil-alerts" ? ["national-civil-alerts"] : [];
+    const systems = nationalWarningManifest.countries[country].systems.filter(({ runtimeTarget }) => target.includes(runtimeTarget));
+    const transports = providerId === "meteoalarm" ? state.partitionTransports.meteoalarm[country]
+      : providerId === "national-civil-alerts" ? state.partitionTransports.nationalCivilAlerts[country] : {};
+    snapshot.providers[providerId].partitions![country] = systems.length
+      ? { ...partition, transports: systems.map((system) => transportState(transports[system.id], system, partition.status)) }
+      : partition;
   }
-  const indexed = new Map<string, IngestionStateV14["events"]>();
+  const indexed = new Map<string, IngestionStateV15["events"]>();
   const addedById = new Map(addedLocations.map((location) => [location.id, location]));
   for (const event of state.events) {
-    if (!eventIsPublishable(event, now) || event.geometry.kind !== "locations") continue;
-    for (const id of event.geometry.ids) {
-      const location = addedById.get(id);
-      if (!location || !expandedProviderApplies(event.sourceId, location)
-        || !sourceHazards[event.sourceId]?.includes(event.type)) continue;
+    if (!eventIsPublishable(event, now)) continue;
+    const providerId = event.providerId || providerIdForSourceId(event.sourceId);
+    for (const [id, location] of addedById) {
+      const capability = expandedHazardCoverage(location)[event.type];
+      if (!expandedProviderApplies(providerId, location) || !sourceHazards[event.sourceId]?.includes(event.type)
+        || providerRegistry[providerId]?.satisfiesCoverage !== false && !capability.providerIds.includes(providerId)
+        || !eventAffectsLocation(event, location)) continue;
       const events = indexed.get(id) || [];
       events.push(event); indexed.set(id, events);
     }
@@ -92,7 +114,9 @@ export function buildCatalog3Snapshot(state: IngestionStateV14, now = new Date()
     const coverage = expandedHazardCoverage(location);
     const coverageGaps = HazardTypeSchema.options.filter((hazard) => coverage[hazard].status !== "monitored");
     const warningAttempted = ["usgs", "emsc", "slf-avalanche"].some((source) => expandedProviderApplies(source, location)
-      && state.expandedSourceHealth[source as ExpandedProviderId]);
+      && state.expandedSourceHealth[source as ExpandedProviderId])
+      || (["meteoalarm", "national-civil-alerts"] as const).some((source) => expandedProviderApplies(source, location)
+        && state.collectionReceipts[3][source]?.checkedLocationIds.includes(location.id));
     if (!warningAttempted && !hazards.length) {
       snapshot.locations[location.id] = { level: "UNKNOWN", coverage: "partial", coverageGaps, delayedHazards: [], hazards: [], updatePending: true };
       continue;
@@ -107,7 +131,7 @@ export function buildCatalog3Snapshot(state: IngestionStateV14, now = new Date()
   return SnapshotV11Schema.parse(snapshot);
 }
 
-export function buildCatalog3Conditions(state: IngestionStateV14, now: Date, env: Record<string, string | undefined> = process.env) {
+export function buildCatalog3Conditions(state: IngestionStateV15, now: Date, env: Record<string, string | undefined> = process.env) {
   const legacy = projectCatalog2Conditions(state, now, env);
   const files = legacy.map((file) => ConditionsV3Schema.parse({ ...file, schemaVersion: 3, catalogVersion: 3 }));
   const enabled = (source: Parameters<typeof conditionSourceEnabled>[0]) => conditionSourceEnabled(source, env);

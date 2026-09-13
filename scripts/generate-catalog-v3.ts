@@ -11,4 +11,4 @@ if (process.argv.includes("--check")) {
   await mkdir(new URL("./", output), { recursive: true });
   await writeFile(output, body);
 }
-console.log(`Catalog 3: ${catalogLocationsV3.length} destinations, ${Buffer.byteLength(body)} bytes (inactive)`);
+console.log(`Catalog 3: ${catalogLocationsV3.length} destinations, ${Buffer.byteLength(body)} bytes (production artifact)`);
