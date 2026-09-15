@@ -14,7 +14,7 @@ describe("public release boundary", () => {
     const tracked = execFileSync("git", ["ls-files"], { encoding: "utf8" }).trim().split("\n");
     const forbidden = [
       /^\.agents\/(?!skills\/pad(?:-engineering)?\/SKILL\.md$)/,
-      /^\.pad\//,
+      /^\.pad\/(?!universal\.lock\.json$)/,
       /^CLAUDE\.md$/,
       /(?:^|\/)travelcanary\.db(?:-|$)/,
       /(?:^|\/)backups?\//,
@@ -22,7 +22,10 @@ describe("public release boundary", () => {
       /(?:^|\/)test-results\//,
       /(?:^|\/)\.env(?!\.example$)/,
     ];
-    expect(tracked.filter((path) => forbidden.some((pattern) => pattern.test(path)))).toEqual([]);
+    const isForbidden = (path: string) => forbidden.some((pattern) => pattern.test(path));
+    expect(isForbidden(".pad/universal.lock.json")).toBe(false);
+    expect(isForbidden(".pad/work-items.json")).toBe(true);
+    expect(tracked.filter(isForbidden)).toEqual([]);
   });
 
   it("classifies every inventoried source", async () => {
