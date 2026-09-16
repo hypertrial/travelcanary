@@ -57,10 +57,10 @@ is unchanged and can repair any later partial publication.
    exact-SHA `scripts/verify`, and automatic GitHub `check:fast`. Deploy that same
    compatible commit while `NEXT_PUBLIC_CATALOG_VERSION=2`, verify catalog 2, and
    retain the commit as the rollback target. Prepare and verify its catalog 3 build
-   before activation; do not deploy an intermediate tree. Configure
-   `METEOALARM_API_TOKEN` only for the reviewed Andorra/Iceland recovery path.
-   Met Office remains optional and non-contributing; do not configure it for this
-   release. Never print secret values in release evidence.
+   before activation; do not deploy an intermediate tree. No warning-source
+   credential is required: MeteoAlarm EDR and Met Office remain optional,
+   non-contributing, and request-free while unconfigured. Never print secret
+   values in release evidence.
 2. With the deployed private storage configuration, run
    `node --import tsx scripts/activate-catalog3.ts`. The command atomically
    compare-and-swaps collection 2→3 with a higher revision while retaining evidence

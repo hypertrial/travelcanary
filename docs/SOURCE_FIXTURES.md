@@ -14,7 +14,7 @@ Run `npm run conditions:demo` after the alert demo generator. These files explic
 
 CI never calls live hazard sources. Adapter tests use small captured or synthetic fixtures that preserve the source contract without republishing unnecessary upstream content.
 
-Credentialed release verification requires `npm run smoke:meteoalarm-edr`; `npm run smoke:met-office` remains available for the optional integration. Both are read-only, deadline-, request-, and byte-bounded commands with aggregate-only output. The Met Office smoke uses the existing adapter against GB catalog-3 locations but is not a release gate. The EDR smoke locally supplies healthy-empty non-target primaries, deliberately fails only the AD/IS primaries, and then permits the real adapter to contact only the reviewed MeteoAlarm EDR and allowlisted HTTPS CAP host. Missing credentials fail before any request. CI exercises these flows with deterministic responses and never requires secrets.
+`npm run smoke:meteoalarm-edr` and `npm run smoke:met-office` remain available as optional credentialed diagnostics. Neither is a release gate. Both are read-only, deadline-, request-, and byte-bounded commands with aggregate-only output. The Met Office smoke uses the existing adapter against GB catalog-3 locations. The EDR smoke locally supplies healthy-empty non-target primaries, deliberately fails only the AD/IS primaries, and then permits the real adapter to contact only the reviewed MeteoAlarm EDR and allowlisted HTTPS CAP host. Missing credentials fail before any request. CI exercises these flows with deterministic responses and never requires secrets.
 
 ## Refresh procedure
 
