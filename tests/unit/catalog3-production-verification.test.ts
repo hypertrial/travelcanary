@@ -45,8 +45,8 @@ describe("catalog3 production contract verification", () => {
     expect(Object.keys(report.metrics.coverageMeasurement!.byCountry)).toHaveLength(45);
     expect(report.metrics.coverageMeasurement!.byCountry.GB.applicable).toBeGreaterThan(30);
     expect(report.metrics.coverageMeasurement).toMatchObject({
-      totals: { applicable: 11_799, fullyChecked: 3_034, partlyChecked: 2_862, notChecked: 5_903 },
-      tiers: { lifeSafety: { applicable: 7_237, fullyChecked: 3_020, partlyChecked: 2_211, notChecked: 2_006 } },
+      totals: { applicable: 11_799, fullyChecked: 2_867, partlyChecked: 2_877, notChecked: 6_055 },
+      tiers: { lifeSafety: { applicable: 7_237, fullyChecked: 2_853, partlyChecked: 2_226, notChecked: 2_158 } },
     });
     expect(f.fetch.mock.calls.filter(([input]) => String(input).includes("/conditions/v3/"))).toHaveLength(45);
     expect(f.fetch.mock.calls.some(([input]) => /\/conditions\/v2\/|\/locations\.json$/.test(String(input)) && !String(input).includes("/catalogs/3/"))).toBe(false);
@@ -68,17 +68,30 @@ describe("catalog3 production contract verification", () => {
     expect((await f.verify()).blockers).toContainEqual(expect.objectContaining({ code: "coverage_capability_regression" }));
   });
 
-  it.each(["failed", "stale"])("blocks %s required Met Office transport health", async (mode) => {
+  it.each(["missing", "failed", "stale"])("keeps %s optional Met Office transport health neutral", async (mode) => {
     const f = fixture();
     const transport = f.snapshot.providers["national-civil-alerts"].partitions!.GB.transports!
       .find(({ id }) => id === "met-office-nswws")!;
-    if (mode === "failed") Object.assign(transport, { status: "failed", lastSuccess: new Date(+now - 5 * 60_000).toISOString(),
+    if (mode === "missing") f.snapshot.providers["national-civil-alerts"].partitions!.GB.transports = f.snapshot.providers["national-civil-alerts"].partitions!.GB.transports!
+      .filter(({ id }) => id !== "met-office-nswws");
+    else if (mode === "failed") Object.assign(transport, { status: "failed", lastSuccess: new Date(+now - 5 * 60_000).toISOString(),
       nextExpectedUpdate: new Date(+now + 5 * 60_000).toISOString() });
     else Object.assign(transport, { status: "ok", lastSuccess: new Date(+now - 30 * 60_000).toISOString(),
       nextExpectedUpdate: new Date(+now - 20 * 60_000).toISOString() });
     f.bodies.set(url, JSON.stringify(f.snapshot));
-    expect((await f.verify()).blockers).toContainEqual(expect.objectContaining({ code: "required_transport_unhealthy",
+    expect((await f.verify()).blockers).not.toContainEqual(expect.objectContaining({ code: "required_transport_unhealthy",
       message: expect.stringContaining("transport/GB/met-office-nswws") }));
+  });
+
+  it("still blocks a missing non-optional national coverage transport", async () => {
+    const f = fixture();
+    f.snapshot.providers["national-civil-alerts"].partitions!.GB.transports = f.snapshot.providers["national-civil-alerts"].partitions!.GB.transports!
+      .filter(({ id }) => id !== "ea-flood");
+    f.bodies.set(url, JSON.stringify(f.snapshot));
+
+    expect((await f.verify()).blockers).toContainEqual(expect.objectContaining({
+      code: "required_transport_unhealthy", message: expect.stringContaining("transport/GB/ea-flood"),
+    }));
   });
 
   it("authorizes configured credential-gated EDR transport health without granting coverage", async () => {
@@ -91,6 +104,20 @@ describe("catalog3 production contract verification", () => {
     const report = await f.verify();
     expect(report.blockers).not.toContainEqual(expect.objectContaining({ code: "unauthorized_transport_active", message: expect.stringContaining("AD/meteoalarm-edr") }));
     expect(report.metrics.coverageMeasurement!.byCountry.AD).toEqual(before);
+  });
+
+  it("authorizes configured optional Met Office transport health without granting coverage", async () => {
+    const f = fixture();
+    const before = (await f.verify()).metrics.coverageMeasurement!.byCountry.GB;
+    const transport = f.snapshot.providers["national-civil-alerts"].partitions!.GB.transports!
+      .find(({ id }) => id === "met-office-nswws")!;
+    Object.assign(transport, { status: "ok", lastSuccess: now.toISOString(), sourceUpdatedAt: now.toISOString(),
+      nextExpectedUpdate: new Date(+now + 10 * 60_000).toISOString(), limitationCode: null });
+    f.bodies.set(url, JSON.stringify(f.snapshot));
+    const report = await f.verify();
+    expect(report.blockers).not.toContainEqual(expect.objectContaining({ code: "unauthorized_transport_active",
+      message: expect.stringContaining("GB/met-office-nswws") }));
+    expect(report.metrics.coverageMeasurement!.byCountry.GB).toEqual(before);
   });
 
   it("blocks runtime activity for evidence-gated country transports", async () => {

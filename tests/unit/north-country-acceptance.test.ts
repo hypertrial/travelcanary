@@ -40,10 +40,10 @@ describe("GB, Norway and Iceland reviewed jurisdiction acceptance", () => {
       } else if (country === "IS") {
         expect(capabilities["severe-weather"].status).toBe("partial");
       } else {
-        for (const hazard of ["severe-weather", "extreme-heat", "extreme-cold", "snow-ice", "flood"] as const) {
-          expect(capabilities[hazard].status).toBe("monitored");
+        for (const hazard of ["severe-weather", "extreme-heat", "extreme-cold", "snow-ice", "coastal"] as const) {
+          expect(capabilities[hazard].status).toBe("not_monitored");
         }
-        expect(capabilities.coastal.status).toBe(location.isCoastal ? "monitored" : "not_monitored");
+        expect(capabilities.flood.status).toBe(expandedProviderApplies("national-civil-alerts", location) ? "partial" : "not_monitored");
       }
       expect(expandedProviderApplies("fcdo-travel-advice", location)).toBe(country !== "GB");
       expect(expandedProviderApplies("slf-avalanche", location)).toBe(false);
@@ -86,12 +86,12 @@ describe("GB, Norway and Iceland reviewed jurisdiction acceptance", () => {
     });
     state.events = [event("meteoalarm", "meteoalarm", "flood"), event("slf-avalanche", "slf-avalanche", "avalanche"), event("eonet", "eonet", "volcano")];
     const snapshot = buildCatalog3Snapshot(state, now);
-    for (const { id, countryCode } of north) {
+    for (const { id } of north) {
       expect(snapshot.locations[id].hazards.map(({ providerId, type }) => [providerId, type])).toEqual([["eonet", "volcano"]]);
       expect(snapshot.locations[id].hazards.some(({ type }) => type === "avalanche")).toBe(false);
       expect(snapshot.locations[id].level).toBe("HIGH");
       expect(snapshot.locations[id].coverageGaps).toEqual(expect.arrayContaining(["avalanche", "volcano"]));
-      expect(snapshot.locations[id].coverageGaps.includes("flood")).toBe(countryCode !== "GB");
+      expect(snapshot.locations[id].coverageGaps).toContain("flood");
     }
   });
 
@@ -102,6 +102,6 @@ describe("GB, Norway and Iceland reviewed jurisdiction acceptance", () => {
       expect(Object.entries(links).filter(([code]) => code !== country).flatMap(([, entries]) => entries).some((entry) => entry.url === url)).toBe(false);
     }
     const direct = north.filter((location) => location.countryCode === country && expandedProviderApplies("national-civil-alerts", location));
-    expect(direct).toHaveLength(country === "NO" ? 20 : country === "GB" ? 30 : 0);
+    expect(direct).toHaveLength(country === "NO" ? 20 : country === "GB" ? 15 : 0);
   });
 });

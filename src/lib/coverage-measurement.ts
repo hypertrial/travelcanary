@@ -10,8 +10,8 @@ export const lifeSafetyHazards = new Set<HazardType>([
 ]);
 
 export const catalog3CoverageTarget = {
-  allHazards: { applicable: 11_799, fullyChecked: 3_034, partlyChecked: 2_862, notChecked: 5_903, coveredOrPartial: 5_896 },
-  lifeSafety: { applicable: 7_237, fullyChecked: 3_020, partlyChecked: 2_211, notChecked: 2_006, coveredOrPartial: 5_231 },
+  allHazards: { applicable: 11_799, fullyChecked: 2_867, partlyChecked: 2_877, notChecked: 6_055, coveredOrPartial: 5_744 },
+  lifeSafety: { applicable: 7_237, fullyChecked: 2_853, partlyChecked: 2_226, notChecked: 2_158, coveredOrPartial: 5_079 },
 } as const;
 
 export function emptyCoverageCounts() {

@@ -155,11 +155,11 @@ gbSystems.unshift({
 gbSystems.push({
   id: "met-office-nswws", reviewedAt, nextReviewAt, evidenceUrls: ["https://metoffice.github.io/nswws-public-api/atom-feed.html"],
   authority: "Met Office", systemName: "National Severe Weather Warning Service", officialUrl: "https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings",
-  runtimeTarget: "national-civil-alerts", role: "coverage", status: "active", endpoint: "https://warnings.api.metoffice.gov.uk/",
+  runtimeTarget: "national-civil-alerts", role: "fallback", status: "credential_gated", endpoint: "https://warnings.api.metoffice.gov.uk/",
   format: "atom", cadenceMinutes: 10, maxBytes: 2097152, hazards: ["severe-weather", "extreme-heat", "extreme-cold", "snow-ice", "flood", "coastal"],
   accessStatus: "credential_required", reuseStatus: "approved", severityStatus: "approved", lifecycleStatus: "approved", geometryStatus: "approved",
-  completenessStatus: "approved", coverageContribution: "complete", credentialEnvVar: "MET_OFFICE_API_KEY", limitationCode: null,
-  blocker: null, contactUrl: "https://metoffice.github.io/nswws-public-api/atom-feed.html",
+  completenessStatus: "approved", coverageContribution: "none", credentialEnvVar: "MET_OFFICE_API_KEY", limitationCode: "credential_not_configured",
+  blocker: "Optional non-contributing enhancement; Met Office credentials are not provisioned for this release.", contactUrl: "https://metoffice.github.io/nswws-public-api/atom-feed.html",
   reReviewTrigger: "The feed, authentication, lifecycle, severity, geometry, or hazard taxonomy contract changes.", license: { name: "Met Office data licence", url: "https://www.metoffice.gov.uk/about-us/legal" },
 });
 gbSystems.push({

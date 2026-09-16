@@ -89,8 +89,7 @@ export function requiredTransportFailures(snapshot: CatalogSnapshot, catalog: Pu
       if (!applicable) continue;
       const partition = national?.[countryCode];
       const transport = partition?.transports?.find(({ id }) => id === system.id);
-      const strictFailure = system.id === "met-office-nswws" && transport && !["ok", "partial"].includes(transport.status);
-      if (!transport || strictFailure || !viable({ ...transport, lastSuccess: transport.lastSuccess ?? partition?.lastSuccess ?? null,
+      if (!transport || !viable({ ...transport, lastSuccess: transport.lastSuccess ?? partition?.lastSuccess ?? null,
         nextExpectedUpdate: transport.nextExpectedUpdate ?? partition?.nextExpectedUpdate ?? null }, now, system.cadenceMinutes)) {
         failed.add(`transport/${countryCode}/${system.id}`);
       }

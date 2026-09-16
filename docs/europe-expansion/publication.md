@@ -58,9 +58,9 @@ is unchanged and can repair any later partial publication.
    compatible commit while `NEXT_PUBLIC_CATALOG_VERSION=2`, verify catalog 2, and
    retain the commit as the rollback target. Prepare and verify its catalog 3 build
    before activation; do not deploy an intermediate tree. Configure
-   `MET_OFFICE_API_KEY` and `MET_OFFICE_WARNINGS_FEED_URL` as required server-only
-   production values. Configure `METEOALARM_API_TOKEN` only for the reviewed
-   Andorra/Iceland recovery path. Never print these values in release evidence.
+   `METEOALARM_API_TOKEN` only for the reviewed Andorra/Iceland recovery path.
+   Met Office remains optional and non-contributing; do not configure it for this
+   release. Never print secret values in release evidence.
 2. With the deployed private storage configuration, run
    `node --import tsx scripts/activate-catalog3.ts`. The command atomically
    compare-and-swaps collection 2→3 with a higher revision while retaining evidence
@@ -84,9 +84,10 @@ is unchanged and can repair any later partial publication.
 
 If the candidate client or rollback deployment is not ready, do not activate
 collection 3. After activation, an anomalous source is disabled independently.
-Disabling or exhausting required Met Office coverage intentionally degrades
-health and cannot satisfy release completion; the catalog 3 client displays the
-gap honestly. Do not keep a catalog 2-only production client past
+Disabling or exhausting an active required coverage transport intentionally
+degrades health and cannot satisfy release completion; the catalog 3 client
+displays the gap honestly. Optional Met Office health does not affect this gate.
+Do not keep a catalog 2-only production client past
 legacy retirement, reset the deadline, or restore state 2 to manufacture more
 transition time. Stop release completion and investigate any failed deterministic
 gate. See `release-verification.md` for the release ledger.

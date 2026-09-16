@@ -24,9 +24,9 @@ observe.
   supplementary EMSC evidence, FCDO whole-country context for 145 destinations
   and SLF avalanche monitoring only for Malbun. Weather and modeled air quality
   cover all additions; marine forecasts use 30 reviewed cells. Forecast and
-  advisory roles remain distinct from warning coverage. Required Met Office NSWWS
-  now provides complete reviewed UK warning coverage across all 30 destinations;
-  Environment Agency flood evidence retains its 15-destination England scope.
+  advisory roles remain distinct from warning coverage. Met Office NSWWS is an
+  optional, non-contributing transport; Environment Agency flood evidence retains
+  partial coverage for its 15-destination England scope.
 - **Remaining gaps:** 459 category assessments cover all 20 hazards and seven
   conditions categories for each country. The dossier contains four approved
   source groups, 22 blocked candidates, six excluded routes and 19 official-link
@@ -72,8 +72,9 @@ configuration. The same tree supports the later catalog3 build.
 
 Operator authorization for this coordinated release is recorded in the private
 project tracker. Provision only the credentials needed by each selected operation;
-do not download the full environment or print secret values. Required Met Office
-configuration is separate from optional MeteoAlarm EDR recovery configuration.
+do not download the full environment or print secret values. The bounded
+MeteoAlarm EDR release smoke requires its server-only token; Met Office remains
+optional and is not configured for this release.
 
 Follow `publication.md`: deploy the compatible commit with the catalog 2 client;
 forward-CAS activate catalog 3 while retaining state/quota; run one fast, slow,
@@ -99,7 +100,7 @@ outstanding and are never inferred from local tests or from another country's fe
 | Publication | Snapshot exact membership, 45 matching conditions partitions, source timestamps and producer agreement |
 | Compatibility | Both snapshot families and 45+28 conditions outputs, acknowledgment time and immutable retirement deadline |
 | Runtime sources | Bounded approved-source checks, receipt scope, attribution, geographic matches, nonempty lifecycle fixtures and verified empty semantics |
-| Bounded source smoke | One read-only result per required source, including credential-bound Met Office, plus configured optional EDR recovery for reviewed AD/IS paths, with any fallback or disable decision |
+| Bounded source smoke | One read-only MeteoAlarm EDR recovery result for the reviewed AD/IS paths, with any fallback or disable decision; optional Met Office is not a release gate |
 | Quota and storage | Actual rolling-day/minute/hour use, reservations, country/product starvation checks and measured wire/state/cache limits |
 | Results | Separate fresh, expired, missing, unsupported and healthy-empty counts; any source disabled and its reason |
 | Rollback | Compatible deployment identity, retained collection revision/evidence/quota, independent source-disable verification |

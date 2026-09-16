@@ -23,36 +23,36 @@
     "locations": 679,
     "countries": 45,
     "applicablePairs": 11799,
-    "monitored": 3034,
-    "partlyMonitored": 2862,
-    "unavailable": 5903,
-    "monitoredOrPartlyMonitoredPairs": 5896
+    "monitored": 2867,
+    "partlyMonitored": 2877,
+    "unavailable": 6055,
+    "monitoredOrPartlyMonitoredPairs": 5744
   },
   "tiers": {
     "lifeSafety": {
       "applicablePairs": 7237,
-      "monitored": 3020,
-      "partlyMonitored": 2211,
-      "unavailable": 2006,
-      "monitoredOrPartlyMonitoredPairs": 5231,
+      "monitored": 2853,
+      "partlyMonitored": 2226,
+      "unavailable": 2158,
+      "monitoredOrPartlyMonitoredPairs": 5079,
       "remainingGapsByHazard": {
         "civil-emergency": 176,
-        "extreme-cold": 146,
-        "extreme-heat": 141,
+        "extreme-cold": 176,
+        "extreme-heat": 171,
         "fire-danger": 156,
-        "flood": 126,
+        "flood": 141,
         "industrial": 176,
         "nuclear": 644,
-        "severe-weather": 109,
-        "snow-ice": 126,
+        "severe-weather": 139,
+        "snow-ice": 156,
         "wildfire": 176,
-        "coastal": 30
+        "coastal": 47
       }
     }
   },
   "deltaFromBaseline": {
     "applicablePairs": 3407,
-    "monitoredOrPartlyMonitoredPairs": 575
+    "monitoredOrPartlyMonitoredPairs": 423
   },
   "reclassifications": {
     "eeaModeledFullToObservationPartial": 498,
@@ -61,7 +61,15 @@
   },
   "pairMembership": {
     "regressedExistingPairs": [],
-    "gainedPairs": 575
+    "gainedPairs": 423
+  },
+  "policyReclassification": {
+    "systemId": "met-office-nswws",
+    "formerlyFullyChecked": 167,
+    "nowFullyChecked": 0,
+    "nowPartlyChecked": 15,
+    "nowUnavailable": 152,
+    "explanation": "Met Office is optional and non-contributing; Environment Agency preserves partial flood coverage for its 15 reviewed England destinations."
   },
   "addedDestinations": {
     "count": 176,
@@ -111,15 +119,15 @@
       },
       "extreme-cold": {
         "applicable": 176,
-        "monitored": 30,
+        "monitored": 0,
         "partlyMonitored": 0,
-        "unavailable": 146
+        "unavailable": 176
       },
       "extreme-heat": {
         "applicable": 176,
-        "monitored": 30,
+        "monitored": 0,
         "partlyMonitored": 5,
-        "unavailable": 141
+        "unavailable": 171
       },
       "fire-danger": {
         "applicable": 176,
@@ -129,9 +137,9 @@
       },
       "flood": {
         "applicable": 176,
-        "monitored": 30,
-        "partlyMonitored": 20,
-        "unavailable": 126
+        "monitored": 0,
+        "partlyMonitored": 35,
+        "unavailable": 141
       },
       "industrial": {
         "applicable": 176,
@@ -153,15 +161,15 @@
       },
       "severe-weather": {
         "applicable": 176,
-        "monitored": 50,
+        "monitored": 20,
         "partlyMonitored": 17,
-        "unavailable": 109
+        "unavailable": 139
       },
       "snow-ice": {
         "applicable": 176,
-        "monitored": 50,
+        "monitored": 20,
         "partlyMonitored": 0,
-        "unavailable": 126
+        "unavailable": 156
       },
       "terrorism": {
         "applicable": 176,
@@ -183,9 +191,9 @@
       },
       "coastal": {
         "applicable": 63,
-        "monitored": 33,
+        "monitored": 16,
         "partlyMonitored": 0,
-        "unavailable": 30
+        "unavailable": 47
       }
     }
   },
@@ -196,24 +204,152 @@
     "civil-emergency": 176,
     "civil-unrest": 679,
     "drought": 679,
-    "extreme-cold": 146,
-    "extreme-heat": 141,
+    "extreme-cold": 176,
+    "extreme-heat": 171,
     "fire-danger": 156,
-    "flood": 126,
+    "flood": 141,
     "industrial": 176,
     "nuclear": 644,
     "security": 644,
-    "severe-weather": 109,
-    "snow-ice": 126,
+    "severe-weather": 139,
+    "snow-ice": 156,
     "terrorism": 679,
     "volcano": 294,
     "wildfire": 176,
-    "coastal": 30
+    "coastal": 47
   },
   "priorityProgram": {
     "definition": "One row per country/hazard capability gap; forecasts, advice, satellite detections, modeled conditions, and fallback-only transports do not create warning coverage.",
     "readinessBands": {
       "credentialReady": [
+        {
+          "countryCode": "GB",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "credentialReady",
+          "candidateSystemIds": [
+            "met-office-nswws"
+          ],
+          "candidates": [
+            {
+              "id": "met-office-nswws",
+              "officialUrl": "https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings",
+              "blocker": "Optional non-contributing enhancement; Met Office credentials are not provisioned for this release.",
+              "reReviewTrigger": "The feed, authentication, lifecycle, severity, geometry, or hazard taxonomy contract changes.",
+              "nextReviewAt": "2027-03-13"
+            }
+          ]
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "credentialReady",
+          "candidateSystemIds": [
+            "met-office-nswws"
+          ],
+          "candidates": [
+            {
+              "id": "met-office-nswws",
+              "officialUrl": "https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings",
+              "blocker": "Optional non-contributing enhancement; Met Office credentials are not provisioned for this release.",
+              "reReviewTrigger": "The feed, authentication, lifecycle, severity, geometry, or hazard taxonomy contract changes.",
+              "nextReviewAt": "2027-03-13"
+            }
+          ]
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "severe-weather",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "credentialReady",
+          "candidateSystemIds": [
+            "met-office-nswws"
+          ],
+          "candidates": [
+            {
+              "id": "met-office-nswws",
+              "officialUrl": "https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings",
+              "blocker": "Optional non-contributing enhancement; Met Office credentials are not provisioned for this release.",
+              "reReviewTrigger": "The feed, authentication, lifecycle, severity, geometry, or hazard taxonomy contract changes.",
+              "nextReviewAt": "2027-03-13"
+            }
+          ]
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "credentialReady",
+          "candidateSystemIds": [
+            "met-office-nswws"
+          ],
+          "candidates": [
+            {
+              "id": "met-office-nswws",
+              "officialUrl": "https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings",
+              "blocker": "Optional non-contributing enhancement; Met Office credentials are not provisioned for this release.",
+              "reReviewTrigger": "The feed, authentication, lifecycle, severity, geometry, or hazard taxonomy contract changes.",
+              "nextReviewAt": "2027-03-13"
+            }
+          ]
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "coastal",
+          "uncoveredPairs": 17,
+          "uncoveredLifeSafetyPairs": 17,
+          "totalUncoveredPairs": 17,
+          "readiness": "credentialReady",
+          "candidateSystemIds": [
+            "met-office-nswws"
+          ],
+          "candidates": [
+            {
+              "id": "met-office-nswws",
+              "officialUrl": "https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings",
+              "blocker": "Optional non-contributing enhancement; Met Office credentials are not provisioned for this release.",
+              "reReviewTrigger": "The feed, authentication, lifecycle, severity, geometry, or hazard taxonomy contract changes.",
+              "nextReviewAt": "2027-03-13"
+            }
+          ]
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "flood",
+          "uncoveredPairs": 15,
+          "uncoveredLifeSafetyPairs": 15,
+          "totalUncoveredPairs": 15,
+          "readiness": "credentialReady",
+          "candidateSystemIds": [
+            "met-office-nswws",
+            "nrw-flood"
+          ],
+          "candidates": [
+            {
+              "id": "met-office-nswws",
+              "officialUrl": "https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings",
+              "blocker": "Optional non-contributing enhancement; Met Office credentials are not provisioned for this release.",
+              "reReviewTrigger": "The feed, authentication, lifecycle, severity, geometry, or hazard taxonomy contract changes.",
+              "nextReviewAt": "2027-03-13"
+            },
+            {
+              "id": "nrw-flood",
+              "officialUrl": "https://naturalresources.wales/flooding/check-flood-warnings/?lang=en",
+              "blocker": "Optional enhancement; Wales remains authoritative-link coverage without credentials.",
+              "reReviewTrigger": "Credentials are provisioned or the API contract changes.",
+              "nextReviewAt": "2027-03-13"
+            }
+          ]
+        },
         {
           "countryCode": "SK",
           "hazard": "security",

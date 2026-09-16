@@ -491,13 +491,12 @@
   "schemaVersion": 3,
   "reviewedAt": "2026-09-13",
   "credentials": {
-    "required": [
-      "MET_OFFICE_API_KEY",
-      "MET_OFFICE_WARNINGS_FEED_URL"
-    ],
+    "required": [],
     "optional": [
       "FIRMS_MAP_KEY",
       "METEOALARM_API_TOKEN",
+      "MET_OFFICE_API_KEY",
+      "MET_OFFICE_WARNINGS_FEED_URL",
       "NRW_FLOOD_API_BASE_URL",
       "NRW_FLOOD_API_KEY"
     ],
@@ -508,8 +507,8 @@
       "fcdo-travel-advice"
     ],
     "descriptions": {
-      "MET_OFFICE_API_KEY": "Required server-only API key for complete UK warning coverage.",
-      "MET_OFFICE_WARNINGS_FEED_URL": "Required server-only Met Office NSWWWS Atom feed URL; must use an allowlisted Met Office HTTPS host.",
+      "MET_OFFICE_API_KEY": "Optional server-only API key for the credential-gated, non-contributing Met Office transport.",
+      "MET_OFFICE_WARNINGS_FEED_URL": "Optional server-only Met Office NSWWS Atom feed URL; must use an allowlisted Met Office HTTPS host.",
       "METEOALARM_API_TOKEN": "Optional server-only authenticated EDR recovery for the reviewed Andorra and Iceland mappings; fallback-only and non-contributing.",
       "NRW_FLOOD_API_BASE_URL": "Optional server-only NRW endpoint; inert while the NRW transport remains credential-gated.",
       "NRW_FLOOD_API_KEY": "Optional server-only NRW API key; inert while the NRW transport remains credential-gated."
@@ -1930,7 +1929,7 @@
     {
       "countryCode": "GB",
       "authority": "Environment Agency",
-      "systemName": "Environment Agency national warning sources",
+      "systemName": "England flood warnings",
       "reviewedAt": "2026-09-13",
       "evidenceUrls": [
         "https://environment.data.gov.uk/flood-monitoring/doc/reference"
@@ -1938,12 +1937,7 @@
       "enabled": true,
       "endpoint": "https://environment.data.gov.uk/flood-monitoring/id/floods",
       "hazards": [
-        "flood",
-        "severe-weather",
-        "extreme-heat",
-        "extreme-cold",
-        "snow-ice",
-        "coastal"
+        "flood"
       ],
       "reuseStatus": "approved",
       "license": {
@@ -1952,7 +1946,23 @@
       },
       "limitationCode": null,
       "satisfiesCoverage": true,
-      "coverageLocationIds": [],
+      "coverageLocationIds": [
+        "gb-bath",
+        "gb-birmingham",
+        "gb-brighton",
+        "gb-cambridge",
+        "gb-exeter",
+        "gb-lake-district-national-park",
+        "gb-leeds",
+        "gb-liverpool",
+        "gb-london",
+        "gb-manchester",
+        "gb-newcastle-upon-tyne",
+        "gb-oxford",
+        "gb-plymouth",
+        "gb-portsmouth",
+        "gb-york"
+      ],
       "systems": [
         {
           "id": "ea-flood",
@@ -2073,8 +2083,8 @@
           "systemName": "National Severe Weather Warning Service",
           "policy": "gated",
           "runtimeTarget": "national-civil-alerts",
-          "role": "coverage",
-          "status": "active",
+          "role": "fallback",
+          "status": "credential_gated",
           "cadenceMinutes": 10,
           "format": "atom",
           "hazards": [
@@ -2085,7 +2095,7 @@
             "flood",
             "coastal"
           ],
-          "coverageContribution": "complete",
+          "coverageContribution": "none",
           "accessStatus": "credential_required",
           "reuseStatus": "approved",
           "severityStatus": "approved",
@@ -2098,7 +2108,7 @@
           ],
           "reviewedAt": "2026-09-13",
           "nextReviewAt": "2027-03-13",
-          "limitationCode": null
+          "limitationCode": "credential_not_configured"
         },
         {
           "id": "nrw-flood",

@@ -41,6 +41,10 @@ const current2 = measureCoverage(projectCatalog2Snapshot(state, measuredAt), cat
 const current3 = measureCoverage(buildCatalog3Snapshot(state, measuredAt), catalog3, measuredAt);
 const pairs2 = coveragePairStates(projectCatalog2Snapshot(state, measuredAt), catalog2, measuredAt);
 const pairs3 = coveragePairStates(buildCatalog3Snapshot(state, measuredAt), catalog3, measuredAt);
+const metOffice = nationalWarningManifest.countries.GB.systems.find(({ id }) => id === "met-office-nswws");
+if (!metOffice) throw new Error("Met Office manifest record is missing");
+const metOfficeHazards = new Set(metOffice.hazards);
+const metOfficePolicyPairs = pairs3.filter(({ countryCode, hazard }) => countryCode === "GB" && metOfficeHazards.has(hazard));
 const checked2 = pairs2.filter(({ status }) => status !== "unavailable").map(({ key }) => key);
 const checked2Set = new Set(checked2);
 const checked3 = new Set(pairs3.filter(({ status }) => status !== "unavailable").map(({ key }) => key));
@@ -116,6 +120,14 @@ const report = {
     monitoredOrPartlyMonitoredLoss: Math.max(0, baseline.monitoredOrPartlyMonitoredPairs - monitoredOrPartial),
     explanation: "EEA AQI remains visible but is partial: only observation-backed culprit pollutants can create monitoring evidence; modeled or gap-filled values are context and never all-clear." },
   pairMembership: { regressedExistingPairs: regressedPairs, gainedPairs: [...checked3].filter((key) => !checked2Set.has(key)).length },
+  policyReclassification: {
+    systemId: metOffice.id,
+    formerlyFullyChecked: metOfficePolicyPairs.length,
+    nowFullyChecked: metOfficePolicyPairs.filter(({ status }) => status === "monitored").length,
+    nowPartlyChecked: metOfficePolicyPairs.filter(({ status }) => status === "partial").length,
+    nowUnavailable: metOfficePolicyPairs.filter(({ status }) => status === "unavailable").length,
+    explanation: "Met Office is optional and non-contributing; Environment Agency preserves partial flood coverage for its 15 reviewed England destinations.",
+  },
   addedDestinations: { count: added.length, earthquakeMonitored: pairs3.filter(({ locationId, hazard, status }) => (
     added.includes(locationId) && hazard === "earthquake" && status === "monitored"
   )).length, byHazard: addedByHazard },
@@ -132,7 +144,11 @@ if (report.catalog2Projection.membershipSha256 !== baseline.membershipSha256 || 
   || report.tiers.lifeSafety.monitored !== catalog3CoverageTarget.lifeSafety.fullyChecked
   || report.tiers.lifeSafety.partlyMonitored !== catalog3CoverageTarget.lifeSafety.partlyChecked
   || report.tiers.lifeSafety.unavailable !== catalog3CoverageTarget.lifeSafety.notChecked
-  || report.tiers.lifeSafety.monitoredOrPartlyMonitoredPairs !== catalog3CoverageTarget.lifeSafety.coveredOrPartial) {
+  || report.tiers.lifeSafety.monitoredOrPartlyMonitoredPairs !== catalog3CoverageTarget.lifeSafety.coveredOrPartial
+  || report.policyReclassification.formerlyFullyChecked !== 167
+  || report.policyReclassification.nowFullyChecked !== 0
+  || report.policyReclassification.nowPartlyChecked !== 15
+  || report.policyReclassification.nowUnavailable !== 152) {
   throw new Error("Catalog 3 coverage acceptance failed");
 }
 const path = new URL("../data/coverage-history/catalog3-upgrade.json", import.meta.url);
