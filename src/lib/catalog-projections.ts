@@ -74,7 +74,8 @@ export function buildCatalog3Snapshot(state: IngestionStateV15, now = new Date()
     };
   }
   const transportState = (health: SourceHealth | undefined, system: NationalWarningSystem, fallback: ReturnType<typeof publicProviderPartitionState>["status"]) => {
-    const status = system.status !== "active" || health?.status === "not_monitored" ? "disabled" as const
+    const authorized = system.status === "active" || system.status === "credential_gated" && Boolean(health && health.status !== "not_monitored");
+    const status = !authorized || health?.status === "not_monitored" ? "disabled" as const
       : health?.status === "ok" || health?.status === "partial" || health?.status === "delayed" ? health.status
         : health?.status === "failed" ? "failed" as const : fallback;
     return { id: system.id, name: system.systemName, role: system.role, status,

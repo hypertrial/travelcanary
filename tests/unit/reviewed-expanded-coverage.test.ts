@@ -41,8 +41,14 @@ describe("reviewed expanded monitoring coverage", () => {
       if (location.id === "li-malbun") expect(coverage.avalanche.status).toBe("monitored");
       if (["AD", "IS", "NO"].includes(location.countryCode)) {
         expect(coverage["severe-weather"].status).not.toBe("not_monitored");
-      } else if (["BA", "GB", "MD", "ME", "MK", "RS"].includes(location.countryCode)) {
+      } else if (["BA", "MD", "ME", "MK", "RS"].includes(location.countryCode)) {
         expect(coverage["severe-weather"].status).toBe("not_monitored");
+      }
+      if (location.countryCode === "GB") {
+        for (const hazard of ["severe-weather", "extreme-heat", "extreme-cold", "snow-ice", "flood"] as const) {
+          expect(coverage[hazard].status).toBe("monitored");
+        }
+        expect(coverage.coastal.status).toBe(location.isCoastal ? "monitored" : "not_monitored");
       }
       if (location.countryCode === "NO") {
         expect(coverage["fire-danger"].status).toBe("monitored"); expect(coverage.flood.status).toBe("partial");

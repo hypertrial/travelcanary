@@ -323,7 +323,8 @@ export function projectCatalog2Snapshot(input: IngestionState, now = new Date())
       const fallbackStatus = publicProviderPartitionState(effective).status;
       const transportState = (system: NationalWarningSystem) => {
         const current = transportHealth[system.id];
-        const status = system.status !== "active" ? "disabled" as const
+        const authorized = system.status === "active" || system.status === "credential_gated" && Boolean(current && current.status !== "not_monitored");
+        const status = !authorized ? "disabled" as const
           : system.role === "fallback" && effective.status === "ok" ? "ok" as const
           : current?.status === "not_monitored" ? "disabled" as const
             : current && system.role === "coverage" && transportIsDelayed(current, system.cadenceMinutes || 10, now) ? "delayed" as const

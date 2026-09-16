@@ -13,6 +13,8 @@ import { marineEligibleLocationIds as legacyMarineEligibleLocationIds, catalog3M
 import { locations as legacyLocations } from "../src/lib/data";
 import { catalogV2Paths, catalogV2SnapshotUrl, catalogV3Paths, catalogV3SnapshotUrl } from "../src/lib/catalog-paths";
 import { measureCoverage } from "./coverage-measurement";
+import { catalog3CoverageTarget, coverageMeetsCatalog3Target } from "../src/lib/coverage-measurement";
+import { requiredTransportFailures } from "../src/lib/public-health";
 import { mapConcurrent } from "../src/lib/ingestion/fetch";
 import { airportMappings } from "../src/lib/conditions/metar";
 import { rwsWaterMappings } from "../src/lib/conditions/rws-water";
@@ -34,6 +36,7 @@ type VerifyProductionOptions = {
   origin?: string;
   snapshotUrl?: string;
   expectedSha?: string;
+  expectedCatalogVersion?: 2 | 3;
   expectLocalConditions?: boolean;
   fetch?: typeof fetch;
   now?: Date;
@@ -190,6 +193,9 @@ export async function verifyProduction(options: VerifyProductionOptions = {}): P
     return { status: "blocked", blockers: ordered(blockers), warnings, metrics };
   }
   const catalogVersion = catalogMeta === "3" ? 3 : 2;
+  if (options.expectedCatalogVersion && catalogVersion !== options.expectedCatalogVersion) {
+    blockers.push({ code: "catalog_version_unexpected", message: `Expected catalog ${options.expectedCatalogVersion}, received ${catalogVersion}` });
+  }
   const paths = catalogVersion === 3 ? catalogV3Paths : catalogV2Paths;
   const locations = catalogVersion === 3 ? catalogLocationsV3 : legacyLocations;
   const catalogCountries = new Set<string>(locations.map(({ countryCode }) => countryCode));
@@ -284,8 +290,22 @@ export async function verifyProduction(options: VerifyProductionOptions = {}): P
       if (system.status === "active" && (!transport || transport.status === "disabled")) {
         blockers.push({ code: "active_transport_missing", message: `${countryCode}/${system.id} is approved but not exposed as enabled transport health` });
       }
-      if (system.status !== "active" && transport && transport.status !== "disabled") {
-        blockers.push({ code: "unauthorized_transport_active", message: `${countryCode}/${system.id} is gated but reports active runtime health` });
+    }
+    if (catalogVersion === 3) for (const providerId of ["meteoalarm", "national-civil-alerts"] as const) {
+      const partitions = snapshot.providers[providerId].partitions as Record<string, { transports?: Array<{ id: string; status: string }> }> | undefined;
+      for (const [countryCode, partition] of Object.entries(partitions || {}).filter(([countryCode]) => catalogCountries.has(countryCode))) {
+        const systems = nationalWarningManifest.countries[countryCode as keyof typeof nationalWarningManifest.countries]?.systems || [];
+        for (const transport of partition.transports || []) {
+          if (transport.status === "disabled") continue;
+          const system = systems.find(({ id }) => id === transport.id);
+          const expectedProvider = system?.runtimeTarget.startsWith("meteoalarm-") ? "meteoalarm"
+            : system?.runtimeTarget === "national-civil-alerts" ? "national-civil-alerts" : null;
+          const builtInMeteoalarm = providerId === "meteoalarm" && legacyCountries.has(countryCode)
+            && ["meteoalarm-primary", "ifrc-meteoalarm"].includes(transport.id);
+          if (!builtInMeteoalarm && (!system || expectedProvider !== providerId || !["active", "credential_gated"].includes(system.status))) {
+            blockers.push({ code: "unauthorized_transport_active", message: `${countryCode}/${transport.id} reports runtime health without active or configured credential-gated authorization` });
+          }
+        }
       }
     }
     for (const id of Object.keys(providerRegistry)) {
@@ -303,7 +323,19 @@ export async function verifyProduction(options: VerifyProductionOptions = {}): P
 
   if (snapshot && catalog && catalog.length === locations.length
     && new Set(catalog.map(({ id }) => id)).size === catalog.length
-    && catalog.map(({ id }) => id).sort().join(",") === Object.keys(snapshot.locations).sort().join(",")) metrics.coverageMeasurement = measureCoverage(snapshot, catalog, now);
+    && catalog.map(({ id }) => id).sort().join(",") === Object.keys(snapshot.locations).sort().join(",")) {
+    metrics.coverageMeasurement = measureCoverage(snapshot, catalog, now);
+    const requiredTransportHealth = catalogVersion === 3 ? requiredTransportFailures(snapshot, catalog, now) : [];
+    if (requiredTransportHealth.length) blockers.push({
+      code: "required_transport_unhealthy",
+      message: `Required transport health is missing, failed, or stale: ${boundedExamples(requiredTransportHealth)}`,
+    });
+    if (catalogVersion === 3 && !coverageMeetsCatalog3Target(metrics.coverageMeasurement)) {
+      const covered = metrics.coverageMeasurement.totals.fullyChecked + metrics.coverageMeasurement.totals.partlyChecked;
+      const life = metrics.coverageMeasurement.tiers.lifeSafety;
+      blockers.push({ code: "coverage_capability_regression", message: `Catalog 3 coverage is below the release floor: ${covered}/${catalog3CoverageTarget.allHazards.coveredOrPartial} all-hazard and ${life.fullyChecked + life.partlyChecked}/${catalog3CoverageTarget.lifeSafety.coveredOrPartial} life-safety pairs` });
+    }
+  }
 
   const conditionsEnabled = operationalMeta(html, "travelcanary-local-conditions") === "enabled";
   const noncommercialEnabled = operationalMeta(html, "travelcanary-noncommercial") === "enabled";
@@ -495,15 +527,18 @@ function option(args: string[], name: string) {
 
 async function main() {
   const args = process.argv.slice(2);
-  const known = new Set(["--origin", "--snapshot-url", "--expected-sha"]);
+  const known = new Set(["--origin", "--snapshot-url", "--expected-sha", "--expected-catalog-version"]);
   for (let index = 0; index < args.length; index += 1) {
     if (!known.has(args[index]) || !args[index + 1] || args[index + 1].startsWith("--")) throw new Error(`Unknown or incomplete option: ${args[index]}`);
     index += 1;
   }
+  const expectedCatalogVersionRaw = option(args, "--expected-catalog-version") || process.env.EXPECTED_CATALOG_VERSION;
+  if (expectedCatalogVersionRaw && !["2", "3"].includes(expectedCatalogVersionRaw)) throw new Error("Expected catalog version must be 2 or 3");
   const report = await verifyProduction({
     origin: option(args, "--origin") || process.env.PRODUCTION_ORIGIN,
     snapshotUrl: option(args, "--snapshot-url") || process.env.PRODUCTION_SNAPSHOT_URL,
     expectedSha: option(args, "--expected-sha") || process.env.EXPECTED_COMMIT_SHA,
+    expectedCatalogVersion: expectedCatalogVersionRaw ? Number(expectedCatalogVersionRaw) as 2 | 3 : undefined,
     expectLocalConditions: process.env.EXPECTED_LOCAL_CONDITIONS === "true",
   });
   console.log(JSON.stringify(report, null, 2));

@@ -14,6 +14,7 @@ import {
 } from "@/lib/ingestion/adapters/national-civil-alerts-expanded";
 import { createEmptyState } from "@/lib/risk-state";
 import { NationalCivilAlertsAdapter } from "@/lib/ingestion/adapters/national-civil-alerts";
+import { MeteoAlarmAdapter } from "@/lib/ingestion/adapters/meteoalarm";
 import { nationalWarningManifest } from "@/lib/national-warning-sources";
 import { CatalogPartitionedSourceResultSchema } from "@/lib/domain/catalog-state";
 
@@ -24,6 +25,7 @@ const square = (longitude: number, latitude: number) => ({ type: "Polygon", coor
   [longitude + 0.2, latitude + 0.2], [longitude - 0.2, latitude + 0.2],
   [longitude - 0.2, latitude - 0.2],
 ]] });
+const metOfficeFeed = (related: string, updated = "2026-09-09T09:55:00Z") => `<feed><updated>${updated}</updated><link rel="related" href="${related}"/></feed>`;
 
 afterEach(() => vi.unstubAllEnvs());
 
@@ -223,7 +225,7 @@ describe("expanded direct warning transports", () => {
     const fetchMock: typeof globalThis.fetch = async (input, init) => {
       calls.push({ url: String(input), init });
       return calls.length === 1
-        ? new Response(`<feed><link rel="related" href="${related}"/></feed>`)
+        ? new Response(metOfficeFeed(related))
         : Response.json({ features: [] });
     };
     await expect(fetchMetOffice({ ...context, fetch: fetchMock })).resolves.toMatchObject({ status: "ok", events: [] });
@@ -236,10 +238,22 @@ describe("expanded direct warning transports", () => {
     vi.stubEnv("MET_OFFICE_WARNINGS_FEED_URL", "https://warnings.api.metoffice.gov.uk/feed");
     vi.stubEnv("MET_OFFICE_API_KEY", "secret");
     const fetchMock = vi.fn<typeof globalThis.fetch>().mockResolvedValue(new Response(
-      '<feed><link rel="related" href="https://attacker.example/v1.0/objects/issued/current"/></feed>',
+      metOfficeFeed("https://attacker.example/v1.0/objects/issued/current"),
     ));
     await expect(fetchMetOffice({ ...context, fetch: fetchMock })).rejects.toThrow("not allowlisted");
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("accepts a cache-fresh empty Met Office feed whose update marker predates the latest poll", async () => {
+    vi.stubEnv("MET_OFFICE_WARNINGS_FEED_URL", "https://warnings.api.metoffice.gov.uk/feed");
+    vi.stubEnv("MET_OFFICE_API_KEY", "secret");
+    const related = "https://warnings.api.metoffice.gov.uk/v1.0/objects/issued/current";
+    const fetchMock = vi.fn<typeof globalThis.fetch>().mockResolvedValueOnce(new Response(
+      metOfficeFeed(related, "2026-09-08T09:55:00Z"), { headers: { Age: "30" } },
+    )).mockResolvedValueOnce(Response.json({ features: [] }));
+    await expect(fetchMetOffice({ ...context, fetch: fetchMock })).resolves.toMatchObject({
+      status: "ok", events: [], sourceUpdatedAt: "2026-09-08T09:55:00.000Z",
+    });
   });
 
   it("parses the documented Met Office issued-warning property names", async () => {
@@ -247,7 +261,7 @@ describe("expanded direct warning transports", () => {
     vi.stubEnv("MET_OFFICE_API_KEY", "secret");
     const related = "https://warnings.api.metoffice.gov.uk/v1.0/objects/issued/current";
     const fetchMock = vi.fn<typeof globalThis.fetch>().mockResolvedValueOnce(new Response(
-      `<feed><link rel="related" href="${related}"/></feed>`,
+      metOfficeFeed(related),
     )).mockResolvedValueOnce(Response.json({ features: [{ type: "Feature", geometry: square(-0.12, 51.5), properties: {
       warningId: "warning-1", warningStatus: "ISSUED", warningLevel: "AMBER", weatherType: ["RAIN", "SNOW"],
       validFromDate: "2026-09-09T09:00:00Z", validToDate: "2026-09-09T13:00:00Z",
@@ -260,6 +274,41 @@ describe("expanded direct warning transports", () => {
     ]));
   });
 
+  it("fails closed on stale feeds and incomplete Met Office lifecycle, geometry, severity, or time fields", async () => {
+    vi.stubEnv("MET_OFFICE_WARNINGS_FEED_URL", "https://warnings.api.metoffice.gov.uk/feed");
+    vi.stubEnv("MET_OFFICE_API_KEY", "secret");
+    const related = "https://warnings.api.metoffice.gov.uk/v1.0/objects/issued/current";
+    const base = { type: "Feature", geometry: square(-0.12, 51.5), properties: {
+      warningId: "warning-1", warningStatus: "ISSUED", warningLevel: "AMBER", weatherType: ["RAIN"],
+      validFromDate: "2026-09-09T09:00:00Z", validToDate: "2026-09-09T13:00:00Z", modifiedDate: "2026-09-09T09:30:00Z",
+    } } as { type: string; geometry: unknown; properties: Record<string, unknown> };
+    const stale = vi.fn<typeof globalThis.fetch>().mockResolvedValue(new Response(metOfficeFeed(related, "2026-09-08T08:59:59Z"), { headers: { Age: "1201" } }));
+    await expect(fetchMetOffice({ ...context, fetch: stale })).rejects.toThrow(/stale/);
+    expect(stale).toHaveBeenCalledTimes(1);
+
+    for (const mode of ["lifecycle", "geometry", "severity", "time"] as const) {
+      const feature = structuredClone(base);
+      if (mode === "lifecycle") delete feature.properties.warningStatus;
+      if (mode === "geometry") feature.geometry = { type: "Point", coordinates: [-0.12, 51.5] };
+      if (mode === "severity") feature.properties.warningLevel = "UNKNOWN";
+      if (mode === "time") delete feature.properties.validToDate;
+      const fetchMock = vi.fn<typeof globalThis.fetch>().mockResolvedValueOnce(new Response(metOfficeFeed(related)))
+        .mockResolvedValueOnce(Response.json({ features: [feature] }));
+      await expect(fetchMetOffice({ ...context, fetch: fetchMock })).rejects.toThrow();
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    }
+  });
+
+  it("treats a fresh complete Met Office cancellation response as healthy empty replacement", async () => {
+    vi.stubEnv("MET_OFFICE_WARNINGS_FEED_URL", "https://warnings.api.metoffice.gov.uk/feed");
+    vi.stubEnv("MET_OFFICE_API_KEY", "secret");
+    const related = "https://warnings.api.metoffice.gov.uk/v1.0/objects/issued/current";
+    const fetchMock = vi.fn<typeof globalThis.fetch>().mockResolvedValueOnce(new Response(metOfficeFeed(related)))
+      .mockResolvedValueOnce(Response.json({ features: [{ type: "Feature", properties: { warningId: "warning-1", warningStatus: "CANCELLED" } }] }));
+    await expect(fetchMetOffice({ ...context, fetch: fetchMock })).resolves.toMatchObject({ status: "ok", events: [],
+      sourceUpdatedAt: "2026-09-09T09:55:00.000Z", removedEventPrefixes: ["national:met-office:"] });
+  });
+
   it("bounds Met Office multi-hazard fanout without failing the national transport schema", async () => {
     vi.stubEnv("MET_OFFICE_WARNINGS_FEED_URL", "https://warnings.api.metoffice.gov.uk/feed");
     vi.stubEnv("MET_OFFICE_API_KEY", "secret");
@@ -269,7 +318,7 @@ describe("expanded direct warning transports", () => {
       validFromDate: "2026-09-09T09:00:00Z", validToDate: "2026-09-09T13:00:00Z", modifiedDate: "2026-09-09T09:30:00Z",
     } }));
     const fetchMock = vi.fn<typeof globalThis.fetch>().mockResolvedValueOnce(new Response(
-      `<feed><link rel="related" href="${related}"/></feed>`,
+      metOfficeFeed(related),
     )).mockResolvedValueOnce(Response.json({ features }));
     const result = await fetchMetOffice({ ...context, fetch: fetchMock });
     expect(result).toMatchObject({ status: "partial", limitationCode: "warning_event_limit_reached", checkedLocationIds: [],
@@ -292,7 +341,7 @@ describe("expanded direct warning transports", () => {
       if (url.includes("/id/floods?")) return Response.json({ items: [{ floodAreaID: "ea-area", severityLevel: 2,
         description: "River flooding", timeRaised: "2026-09-09T09:00:00Z", timeMessageChanged: "2026-09-09T09:30:00Z" }] });
       if (url.includes("/polygon")) return Response.json(square(-0.12, 51.5));
-      if (url.endsWith("/feed")) return new Response("<feed><link rel=\"related\" href=\"https://warnings.api.metoffice.gov.uk/v1.0/objects/issued/current\"/></feed>");
+      if (url.endsWith("/feed")) return new Response(metOfficeFeed("https://warnings.api.metoffice.gov.uk/v1.0/objects/issued/current"));
       if (url.includes("/v1.0/objects/issued/")) return Response.json({ features });
       throw new Error(`Unexpected URL ${url}`);
     });
@@ -370,5 +419,35 @@ describe("optional MeteoAlarm EDR recovery", () => {
       features: [{ type: "Feature", geometry: square(longitude, latitude), properties: {}, links: [{ rel: "xml", type: "application/xml", href: "https://attacker.example/api/warnings/EDR.xml" }] }] }));
     await expect(fetchNationalWeatherFallback("AD", { ...context, fetch: escaped })).rejects.toThrow("not allowlisted");
     expect(escaped).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps evidence-gated EDR countries unreachable even when a token exists", async () => {
+    vi.stubEnv("METEOALARM_API_TOKEN", "secret");
+    const none = vi.fn<typeof globalThis.fetch>();
+    for (const countryCode of ["BA", "MD", "ME", "MK", "RS"] as const) {
+      await expect(fetchNationalWeatherFallback(countryCode, { ...context, fetch: none })).resolves.toBeNull();
+    }
+    expect(none).not.toHaveBeenCalled();
+  });
+
+  it("calls reviewed EDR recovery only after the matching primary feed fails", async () => {
+    vi.stubEnv("METEOALARM_API_TOKEN", "secret");
+    vi.stubEnv("IFRC_FALLBACK_ENABLED", "false");
+    const empty = `<?xml version="1.0"?><feed><updated>${now.toISOString()}</updated></feed>`;
+    const fetchMock = vi.fn<typeof globalThis.fetch>(async (input) => {
+      const url = String(input);
+      if (url.includes("api.meteoalarm.org/edr/") && url.includes("/locations/AD")) return new Response(null, { status: 204 });
+      if (url.endsWith("meteoalarm-legacy-atom-andorra")) return new Response("<invalid/>");
+      return new Response(empty);
+    });
+    const recovered = await new MeteoAlarmAdapter().fetch({ ...context, fetch: fetchMock });
+    const ad = Object.entries(recovered.partitions).find(([countryCode]) => countryCode === "AD")?.[1];
+    expect(ad).toMatchObject({ status: "partial", limitationCode: "national_authority_fallback",
+      transports: { "meteoalarm-edr": { status: "ok" } } });
+    expect(fetchMock.mock.calls.filter(([input]) => String(input).includes("api.meteoalarm.org/edr/") && String(input).includes("/locations/AD"))).toHaveLength(1);
+
+    const healthyFetch = vi.fn<typeof globalThis.fetch>(async () => new Response(empty));
+    await new MeteoAlarmAdapter().fetch({ ...context, fetch: healthyFetch });
+    expect(healthyFetch.mock.calls.some(([input]) => String(input).includes("api.meteoalarm.org/edr/"))).toBe(false);
   });
 });

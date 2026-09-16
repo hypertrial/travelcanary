@@ -16,8 +16,8 @@ const conditionPolicy = (source: { enabled: boolean; noncommercial: boolean }): 
   !source.enabled ? "gated" : source.noncommercial ? "restricted" : "open";
 const providerPolicy = (providerId: string, mode: string): SourcePolicy =>
   mode === "disabled" ? "blocked" : environmentGatedProviders.has(providerId) ? "gated" : "open";
-const nationalPolicy = (status: string): SourcePolicy =>
-  status === "blocked" ? "blocked" : status === "active" ? "open" : "gated";
+const nationalPolicy = (system: { status: string; accessStatus: string }): SourcePolicy =>
+  system.status === "blocked" ? "blocked" : system.status === "active" && system.accessStatus === "approved" ? "open" : "gated";
 
 const inventory = {
   policyClasses: {
@@ -30,9 +30,16 @@ const inventory = {
   schemaVersion: 3,
   reviewedAt: nationalWarningManifest.reviewedAt,
   credentials: {
-    required: [],
-    optional: ["FIRMS_MAP_KEY", "METEOALARM_API_TOKEN", "MET_OFFICE_API_KEY", "NRW_FLOOD_API_KEY"],
+    required: ["MET_OFFICE_API_KEY", "MET_OFFICE_WARNINGS_FEED_URL"],
+    optional: ["FIRMS_MAP_KEY", "METEOALARM_API_TOKEN", "NRW_FLOOD_API_BASE_URL", "NRW_FLOOD_API_KEY"],
     environmentGated: ["gfm", "eonet", "edo-drought", "fcdo-travel-advice"],
+    descriptions: {
+      MET_OFFICE_API_KEY: "Required server-only API key for complete UK warning coverage.",
+      MET_OFFICE_WARNINGS_FEED_URL: "Required server-only Met Office NSWWWS Atom feed URL; must use an allowlisted Met Office HTTPS host.",
+      METEOALARM_API_TOKEN: "Optional server-only authenticated EDR recovery for the reviewed Andorra and Iceland mappings; fallback-only and non-contributing.",
+      NRW_FLOOD_API_BASE_URL: "Optional server-only NRW endpoint; inert while the NRW transport remains credential-gated.",
+      NRW_FLOOD_API_KEY: "Optional server-only NRW API key; inert while the NRW transport remains credential-gated.",
+    },
   },
   providers: Object.entries(providerRegistry).map(([providerId, definition]) => ({
     providerId,
@@ -65,7 +72,7 @@ const inventory = {
     coverageLocationIds: source.coverageLocationIds || [],
     systems: nationalWarningManifest.countries[countryCode as keyof typeof nationalWarningManifest.countries].systems.map((system) => ({
       id: system.id, authority: system.authority, systemName: system.systemName,
-      policy: nationalPolicy(system.status),
+      policy: nationalPolicy(system),
       runtimeTarget: system.runtimeTarget, role: system.role, status: system.status,
       cadenceMinutes: system.cadenceMinutes, format: system.format, hazards: system.hazards,
       coverageContribution: system.coverageContribution,

@@ -37,6 +37,24 @@ describe("aggressive national alert integrations", () => {
     const incompleteCoverage = structuredClone(nationalWarningManifest) as unknown as { countries: Record<string, { systems: Array<Record<string, unknown>> }> };
     incompleteCoverage.countries.IT.systems[1].completenessStatus = "credential_required";
     expect(() => NationalWarningSourcesSchema.parse(incompleteCoverage)).toThrow(/completeness decision/i);
+
+    const missingCredential = structuredClone(nationalWarningManifest) as unknown as { countries: Record<string, { systems: Array<Record<string, unknown>> }> };
+    missingCredential.countries.GB.systems.find(({ id }) => id === "met-office-nswws")!.credentialEnvVar = null;
+    expect(() => NationalWarningSourcesSchema.parse(missingCredential)).toThrow(/environment variable/i);
+
+    for (const gate of ["reuseStatus", "severityStatus", "lifecycleStatus", "geometryStatus", "completenessStatus"]) {
+      const incompleteCredentialSource = structuredClone(nationalWarningManifest) as unknown as { countries: Record<string, { systems: Array<Record<string, unknown>> }> };
+      incompleteCredentialSource.countries.GB.systems.find(({ id }) => id === "met-office-nswws")![gate] = "partial";
+      expect(() => NationalWarningSourcesSchema.parse(incompleteCredentialSource)).toThrow(/runtime readiness/i);
+    }
+  });
+
+  it("keeps credential and evidence-gated systems non-contributing until explicit promotion", () => {
+    const systems = Object.values(nationalWarningManifest.countries).flatMap(({ systems }) => systems);
+    expect(systems.filter(({ status }) => status === "credential_gated").every(({ coverageContribution }) => coverageContribution === "none")).toBe(true);
+    expect(systems.filter(({ status }) => status === "evidence_gated").every(({ coverageContribution }) => coverageContribution === "none")).toBe(true);
+    expect(systems.find(({ id }) => id === "met-office-nswws")).toMatchObject({ status: "active", role: "coverage",
+      accessStatus: "credential_required", coverageContribution: "complete", credentialEnvVar: "MET_OFFICE_API_KEY" });
   });
 
   it("validates the runtime country denylist strictly", () => {

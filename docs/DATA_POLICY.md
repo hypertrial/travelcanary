@@ -4,7 +4,7 @@ TravelCanary includes reviewed source adapters and enough minimized fixtures to 
 
 - `open`: reviewed and enabled by default. Existing attribution and reuse terms still apply.
 - `restricted`: lawful reuse has noncommercial or similarly restrictive terms. Self-hosted collection is disabled until the operator explicitly accepts the current restricted-source manifest digest. Visitors receive a persistent disclosure while these sources are active.
-- `gated`: retained for parity and continued review, but makes zero requests until its documented legal and technical gate passes.
+- `gated`: makes zero requests until its documented legal, technical, or credential gate passes. A reviewed active credential-bound source may run only while its declared server-side configuration is present.
 - `blocked`: documentation or official links only. TravelCanary does not fetch it.
 
 TravelCanary does not bypass authentication, paywalls, bot controls, or access controls; use undocumented private endpoints; or perform unreviewed scraping. A failed source gate is a reason to keep the connector off, not to evade the gate.

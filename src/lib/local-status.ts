@@ -8,6 +8,7 @@ import { restrictedConditionSourceIds, restrictedSourceCount, restrictedSourcesA
 import { catalogV3CountryCodes } from "./domain/contract-identities";
 import { catalogLocationsV3 } from "./catalog-data";
 import { coverageCounts, requiredTransportFailures } from "./public-health";
+import { catalog3CoverageTarget, emptyCoverageCounts } from "./coverage-measurement";
 
 export const CollectorStatusSchema = z.object({
   schemaVersion: z.literal(1),
@@ -79,10 +80,18 @@ export function localHealth(database: LocalDatabase, now = new Date()) {
   const releaseMismatch = producerCommits.size > 1 || Boolean(expectedCommit
     && [...producerCommits].some((commit) => !commit?.startsWith(expectedCommit.toLowerCase())));
   const failedTransports = snapshot ? requiredTransportFailures(snapshot, catalogLocationsV3, now) : ["snapshot/unavailable"];
+  const emptyCoverage = emptyCoverageCounts();
+  const coverage = snapshot ? coverageCounts(snapshot, catalogLocationsV3, now) : { ...emptyCoverage, tiers: { lifeSafety: { ...emptyCoverage } } };
+  const coverageOk = coverage.applicable === catalog3CoverageTarget.allHazards.applicable
+    && coverage.fullyChecked >= catalog3CoverageTarget.allHazards.fullyChecked
+    && coverage.fullyChecked + coverage.partlyChecked >= catalog3CoverageTarget.allHazards.coveredOrPartial
+    && coverage.tiers.lifeSafety.applicable === catalog3CoverageTarget.lifeSafety.applicable
+    && coverage.tiers.lifeSafety.fullyChecked >= catalog3CoverageTarget.lifeSafety.fullyChecked
+    && coverage.tiers.lifeSafety.fullyChecked + coverage.tiers.lifeSafety.partlyChecked >= catalog3CoverageTarget.lifeSafety.coveredOrPartial;
   const heartbeatAge = collector ? now.getTime() - Date.parse(collector.lastHeartbeat) : Number.POSITIVE_INFINITY;
   const warming = !collector?.lastSuccess || (snapshot && Object.values(snapshot.locations).every(({ level }) => level === "UNKNOWN"));
   const degraded = collector?.state === "failed" || heartbeatAge > 3 * 60_000 || !snapshotOk
-    || present !== catalogV3CountryCodes.length || overdueCountryCodes.length > 0 || releaseMismatch || failedTransports.length > 0;
+    || present !== catalogV3CountryCodes.length || overdueCountryCodes.length > 0 || releaseMismatch || failedTransports.length > 0 || !coverageOk;
   return {
     schemaVersion: 1 as const,
     status: degraded ? "degraded" as const : warming ? "warming" as const : "ok" as const,
@@ -96,8 +105,9 @@ export function localHealth(database: LocalDatabase, now = new Date()) {
       conditions: { status: present === catalogV3CountryCodes.length && !overdueCountryCodes.length && !releaseMismatch ? "ok" as const : "failed" as const,
         expected: catalogV3CountryCodes.length, present, overdueCountryCodes },
       transports: { status: failedTransports.length ? "failed" as const : "ok" as const, failed: failedTransports },
+      coverage: { status: coverageOk ? "ok" as const : "failed" as const, minimums: catalog3CoverageTarget },
     },
-    coverage: snapshot ? coverageCounts(snapshot, catalogLocationsV3, now) : { fullyChecked: 0, partlyChecked: 0, notChecked: 0 },
+    coverage,
     database: { available: Boolean(snapshot), writable: true },
     collector: collector ? {
       state: collector.state,

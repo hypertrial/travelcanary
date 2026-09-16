@@ -4,6 +4,7 @@ import { catalogMembershipHash } from "../src/lib/catalog-membership.ts";
 const manifestPath = new URL("../data/national-warning-sources.json", import.meta.url);
 const capabilitiesPath = new URL("../data/meteoalarm-capabilities.json", import.meta.url);
 const presentationPath = new URL("../data/national-warning-presentation.json", import.meta.url);
+const expandedCoveragePath = new URL("../data/expanded-national-warning-coverage.json", import.meta.url);
 const membershipPath = new URL("../data/catalog-membership.json", import.meta.url);
 const release2Path = new URL("../data/catalog-releases/2.json", import.meta.url);
 const release3Path = new URL("../data/catalog-releases/3.json", import.meta.url);
@@ -154,12 +155,12 @@ gbSystems.unshift({
 gbSystems.push({
   id: "met-office-nswws", reviewedAt, nextReviewAt, evidenceUrls: ["https://metoffice.github.io/nswws-public-api/atom-feed.html"],
   authority: "Met Office", systemName: "National Severe Weather Warning Service", officialUrl: "https://www.metoffice.gov.uk/weather/warnings-and-advice/uk-warnings",
-  runtimeTarget: "national-civil-alerts", role: "fallback", status: "credential_gated", endpoint: "https://warnings.api.metoffice.gov.uk/",
+  runtimeTarget: "national-civil-alerts", role: "coverage", status: "active", endpoint: "https://warnings.api.metoffice.gov.uk/",
   format: "atom", cadenceMinutes: 10, maxBytes: 2097152, hazards: ["severe-weather", "extreme-heat", "extreme-cold", "snow-ice", "flood", "coastal"],
   accessStatus: "credential_required", reuseStatus: "approved", severityStatus: "approved", lifecycleStatus: "approved", geometryStatus: "approved",
-  completenessStatus: "approved", coverageContribution: "none", credentialEnvVar: "MET_OFFICE_API_KEY", limitationCode: "credential_not_configured",
-  blocker: "Optional enhancement; catalog 3 launch and health do not depend on credentials.", contactUrl: "https://metoffice.github.io/nswws-public-api/atom-feed.html",
-  reReviewTrigger: "Credentials are provisioned or the feed/authentication contract changes.", license: { name: "Met Office data licence", url: "https://www.metoffice.gov.uk/about-us/legal" },
+  completenessStatus: "approved", coverageContribution: "complete", credentialEnvVar: "MET_OFFICE_API_KEY", limitationCode: null,
+  blocker: null, contactUrl: "https://metoffice.github.io/nswws-public-api/atom-feed.html",
+  reReviewTrigger: "The feed, authentication, lifecycle, severity, geometry, or hazard taxonomy contract changes.", license: { name: "Met Office data licence", url: "https://www.metoffice.gov.uk/about-us/legal" },
 });
 gbSystems.push({
   id: "nrw-flood", reviewedAt, nextReviewAt, evidenceUrls: ["https://naturalresources.wales/flooding/check-flood-warnings/?lang=en"],
@@ -197,7 +198,8 @@ const presentation = { schemaVersion: 1, countries: Object.fromEntries(Object.en
   const runtime = country.systems.filter((system) => system.status === "active" && system.runtimeTarget === "national-civil-alerts");
   const coverage = runtime.filter((system) => system.coverageContribution !== "none");
   const primary = runtime[0] || country.systems.find(({ runtimeTarget }) => runtimeTarget !== "meteoalarm-fallback" && runtimeTarget !== "meteoalarm-primary") || country.systems[0];
-  const coverageLocationIds = [...new Set(coverage.flatMap((system) => system.coverageLocationIds || []))];
+  const coverageLocationIds = coverage.some((system) => !system.coverageLocationIds) ? []
+    : [...new Set(coverage.flatMap((system) => system.coverageLocationIds || []))];
   return [countryCode, {
     reviewedAt: country.reviewedAt,
     source: {
@@ -218,6 +220,19 @@ const presentation = { schemaVersion: 1, countries: Object.fromEntries(Object.en
     })),
   }];
 })) };
+const release2Ids = new Set(release2.locationIds);
+const addedCountryCodes = [...new Set(release3.locationIds.filter((id) => !release2Ids.has(id))
+  .map((id) => id.slice(0, 2).toUpperCase()))].sort();
+const expandedCoverage = {
+  schemaVersion: 1,
+  countries: Object.fromEntries(addedCountryCodes.flatMap((countryCode) => {
+    const systems = manifest.countries[countryCode].systems.filter((system) => system.status === "active"
+      && system.runtimeTarget === "national-civil-alerts" && system.role === "coverage" && system.coverageContribution !== "none")
+      .map((system) => ({ hazards: system.hazards, coverageContribution: system.coverageContribution,
+        ...(system.coverageLocationIds ? { coverageLocationIds: system.coverageLocationIds } : {}) }));
+    return systems.length ? [[countryCode, systems]] : [];
+  })),
+};
 const membershipContract = (ids) => ({
   count: ids.length,
   hash: catalogMembershipHash(ids),
@@ -233,6 +248,7 @@ const outputs = [
   [manifestPath, `${JSON.stringify(manifest, null, 2)}\n`],
   [capabilitiesPath, `${JSON.stringify(capabilities, null, 2)}\n`],
   [presentationPath, `${JSON.stringify(presentation)}\n`],
+  [expandedCoveragePath, `${JSON.stringify(expandedCoverage)}\n`],
   [membershipPath, `${JSON.stringify(membership)}\n`],
 ];
 if (process.argv.includes("--check")) {

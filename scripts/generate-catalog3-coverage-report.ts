@@ -7,8 +7,11 @@ import { buildCatalog3Snapshot } from "../src/lib/catalog-projections";
 import { createEmptyState } from "../src/lib/risk-state";
 import { projectCatalog2Snapshot } from "../src/lib/risk-snapshot";
 import type { IngestionStateV15 } from "../src/lib/domain/catalog-state";
+import type { HazardType } from "../src/lib/domain/schemas";
 import { PublicCatalogV2Schema, PublicCatalogV3Schema } from "../src/lib/domain/catalog-public";
 import { coveragePairStates, measureCoverage } from "./coverage-measurement";
+import { catalog3CoverageTarget, lifeSafetyHazards } from "../src/lib/coverage-measurement";
+import { nationalWarningManifest } from "../src/lib/national-warning-sources";
 
 const measuredAt = new Date("2026-09-13T00:00:00Z");
 const catalog2 = PublicCatalogV2Schema.parse(catalog2Json);
@@ -50,6 +53,43 @@ const addedByHazard = Object.fromEntries(Object.entries(current3.byHazard).map((
 }).filter(([, counts]) => Object.values(counts).some((count) => count !== 0)));
 const remainingGapsByHazard = Object.fromEntries(Object.entries(current3.byHazard).filter(([, counts]) => counts.notChecked > 0)
   .map(([hazard, counts]) => [hazard, counts.notChecked]));
+const unavailablePairs = pairs3.filter(({ status }) => status === "unavailable");
+const unavailableByCountryHazard = new Map<string, typeof unavailablePairs>();
+for (const pair of unavailablePairs) {
+  const key = `${pair.countryCode}|${pair.hazard}`;
+  unavailableByCountryHazard.set(key, [...(unavailableByCountryHazard.get(key) || []), pair]);
+}
+const gapGroups = [...unavailableByCountryHazard.values()].map((pairs) => {
+  const pair = pairs[0];
+  const systems = nationalWarningManifest.countries[pair.countryCode as keyof typeof nationalWarningManifest.countries].systems
+    .filter((system) => system.status !== "active" && system.hazards.includes(pair.hazard));
+  const readiness = systems.some(({ status }) => status === "credential_gated") ? "credentialReady" as const
+    : systems.some(({ status }) => status === "evidence_gated") ? "evidencePending" as const
+      : "blockedNoSupportedFeed" as const;
+  return {
+    countryCode: pair.countryCode, hazard: pair.hazard, uncoveredPairs: pairs.length,
+    uncoveredLifeSafetyPairs: lifeSafetyHazards.has(pair.hazard) ? pairs.length : 0,
+    totalUncoveredPairs: pairs.length,
+    readiness,
+    candidateSystemIds: systems.length ? systems.map(({ id }) => id).sort() : ["no_reviewed_candidate"],
+    candidates: systems.map((system) => ({ id: system.id, officialUrl: system.officialUrl, blocker: system.blocker,
+      reReviewTrigger: system.reReviewTrigger, nextReviewAt: system.nextReviewAt })).sort((left, right) => left.id.localeCompare(right.id)),
+  };
+});
+const ranked = (groups: typeof gapGroups) => groups.sort((left, right) => right.uncoveredLifeSafetyPairs - left.uncoveredLifeSafetyPairs
+  || right.totalUncoveredPairs - left.totalUncoveredPairs || left.countryCode.localeCompare(right.countryCode)
+  || left.hazard.localeCompare(right.hazard));
+const specialistHazards = new Set(["avalanche", "volcano"]);
+const priorityGroups = gapGroups.filter(({ hazard }) => !specialistHazards.has(hazard));
+const priorityProgram = {
+  definition: "One row per country/hazard capability gap; forecasts, advice, satellite detections, modeled conditions, and fallback-only transports do not create warning coverage.",
+  readinessBands: {
+    credentialReady: ranked(priorityGroups.filter(({ readiness }) => readiness === "credentialReady")),
+    evidencePending: ranked(priorityGroups.filter(({ readiness }) => readiness === "evidencePending")),
+    blockedNoSupportedFeed: ranked(priorityGroups.filter(({ readiness }) => readiness === "blockedNoSupportedFeed")),
+  },
+  specialist: ranked(gapGroups.filter(({ hazard }) => specialistHazards.has(hazard))),
+};
 const baseline = { applicablePairs: 8_392, monitoredOrPartlyMonitoredPairs: 5_321,
   membershipSha256: "c2da0bc3d26e013d78596dbe429a64255fe58d7c380761f5f3ce9831df21f4c6" };
 const monitoredOrPartial = current3.totals.fullyChecked + current3.totals.partlyChecked;
@@ -64,6 +104,12 @@ const report = {
   catalog3Projection: { catalogVersion: 3, locations: 679, countries: 45, applicablePairs: current3.totals.applicable,
     monitored: current3.totals.fullyChecked, partlyMonitored: current3.totals.partlyChecked, unavailable: current3.totals.notChecked,
     monitoredOrPartlyMonitoredPairs: monitoredOrPartial },
+  tiers: { lifeSafety: { applicablePairs: current3.tiers.lifeSafety.applicable, monitored: current3.tiers.lifeSafety.fullyChecked,
+    partlyMonitored: current3.tiers.lifeSafety.partlyChecked, unavailable: current3.tiers.lifeSafety.notChecked,
+    monitoredOrPartlyMonitoredPairs: current3.tiers.lifeSafety.fullyChecked + current3.tiers.lifeSafety.partlyChecked,
+    remainingGapsByHazard: Object.fromEntries(Object.entries(current3.byHazard).filter(([hazard, counts]) => (
+      lifeSafetyHazards.has(hazard as HazardType) && counts.notChecked > 0
+    )).map(([hazard, counts]) => [hazard, counts.notChecked])) } },
   deltaFromBaseline: { applicablePairs: current3.totals.applicable - baseline.applicablePairs,
     monitoredOrPartlyMonitoredPairs: monitoredOrPartial - baseline.monitoredOrPartlyMonitoredPairs },
   reclassifications: { eeaModeledFullToObservationPartial: current2.byHazard["air-quality"].partlyChecked,
@@ -74,10 +120,19 @@ const report = {
     added.includes(locationId) && hazard === "earthquake" && status === "monitored"
   )).length, byHazard: addedByHazard },
   remainingGapsByHazard,
+  priorityProgram,
 };
 if (report.catalog2Projection.membershipSha256 !== baseline.membershipSha256 || report.pairMembership.regressedExistingPairs.length
   || report.catalog3Projection.applicablePairs !== 11_799 || report.addedDestinations.earthquakeMonitored !== 176
-  || report.catalog3Projection.monitoredOrPartlyMonitoredPairs <= baseline.monitoredOrPartlyMonitoredPairs) {
+  || report.catalog3Projection.monitored !== catalog3CoverageTarget.allHazards.fullyChecked
+  || report.catalog3Projection.partlyMonitored !== catalog3CoverageTarget.allHazards.partlyChecked
+  || report.catalog3Projection.unavailable !== catalog3CoverageTarget.allHazards.notChecked
+  || report.catalog3Projection.monitoredOrPartlyMonitoredPairs !== catalog3CoverageTarget.allHazards.coveredOrPartial
+  || report.tiers.lifeSafety.applicablePairs !== catalog3CoverageTarget.lifeSafety.applicable
+  || report.tiers.lifeSafety.monitored !== catalog3CoverageTarget.lifeSafety.fullyChecked
+  || report.tiers.lifeSafety.partlyMonitored !== catalog3CoverageTarget.lifeSafety.partlyChecked
+  || report.tiers.lifeSafety.unavailable !== catalog3CoverageTarget.lifeSafety.notChecked
+  || report.tiers.lifeSafety.monitoredOrPartlyMonitoredPairs !== catalog3CoverageTarget.lifeSafety.coveredOrPartial) {
   throw new Error("Catalog 3 coverage acceptance failed");
 }
 const path = new URL("../data/coverage-history/catalog3-upgrade.json", import.meta.url);

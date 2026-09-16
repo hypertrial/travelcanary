@@ -1,6 +1,5 @@
 import { catalogLocationsV3 } from "./catalog-data";
 import { catalogV2Paths, catalogV2SnapshotUrl, catalogV3Paths, catalogV3SnapshotUrl } from "./catalog-paths";
-import { locationCoveragePresentation } from "./coverage-presentation";
 import { locations as catalogLocationsV2 } from "./data";
 import { ConditionsV3Schema, PublicCatalogV2Schema, PublicCatalogV3Schema, SnapshotV11Schema, type CatalogSnapshot, type PublicCatalogLocation } from "./domain/catalog-public";
 import { catalogV2CountryCodes, catalogV3CountryCodes } from "./domain/contract-identities";
@@ -14,6 +13,7 @@ import { nationalWarningManifest } from "./national-warning-sources";
 import { CoverageMatrixSchema, type HazardType, type ProviderId } from "./domain/schemas";
 import { providerRegistry } from "./provider-registry";
 import coverageJson from "../../data/coverage.json";
+import { catalog3CoverageTarget, coverageBreakdown, coverageMeetsCatalog3Target, emptyCoverageCounts } from "./coverage-measurement";
 
 const SNAPSHOT_LIMIT = 500_000; const CATALOG_LIMIT = 256_000; const CONDITIONS_LIMIT = 512_000;
 type HealthStatus = "ok" | "failed";
@@ -78,6 +78,24 @@ function providerViable(snapshot: CatalogSnapshot, location: PublicCatalogLocati
 
 export function requiredTransportFailures(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date) {
   const failed = new Set<string>();
+  const national = snapshot.providers["national-civil-alerts"].partitions as Record<string, PublicPartition> | undefined;
+  for (const [countryCode, country] of Object.entries(nationalWarningManifest.countries)) {
+    const locations = catalog.filter((location) => location.countryCode === countryCode);
+    if (!locations.length) continue;
+    for (const system of country.systems.filter((candidate) => candidate.status === "active"
+      && candidate.runtimeTarget === "national-civil-alerts" && candidate.role === "coverage" && candidate.coverageContribution !== "none")) {
+      const applicable = locations.some((location) => (!system.coverageLocationIds || system.coverageLocationIds.includes(location.id))
+        && system.hazards.some((hazard) => hazardAppliesToLocation(hazard, location)));
+      if (!applicable) continue;
+      const partition = national?.[countryCode];
+      const transport = partition?.transports?.find(({ id }) => id === system.id);
+      const strictFailure = system.id === "met-office-nswws" && transport && !["ok", "partial"].includes(transport.status);
+      if (!transport || strictFailure || !viable({ ...transport, lastSuccess: transport.lastSuccess ?? partition?.lastSuccess ?? null,
+        nextExpectedUpdate: transport.nextExpectedUpdate ?? partition?.nextExpectedUpdate ?? null }, now, system.cadenceMinutes)) {
+        failed.add(`transport/${countryCode}/${system.id}`);
+      }
+    }
+  }
   for (const location of catalog) {
     const country = (coverageMatrix.countries as Record<string, { hazards: Record<HazardType, { status: string; providerIds: ProviderId[] }> }>)[location.countryCode];
     const entries = isExpandedDestination(location) ? expandedHazardCoverage(location)
@@ -103,12 +121,8 @@ function fixedPublicOrigin(env: Record<string, string | undefined>) {
 }
 
 export function coverageCounts(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date) {
-  const coverage = { fullyChecked: 0, partlyChecked: 0, notChecked: 0 };
-  for (const location of catalog) for (const check of locationCoveragePresentation({ location, state: snapshot.locations[location.id], snapshot, now }).categories.flatMap(({ subchecks }) => subchecks)) {
-    if (!isExpandedDestination(location) && !hazardAppliesToLocation(check.hazard, location)) continue;
-    coverage[check.coverageStatus === "available" ? "fullyChecked" : check.coverageStatus === "limited" ? "partlyChecked" : "notChecked"] += 1;
-  }
-  return coverage;
+  const measurement = coverageBreakdown(snapshot, catalog, now);
+  return { ...measurement.totals, tiers: measurement.tiers };
 }
 
 export async function checkPublicHealth(options: PublicHealthOptions) {
@@ -157,7 +171,10 @@ export async function checkPublicHealth(options: PublicHealthOptions) {
   const conditionsStatus: HealthStatus = present === countryCodes.length && !overdueCountryCodes.length && !releaseMismatch ? "ok" : "failed";
   const failed = snapshot && catalog ? requiredTransportFailures(snapshot, catalog, now) : ["snapshot/unavailable"];
   const transportStatus: HealthStatus = failed.length ? "failed" : "ok";
-  const status = [snapshotStatus, catalogStatus, conditionsStatus, transportStatus].every((item) => item === "ok") ? "ok" : "degraded";
+  const measurement = snapshot && catalog ? coverageBreakdown(snapshot, catalog, now) : null;
+  const coverageStatus: HealthStatus = measurement && (catalogVersion !== 3 || coverageMeetsCatalog3Target(measurement)) ? "ok" : "failed";
+  const status = [snapshotStatus, catalogStatus, conditionsStatus, transportStatus, coverageStatus].every((item) => item === "ok") ? "ok" : "degraded";
+  const empty = emptyCoverageCounts();
   return {
     schemaVersion: 1 as const, status, runtime: "vercel" as const, catalogVersion, checkedAt: now.toISOString(),
     checks: {
@@ -165,7 +182,8 @@ export async function checkPublicHealth(options: PublicHealthOptions) {
       catalog: { status: catalogStatus, expectedLocations, actualLocations: catalog?.length || 0 },
       conditions: { status: conditionsStatus, expected: countryCodes.length, present, overdueCountryCodes },
       transports: { status: transportStatus, failed },
+      coverage: { status: coverageStatus, minimums: catalogVersion === 3 ? catalog3CoverageTarget : null },
     },
-    coverage: snapshot && catalog ? coverageCounts(snapshot, catalog, now) : { fullyChecked: 0, partlyChecked: 0, notChecked: 0 },
+    coverage: measurement ? { ...measurement.totals, tiers: measurement.tiers } : { ...empty, tiers: { lifeSafety: { ...empty } } },
   };
 }
