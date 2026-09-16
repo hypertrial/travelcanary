@@ -70,8 +70,8 @@ describe("public production health", () => {
         conditions: { status: "ok", expected: 45, present: 45, overdueCountryCodes: [] }, transports: { status: "ok", failed: [] },
         coverage: { status: "ok" } } });
     expect(result.coverage.fullyChecked + result.coverage.partlyChecked + result.coverage.notChecked).toBe(11_799);
-    expect(result.coverage).toMatchObject({ applicable: 11_799, fullyChecked: 3_034, partlyChecked: 2_862, notChecked: 5_903,
-      tiers: { lifeSafety: { applicable: 7_237, fullyChecked: 3_020, partlyChecked: 2_211, notChecked: 2_006 } } });
+    expect(result.coverage).toMatchObject({ applicable: 11_799, fullyChecked: 2_867, partlyChecked: 2_877, notChecked: 6_055,
+      tiers: { lifeSafety: { applicable: 7_237, fullyChecked: 2_853, partlyChecked: 2_226, notChecked: 2_158 } } });
     expect(f.fetch.mock.calls).toHaveLength(47);
   });
 
@@ -121,28 +121,28 @@ describe("public production health", () => {
     expect(JSON.stringify(result)).not.toContain("private upstream failure");
   });
 
-  it("requires Met Office while keeping credential-gated NRW health-neutral", async () => {
+  it("keeps unconfigured credential-gated Met Office and NRW health-neutral", async () => {
     const f = fixture();
     expect(f.snapshot.providers["national-civil-alerts"].partitions?.GB.transports).toEqual(expect.arrayContaining([
-      expect.objectContaining({ id: "met-office-nswws", role: "coverage", status: "ok", limitationCode: null }),
+      expect.objectContaining({ id: "met-office-nswws", role: "fallback", status: "disabled", limitationCode: "credential_not_configured" }),
       expect.objectContaining({ id: "nrw-flood", status: "disabled", limitationCode: "credential_not_configured" }),
     ]));
     expect(await f.check()).toMatchObject({ status: "ok", checks: { transports: { status: "ok", failed: [] } } });
   });
 
-  it("degrades when required Met Office health is missing or stale", async () => {
+  it("keeps missing, failed, or stale optional Met Office health neutral", async () => {
     const missing = fixture();
     missing.snapshot.providers["national-civil-alerts"].partitions!.GB.transports = missing.snapshot.providers["national-civil-alerts"].partitions!.GB.transports!
       .filter(({ id }) => id !== "met-office-nswws");
     missing.bodies.set(snapshotUrl, JSON.stringify(missing.snapshot));
-    expect(await missing.check()).toMatchObject({ status: "degraded", checks: { transports: { status: "failed" } } });
+    expect(await missing.check()).toMatchObject({ status: "ok", checks: { transports: { status: "ok", failed: [] } } });
 
     const stale = fixture();
     const metOffice = stale.snapshot.providers["national-civil-alerts"].partitions!.GB.transports!.find(({ id }) => id === "met-office-nswws")!;
     Object.assign(metOffice, { status: "failed", lastSuccess: new Date(+now - 60 * 60_000).toISOString(),
       nextExpectedUpdate: new Date(+now - 30 * 60_000).toISOString() });
     stale.bodies.set(snapshotUrl, JSON.stringify(stale.snapshot));
-    expect(await stale.check()).toMatchObject({ status: "degraded", checks: { transports: { status: "failed" } } });
+    expect(await stale.check()).toMatchObject({ status: "ok", checks: { transports: { status: "ok", failed: [] } } });
 
     const failed = fixture();
     const recentlySuccessful = failed.snapshot.providers["national-civil-alerts"].partitions!.GB.transports!
@@ -150,12 +150,13 @@ describe("public production health", () => {
     Object.assign(recentlySuccessful, { status: "failed", lastSuccess: new Date(+now - 5 * 60_000).toISOString(),
       nextExpectedUpdate: new Date(+now + 5 * 60_000).toISOString() });
     failed.bodies.set(snapshotUrl, JSON.stringify(failed.snapshot));
-    expect(await failed.check()).toMatchObject({ status: "degraded", checks: { transports: { status: "failed" } } });
+    expect(await failed.check()).toMatchObject({ status: "ok", checks: { transports: { status: "ok", failed: [] } } });
   });
 
   it("fails when an applicable required transport is absent", async () => {
     const f = fixture();
-    f.snapshot.providers["national-civil-alerts"].partitions!.GB.transports = [];
+    f.snapshot.providers["national-civil-alerts"].partitions!.GB.transports = f.snapshot.providers["national-civil-alerts"].partitions!.GB.transports!
+      .filter(({ id }) => id !== "ea-flood");
     f.bodies.set(snapshotUrl, JSON.stringify(f.snapshot));
     expect(await f.check()).toMatchObject({ status: "degraded", checks: { transports: { status: "failed" } } });
   });

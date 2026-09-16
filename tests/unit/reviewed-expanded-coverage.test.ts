@@ -5,6 +5,7 @@ import { projectCatalog2Snapshot } from "@/lib/risk-snapshot";
 import { buildCatalog3Snapshot } from "@/lib/catalog-projections";
 import { catalogLocationsV3 } from "@/lib/catalog-data";
 import { expandedHazardCoverage } from "@/lib/expanded-coverage";
+import { nationalWarningManifest } from "@/lib/national-warning-sources";
 import { locationCoveragePresentation } from "@/lib/coverage-presentation";
 import { SnapshotV11Schema, catalogLocationState } from "@/lib/domain/catalog-public";
 import { HazardTypeSchema, type NormalizedEvent } from "@/lib/domain/schemas";
@@ -14,6 +15,7 @@ import release3 from "../../data/catalog-releases/3.json";
 
 const now = new Date("2026-09-08T12:00:00Z");
 const added = release3.locationIds.filter((id) => !release2.locationIds.includes(id));
+const englandFloodIds = new Set(nationalWarningManifest.countries.GB.systems.find(({ id }) => id === "ea-flood")!.coverageLocationIds);
 const scopes = { usgs: added, emsc: added, "slf-avalanche": ["li-malbun"], "fcdo-travel-advice": added.filter((id) => !id.startsWith("gb-") && !id.startsWith("va-")) };
 function state() { const value = createEmptyState(now); value.collection = { catalogVersion: 3, revision: 1 }; return value; }
 function receipt(value: IngestionStateV15, source: keyof typeof scopes, checked = scopes[source]) {
@@ -45,10 +47,10 @@ describe("reviewed expanded monitoring coverage", () => {
         expect(coverage["severe-weather"].status).toBe("not_monitored");
       }
       if (location.countryCode === "GB") {
-        for (const hazard of ["severe-weather", "extreme-heat", "extreme-cold", "snow-ice", "flood"] as const) {
-          expect(coverage[hazard].status).toBe("monitored");
+        for (const hazard of ["severe-weather", "extreme-heat", "extreme-cold", "snow-ice", "coastal"] as const) {
+          expect(coverage[hazard].status).toBe("not_monitored");
         }
-        expect(coverage.coastal.status).toBe(location.isCoastal ? "monitored" : "not_monitored");
+        expect(coverage.flood.status).toBe(englandFloodIds.has(location.id) ? "partial" : "not_monitored");
       }
       if (location.countryCode === "NO") {
         expect(coverage["fire-danger"].status).toBe("monitored"); expect(coverage.flood.status).toBe("partial");

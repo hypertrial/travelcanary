@@ -44,7 +44,8 @@ describe("aggressive national alert integrations", () => {
 
     for (const gate of ["reuseStatus", "severityStatus", "lifecycleStatus", "geometryStatus", "completenessStatus"]) {
       const incompleteCredentialSource = structuredClone(nationalWarningManifest) as unknown as { countries: Record<string, { systems: Array<Record<string, unknown>> }> };
-      incompleteCredentialSource.countries.GB.systems.find(({ id }) => id === "met-office-nswws")![gate] = "partial";
+      const promoted = incompleteCredentialSource.countries.GB.systems.find(({ id }) => id === "met-office-nswws")!;
+      Object.assign(promoted, { status: "active", role: "coverage", coverageContribution: "complete", limitationCode: null, blocker: null, [gate]: "partial" });
       expect(() => NationalWarningSourcesSchema.parse(incompleteCredentialSource)).toThrow(/runtime readiness/i);
     }
   });
@@ -53,8 +54,9 @@ describe("aggressive national alert integrations", () => {
     const systems = Object.values(nationalWarningManifest.countries).flatMap(({ systems }) => systems);
     expect(systems.filter(({ status }) => status === "credential_gated").every(({ coverageContribution }) => coverageContribution === "none")).toBe(true);
     expect(systems.filter(({ status }) => status === "evidence_gated").every(({ coverageContribution }) => coverageContribution === "none")).toBe(true);
-    expect(systems.find(({ id }) => id === "met-office-nswws")).toMatchObject({ status: "active", role: "coverage",
-      accessStatus: "credential_required", coverageContribution: "complete", credentialEnvVar: "MET_OFFICE_API_KEY" });
+    expect(systems.find(({ id }) => id === "met-office-nswws")).toMatchObject({ status: "credential_gated", role: "fallback",
+      accessStatus: "credential_required", coverageContribution: "none", credentialEnvVar: "MET_OFFICE_API_KEY",
+      limitationCode: "credential_not_configured" });
   });
 
   it("validates the runtime country denylist strictly", () => {

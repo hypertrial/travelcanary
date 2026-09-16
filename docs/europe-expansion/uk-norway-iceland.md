@@ -4,9 +4,9 @@
 > wind polygon capability, direct MET Norway and NVE transports for Norway, and
 > Environment Agency flood warnings for England. GB MeteoAlarm Atom remains
 > evidence-gated, and Norway's retained marine gales do not establish land
-> coverage. A later reviewed release promoted credential-bound Met Office NSWWS
-> to required complete UK warning coverage; NRW remains credential-gated and
-> non-contributing. The remaining text is
+> coverage. A later policy revision retained credential-bound Met Office NSWWS
+> as optional, health-neutral, and non-contributing; NRW remains credential-gated
+> and non-contributing. The remaining text is
 > retained as source-decision provenance, not current runtime status.
 Reviewed 2026-09-08. Decisions concern the anonymous-source scope. No credentials, account creation, outreach or repository edits. `blocked` means the listed contract is not ready for runtime; it does not mean the hazard is inapplicable. `activate-candidate` means source semantics are feasible, not that an adapter or release is approved.
 

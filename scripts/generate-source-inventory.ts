@@ -30,12 +30,12 @@ const inventory = {
   schemaVersion: 3,
   reviewedAt: nationalWarningManifest.reviewedAt,
   credentials: {
-    required: ["MET_OFFICE_API_KEY", "MET_OFFICE_WARNINGS_FEED_URL"],
-    optional: ["FIRMS_MAP_KEY", "METEOALARM_API_TOKEN", "NRW_FLOOD_API_BASE_URL", "NRW_FLOOD_API_KEY"],
+    required: [],
+    optional: ["FIRMS_MAP_KEY", "METEOALARM_API_TOKEN", "MET_OFFICE_API_KEY", "MET_OFFICE_WARNINGS_FEED_URL", "NRW_FLOOD_API_BASE_URL", "NRW_FLOOD_API_KEY"],
     environmentGated: ["gfm", "eonet", "edo-drought", "fcdo-travel-advice"],
     descriptions: {
-      MET_OFFICE_API_KEY: "Required server-only API key for complete UK warning coverage.",
-      MET_OFFICE_WARNINGS_FEED_URL: "Required server-only Met Office NSWWWS Atom feed URL; must use an allowlisted Met Office HTTPS host.",
+      MET_OFFICE_API_KEY: "Optional server-only API key for the credential-gated, non-contributing Met Office transport.",
+      MET_OFFICE_WARNINGS_FEED_URL: "Optional server-only Met Office NSWWS Atom feed URL; must use an allowlisted Met Office HTTPS host.",
       METEOALARM_API_TOKEN: "Optional server-only authenticated EDR recovery for the reviewed Andorra and Iceland mappings; fallback-only and non-contributing.",
       NRW_FLOOD_API_BASE_URL: "Optional server-only NRW endpoint; inert while the NRW transport remains credential-gated.",
       NRW_FLOOD_API_KEY: "Optional server-only NRW API key; inert while the NRW transport remains credential-gated.",

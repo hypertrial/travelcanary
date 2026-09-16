@@ -3,12 +3,14 @@ import report from "../../data/coverage-history/catalog3-upgrade.json";
 import manifest from "../../data/national-warning-sources.json";
 
 describe("catalog 3 coverage release report", () => {
-  it("pins the all-hazard and life-safety release targets without prior-pair regressions", () => {
-    expect(report.catalog3Projection).toMatchObject({ applicablePairs: 11_799, monitored: 3_034,
-      partlyMonitored: 2_862, unavailable: 5_903, monitoredOrPartlyMonitoredPairs: 5_896 });
-    expect(report.tiers.lifeSafety).toMatchObject({ applicablePairs: 7_237, monitored: 3_020,
-      partlyMonitored: 2_211, unavailable: 2_006, monitoredOrPartlyMonitoredPairs: 5_231 });
+  it("pins the all-hazard and life-safety release targets without prior-catalog pair regressions", () => {
+    expect(report.catalog3Projection).toMatchObject({ applicablePairs: 11_799, monitored: 2_867,
+      partlyMonitored: 2_877, unavailable: 6_055, monitoredOrPartlyMonitoredPairs: 5_744 });
+    expect(report.tiers.lifeSafety).toMatchObject({ applicablePairs: 7_237, monitored: 2_853,
+      partlyMonitored: 2_226, unavailable: 2_158, monitoredOrPartlyMonitoredPairs: 5_079 });
     expect(report.pairMembership.regressedExistingPairs).toEqual([]);
+    expect(report.policyReclassification).toMatchObject({ systemId: "met-office-nswws", formerlyFullyChecked: 167,
+      nowFullyChecked: 0, nowPartlyChecked: 15, nowUnavailable: 152 });
   });
 
   it("lists every remaining country/hazard gap exactly once in deterministic readiness order", () => {
