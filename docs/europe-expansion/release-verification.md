@@ -71,10 +71,11 @@ dependency versions. Keep client catalog2 as the first deployment's explicit
 configuration. The same tree supports the later catalog3 build.
 
 Operator authorization for this coordinated release is recorded in the private
-project tracker. Provision only the credentials needed by each selected operation;
-do not download the full environment or print secret values. The bounded
-MeteoAlarm EDR release smoke requires its server-only token; Met Office remains
-optional and is not configured for this release.
+project tracker. No warning-source credential is required for this release.
+MeteoAlarm EDR and Met Office remain optional, non-contributing transports and
+make zero requests while unconfigured. Provision only credentials needed by a
+separately reviewed optional diagnostic; do not download the full environment or
+print secret values.
 
 Follow `publication.md`: deploy the compatible commit with the catalog 2 client;
 forward-CAS activate catalog 3 while retaining state/quota; run one fast, slow,
@@ -100,7 +101,7 @@ outstanding and are never inferred from local tests or from another country's fe
 | Publication | Snapshot exact membership, 45 matching conditions partitions, source timestamps and producer agreement |
 | Compatibility | Both snapshot families and 45+28 conditions outputs, acknowledgment time and immutable retirement deadline |
 | Runtime sources | Bounded approved-source checks, receipt scope, attribution, geographic matches, nonempty lifecycle fixtures and verified empty semantics |
-| Bounded source smoke | One read-only MeteoAlarm EDR recovery result for the reviewed AD/IS paths, with any fallback or disable decision; optional Met Office is not a release gate |
+| Optional source diagnostics | Any separately authorized credentialed smoke result and fallback or disable decision; neither MeteoAlarm EDR nor Met Office is a release gate |
 | Quota and storage | Actual rolling-day/minute/hour use, reservations, country/product starvation checks and measured wire/state/cache limits |
 | Results | Separate fresh, expired, missing, unsupported and healthy-empty counts; any source disabled and its reason |
 | Rollback | Compatible deployment identity, retained collection revision/evidence/quota, independent source-disable verification |
