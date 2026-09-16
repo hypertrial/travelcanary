@@ -237,15 +237,19 @@ describe("expanded direct warning transports", () => {
   it("skips unconfigured optional Met Office transport at the adapter boundary without a request", async () => {
     vi.stubEnv("NATIONAL_ALERTS_DISABLED_COUNTRIES", Object.keys(nationalWarningManifest.countries).filter((code) => code !== "GB").join(","));
     vi.stubEnv("NATIONAL_ALERTS_DISABLED_TRANSPORTS", "ea-flood");
-    vi.stubEnv("MET_OFFICE_WARNINGS_FEED_URL", ""); vi.stubEnv("MET_OFFICE_API_KEY", "");
-    vi.stubEnv("NRW_FLOOD_API_BASE_URL", ""); vi.stubEnv("NRW_FLOOD_API_KEY", "");
-    const state = createEmptyState(now); state.collection = { catalogVersion: 3, revision: 1 };
+    vi.stubEnv("MET_OFFICE_WARNINGS_FEED_URL", "");
+    vi.stubEnv("MET_OFFICE_API_KEY", "");
+    vi.stubEnv("NRW_FLOOD_API_BASE_URL", "");
+    vi.stubEnv("NRW_FLOOD_API_KEY", "");
+    const state = createEmptyState(now);
+    state.collection = { catalogVersion: 3, revision: 1 };
     const fetchMock = vi.fn<typeof globalThis.fetch>();
 
     const result = await new NationalCivilAlertsAdapter().fetch({ now, locations: catalogLocationsV3, state, fetch: fetchMock });
 
     expect(fetchMock).not.toHaveBeenCalled();
-    expect(result.partitions.GB.transports).toMatchObject({
+    const gb = (result.partitions as Record<string, { transports: Record<string, unknown> }>).GB;
+    expect(gb.transports).toMatchObject({
       "met-office-nswws": { status: "disabled", limitationCode: "credential_not_configured" },
       "nrw-flood": { status: "disabled", limitationCode: "credential_not_configured" },
     });
