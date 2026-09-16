@@ -54,6 +54,8 @@
     "data:validate": "node --import tsx scripts/validate-data.ts",
     "storage:init": "node --import tsx scripts/init-storage.ts",
     "smoke:sources": "node --import tsx scripts/smoke-sources.ts",
+    "smoke:met-office": "node --import tsx scripts/smoke-credentialed-warnings.ts met-office",
+    "smoke:meteoalarm-edr": "node --import tsx scripts/smoke-credentialed-warnings.ts meteoalarm-edr",
     "verify:production": "node --import tsx scripts/verify-production.ts",
     "perf:assets": "node scripts/check-asset-budget.mjs",
     "perf:bench": "node --import tsx scripts/benchmark-risk.ts",
