@@ -25,6 +25,9 @@ describe("effective coverage measurements", () => {
       freshFullyChecked: 0, freshPartlyChecked: 0, delayed: current.totals.fullyChecked + current.totals.partlyChecked });
     expect(current.totals.applicable).toBe(current.totals.fullyChecked + current.totals.partlyChecked + current.totals.notChecked);
     expect(Object.values(current.byCountry).reduce((sum, item) => sum + item.applicable, 0)).toBe(current.totals.applicable);
+    expect(current.tiers.lifeSafety.applicable).toBeGreaterThan(0);
+    expect(current.tiers.lifeSafety.applicable).toBe(current.tiers.lifeSafety.fullyChecked
+      + current.tiers.lifeSafety.partlyChecked + current.tiers.lifeSafety.notChecked);
     expect(expired.contractSha256).toBe(current.contractSha256);
     expect(measureCoverage(value, [...locations].reverse(), now).contractSha256).toBe(current.contractSha256);
   });

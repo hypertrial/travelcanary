@@ -5,55 +5,23 @@ import coverage from "../data/coverage.json";
 import applicability from "../data/hazard-applicability.json";
 import national from "../data/national-warning-sources.json";
 import { providerRegistry } from "../src/lib/provider-registry";
-import { hazardAppliesToLocation } from "../src/lib/risk-policy";
-import { locationCoveragePresentation } from "../src/lib/coverage-presentation";
 import { type CatalogSnapshot, type PublicCatalogLocation } from "../src/lib/domain/catalog-public";
 import { HazardTypeSchema, type Snapshot } from "../src/lib/domain/schemas";
+import { coverageBreakdown } from "../src/lib/coverage-measurement";
+
+export { coveragePairStates } from "../src/lib/coverage-measurement";
 
 // Bump when coverage-presentation/risk-policy measurement semantics change.
 const measurementPolicyRevision = 2;
-const counts = () => ({ applicable: 0, fullyChecked: 0, partlyChecked: 0, notChecked: 0, freshFullyChecked: 0, freshPartlyChecked: 0, delayed: 0 });
-export function coveragePairStates(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date) {
-  if (!Number.isFinite(now.getTime())) throw new Error("Invalid measurement time");
-  const ids = catalog.map(({ id }) => id).sort();
-  if (new Set(ids).size !== ids.length || ids.join(",") !== Object.keys(snapshot.locations).sort().join(",")) throw new Error("Coverage measurement catalog mismatch");
-  const snapshotFresh = now.getTime() - Date.parse(snapshot.generatedAt) <= 30 * 60_000
-    && Date.parse(snapshot.generatedAt) <= now.getTime() + 5 * 60_000;
-  return catalog.flatMap((location) => {
-    const presentation = locationCoveragePresentation({ location, state: snapshot.locations[location.id], snapshot, now });
-    return presentation.categories.flatMap(({ subchecks }) => subchecks).flatMap((check) => {
-      if (!isExpandedDestination(location) && !hazardAppliesToLocation(check.hazard, location)) return [];
-      const status = check.coverageStatus === "available" ? "monitored" as const : check.coverageStatus === "limited" ? "partial" as const : "unavailable" as const;
-      return [{ key: `${location.id}|${check.hazard}`, locationId: location.id, countryCode: location.countryCode, hazard: check.hazard, status,
-        delayed: status !== "unavailable" && (!snapshotFresh || check.freshnessStatus === "delayed") }];
-    });
-  }).sort((left, right) => left.key.localeCompare(right.key));
-}
-
 export function measureCoverage(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date) {
-  const totals = counts();
-  const byCountry: Record<string, ReturnType<typeof counts>> = {};
-  const byHazard: Record<string, ReturnType<typeof counts>> = {};
-  for (const pair of coveragePairStates(snapshot, catalog, now)) {
-      const country = byCountry[pair.countryCode] ||= counts();
-      const hazard = byHazard[pair.hazard] ||= counts();
-      for (const count of [totals, country, hazard]) {
-        count.applicable += 1;
-        const key = pair.status === "monitored" ? "fullyChecked" : pair.status === "partial" ? "partlyChecked" : "notChecked";
-        count[key] += 1;
-        // A current timestamp on an unsupported hazard never creates coverage.
-        if (key === "notChecked") continue;
-        if (pair.delayed) count.delayed += 1;
-        else count[key === "fullyChecked" ? "freshFullyChecked" : "freshPartlyChecked"] += 1;
-      }
-  }
+  const { totals, byCountry, byHazard, tiers } = coverageBreakdown(snapshot, catalog, now);
   return { schemaVersion: 1 as const, measuredAt: now.toISOString(), snapshotAt: snapshot.generatedAt,
     catalogVersion: snapshot.catalogVersion,
     contractSha256: createHash("sha256").update(JSON.stringify({ measurementPolicyRevision, providerRegistry, coverage, applicability, national,
       expandedCoverage: catalog.filter(isExpandedDestination).map((location) => ({ id: location.id, coverage: expandedHazardCoverage(location) })).sort((a, b) => a.id.localeCompare(b.id)),
       catalog: [...catalog].sort((a, b) => a.id.localeCompare(b.id)) })).digest("hex"),
     definition: "Applicable destination-hazard pairs under the reviewed product applicability model (incident-only applicability overrides excluded); freshness is separate from completeness. Not incident detection probability.",
-    totals, byCountry, byHazard };
+    totals, byCountry, byHazard, tiers };
 }
 
 export const CaptureCasesSchema = z.array(z.object({

@@ -30,11 +30,18 @@ const NationalWarningSystemSchema = z.object({
   reReviewTrigger: z.string().min(3).max(300).nullable(),
   license: z.object({ name: z.string().min(2), url: z.string().url() }).nullable().optional(),
 }).superRefine((system, context) => {
+  const evidenceGates = [system.reuseStatus, system.severityStatus, system.lifecycleStatus,
+    system.geometryStatus, system.completenessStatus];
+  const credentialReady = system.accessStatus !== "credential_required"
+    || Boolean(system.credentialEnvVar) && evidenceGates.every((status) => status === "approved");
+  const accessReady = system.accessStatus === "approved"
+    || system.accessStatus === "credential_required" && credentialReady;
   const runnable = system.endpoint && system.format && system.cadenceMinutes && system.maxBytes && system.hazards.length
-    && system.accessStatus === "approved" && system.reuseStatus === "approved"
+    && accessReady && system.reuseStatus === "approved"
     && ["approved", "partial"].includes(system.severityStatus)
     && ["approved", "partial"].includes(system.lifecycleStatus)
-    && ["approved", "partial"].includes(system.geometryStatus);
+    && ["approved", "partial"].includes(system.geometryStatus)
+    && ["approved", "partial"].includes(system.completenessStatus);
   if (system.status === "active" && !runnable) context.addIssue({ code: "custom", path: ["status"], message: "Active systems must pass runtime readiness gates" });
   if (system.status === "active" && system.runtimeTarget === "none") context.addIssue({ code: "custom", path: ["runtimeTarget"], message: "Active systems require a runtime target" });
   if (system.status !== "active" && !system.limitationCode) context.addIssue({ code: "custom", path: ["limitationCode"], message: "Gated and blocked systems require a limitation" });
@@ -44,7 +51,9 @@ const NationalWarningSystemSchema = z.object({
   if (system.coverageContribution !== "none" && (system.status !== "active" || !["approved", "partial"].includes(system.completenessStatus))) {
     context.addIssue({ code: "custom", path: ["coverageContribution"], message: "Coverage requires an active, reviewed completeness decision" });
   }
-  if (system.status === "credential_gated" && !system.credentialEnvVar) context.addIssue({ code: "custom", path: ["credentialEnvVar"], message: "Credential-gated systems require an environment variable" });
+  if ((system.status === "credential_gated" || system.status === "active" && system.accessStatus === "credential_required") && !system.credentialEnvVar) {
+    context.addIssue({ code: "custom", path: ["credentialEnvVar"], message: "Credential-bound systems require an environment variable" });
+  }
 });
 
 const NationalWarningCountrySchema = z.object({ reviewedAt: z.string().date(), systems: z.array(NationalWarningSystemSchema).min(1).max(6) }).superRefine((country, context) => {
@@ -95,7 +104,8 @@ export const nationalWarningSources = Object.fromEntries(Object.entries(national
   const coverage = runtime.filter((system) => system.coverageContribution !== "none");
   const primary = runtime[0] || systems.find(({ runtimeTarget }) => runtimeTarget !== "meteoalarm-fallback" && runtimeTarget !== "meteoalarm-primary") || systems[0];
   const hazards = [...new Set(coverage.flatMap((system) => system.hazards))] as HazardType[];
-  const coverageLocationIds = [...new Set(coverage.flatMap((system) => system.coverageLocationIds || []))];
+  const coverageLocationIds = coverage.some((system) => !system.coverageLocationIds) ? []
+    : [...new Set(coverage.flatMap((system) => system.coverageLocationIds || []))];
   return [countryCode, {
     reviewedAt: country.reviewedAt, evidenceUrls: primary.evidenceUrls, authority: primary.authority,
     systemName: runtime.length > 1 ? `${primary.authority} national warning sources` : primary.systemName,

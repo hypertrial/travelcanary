@@ -319,6 +319,11 @@ export async function fetchMetOffice(context: IngestionContext): Promise<Nationa
   const response = await fetchAllowlisted(context.fetch, base.toString(), [base.hostname], 1, { maxBytes: 512 * 1024, timeoutMs: 4_000,
     diagnosticsCategory: "met_office_feed", headers: { "x-api-key": key } });
   const feed = (parser.parse(await response.text()) as { feed?: Row }).feed;
+  const feedUpdated = timestamp(feed?.updated);
+  const responseAge = Number(response.headers.get("age") || "0");
+  if (feedUpdated > context.now.getTime() + 5 * 60_000 || !Number.isFinite(responseAge) || responseAge > 20 * 60) {
+    throw new Error("Met Office warning feed is stale or future-dated");
+  }
   const links = rows(feed?.link); const related = text(links.find((link) => text(link["@_rel"]) === "related")?.["@_href"]);
   const relatedUrl = new URL(related);
   if (relatedUrl.origin !== base.origin || !/^\/v1\.0\/objects\/issued\//.test(relatedUrl.pathname)) throw new Error("Met Office feed link is not allowlisted");
@@ -334,6 +339,7 @@ export async function fetchMetOffice(context: IngestionContext): Promise<Nationa
   });
   for (const feature of features) {
     const properties = feature.properties as Row; const state = text(properties.warningStatus || properties.state || properties.status).toUpperCase();
+    if (!["ISSUED", "UPDATED", "CANCELLED", "EXPIRED"].includes(state)) throw new Error("Met Office warning lifecycle is invalid");
     if (["CANCELLED", "EXPIRED"].includes(state)) continue;
     const starts = timestamp(properties.validFromDate || properties.validFrom || properties.onset);
     const ends = timestamp(properties.validToDate || properties.validTo || properties.expires);
@@ -351,7 +357,7 @@ export async function fetchMetOffice(context: IngestionContext): Promise<Nationa
     }
   }
   const ids = context.locations.filter(({ countryCode }) => countryCode === "GB").map(({ id }) => id);
-  return { status: limited ? "partial" : "ok", sourceUpdatedAt: events.map(({ sourceUpdatedAt }) => sourceUpdatedAt).sort().at(-1) || context.now.toISOString(), events,
+  return { status: limited ? "partial" : "ok", sourceUpdatedAt: events.map(({ sourceUpdatedAt }) => sourceUpdatedAt).sort().at(-1) || new Date(feedUpdated).toISOString(), events,
     error: limited ? "Met Office warning event limit of 500 was reached" : null,
     limitationCode: limited ? "warning_event_limit_reached" : undefined, checkedLocationIds: limited ? [] : ids,
     unavailableLocationIds: limited ? ids : [], removedEventPrefixes: limited ? [] : ["national:met-office:"] };

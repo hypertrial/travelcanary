@@ -23,14 +23,36 @@
     "locations": 679,
     "countries": 45,
     "applicablePairs": 11799,
-    "monitored": 2867,
-    "partlyMonitored": 2877,
-    "unavailable": 6055,
-    "monitoredOrPartlyMonitoredPairs": 5744
+    "monitored": 3034,
+    "partlyMonitored": 2862,
+    "unavailable": 5903,
+    "monitoredOrPartlyMonitoredPairs": 5896
+  },
+  "tiers": {
+    "lifeSafety": {
+      "applicablePairs": 7237,
+      "monitored": 3020,
+      "partlyMonitored": 2211,
+      "unavailable": 2006,
+      "monitoredOrPartlyMonitoredPairs": 5231,
+      "remainingGapsByHazard": {
+        "civil-emergency": 176,
+        "extreme-cold": 146,
+        "extreme-heat": 141,
+        "fire-danger": 156,
+        "flood": 126,
+        "industrial": 176,
+        "nuclear": 644,
+        "severe-weather": 109,
+        "snow-ice": 126,
+        "wildfire": 176,
+        "coastal": 30
+      }
+    }
   },
   "deltaFromBaseline": {
     "applicablePairs": 3407,
-    "monitoredOrPartlyMonitoredPairs": 423
+    "monitoredOrPartlyMonitoredPairs": 575
   },
   "reclassifications": {
     "eeaModeledFullToObservationPartial": 498,
@@ -39,7 +61,7 @@
   },
   "pairMembership": {
     "regressedExistingPairs": [],
-    "gainedPairs": 423
+    "gainedPairs": 575
   },
   "addedDestinations": {
     "count": 176,
@@ -89,15 +111,15 @@
       },
       "extreme-cold": {
         "applicable": 176,
-        "monitored": 0,
+        "monitored": 30,
         "partlyMonitored": 0,
-        "unavailable": 176
+        "unavailable": 146
       },
       "extreme-heat": {
         "applicable": 176,
-        "monitored": 0,
+        "monitored": 30,
         "partlyMonitored": 5,
-        "unavailable": 171
+        "unavailable": 141
       },
       "fire-danger": {
         "applicable": 176,
@@ -107,9 +129,9 @@
       },
       "flood": {
         "applicable": 176,
-        "monitored": 0,
-        "partlyMonitored": 35,
-        "unavailable": 141
+        "monitored": 30,
+        "partlyMonitored": 20,
+        "unavailable": 126
       },
       "industrial": {
         "applicable": 176,
@@ -131,15 +153,15 @@
       },
       "severe-weather": {
         "applicable": 176,
-        "monitored": 20,
+        "monitored": 50,
         "partlyMonitored": 17,
-        "unavailable": 139
+        "unavailable": 109
       },
       "snow-ice": {
         "applicable": 176,
-        "monitored": 20,
+        "monitored": 50,
         "partlyMonitored": 0,
-        "unavailable": 156
+        "unavailable": 126
       },
       "terrorism": {
         "applicable": 176,
@@ -161,9 +183,9 @@
       },
       "coastal": {
         "applicable": 63,
-        "monitored": 16,
+        "monitored": 33,
         "partlyMonitored": 0,
-        "unavailable": 47
+        "unavailable": 30
       }
     }
   },
@@ -174,18 +196,5763 @@
     "civil-emergency": 176,
     "civil-unrest": 679,
     "drought": 679,
-    "extreme-cold": 176,
-    "extreme-heat": 171,
+    "extreme-cold": 146,
+    "extreme-heat": 141,
     "fire-danger": 156,
-    "flood": 141,
+    "flood": 126,
     "industrial": 176,
     "nuclear": 644,
     "security": 644,
-    "severe-weather": 139,
-    "snow-ice": 156,
+    "severe-weather": 109,
+    "snow-ice": 126,
     "terrorism": 679,
     "volcano": 294,
     "wildfire": 176,
-    "coastal": 47
+    "coastal": 30
+  },
+  "priorityProgram": {
+    "definition": "One row per country/hazard capability gap; forecasts, advice, satellite detections, modeled conditions, and fallback-only transports do not create warning coverage.",
+    "readinessBands": {
+      "credentialReady": [
+        {
+          "countryCode": "SK",
+          "hazard": "security",
+          "uncoveredPairs": 11,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 11,
+          "readiness": "credentialReady",
+          "candidateSystemIds": [
+            "sk-crisis-rest"
+          ],
+          "candidates": [
+            {
+              "id": "sk-crisis-rest",
+              "officialUrl": "https://portal.minv.sk/wps/esispz-api/docs/index.html",
+              "blocker": "The documented reader API requires an authority-issued key and contract validation.",
+              "reReviewTrigger": "Activate after credential provisioning, terms review, fixture capture, and live smoke.",
+              "nextReviewAt": "2027-08-30"
+            }
+          ]
+        }
+      ],
+      "evidencePending": [
+        {
+          "countryCode": "BE",
+          "hazard": "nuclear",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "evidencePending",
+          "candidateSystemIds": [
+            "be-alert-cap"
+          ],
+          "candidates": [
+            {
+              "id": "be-alert-cap",
+              "officialUrl": "https://www.be-alert.be/en/",
+              "blocker": "Gateway is JSON discovery with linked CAP. A sampled Actual/Public Alert was registration confirmation (event Test, Unknown severity), not an emergency. Website terms do not establish all gateway issuer rights. Need real emergency taxonomy/geometry, updates/cancellations and complete-query semantics; do not publish registration prose.",
+              "reReviewTrigger": "Applicable gateway/issuer reuse and representative real emergency lifecycle fixtures.",
+              "nextReviewAt": "2026-12-07"
+            }
+          ]
+        },
+        {
+          "countryCode": "DE",
+          "hazard": "nuclear",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "evidencePending",
+          "candidateSystemIds": [
+            "bbk-mowas-rss"
+          ],
+          "candidates": [
+            {
+              "id": "bbk-mowas-rss",
+              "officialUrl": "https://www.bbk.bund.de/DE/Warnung-Vorsorge/Warn-App-NINA/warn-app-nina_node.html",
+              "blocker": "Official location RSS returned empty HTTP 200 feeds with old channel publication dates. Federal warning redistribution permits unchanged content, but state/municipal issuer rights and normalized presentation remain unverified. Need real emergency/update/cancel fixtures, exact district geometry, severity and complete-state withdrawal semantics.",
+              "reReviewTrigger": "Representative emergency/update/cancel RSS plus applicable issuer reuse and exact district matching.",
+              "nextReviewAt": "2026-12-07"
+            }
+          ]
+        },
+        {
+          "countryCode": "BE",
+          "hazard": "security",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "evidencePending",
+          "candidateSystemIds": [
+            "be-alert-cap"
+          ],
+          "candidates": [
+            {
+              "id": "be-alert-cap",
+              "officialUrl": "https://www.be-alert.be/en/",
+              "blocker": "Gateway is JSON discovery with linked CAP. A sampled Actual/Public Alert was registration confirmation (event Test, Unknown severity), not an emergency. Website terms do not establish all gateway issuer rights. Need real emergency taxonomy/geometry, updates/cancellations and complete-query semantics; do not publish registration prose.",
+              "reReviewTrigger": "Applicable gateway/issuer reuse and representative real emergency lifecycle fixtures.",
+              "nextReviewAt": "2026-12-07"
+            }
+          ]
+        },
+        {
+          "countryCode": "DE",
+          "hazard": "security",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "evidencePending",
+          "candidateSystemIds": [
+            "bbk-mowas-rss"
+          ],
+          "candidates": [
+            {
+              "id": "bbk-mowas-rss",
+              "officialUrl": "https://www.bbk.bund.de/DE/Warnung-Vorsorge/Warn-App-NINA/warn-app-nina_node.html",
+              "blocker": "Official location RSS returned empty HTTP 200 feeds with old channel publication dates. Federal warning redistribution permits unchanged content, but state/municipal issuer rights and normalized presentation remain unverified. Need real emergency/update/cancel fixtures, exact district geometry, severity and complete-state withdrawal semantics.",
+              "reReviewTrigger": "Representative emergency/update/cancel RSS plus applicable issuer reuse and exact district matching.",
+              "nextReviewAt": "2026-12-07"
+            }
+          ]
+        },
+        {
+          "countryCode": "GR",
+          "hazard": "security",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "evidencePending",
+          "candidateSystemIds": [
+            "gr-112-news"
+          ],
+          "candidates": [
+            {
+              "id": "gr-112-news",
+              "officialUrl": "https://civilprotection.gov.gr/",
+              "blocker": "Official terms specify CC BY-NC-SA 4.0 plus unchanged content; normalized summaries need a compatible presentation contract. The old all-guidelines URL redirects to static protection guidance. Need a supported current machine-warning feed with exact affected areas, validity and cancellation.",
+              "reReviewTrigger": "Supported current warning feed and compatible unchanged-content presentation with lifecycle fixtures.",
+              "nextReviewAt": "2026-12-07"
+            }
+          ]
+        },
+        {
+          "countryCode": "NL",
+          "hazard": "security",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "evidencePending",
+          "candidateSystemIds": [
+            "nl-alert-current"
+          ],
+          "candidates": [
+            {
+              "id": "nl-alert-current",
+              "officialUrl": "https://www.nl-alert.nl/",
+              "blocker": "The official website exposes current alerts, but its browser JSON transport is undocumented and not approved for automated reuse.",
+              "reReviewTrigger": "Activate after NCTV confirms supported automated access and reuse.",
+              "nextReviewAt": "2027-08-30"
+            }
+          ]
+        },
+        {
+          "countryCode": "BG",
+          "hazard": "security",
+          "uncoveredPairs": 17,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 17,
+          "readiness": "evidencePending",
+          "candidateSystemIds": [
+            "bg-alert-web"
+          ],
+          "candidates": [
+            {
+              "id": "bg-alert-web",
+              "officialUrl": "https://bg-alert.bg/",
+              "blocker": "A public official surface exists, but reuse or stable event-contract evidence is incomplete.",
+              "reReviewTrigger": "Activate after a representative non-test fixture, reuse approval, and Production fetch smoke.",
+              "nextReviewAt": "2027-08-30"
+            }
+          ]
+        },
+        {
+          "countryCode": "DK",
+          "hazard": "security",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "evidencePending",
+          "candidateSystemIds": [
+            "dk-police-emergency-rss"
+          ],
+          "candidates": [
+            {
+              "id": "dk-police-emergency-rss",
+              "officialUrl": "https://www.sirenen.dk/",
+              "blocker": "A public official surface exists, but reuse or stable event-contract evidence is incomplete.",
+              "reReviewTrigger": "Activate after a representative non-test fixture, reuse approval, and Production fetch smoke.",
+              "nextReviewAt": "2027-08-30"
+            }
+          ]
+        },
+        {
+          "countryCode": "CY",
+          "hazard": "security",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "evidencePending",
+          "candidateSystemIds": [
+            "cy-alert-news"
+          ],
+          "candidates": [
+            {
+              "id": "cy-alert-news",
+              "officialUrl": "https://www.gov.cy/moi/en/civil-defence/",
+              "blocker": "A public official surface exists, but reuse or stable event-contract evidence is incomplete.",
+              "reReviewTrigger": "Activate after a representative non-test fixture, reuse approval, and Production fetch smoke.",
+              "nextReviewAt": "2027-08-30"
+            }
+          ]
+        },
+        {
+          "countryCode": "LT",
+          "hazard": "security",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "evidencePending",
+          "candidateSystemIds": [
+            "lt72-sent-warnings"
+          ],
+          "candidates": [
+            {
+              "id": "lt72-sent-warnings",
+              "officialUrl": "https://lt72.lt/",
+              "blocker": "A public official surface exists, but reuse or stable event-contract evidence is incomplete.",
+              "reReviewTrigger": "Activate after a representative non-test fixture, reuse approval, and Production fetch smoke.",
+              "nextReviewAt": "2027-08-30"
+            }
+          ]
+        },
+        {
+          "countryCode": "LV",
+          "hazard": "security",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "evidencePending",
+          "candidateSystemIds": [
+            "lv-112-active"
+          ],
+          "candidates": [
+            {
+              "id": "lv-112-active",
+              "officialUrl": "https://www.vugd.gov.lv/en",
+              "blocker": "A public official surface exists, but reuse or stable event-contract evidence is incomplete.",
+              "reReviewTrigger": "Activate after a representative non-test fixture, reuse approval, and Production fetch smoke.",
+              "nextReviewAt": "2027-08-30"
+            }
+          ]
+        }
+      ],
+      "blockedNoSupportedFeed": [
+        {
+          "countryCode": "ES",
+          "hazard": "nuclear",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "industrial",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "nuclear",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "wildfire",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GR",
+          "hazard": "nuclear",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IT",
+          "hazard": "nuclear",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NL",
+          "hazard": "nuclear",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "PL",
+          "hazard": "nuclear",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RO",
+          "hazard": "nuclear",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SE",
+          "hazard": "nuclear",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "flood",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "industrial",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "nuclear",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "severe-weather",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "wildfire",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 30,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "PT",
+          "hazard": "nuclear",
+          "uncoveredPairs": 22,
+          "uncoveredLifeSafetyPairs": 22,
+          "totalUncoveredPairs": 22,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "HU",
+          "hazard": "nuclear",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 20,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NO",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 20,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NO",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 20,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NO",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 20,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NO",
+          "hazard": "industrial",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 20,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NO",
+          "hazard": "nuclear",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 20,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NO",
+          "hazard": "wildfire",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 20,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CZ",
+          "hazard": "nuclear",
+          "uncoveredPairs": 19,
+          "uncoveredLifeSafetyPairs": 19,
+          "totalUncoveredPairs": 19,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "FI",
+          "hazard": "nuclear",
+          "uncoveredPairs": 19,
+          "uncoveredLifeSafetyPairs": 19,
+          "totalUncoveredPairs": 19,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BG",
+          "hazard": "nuclear",
+          "uncoveredPairs": 17,
+          "uncoveredLifeSafetyPairs": 17,
+          "totalUncoveredPairs": 17,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "coastal",
+          "uncoveredPairs": 13,
+          "uncoveredLifeSafetyPairs": 13,
+          "totalUncoveredPairs": 13,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "flood",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "industrial",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "nuclear",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "severe-weather",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "wildfire",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "DK",
+          "hazard": "nuclear",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "flood",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "industrial",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "nuclear",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "wildfire",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "flood",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "industrial",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "nuclear",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "severe-weather",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "wildfire",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 12,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CH",
+          "hazard": "nuclear",
+          "uncoveredPairs": 11,
+          "uncoveredLifeSafetyPairs": 11,
+          "totalUncoveredPairs": 11,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SK",
+          "hazard": "nuclear",
+          "uncoveredPairs": 11,
+          "uncoveredLifeSafetyPairs": 11,
+          "totalUncoveredPairs": 11,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BA",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 10,
+          "uncoveredLifeSafetyPairs": 10,
+          "totalUncoveredPairs": 10,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BA",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 10,
+          "uncoveredLifeSafetyPairs": 10,
+          "totalUncoveredPairs": 10,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BA",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 10,
+          "uncoveredLifeSafetyPairs": 10,
+          "totalUncoveredPairs": 10,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BA",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 10,
+          "uncoveredLifeSafetyPairs": 10,
+          "totalUncoveredPairs": 10,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BA",
+          "hazard": "flood",
+          "uncoveredPairs": 10,
+          "uncoveredLifeSafetyPairs": 10,
+          "totalUncoveredPairs": 10,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BA",
+          "hazard": "industrial",
+          "uncoveredPairs": 10,
+          "uncoveredLifeSafetyPairs": 10,
+          "totalUncoveredPairs": 10,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BA",
+          "hazard": "nuclear",
+          "uncoveredPairs": 10,
+          "uncoveredLifeSafetyPairs": 10,
+          "totalUncoveredPairs": 10,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BA",
+          "hazard": "severe-weather",
+          "uncoveredPairs": 10,
+          "uncoveredLifeSafetyPairs": 10,
+          "totalUncoveredPairs": 10,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BA",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 10,
+          "uncoveredLifeSafetyPairs": 10,
+          "totalUncoveredPairs": 10,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BA",
+          "hazard": "wildfire",
+          "uncoveredPairs": 10,
+          "uncoveredLifeSafetyPairs": 10,
+          "totalUncoveredPairs": 10,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AT",
+          "hazard": "nuclear",
+          "uncoveredPairs": 9,
+          "uncoveredLifeSafetyPairs": 9,
+          "totalUncoveredPairs": 9,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "flood",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "industrial",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "nuclear",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "severe-weather",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "wildfire",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IE",
+          "hazard": "nuclear",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "coastal",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "flood",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "industrial",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "nuclear",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "severe-weather",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "wildfire",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "flood",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "industrial",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "nuclear",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "severe-weather",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "wildfire",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MK",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MK",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MK",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MK",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MK",
+          "hazard": "flood",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MK",
+          "hazard": "industrial",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MK",
+          "hazard": "nuclear",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MK",
+          "hazard": "severe-weather",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MK",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MK",
+          "hazard": "wildfire",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MT",
+          "hazard": "nuclear",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 8,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CY",
+          "hazard": "nuclear",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 7,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "EE",
+          "hazard": "nuclear",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 7,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "HR",
+          "hazard": "nuclear",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 7,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LT",
+          "hazard": "nuclear",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 7,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LV",
+          "hazard": "nuclear",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 7,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SI",
+          "hazard": "nuclear",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 7,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "XK",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 6,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "XK",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 6,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "XK",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 6,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "XK",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 6,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "XK",
+          "hazard": "flood",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 6,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "XK",
+          "hazard": "industrial",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 6,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "XK",
+          "hazard": "nuclear",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 6,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "XK",
+          "hazard": "severe-weather",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 6,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "XK",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 6,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "XK",
+          "hazard": "wildfire",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 6,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AD",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 5,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AD",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 5,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AD",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 5,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AD",
+          "hazard": "flood",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 5,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AD",
+          "hazard": "industrial",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 5,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AD",
+          "hazard": "nuclear",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 5,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AD",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 5,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AD",
+          "hazard": "wildfire",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 5,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "coastal",
+          "uncoveredPairs": 4,
+          "uncoveredLifeSafetyPairs": 4,
+          "totalUncoveredPairs": 4,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "coastal",
+          "uncoveredPairs": 4,
+          "uncoveredLifeSafetyPairs": 4,
+          "totalUncoveredPairs": 4,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 3,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 3,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 3,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 3,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "flood",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 3,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "industrial",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 3,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "nuclear",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 3,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "severe-weather",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 3,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 3,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "wildfire",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 3,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 2,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 2,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 2,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 2,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "flood",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 2,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "industrial",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 2,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "nuclear",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 2,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "severe-weather",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 2,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 2,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "wildfire",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 2,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "coastal",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "flood",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "industrial",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "nuclear",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "severe-weather",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "wildfire",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "civil-emergency",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "extreme-cold",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "extreme-heat",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "fire-danger",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "flood",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "industrial",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "nuclear",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "severe-weather",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "snow-ice",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "wildfire",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 1,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BE",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BE",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BE",
+          "hazard": "drought",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BE",
+          "hazard": "terrorism",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "DE",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "DE",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "DE",
+          "hazard": "drought",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "DE",
+          "hazard": "terrorism",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ES",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ES",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ES",
+          "hazard": "drought",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ES",
+          "hazard": "security",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ES",
+          "hazard": "terrorism",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "FR",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "FR",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "FR",
+          "hazard": "drought",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "FR",
+          "hazard": "terrorism",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "air-quality",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "drought",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "security",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GB",
+          "hazard": "terrorism",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GR",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GR",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GR",
+          "hazard": "drought",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "GR",
+          "hazard": "terrorism",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IT",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IT",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IT",
+          "hazard": "drought",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IT",
+          "hazard": "security",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IT",
+          "hazard": "terrorism",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NL",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NL",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NL",
+          "hazard": "drought",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NL",
+          "hazard": "terrorism",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "PL",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "PL",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "PL",
+          "hazard": "drought",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "PL",
+          "hazard": "security",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "PL",
+          "hazard": "terrorism",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RO",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RO",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RO",
+          "hazard": "drought",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RO",
+          "hazard": "security",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RO",
+          "hazard": "terrorism",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SE",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SE",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SE",
+          "hazard": "drought",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SE",
+          "hazard": "security",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SE",
+          "hazard": "terrorism",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "drought",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "security",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "TR",
+          "hazard": "terrorism",
+          "uncoveredPairs": 30,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 30,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "PT",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 22,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 22,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "PT",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 22,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 22,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "PT",
+          "hazard": "drought",
+          "uncoveredPairs": 22,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 22,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "PT",
+          "hazard": "security",
+          "uncoveredPairs": 22,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 22,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "PT",
+          "hazard": "terrorism",
+          "uncoveredPairs": 22,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 22,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "HU",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "HU",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "HU",
+          "hazard": "drought",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "HU",
+          "hazard": "security",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "HU",
+          "hazard": "terrorism",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NO",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NO",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NO",
+          "hazard": "drought",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NO",
+          "hazard": "security",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NO",
+          "hazard": "terrorism",
+          "uncoveredPairs": 20,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 20,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CZ",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 19,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 19,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CZ",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 19,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 19,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CZ",
+          "hazard": "drought",
+          "uncoveredPairs": 19,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 19,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CZ",
+          "hazard": "security",
+          "uncoveredPairs": 19,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 19,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CZ",
+          "hazard": "terrorism",
+          "uncoveredPairs": 19,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 19,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "FI",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 19,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 19,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "FI",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 19,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 19,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "FI",
+          "hazard": "drought",
+          "uncoveredPairs": 19,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 19,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "FI",
+          "hazard": "security",
+          "uncoveredPairs": 19,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 19,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "FI",
+          "hazard": "terrorism",
+          "uncoveredPairs": 19,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 19,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BG",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 17,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 17,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BG",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 17,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 17,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BG",
+          "hazard": "drought",
+          "uncoveredPairs": 17,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 17,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BG",
+          "hazard": "terrorism",
+          "uncoveredPairs": 17,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 17,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "drought",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "security",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AL",
+          "hazard": "terrorism",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "DK",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "DK",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "DK",
+          "hazard": "drought",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "DK",
+          "hazard": "terrorism",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "drought",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "security",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "terrorism",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "drought",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "security",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "terrorism",
+          "uncoveredPairs": 12,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 12,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CH",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 11,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 11,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CH",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 11,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 11,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CH",
+          "hazard": "drought",
+          "uncoveredPairs": 11,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 11,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CH",
+          "hazard": "security",
+          "uncoveredPairs": 11,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 11,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CH",
+          "hazard": "terrorism",
+          "uncoveredPairs": 11,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 11,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SK",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 11,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 11,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SK",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 11,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 11,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SK",
+          "hazard": "drought",
+          "uncoveredPairs": 11,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 11,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SK",
+          "hazard": "terrorism",
+          "uncoveredPairs": 11,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 11,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BA",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 10,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 10,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BA",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 10,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 10,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BA",
+          "hazard": "drought",
+          "uncoveredPairs": 10,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 10,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BA",
+          "hazard": "security",
+          "uncoveredPairs": 10,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 10,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BA",
+          "hazard": "terrorism",
+          "uncoveredPairs": 10,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 10,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AT",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 9,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 9,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AT",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 9,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 9,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AT",
+          "hazard": "drought",
+          "uncoveredPairs": 9,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 9,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AT",
+          "hazard": "security",
+          "uncoveredPairs": 9,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 9,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AT",
+          "hazard": "terrorism",
+          "uncoveredPairs": 9,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 9,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "air-quality",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "drought",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "security",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "BY",
+          "hazard": "terrorism",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IE",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IE",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IE",
+          "hazard": "drought",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IE",
+          "hazard": "security",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IE",
+          "hazard": "terrorism",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "air-quality",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "drought",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "security",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MD",
+          "hazard": "terrorism",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "drought",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "security",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ME",
+          "hazard": "terrorism",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MK",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MK",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MK",
+          "hazard": "drought",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MK",
+          "hazard": "security",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MK",
+          "hazard": "terrorism",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MT",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MT",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MT",
+          "hazard": "drought",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MT",
+          "hazard": "security",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MT",
+          "hazard": "terrorism",
+          "uncoveredPairs": 8,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 8,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CY",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CY",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CY",
+          "hazard": "drought",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "CY",
+          "hazard": "terrorism",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "EE",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "EE",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "EE",
+          "hazard": "drought",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "EE",
+          "hazard": "security",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "EE",
+          "hazard": "terrorism",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "HR",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "HR",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "HR",
+          "hazard": "drought",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "HR",
+          "hazard": "security",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "HR",
+          "hazard": "terrorism",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LT",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LT",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LT",
+          "hazard": "drought",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LT",
+          "hazard": "terrorism",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LV",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LV",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LV",
+          "hazard": "drought",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LV",
+          "hazard": "terrorism",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SI",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SI",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SI",
+          "hazard": "drought",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SI",
+          "hazard": "security",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SI",
+          "hazard": "terrorism",
+          "uncoveredPairs": 7,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 7,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "NO",
+          "hazard": "air-quality",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "XK",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "XK",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "XK",
+          "hazard": "drought",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "XK",
+          "hazard": "security",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "XK",
+          "hazard": "terrorism",
+          "uncoveredPairs": 6,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 6,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AD",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AD",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AD",
+          "hazard": "drought",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AD",
+          "hazard": "security",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "AD",
+          "hazard": "terrorism",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LU",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LU",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LU",
+          "hazard": "drought",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LU",
+          "hazard": "terrorism",
+          "uncoveredPairs": 5,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 5,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "IS",
+          "hazard": "air-quality",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "air-quality",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "drought",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "security",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "LI",
+          "hazard": "terrorism",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "PT",
+          "hazard": "air-quality",
+          "uncoveredPairs": 3,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 3,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "ES",
+          "hazard": "air-quality",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "air-quality",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "drought",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "security",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "SM",
+          "hazard": "terrorism",
+          "uncoveredPairs": 2,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 2,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "air-quality",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "drought",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "security",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "MC",
+          "hazard": "terrorism",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "RS",
+          "hazard": "air-quality",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "air-quality",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "armed-conflict",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "civil-unrest",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "drought",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "security",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        },
+        {
+          "countryCode": "VA",
+          "hazard": "terrorism",
+          "uncoveredPairs": 1,
+          "uncoveredLifeSafetyPairs": 0,
+          "totalUncoveredPairs": 1,
+          "readiness": "blockedNoSupportedFeed",
+          "candidateSystemIds": [
+            "no_reviewed_candidate"
+          ],
+          "candidates": []
+        }
+      ]
+    },
+    "specialist": [
+      {
+        "countryCode": "GB",
+        "hazard": "avalanche",
+        "uncoveredPairs": 30,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 30,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "GB",
+        "hazard": "volcano",
+        "uncoveredPairs": 30,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 30,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "TR",
+        "hazard": "avalanche",
+        "uncoveredPairs": 30,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 30,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "TR",
+        "hazard": "volcano",
+        "uncoveredPairs": 30,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 30,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "GR",
+        "hazard": "volcano",
+        "uncoveredPairs": 24,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 24,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "BE",
+        "hazard": "volcano",
+        "uncoveredPairs": 21,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 21,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "NO",
+        "hazard": "avalanche",
+        "uncoveredPairs": 20,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 20,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "NO",
+        "hazard": "volcano",
+        "uncoveredPairs": 20,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 20,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "DE",
+        "hazard": "volcano",
+        "uncoveredPairs": 17,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 17,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "AL",
+        "hazard": "avalanche",
+        "uncoveredPairs": 12,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 12,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "AL",
+        "hazard": "volcano",
+        "uncoveredPairs": 12,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 12,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "IS",
+        "hazard": "avalanche",
+        "uncoveredPairs": 12,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 12,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "IS",
+        "hazard": "volcano",
+        "uncoveredPairs": 12,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 12,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "RS",
+        "hazard": "avalanche",
+        "uncoveredPairs": 12,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 12,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "RS",
+        "hazard": "volcano",
+        "uncoveredPairs": 12,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 12,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "ES",
+        "hazard": "volcano",
+        "uncoveredPairs": 11,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 11,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "BA",
+        "hazard": "avalanche",
+        "uncoveredPairs": 10,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 10,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "BA",
+        "hazard": "volcano",
+        "uncoveredPairs": 10,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 10,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "IT",
+        "hazard": "volcano",
+        "uncoveredPairs": 10,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 10,
+        "readiness": "evidencePending",
+        "candidateSystemIds": [
+          "dpc-volcanic-restrictions"
+        ],
+        "candidates": [
+          {
+            "id": "dpc-volcanic-restrictions",
+            "officialUrl": "https://rischi.protezionecivile.gov.it/it/vulcanico/vulcani-italia/stromboli/",
+            "blocker": "Official historical municipal ordinances include path/altitude restrictions and revocation, but no complete current inventory, bounded zone extraction or current reuse contract is established. Publication-end dates do not establish restriction expiry. DPC activity levels remain distinct from local emergency orders.",
+            "reReviewTrigger": "Complete current restriction inventory with issuing authority, exact affected terrain and supersession/revocation evidence.",
+            "nextReviewAt": "2026-12-07"
+          }
+        ]
+      },
+      {
+        "countryCode": "NL",
+        "hazard": "volcano",
+        "uncoveredPairs": 9,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 9,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "BY",
+        "hazard": "avalanche",
+        "uncoveredPairs": 8,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 8,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "BY",
+        "hazard": "volcano",
+        "uncoveredPairs": 8,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 8,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "MD",
+        "hazard": "avalanche",
+        "uncoveredPairs": 8,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 8,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "MD",
+        "hazard": "volcano",
+        "uncoveredPairs": 8,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 8,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "ME",
+        "hazard": "avalanche",
+        "uncoveredPairs": 8,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 8,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "ME",
+        "hazard": "volcano",
+        "uncoveredPairs": 8,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 8,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "MK",
+        "hazard": "avalanche",
+        "uncoveredPairs": 8,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 8,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "MK",
+        "hazard": "volcano",
+        "uncoveredPairs": 8,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 8,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "MT",
+        "hazard": "volcano",
+        "uncoveredPairs": 8,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 8,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "FR",
+        "hazard": "volcano",
+        "uncoveredPairs": 7,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 7,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "XK",
+        "hazard": "avalanche",
+        "uncoveredPairs": 6,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 6,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "XK",
+        "hazard": "volcano",
+        "uncoveredPairs": 6,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 6,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "AD",
+        "hazard": "avalanche",
+        "uncoveredPairs": 5,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 5,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "AD",
+        "hazard": "volcano",
+        "uncoveredPairs": 5,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 5,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "LU",
+        "hazard": "volcano",
+        "uncoveredPairs": 5,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 5,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "PT",
+        "hazard": "volcano",
+        "uncoveredPairs": 5,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 5,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "LI",
+        "hazard": "volcano",
+        "uncoveredPairs": 3,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 3,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "LI",
+        "hazard": "avalanche",
+        "uncoveredPairs": 2,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 2,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "SM",
+        "hazard": "avalanche",
+        "uncoveredPairs": 2,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 2,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "SM",
+        "hazard": "volcano",
+        "uncoveredPairs": 2,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 2,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "HR",
+        "hazard": "volcano",
+        "uncoveredPairs": 1,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 1,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "MC",
+        "hazard": "avalanche",
+        "uncoveredPairs": 1,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 1,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "MC",
+        "hazard": "volcano",
+        "uncoveredPairs": 1,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 1,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "VA",
+        "hazard": "avalanche",
+        "uncoveredPairs": 1,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 1,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      },
+      {
+        "countryCode": "VA",
+        "hazard": "volcano",
+        "uncoveredPairs": 1,
+        "uncoveredLifeSafetyPairs": 0,
+        "totalUncoveredPairs": 1,
+        "readiness": "blockedNoSupportedFeed",
+        "candidateSystemIds": [
+          "no_reviewed_candidate"
+        ],
+        "candidates": []
+      }
+    ]
   }
 }

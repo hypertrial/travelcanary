@@ -40,8 +40,10 @@ describe("GB, Norway and Iceland reviewed jurisdiction acceptance", () => {
       } else if (country === "IS") {
         expect(capabilities["severe-weather"].status).toBe("partial");
       } else {
-        expect(capabilities["severe-weather"].status).toBe("not_monitored");
-        expect(capabilities.flood.status).toBe(location.id === "gb-london" || ["gb-bath", "gb-birmingham", "gb-brighton", "gb-cambridge", "gb-exeter", "gb-lake-district-national-park", "gb-leeds", "gb-liverpool", "gb-manchester", "gb-newcastle-upon-tyne", "gb-oxford", "gb-plymouth", "gb-portsmouth", "gb-york"].includes(location.id) ? "partial" : "not_monitored");
+        for (const hazard of ["severe-weather", "extreme-heat", "extreme-cold", "snow-ice", "flood"] as const) {
+          expect(capabilities[hazard].status).toBe("monitored");
+        }
+        expect(capabilities.coastal.status).toBe(location.isCoastal ? "monitored" : "not_monitored");
       }
       expect(expandedProviderApplies("fcdo-travel-advice", location)).toBe(country !== "GB");
       expect(expandedProviderApplies("slf-avalanche", location)).toBe(false);
@@ -84,11 +86,12 @@ describe("GB, Norway and Iceland reviewed jurisdiction acceptance", () => {
     });
     state.events = [event("meteoalarm", "meteoalarm", "flood"), event("slf-avalanche", "slf-avalanche", "avalanche"), event("eonet", "eonet", "volcano")];
     const snapshot = buildCatalog3Snapshot(state, now);
-    for (const { id } of north) {
+    for (const { id, countryCode } of north) {
       expect(snapshot.locations[id].hazards.map(({ providerId, type }) => [providerId, type])).toEqual([["eonet", "volcano"]]);
       expect(snapshot.locations[id].hazards.some(({ type }) => type === "avalanche")).toBe(false);
       expect(snapshot.locations[id].level).toBe("HIGH");
-      expect(snapshot.locations[id].coverageGaps).toEqual(expect.arrayContaining(["flood", "avalanche", "volcano"]));
+      expect(snapshot.locations[id].coverageGaps).toEqual(expect.arrayContaining(["avalanche", "volcano"]));
+      expect(snapshot.locations[id].coverageGaps.includes("flood")).toBe(countryCode !== "GB");
     }
   });
 
@@ -99,6 +102,6 @@ describe("GB, Norway and Iceland reviewed jurisdiction acceptance", () => {
       expect(Object.entries(links).filter(([code]) => code !== country).flatMap(([, entries]) => entries).some((entry) => entry.url === url)).toBe(false);
     }
     const direct = north.filter((location) => location.countryCode === country && expandedProviderApplies("national-civil-alerts", location));
-    expect(direct).toHaveLength(country === "NO" ? 20 : country === "GB" ? 15 : 0);
+    expect(direct).toHaveLength(country === "NO" ? 20 : country === "GB" ? 30 : 0);
   });
 });

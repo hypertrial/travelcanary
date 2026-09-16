@@ -47,7 +47,7 @@ const verifiedCoreHazards = HazardTypeSchema.array().nonempty().parse(meteoalarm
 const implementedNationalTransports = new Set([
   "at-alert", "chmi-hydrology", "fmi-cap", "fr-alert", "ipma-warnings-json", "lhp-flood", "met-eireann-json",
   "dpc-flood-bulletin", "lu-alert", "imgw-hydrology", "catalonia-plans", "krisinformation",
-  "aemet-cap", "dhmz-cap", "lvgmc-flood", "meteoalarm-atom", "met-norway-alerts", "nve-flood", "ea-flood", "dwd-cap",
+  "aemet-cap", "dhmz-cap", "lvgmc-flood", "meteoalarm-atom", "met-norway-alerts", "nve-flood", "ea-flood", "met-office-nswws", "dwd-cap",
 ]);
 if (Number.isNaN(Date.parse(meteoalarmCapabilities.reviewedAt))) throw new Error("MeteoAlarm capability review date is invalid");
 

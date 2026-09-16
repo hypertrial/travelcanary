@@ -1,9 +1,9 @@
 # Catalog 3 operational publication
 
-The compatible runtime supports collection releases2 and3. Deploying this code
-alone does not change collection control, the public catalog or client release.
-Activation and country rollout require their remaining Pad gates. This document
-is an operational contract, not evidence of a deployed cutover.
+The compatible runtime supports collection releases 2 and 3. Merging or deploying
+this code alone does not change collection control, the public catalog, or the
+client release. This document is the authorized operational contract for the
+catalog 3 cutover, not evidence that a deployment has already completed.
 
 ## Commit evidence once, then publish
 
@@ -57,7 +57,10 @@ is unchanged and can repair any later partial publication.
    exact-SHA `scripts/verify`, and automatic GitHub `check:fast`. Deploy that same
    compatible commit while `NEXT_PUBLIC_CATALOG_VERSION=2`, verify catalog 2, and
    retain the commit as the rollback target. Prepare and verify its catalog 3 build
-   before activation; do not deploy an intermediate tree.
+   before activation; do not deploy an intermediate tree. Configure
+   `MET_OFFICE_API_KEY` and `MET_OFFICE_WARNINGS_FEED_URL` as required server-only
+   production values. Configure `METEOALARM_API_TOKEN` only for the reviewed
+   Andorra/Iceland recovery path. Never print these values in release evidence.
 2. With the deployed private storage configuration, run
    `node --import tsx scripts/activate-catalog3.ts`. The command atomically
    compare-and-swaps collection 2→3 with a higher revision while retaining evidence
@@ -71,14 +74,19 @@ is unchanged and can repair any later partial publication.
    deterministic release checks, not an observation or soak gate.
 4. Redeploy the same commit immediately with
    `NEXT_PUBLIC_CATALOG_VERSION=3`, then run the production verifier and public
-   `/api/v1/health` check. Catalog 2 publication continues automatically in the
+   `/api/v1/health` check. The verifier invocation must set
+   `EXPECTED_CATALOG_VERSION=3` (or `--expected-catalog-version 3`) alongside the
+   exact release SHA and required local-conditions flag. Completion requires a
+   non-blocked verifier report and HTTP 200 health; there is no soak delay. Catalog
+   2 publication continues automatically in the
    background until the exact recorded deadline; it does not delay the client
    switch and does not change cron frequency.
 
 If the candidate client or rollback deployment is not ready, do not activate
-collection 3. After activation, an anomalous optional source is disabled
-independently; a required source uses its proven fallback or the catalog 3 client
-displays the gap honestly. Do not keep a catalog 2-only production client past
+collection 3. After activation, an anomalous source is disabled independently.
+Disabling or exhausting required Met Office coverage intentionally degrades
+health and cannot satisfy release completion; the catalog 3 client displays the
+gap honestly. Do not keep a catalog 2-only production client past
 legacy retirement, reset the deadline, or restore state 2 to manufacture more
 transition time. Stop release completion and investigate any failed deterministic
 gate. See `release-verification.md` for the release ledger.

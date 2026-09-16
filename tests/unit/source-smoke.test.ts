@@ -116,6 +116,6 @@ describe("source smoke summaries", () => {
     expect(summary.transports!.total).toBeGreaterThan(2);
     expect(summary.transports!.roles.coverage).toBeGreaterThan(0);
     expect(summary.transports!.evidenceBlocked).toBeGreaterThan(0);
-    expect(summary.transports!.credentialBlocked).toBe(3);
+    expect(summary.transports!.credentialBlocked).toBe(2);
   });
 });
