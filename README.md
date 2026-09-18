@@ -40,8 +40,7 @@ Runtime storage is separated into:
 Import this repository directly into a Vercel Pro project; no wrapper repository or build-time catalog selector is required. Keep Fluid Compute enabled and leave Preview without production storage variables so it remains demo-only. Production requires:
 
 - `CRON_SECRET` — at least 32 random bytes
-- `PRIVATE_INGESTION_BLOB_READ_WRITE_TOKEN`
-- `PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN`
+- OIDC connections to the private ingestion and public snapshot Blob stores, exposed as `PRIVATE_INGESTION_STORE_ID` and `PUBLIC_SNAPSHOT_STORE_ID`
 - `TRAVELCANARY_PUBLICATION_URL` — the public Blob `catalogs/3/publication/latest.json` URL
 
 Direct Vercel deployments use `VERCEL_GIT_COMMIT_SHA` as the publication producer. A deployment wrapper whose Root Directory is this repository as a submodule must additionally set `TRAVELCANARY_RELEASE_SHA` to the wrapper's exact 40-character commit SHA; that explicit identity takes precedence over the submodule SHA.

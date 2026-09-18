@@ -29,13 +29,13 @@ function memoryBlob() {
 describe("storage initialization", () => {
   it("initializes V16 private state and a complete atomic Catalog 3 publication idempotently", async () => {
     const privateBlob = memoryBlob(); const publicationStore = new MemoryPublicationStore();
-    const options = { privateToken: "private-token-sentinel", publicToken: "public-token-sentinel", now: new Date("2026-09-18T06:00:00Z"),
+    const options = { privateAuth: "private-token-sentinel", publicAuth: "public-token-sentinel", now: new Date("2026-09-18T06:00:00Z"),
       getBlob: privateBlob.getBlob, putBlob: privateBlob.putBlob, publicationStore };
     const first = await initializeStorage(options);
     expect(first).toEqual({ initialized: true, publicationUrl: expect.stringMatching(/^memory:\/\/publication\//),
       manifestSha256: expect.stringMatching(/^[a-f0-9]{64}$/) });
-    expect(JSON.stringify(first)).not.toContain(options.privateToken);
-    expect(JSON.stringify(first)).not.toContain(options.publicToken);
+    expect(JSON.stringify(first)).not.toContain(options.privateAuth);
+    expect(JSON.stringify(first)).not.toContain(options.publicAuth);
     expect(IngestionStateV16Schema.parse(JSON.parse(privateBlob.values.get("ingestion-state.json")!.body))).toMatchObject({
       schemaVersion: 16, collection: { catalogVersion: 3 }, ingestionLease: null,
     });

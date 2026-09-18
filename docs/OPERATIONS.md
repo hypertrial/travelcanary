@@ -4,20 +4,22 @@
 
 Import the public repository directly into a Vercel Pro project and keep Fluid Compute enabled. The repository root is the Vercel Root Directory. `vercel.json` owns all six schedules.
 
-Production-only sensitive variables are:
+Production-only configuration is:
 
 ```text
 CRON_SECRET
-PRIVATE_INGESTION_BLOB_READ_WRITE_TOKEN
-PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN
+PRIVATE_INGESTION_STORE_ID
+PUBLIC_SNAPSHOT_STORE_ID
 TRAVELCANARY_PUBLICATION_URL
 ```
 
+Connect both Blob stores with Vercel OIDC in Production. Vercel supplies the short-lived `VERCEL_OIDC_TOKEN`; do not add static Blob read-write tokens. The store IDs and publication URL are non-secret, while `CRON_SECRET` remains sensitive.
+
 For a direct deployment, Vercel supplies the producer identity through `VERCEL_GIT_COMMIT_SHA`. If the Vercel Root Directory points at this repository inside a deployment wrapper, also set the non-secret `TRAVELCANARY_RELEASE_SHA` to the wrapper's exact 40-character commit SHA. The collector and health verifier use that explicit identity instead of the public submodule SHA.
 
-`CRON_SECRET` must contain at least 32 random bytes. Preview and Development must receive none of the four sensitive values or the optional release override; code still forces those environments to checked-in demo publication if production-looking values are accidentally injected. No Met Office or MeteoAlarm credential is required.
+`CRON_SECRET` must contain at least 32 random bytes. Blob connections and the optional release override are Production-only; Preview and Development remain on checked-in demo publication. No Met Office or MeteoAlarm credential is required.
 
-Initialize empty stores once from a secure operator environment:
+Initialize empty stores once from a linked, OIDC-enabled operator environment after `vercel env pull`:
 
 ```bash
 npm run storage:init

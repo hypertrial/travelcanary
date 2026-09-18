@@ -6,6 +6,9 @@ const originalSecret = process.env.CRON_SECRET;
 const originalVercelEnv = process.env.VERCEL_ENV;
 const originalPrivateToken = process.env.PRIVATE_INGESTION_BLOB_READ_WRITE_TOKEN;
 const originalPublicToken = process.env.PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN;
+const originalPrivateStoreId = process.env.PRIVATE_INGESTION_STORE_ID;
+const originalPublicStoreId = process.env.PUBLIC_SNAPSHOT_STORE_ID;
+const originalOidcToken = process.env.VERCEL_OIDC_TOKEN;
 
 afterEach(() => {
   if (originalSecret === undefined) delete process.env.CRON_SECRET;
@@ -16,6 +19,12 @@ afterEach(() => {
   else process.env.PRIVATE_INGESTION_BLOB_READ_WRITE_TOKEN = originalPrivateToken;
   if (originalPublicToken === undefined) delete process.env.PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN;
   else process.env.PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN = originalPublicToken;
+  if (originalPrivateStoreId === undefined) delete process.env.PRIVATE_INGESTION_STORE_ID;
+  else process.env.PRIVATE_INGESTION_STORE_ID = originalPrivateStoreId;
+  if (originalPublicStoreId === undefined) delete process.env.PUBLIC_SNAPSHOT_STORE_ID;
+  else process.env.PUBLIC_SNAPSHOT_STORE_ID = originalPublicStoreId;
+  if (originalOidcToken === undefined) delete process.env.VERCEL_OIDC_TOKEN;
+  else process.env.VERCEL_OIDC_TOKEN = originalOidcToken;
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
 });
@@ -53,8 +62,11 @@ describe("cron authentication", () => {
     const sentinel = "https://blob.example/private?token=secret-sentinel";
     process.env.VERCEL_ENV = "production";
     process.env.CRON_SECRET = "correct-secret-that-is-at-least-32-bytes";
-    process.env.PRIVATE_INGESTION_BLOB_READ_WRITE_TOKEN = "private-token";
-    process.env.PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN = "public-token";
+    delete process.env.PRIVATE_INGESTION_BLOB_READ_WRITE_TOKEN;
+    delete process.env.PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN;
+    process.env.PRIVATE_INGESTION_STORE_ID = "store_private";
+    process.env.PUBLIC_SNAPSHOT_STORE_ID = "store_public";
+    process.env.VERCEL_OIDC_TOKEN = "oidc-token";
     vi.stubGlobal("fetch", vi.fn(async () => { throw new Error(sentinel); }));
     const log = vi.spyOn(console, "error").mockImplementation(() => undefined);
     const response = await handleCron(new Request("https://example.test/api/cron/fast", {

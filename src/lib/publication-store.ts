@@ -7,6 +7,7 @@ import { BlobPreconditionFailedError, del, get, list, put } from "@vercel/blob";
 import { PublicationManifestV1Schema, PublicationPointerV1Schema, publicationPointerPath,
 } from "./domain/publication";
 import { ConcurrencyError } from "./state-store";
+import { resolveBlobAuth, type BlobAuth, type BlobAuthInput } from "./blob-auth";
 
 export const publicationSha256 = (value: string | Uint8Array) => createHash("sha256").update(value).digest("hex");
 const immutableKey = /^catalogs\/3\/(?:objects\/sha256\/[a-f0-9]{64}\.json|generations\/[a-f0-9]{64}\/manifest\.json)$/;
@@ -173,10 +174,11 @@ export class FilePublicationStore implements PublicationStore {
 }
 
 export class BlobPublicationStore implements PublicationStore {
-  constructor(private readonly token: string) { if (!token.trim()) throw new Error("Public Blob token is required"); }
+  private readonly auth: BlobAuth;
+  constructor(auth: BlobAuthInput) { this.auth = resolveBlobAuth(auth); }
   async read(pathname: string, maxBytes: number): Promise<PublicationRead | null> {
     assertReadableKey(pathname);
-    const result = await get(pathname, { token: this.token, access: "public", useCache: false });
+    const result = await get(pathname, { ...this.auth, access: "public", useCache: false });
     if (!result || result.statusCode !== 200 || !result.stream) return null;
     if (!Number.isFinite(result.blob.size) || result.blob.size < 0 || result.blob.size > maxBytes) {
       await result.stream.cancel(); throw new Error("Invalid publication object size");
@@ -197,7 +199,7 @@ export class BlobPublicationStore implements PublicationStore {
   async putImmutable(pathname: string, body: string) {
     assertImmutableKey(pathname);
     try {
-      const result = await put(pathname, body, { token: this.token, access: "public", allowOverwrite: false,
+      const result = await put(pathname, body, { ...this.auth, access: "public", allowOverwrite: false,
         contentType: "application/json", cacheControlMaxAge: 31536000 });
       return { url: result.url };
     } catch (error) {
@@ -209,7 +211,7 @@ export class BlobPublicationStore implements PublicationStore {
   }
   async replacePointer(body: string, expectedEtag: string | null) {
     try {
-      const result = await put(publicationPointerPath, body, { token: this.token, access: "public",
+      const result = await put(publicationPointerPath, body, { ...this.auth, access: "public",
         allowOverwrite: expectedEtag !== null, ...(expectedEtag ? { ifMatch: expectedEtag } : {}),
         contentType: "application/json", cacheControlMaxAge: 60 });
       return { etag: result.etag, url: result.url };
@@ -221,13 +223,13 @@ export class BlobPublicationStore implements PublicationStore {
   async list(prefix: string, limit: number) {
     if (!/^catalogs\/3\/(?:objects\/sha256|generations)\/$/.test(prefix)
       || !Number.isInteger(limit) || limit < 1 || limit > 10_000) throw new Error("Invalid publication listing");
-    const result = await list({ token: this.token, prefix, limit });
+    const result = await list({ ...this.auth, prefix, limit });
     return result.blobs.map(({ pathname, uploadedAt }) => ({ pathname, uploadedAt }));
   }
   async deleteMany(pathnames: string[]) {
     if (pathnames.length > 10_000) throw new Error("Publication deletion is too large");
     for (const pathname of pathnames) assertImmutableKey(pathname);
-    if (pathnames.length) await del(pathnames, { token: this.token });
+    if (pathnames.length) await del(pathnames, this.auth);
   }
 }
 

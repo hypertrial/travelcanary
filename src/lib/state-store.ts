@@ -2,6 +2,7 @@ import { BlobNotFoundError, BlobPreconditionFailedError, get, put } from "@verce
 import { IngestionStateV15Schema, IngestionStateV16Schema, parseCatalogState, parseCatalogStateV15, type IngestionState } from "./domain/catalog-state";
 import { PRIVATE_STATE_HARD_LIMIT_BYTES } from "./ingestion/limits";
 import { assertStateControlChange, captureStateControl, type CapturedStateControl } from "./publication-control";
+import { resolveBlobAuth, type BlobAuth, type BlobAuthInput } from "./blob-auth";
 
 export type Versioned<T> = CapturedStateControl & { data: T; etag: string; legacy?: { schemaVersion: number; raw: string } };
 export type WriteResult = { etag: string; url?: string };
@@ -25,12 +26,13 @@ function stateForWrite(state: IngestionState, before: CapturedStateControl) {
 }
 
 export class BlobStateStore implements StateStore {
-  constructor(private readonly token: string, private readonly pathname = "ingestion-state.json",
+  private readonly auth: BlobAuth;
+  constructor(auth: BlobAuthInput, private readonly pathname = "ingestion-state.json",
     private readonly getBlob: typeof get = get, private readonly putBlob: typeof put = put) {
-    if (!token.trim()) throw new Error("Private Blob token is required");
+    this.auth = resolveBlobAuth(auth);
   }
   async read() {
-    const result = await this.getBlob(this.pathname, { token: this.token, access: "private", useCache: false });
+    const result = await this.getBlob(this.pathname, { ...this.auth, access: "private", useCache: false });
     if (!result || result.statusCode !== 200 || !result.stream) throw new BlobNotFoundError();
     const raw = await new Response(result.stream).text();
     const value = JSON.parse(raw) as { schemaVersion?: unknown };
@@ -42,7 +44,7 @@ export class BlobStateStore implements StateStore {
     const pathname = "ingestion-state-v15-backup.json";
     const body = JSON.stringify(parseCatalogStateV15(JSON.parse(raw)));
     let existing: Awaited<ReturnType<typeof get>> | null = null;
-    try { existing = await this.getBlob(pathname, { token: this.token, access: "private", useCache: false }); }
+    try { existing = await this.getBlob(pathname, { ...this.auth, access: "private", useCache: false }); }
     catch (error) { if (!(error instanceof BlobNotFoundError)) throw error; }
     if (existing?.statusCode === 200 && existing.stream) {
       const existingBody = JSON.stringify(IngestionStateV15Schema.parse(JSON.parse(await new Response(existing.stream).text())));
@@ -50,11 +52,11 @@ export class BlobStateStore implements StateStore {
       return;
     }
     try {
-      await this.putBlob(pathname, body, { token: this.token, access: "private", allowOverwrite: false,
+      await this.putBlob(pathname, body, { ...this.auth, access: "private", allowOverwrite: false,
         contentType: "application/json", cacheControlMaxAge: 60 });
     } catch (error) {
       let raced: Awaited<ReturnType<typeof get>> | null = null;
-      try { raced = await this.getBlob(pathname, { token: this.token, access: "private", useCache: false }); }
+      try { raced = await this.getBlob(pathname, { ...this.auth, access: "private", useCache: false }); }
       catch (readError) { if (!(readError instanceof BlobNotFoundError)) throw readError; }
       if (!raced || raced.statusCode !== 200 || !raced.stream) throw error;
       const racedBody = JSON.stringify(IngestionStateV15Schema.parse(JSON.parse(await new Response(raced.stream).text())));
@@ -65,7 +67,7 @@ export class BlobStateStore implements StateStore {
     const validated = stateForWrite(state, expected);
     try {
       if (expected.legacy) await this.preserveV15Backup(expected.legacy.raw);
-      const result = await this.putBlob(this.pathname, JSON.stringify(validated), { token: this.token, access: "private",
+      const result = await this.putBlob(this.pathname, JSON.stringify(validated), { ...this.auth, access: "private",
         allowOverwrite: true, ifMatch: expected.etag, contentType: "application/json", cacheControlMaxAge: 60 });
       return { etag: result.etag, url: result.url };
     } catch (error) {

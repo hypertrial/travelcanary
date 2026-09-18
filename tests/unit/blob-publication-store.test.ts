@@ -34,4 +34,11 @@ describe("Blob publication reads", () => {
     blob.get.mockResolvedValue(response("oversized", 0));
     await expect(new BlobPublicationStore("token").read(pointerPath, 4)).rejects.toThrow("Invalid publication object size");
   });
+
+  it("uses the selected store with platform OIDC instead of a static token", async () => {
+    blob.get.mockResolvedValue(response('{"ok":true}'));
+    await new BlobPublicationStore({ storeId: "store_public" }).read(pointerPath, 64);
+    expect(blob.get).toHaveBeenCalledWith(pointerPath, expect.objectContaining({ storeId: "store_public", access: "public" }));
+    expect(blob.get.mock.calls[0]?.[1]).not.toHaveProperty("token");
+  });
 });

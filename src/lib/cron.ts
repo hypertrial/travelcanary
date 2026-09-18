@@ -23,9 +23,12 @@ function authorized(request: Request, secret: string) {
 function productionStores() {
   const privateToken = process.env.PRIVATE_INGESTION_BLOB_READ_WRITE_TOKEN;
   const publicToken = process.env.PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN;
-  if (!privateToken || !publicToken) throw new Error("Vercel Blob storage is not configured");
-  const catalogPublication: CatalogPublicationStores = { publicationStore: new BlobPublicationStore(publicToken) };
-  return { stateStore: new BlobStateStore(privateToken), catalogPublication };
+  const privateStoreId = process.env.PRIVATE_INGESTION_STORE_ID;
+  const publicStoreId = process.env.PUBLIC_SNAPSHOT_STORE_ID;
+  const catalogPublication: CatalogPublicationStores = { publicationStore: new BlobPublicationStore(
+    publicStoreId ? { storeId: publicStoreId } : publicToken || "",
+  ) };
+  return { stateStore: new BlobStateStore(privateStoreId ? { storeId: privateStoreId } : privateToken || ""), catalogPublication };
 }
 
 async function handleCronRequest(request: Request, operation: Cadence | "maintenance" | "conditions") {
