@@ -121,15 +121,15 @@ describe("approved adapter collection and replacement scopes", () => {
 describe("collector scope dispatch", () => {
   const at = new Date(now);
   const context = () => ({ now: at, fetch: vi.fn<typeof fetch>(), deadlineAt: Date.now() + 30000, diagnostics: createSourceDiagnostics() });
-  it.each([2, 3] as const)("dispatches marked quake adapter against the exact collection%s catalog", async (version) => {
-    const state = createEmptyState(at); state.collection.catalogVersion = version;
+  it("dispatches marked quake adapter against the complete catalog 3 roster", async () => {
+    const state = createEmptyState(at);
     const adapter = new UsgsAdapter();
     const fetch = vi.spyOn(adapter, "fetch").mockResolvedValue(result());
     const collected = await collectAdapterResult(adapter, state, context());
-    expect(fetch.mock.calls[0][0].locations.map(({ id }) => id).sort()).toEqual((version === 3 ? catalogLocationsV3 : locations).map(({ id }) => id).sort());
+    expect(fetch.mock.calls[0][0].locations.map(({ id }) => id).sort()).toEqual(catalogLocationsV3.map(({ id }) => id).sort());
     expect("partitions" in collected).toBe(false);
     if ("partitions" in collected) throw new Error("Expected aggregate result");
-    expect(collected.checkedLocationIds).toHaveLength(version === 3 ? 679 : 503);
+    expect(collected.checkedLocationIds).toHaveLength(679);
   });
 
   it("dispatches global context adapters across the complete catalog3 roster", async () => {
@@ -160,7 +160,7 @@ describe("collector scope dispatch", () => {
     const later = new Date(at.getTime() + 60000);
     const partial = { ...result(), status: "partial" as const, checkedAt: later.toISOString(), checkedLocationIds: checked, error: "One cohort unavailable" };
     const merged = mergeSourceResults(healthy, [scopeAdapterResult(new UsgsAdapter(), 3, partial)], later);
-    expect(merged.sources.usgs.status).toBe(failed === "new cohort" ? "ok" : "failed");
+    expect(merged.sources.usgs.status).toBe("partial");
     expect(merged.providers.usgs.status).toBe(merged.sources.usgs.status);
     expect(merged.expandedSourceHealth.usgs!.health.status).toBe(failed === "new cohort" ? "failed" : "ok");
     const retainedId = failed === "new cohort" ? "usgs:quake:gb-london" : "usgs:quake:at-vienna";
@@ -169,33 +169,4 @@ describe("collector scope dispatch", () => {
     else expect(merged.expandedSourceHealth.usgs!.health.lastSuccess).toBe(later.toISOString());
   });
 
-  it.each(["disabled", "partial cancellation"] as const)("preserves retained expanded evidence when legacy collection receives %s", (mode) => {
-    const base = createEmptyState(at);
-    const expandedEvent = { ...event(["gb-london"]), id: "usgs:q:gb-london" };
-    const legacyEvent = { ...event(["at-vienna"]), id: "usgs:q:at-vienna" };
-    base.events = [expandedEvent, legacyEvent];
-    const input: AggregateSourceResult = mode === "disabled"
-      ? { ...result(), status: "disabled", limitationCode: "not_enabled" }
-      : { ...result(), status: "partial", checkedLocationIds: [], removedEventPrefixes: ["usgs:q:"], error: "Partial feed cancellation" };
-    const scoped = scopeAdapterResult(new UsgsAdapter(), 2, input);
-    const merged = mergeSourceResults(base, [scoped], at);
-    expect(merged.events).toEqual([expandedEvent]);
-    expect(base.events).toEqual([expandedEvent, legacyEvent]);
-    const replayAt = new Date(at.getTime() + 60000);
-    const replay = scopeAdapterResult(new UsgsAdapter(), 2, { ...input, checkedAt: replayAt.toISOString() });
-    expect(mergeSourceResults(merged, [replay], replayAt).events).toEqual([expandedEvent]);
-  });
-
-  it("allows pure catalog3 merge while a later legacy-only scoped refresh preserves new evidence and receipts", () => {
-    const base = createEmptyState(at); base.collection.catalogVersion = 3;
-    const initial = result(); initial.events = [event(["gb-london"]), { ...event(["at-vienna"]), id: "usgs:quake:at-vienna" }];
-    const expanded = mergeSourceResults(base, [scopeAdapterResult(new UsgsAdapter(), 3, initial)], at);
-    expect(expanded.events.map(({ id }) => id).sort()).toEqual(initial.events.map(({ id }) => id).sort());
-    expect(expanded.expandedSourceHealth.usgs!.checkedLocationIds).toHaveLength(176);
-    const receipt = structuredClone(expanded.expandedSourceHealth.usgs); const retained = structuredClone(expanded.events.find(({ id }) => id.endsWith("gb-london")));
-    expanded.collection = { catalogVersion: 2, revision: 1 };
-    const later = new Date(at.getTime() + 60000); const refresh = { ...result(), checkedAt: later.toISOString() };
-    const rolledBack = mergeSourceResults(expanded, [scopeAdapterResult(new UsgsAdapter(), 2, refresh)], later);
-    expect(rolledBack.events).toEqual([retained]); expect(rolledBack.expandedSourceHealth.usgs).toEqual(receipt);
-  });
 });

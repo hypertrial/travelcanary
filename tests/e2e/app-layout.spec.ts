@@ -75,7 +75,7 @@ test("keeps desktop status and rail controls on intentional lines", async ({ pag
 
     const attention = page.getByRole("button", { name: /Open destinations needing attention/ });
     await attention.scrollIntoViewIfNeeded();
-    await expect(attention).toContainText("7 need attention");
+    await expect(attention).toContainText("183 need attention");
     await expect(attention).toContainText("1 emergency");
     expect(await attention.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
   }
@@ -123,7 +123,7 @@ test("keeps full-catalog and attention navigation available on tablets", async (
   await page.setViewportSize({ width: 768, height: 1024 });
   await page.goto("/");
 
-  const allDestinations = page.getByRole("button", { name: /Show all 503 destinations/ });
+  const allDestinations = page.getByRole("button", { name: /Show all 679 destinations/ });
   const attention = page.getByRole("button", { name: /Open destinations needing attention/ });
   await expect(allDestinations).toBeVisible();
   await expect(attention).toBeVisible();
@@ -174,7 +174,7 @@ test("keeps narrow map controls clear of bottom navigation", async ({ page }, te
   await page.goto("/");
   await expect(page.locator('[data-locations-ready="true"]')).toBeVisible({ timeout: 15_000 });
 
-  const allCoverage = page.getByRole("button", { name: /^All 503/ });
+  const allCoverage = page.getByRole("button", { name: /^All 679/ });
   const camera = page.getByLabel("Map camera controls");
   const navigation = page.getByRole("navigation", { name: "Primary navigation" });
   const [allCoverageBox, cameraBox, navigationBox] = await Promise.all([
@@ -186,4 +186,3 @@ test("keeps narrow map controls clear of bottom navigation", async ({ page }, te
   expect((allCoverageBox?.y ?? 0) + (allCoverageBox?.height ?? 0)).toBeLessThanOrEqual(navigationBox?.y ?? 0);
   expect((cameraBox?.y ?? 0) + (cameraBox?.height ?? 0)).toBeLessThanOrEqual(navigationBox?.y ?? 0);
 });
-

@@ -9,7 +9,7 @@ import { nationalWarningManifest } from "@/lib/national-warning-sources";
 import { locationCoveragePresentation } from "@/lib/coverage-presentation";
 import { SnapshotV11Schema, catalogLocationState } from "@/lib/domain/catalog-public";
 import { HazardTypeSchema, type NormalizedEvent } from "@/lib/domain/schemas";
-import type { IngestionStateV15 } from "@/lib/domain/catalog-state";
+import type { IngestionState } from "@/lib/domain/catalog-state";
 import release2 from "../../data/catalog-releases/2.json";
 import release3 from "../../data/catalog-releases/3.json";
 
@@ -18,7 +18,7 @@ const added = release3.locationIds.filter((id) => !release2.locationIds.includes
 const englandFloodIds = new Set(nationalWarningManifest.countries.GB.systems.find(({ id }) => id === "ea-flood")!.coverageLocationIds);
 const scopes = { usgs: added, emsc: added, "slf-avalanche": ["li-malbun"], "fcdo-travel-advice": added.filter((id) => !id.startsWith("gb-") && !id.startsWith("va-")) };
 function state() { const value = createEmptyState(now); value.collection = { catalogVersion: 3, revision: 1 }; return value; }
-function receipt(value: IngestionStateV15, source: keyof typeof scopes, checked = scopes[source]) {
+function receipt(value: IngestionState, source: keyof typeof scopes, checked = scopes[source]) {
   value.expandedSourceHealth[source] = { health: { ...value.sources[source], status: checked.length === scopes[source].length ? "ok" : checked.length ? "partial" : "failed",
     lastAttempt: now.toISOString(), lastSuccess: checked.length ? now.toISOString() : null, sourceUpdatedAt: checked.length ? now.toISOString() : null,
     nextExpectedUpdate: "2026-09-08T12:10:00Z", error: checked.length === scopes[source].length ? null : "private adapter failure detail" },

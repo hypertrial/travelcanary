@@ -18,8 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24.19.0
           cache: npm
@@ -31,8 +31,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24.19.0
           cache: npm
@@ -43,22 +43,41 @@ jobs:
       - run: npm run build
         env:
           TRAVELCANARY_RUNTIME: local
-          NEXT_PUBLIC_CATALOG_VERSION: "3"
-          NEXT_PUBLIC_DATA_MODE: live
           LOCAL_CONDITIONS_ENABLED: "true"
       - run: docker compose config --quiet
       - run: docker build --tag travelcanary:ci .
       - name: Smoke test generated systemd services
         run: |
           set -euo pipefail
-          node --import tsx scripts/render-systemd-smoke.ts
-          unit_dir="$RUNNER_TEMP/travelcanary-systemd-home/.config/systemd/user"
-          systemd-analyze verify "$unit_dir/travelcanary-web.service" "$unit_dir/travelcanary-collector.service"
+          cleanup() {
+            sudo systemctl stop travelcanary-web.service travelcanary-collector.service 2>/dev/null || true
+            sudo rm -f /etc/systemd/system/travelcanary-web.service /etc/systemd/system/travelcanary-collector.service
+            mountpoint -q /opt/travelcanary-smoke && sudo umount /opt/travelcanary-smoke || true
+            sudo rmdir /opt/travelcanary-smoke 2>/dev/null || true
+            sudo rm -rf /etc/travelcanary /var/lib/travelcanary
+            sudo userdel travelcanary-web 2>/dev/null || true
+            sudo userdel travelcanary-collector 2>/dev/null || true
+            sudo groupdel travelcanary-public 2>/dev/null || true
+          }
+          trap cleanup EXIT
+          sudo groupadd --system travelcanary-public
+          sudo useradd --system --no-create-home --shell /usr/sbin/nologin --gid travelcanary-public travelcanary-web
+          sudo useradd --system --no-create-home --shell /usr/sbin/nologin --gid travelcanary-public travelcanary-collector
+          sudo install -d -o travelcanary-collector -g travelcanary-public -m 0700 /var/lib/travelcanary/private /var/lib/travelcanary/cache
+          sudo install -d -o travelcanary-collector -g travelcanary-public -m 2750 /var/lib/travelcanary/public
+          sudo install -d -o root -g root -m 0755 /etc/travelcanary
+          sudo install -d -o root -g root -m 0755 /opt/travelcanary-smoke
+          sudo mount --bind "$GITHUB_WORKSPACE" /opt/travelcanary-smoke
+          sudo mount -o remount,bind,ro /opt/travelcanary-smoke
+          TRAVELCANARY_SYSTEMD_REPOSITORY=/opt/travelcanary-smoke node --import tsx scripts/render-systemd-smoke.ts
+          unit_dir="$RUNNER_TEMP/travelcanary-systemd"
+          sudo install -o travelcanary-web -g travelcanary-public -m 0600 "$unit_dir/web-environment" /etc/travelcanary/web-environment
+          sudo install -o travelcanary-collector -g travelcanary-public -m 0600 "$unit_dir/collector-environment" /etc/travelcanary/collector-environment
+          systemd-analyze verify "$unit_dir/travelcanary-web.service" "$unit_dir/travelcanary-collector.service" "$unit_dir/travelcanary-collector-once.service"
           sudo systemctl link "$unit_dir/travelcanary-web.service" "$unit_dir/travelcanary-collector.service"
           sudo systemctl daemon-reload
-          trap 'sudo systemctl stop travelcanary-web.service travelcanary-collector.service || true' EXIT
           sudo systemctl start travelcanary-web.service travelcanary-collector.service
-          if ! curl --fail --retry 20 --retry-delay 1 --retry-all-errors http://127.0.0.1:3199/api/v1/plugin/summary; then
+          if ! curl --fail --retry 20 --retry-delay 1 --retry-all-errors http://127.0.0.1:3199/api/healthz; then
             sudo systemctl status travelcanary-web.service travelcanary-collector.service --no-pager || true
             sudo journalctl -u travelcanary-web.service -u travelcanary-collector.service --no-pager -n 100 || true
             exit 1

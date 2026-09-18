@@ -1,5 +1,10 @@
 # Seventeen-country expansion — implementation record
 
+> Historical record. Catalog 3 is now the sole runtime and publication contract.
+> See [Architecture](ARCHITECTURE.md), [Operations](OPERATIONS.md), and the
+> [current publication contract](europe-expansion/publication.md). References
+> below to Catalog 2 and an in-progress rollout describe the pre-cutover design.
+
 This is an **in-progress implementation**, not a release announcement. Production
 still uses catalog 2 with 503 destinations in 28 countries. No new transport or
 destination is activated by the review inputs in this branch.
@@ -324,57 +329,10 @@ freshness and stale-request regressions were fixed. These results do not constit
 expanded production activation or the required 24-hour observations.
 
 
-## Versioned storage preparation (unwired)
+## Retired versioned storage preparation
 
-`BlobCatalog3SnapshotStore` and `publishCatalog3ConditionsFiles` prepare the
-catalog-3 namespace. No production collector, bootstrap or maintenance route
-uses these APIs yet. They validate their own wire versions and exact membership
-before storage writes, with unchanged snapshot and conditions byte limits.
-Malformed or wrong-version existing objects fail rather than being overwritten.
-Public reads use authoritative ETags and bounded payloads.
-
-The V11 store creates a missing namespace conditionally. Before advancing latest,
-it stages the prior valid generation in that namespace's `previous.json` using
-monotonic conditional writes. A failed latest write can leave previous equal to
-latest; this preserves the last valid generation but is not an atomic predecessor
-pair. Equal/older candidates do not rotate previous. Future candidates beyond the
-five-minute clock tolerance are rejected; invalid future generations are never
-retained as rollback evidence. Callers must reread committed state and rebuild
-after a conflict instead of making old evidence appear newly collected.
-
-Legacy V10 publication keeps its existing path and write order. Country publication
-reuses the bounded four-worker, three-attempt conditional loop; a failed country
-is reported separately and does not suppress successful peers. Stored country
-identity must agree with the pathname, including before an unchanged result.
-V3 requires all 45 country files from one generation and producer, rejects future
-candidate generations beyond five minutes, and repairs schema-valid future stored
-files using their ETags. Legacy clock behavior remains unchanged.
-
-The 1.5 MiB check currently bounds the submitted complete generation. Partial
-publication can retain files from an older generation; their combined stored size
-can exceed either generation's size. This is an explicit activation gate: capacity
-and transition orchestration must bound mixed-generation storage as well as each
-candidate, including compatibility outputs. The new unwired publisher alone does
-not establish that aggregate storage guarantee.
-
-This increment does not implement full-catalog projections or the 24-hour dual
-publication transition. That later orchestration needs durable transition metadata
-in a state version understood by every supported rollback writer, and a documented
-drain of old collectors and publishers. It must build both releases from the same
-committed evidence and clock, preserve ordinary expiry and quota state, and repair
-partial publication without repeating upstream collection.
-
-
-Storage preparation validation ran in an isolated worktree with Node 24 and npm
-11.6.2. Both wrappers passed 972 unit/integration tests; lint, types, audit, build
-and budgets passed. Browser verification reported 179 passes, one screenshot
-check passing on retry, and 46 planned skips. The affected unavailable-control-rail
-screenshot then passed three repetitions with retries disabled. Its initial
-five-second element-stability timeout remains recorded as a test reliability
-observation, not a fixed production defect. Assets remained 596,443/641,101 bytes.
-Independent storage review passed, including 35 new namespace, CAS, size, stream,
-generation and clock regressions. Public-reader commit
-`905a41f54ef9657a938e6127a90bc6f31f909fd4` passed exact CI run `34269260548`.
+The unwired pre-cutover Blob stores and dual-publication design were superseded by
+the atomic Catalog 3 publication contract in [Architecture](ARCHITECTURE.md).
 
 
 ## Inactive catalog and pending projections

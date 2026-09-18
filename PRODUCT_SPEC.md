@@ -11,7 +11,7 @@
 
 Local conditions are a separate destination-selected context product: forecasts, modeled air quality, reviewed nearby offshore forecasts, named-station observations, earthquake context, and official infrastructure incidents. Infrastructure can describe active or next-24-hour planned power, water, telecom, rail, and road disruption plus explicit national electricity-use advisories. It is capped, factual, source-attributed, and never treated as proof that services are operating normally. These products never alter risk scores, map markers, coverage gaps, delayed warning hazards, global alert health, or alert counts. Quiet destinations remain searchable without reassuring green markers. Conditions unavailability is local to the selected panel.
 
-Public alerts use Snapshot V11/catalog 3 (679 IDs across 45 countries). Snapshot V10/catalog 2 remains a frozen 503-destination compatibility projection during the bounded transition. Conditions V3 uses separate precomputed country files, retrieved only after selection from the approved public Blob origin; Conditions V2 remains the catalog 2 wire contract. `infrastructureIncidents`, `systemConditions`, and sanitized source health are context-only; resolved incidents are omitted and healthy-empty sources do not create an all-clear. Hourly details start collapsed; observation time, forecast retrieval time, individual source links and limitations remain visible. Missing values remain missing. Forecast issue times are not fabricated from API processing duration.
+Public alerts use Snapshot V11/catalog 3 (679 IDs across 45 countries). Conditions V3 uses 45 immutable country objects, retrieved only after selection from the current validated publication manifest. `infrastructureIncidents`, `systemConditions`, and sanitized source health are context-only; resolved incidents are omitted and healthy-empty sources do not create an all-clear. Hourly details start collapsed; observation time, forecast retrieval time, individual source links and limitations remain visible. Missing values remain missing. Forecast issue times are not fabricated from API processing duration.
 
 A failed conditions download offers “Retry local conditions” within the destination briefing. Retry affects only that country file, disables duplicate submission while pending, and does not reload alerts or navigate away. Switching destinations resets the briefing's scroll and disclosures so the new risk and action guidance appear first.
 
@@ -154,7 +154,7 @@ Volcanic activity is applicable only when the reviewed offline artifact places d
 
 ## Evidence and Publication Rules
 
-Every non-normal Snapshot V10 incident must contain the authoritative primary hazard fields below plus one to five distinct evidence records. Each evidence record carries provider, source name, direct URL, source update/check times, and confidence.
+Every non-normal Snapshot V11 incident must contain the authoritative primary hazard fields below plus one to five distinct evidence records. Each evidence record carries provider, source name, direct URL, source update/check times, and confidence.
 
 - Hazard type
 - Public risk level
@@ -200,7 +200,7 @@ A single report or failed corroboration remains internal and never changes the m
 
 The MVP uses deterministic rules and fixed English templates. It does not use a paid or generative-AI service to classify, translate, score, or explain events.
 
-GDELT runs hourly behind `GDELT_ENABLED=true`. Publisher text and images are used only transiently for fixed exclusions and fingerprints; they are never persisted or published. A single or uncorroborated report remains a bounded private candidate. Three independently owned reviewed publisher groups are required; once corroborated, the group emits one event per distinct publisher so Snapshot V10 presents one incident with multiple evidence links. The adapter first makes one combined fixed-vocabulary PointData request; only a failed combined request triggers two bounded query shards. One successful shard is partial, three 512 KB responses and 1 MB consumed bytes are hard limits, and GDELT health is non-blocking and never satisfies coverage.
+GDELT runs hourly behind `GDELT_ENABLED=true`. Publisher text and images are used only transiently for fixed exclusions and fingerprints; they are never persisted or published. A single or uncorroborated report remains a bounded private candidate. Three independently owned reviewed publisher groups are required; once corroborated, the group emits one event per distinct publisher so Snapshot V11 presents one incident with multiple evidence links. The adapter first makes one combined fixed-vocabulary PointData request; only a failed combined request triggers two bounded query shards. One successful shard is partial, three 512 KB responses and 1 MB consumed bytes are hard limits, and GDELT health is non-blocking and never satisfies coverage.
 
 ## Initial Source Plan
 
@@ -615,36 +615,31 @@ perf:bench: node --import tsx scripts/benchmark-risk.ts
 
 #### Persistence and publication
 
-Use two Vercel Blob stores because access mode is configured per store:
+Use separate private-state and public-publication stores:
 
 ```text
 Private ingestion store
-  ingestion-state.json
+  ingestion/state.json
+  ingestion/state-v15-backup.json
 
-Public snapshot store
-  latest.json
-  previous.json
+Public publication store
+  catalogs/3/objects/sha256/<content-sha>.json
+  catalogs/3/generations/<manifest-sha>/manifest.json
+  catalogs/3/publication/latest.json
 ```
 
-Private ingestion state uses schema V15 and retains bounded transport health under all 45 MeteoAlarm, national and air-quality country partitions, plus catalog-scoped receipts, source revision fencing, bounded source-owned conditions, quotas and a worker lease. Public Snapshot V11/catalog 3 requires exactly 679 configured destinations; Snapshot V10/catalog 2 remains the exact 503-destination compatibility projection. Historical V1–V14 private readers migrate deterministically in memory. `coverageGaps` remains permanent, `delayedHazards` remains temporary, and only a late coverage transport may delay its declared hazard at its mapped destinations. Context, conditions, infrastructure and fallback transports never affect monitoring counts.
+Private ingestion state uses schema V16 and retains bounded transport health under all 45 MeteoAlarm, national and air-quality country partitions, Catalog 3 receipts, source revision fencing, bounded source-owned conditions, quotas, and a globally fenced writer lease. Historical V1–V15 readers exist only for deterministic migration, which preserves an immutable V15 backup before the first V16 write. `coverageGaps` remains permanent, `delayedHazards` remains temporary, and only a late coverage transport may delay its declared hazard at its mapped destinations. Context, conditions, infrastructure and fallback transports never affect monitoring counts.
 
 Publication follows this order:
 
-1. Read the current private state and its Blob ETag.
-2. Read the current public `latest.json` and its Blob ETag.
-3. Fetch, validate, and normalize the enabled sources.
-4. Produce the complete candidate snapshot in memory.
-5. Validate the candidate snapshot with Zod.
-6. Conditionally write the new private state using its previous ETag; abort publication if the ETag changed.
-7. Conditionally write the new public snapshot to `latest.json` using the ETag read in step 2.
-8. If that write succeeds and authoritative Blob metadata still has the just-written ETag, conditionally advance `previous.json` to the snapshot read in step 2. Server-side public reads use control-plane metadata plus an ETag-versioned content URL so CDN cache state cannot be mistaken for a concurrent writer. The previous object's own ETag and snapshot time prevent an older overlapping job from replacing a newer rollback snapshot. If the rollback object is missing, recreate it from the prior validated snapshot with a create-only write and reread after a concurrent creation. Skip the previous copy if another job has already replaced `latest.json`, or if the replaced snapshot was more than five minutes ahead of the validated replacement; an implausibly future-dated object must not enter rollback storage.
-9. If the `latest.json` write fails, leave `previous.json` untouched and keep the existing `latest.json`; the next scheduled run reconciles state and retries publication.
+1. Read one committed private-state revision under the active lease and fence.
+2. Build and validate the complete 679-location Snapshot V11 and all 45 Conditions V3 objects.
+3. Canonically serialize, hash, and create the immutable content objects.
+4. Create the immutable manifest describing every object and release identity.
+5. Re-read and validate the state revision, collection revision, lease owner, and fence.
+6. Compare-and-swap `publication/latest.json` last. A failed validation or partial write never advances the pointer.
 
-Use Blob overwrites with `allowOverwrite: true` and conditional writes through `ifMatch` so an older or overlapping job cannot overwrite newer state. Never write directly to the public snapshot before complete validation.
-
-Provision valid empty state and snapshot files when creating the stores so every production write can use an ETag rather than an unguarded first-write path.
-
-Set `latest.json` in the public snapshot store to the shortest Vercel Blob cache duration supported for the chosen plan, currently 60 seconds. The browser checks for a new snapshot using a ten-minute time-bucket query parameter so its cache cannot hide a successful scheduled update indefinitely.
+Blob publication uses immutable writes and `ifMatch` for the pointer. Local publication uses same-filesystem temporary files, `fsync`, and atomic linking. Maintenance retains the current generation, the newest valid rollback generation, and all generations younger than 48 hours.
 
 Keep both Blob write tokens, `CRON_SECRET`, and all upstream credentials server-only. Only non-secret public URLs may use the `NEXT_PUBLIC_` prefix.
 
@@ -921,7 +916,7 @@ The MVP is ready to launch when:
 
 ## Keyless provider expansion contract
 
-Public publication uses Snapshot V11/catalog 3 with provider and transport health, clustered evidence, permanent gaps, delayed hazards, and exactly 679 locations across 45 countries. Snapshot V10/catalog 2 and Conditions V2 remain exact compatibility contracts; catalog 3 uses Conditions V3. Private state V15 deterministically migrates historical V1–V14 state and preserves an immutable backup of the actual previous wire version. Older inputs retain version-specific immutable backups.
+Public publication uses one atomic Catalog 3 generation with Snapshot V11, 45 Conditions V3 objects, provider and transport health, clustered evidence, permanent gaps, delayed hazards, and exactly 679 locations across 45 countries. Private state V16 deterministically migrates historical V1–V15 state and preserves an immutable V15 backup before the first write. Catalog 2 is retained only in frozen migration readers and historical artifacts; it is not published or selectable at runtime.
 
 GDACS is discovery-only. EMSC is a preliminary earthquake fallback capped at `ELEVATED`; USGS ShakeMap wins. Vigicrues, LHP, FOEN, eHYD, SLF, and reviewed EAWS partitions are authoritative and coverage-scoped. GFM, active-fire hotspots, EONET, EDO, FCDO, and Catalonia context are capped at `ELEVATED`.
 

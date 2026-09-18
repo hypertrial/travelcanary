@@ -5,29 +5,30 @@ import { expandedDelayedHazards } from "./expanded-source-health";
 import { expandedHazardCoverage, expandedProviderApplies, expandedProviderIds, type ExpandedProviderId } from "./expanded-coverage";
 import { sourceHazards } from "./risk-policy";
 import { eventIsPublishable } from "./hazard-lifecycle";
-import { clusterPublicHazards, projectCatalog2Snapshot } from "./risk-snapshot";
+import { clusterPublicHazards, projectCoreSnapshot } from "./risk-snapshot";
 import { HazardTypeSchema, countryCodes, providerIdForSourceId, type SourceHealth } from "./domain/schemas";
 import { catalogV3CountryCodes } from "./domain/contract-identities";
-import type { IngestionStateV15 } from "./domain/catalog-state";
+import type { IngestionStateV15, IngestionStateV16 } from "./domain/catalog-state";
 import { SnapshotV11Schema, ConditionsV3Schema } from "./domain/catalog-public";
 import { conditionAttribution, conditionSourceEnabled } from "./conditions/sources";
 import { marineConditionEligible } from "./conditions/marine";
 import { currentConditions } from "./conditions/presentation";
-import { conditionRecords, CONDITIONS_TOTAL_LIMIT, emptyConditions } from "./domain/conditions";
-import { projectCatalog2Conditions } from "./conditions/state";
+import { conditionRecords, conditionSourceAppliesToCountry, CONDITIONS_TOTAL_LIMIT, emptyConditions } from "./domain/conditions";
 import { eventAffectsLocation } from "./geospatial";
 import { nationalWarningManifest, type NationalWarningSystem } from "./national-warning-sources";
 import { providerRegistry, publicProviderPartitionState } from "./provider-registry";
 
 const legacyCountries = new Set<string>(countryCodes);
+const forecastHealthSources = new Set(["open-meteo-weather", "open-meteo-air", "open-meteo-marine", "met-norway"]);
 const addedCountries = catalogV3CountryCodes.filter((code) => !legacyCountries.has(code));
 const addedLocations = catalogLocationsV3.filter(({ countryCode }) => !legacyCountries.has(countryCode));
+type ProjectionState = IngestionStateV15 | IngestionStateV16;
 
 // These pure preparation projections do not activate monitoring or publish.
 // Even if private state contains evidence for a new location, it is deliberately
 // withheld until that location's reviewed eligibility is activated.
-export function buildPendingCatalog3Snapshot(state: IngestionStateV15, now = new Date()) {
-  const legacy = projectCatalog2Snapshot(state, now);
+export function buildPendingCatalog3Snapshot(state: ProjectionState, now = new Date()) {
+  const legacy = projectCoreSnapshot(state, now);
   return SnapshotV11Schema.parse({
     ...legacy, schemaVersion: 11, catalogVersion: 3,
     providers: Object.fromEntries(Object.entries(legacy.providers).map(([id, provider]) => [id, provider.partitions ? {
@@ -41,27 +42,11 @@ export function buildPendingCatalog3Snapshot(state: IngestionStateV15, now = new
   });
 }
 
-export function buildPendingCatalog3Conditions(state: IngestionStateV15, now: Date, env: Record<string, string | undefined> = process.env) {
-  const legacy = projectCatalog2Conditions(state, now, env);
-  const files = [
-    ...legacy.map((file) => ConditionsV3Schema.parse({ ...file, schemaVersion: 3, catalogVersion: 3 })),
-    ...addedCountries.map((countryCode) => ConditionsV3Schema.parse({
-      schemaVersion: 3, catalogVersion: 3, countryCode, generatedAt: now.toISOString(), producerCommitSha: legacy[0].producerCommitSha,
-      sources: {}, sourceHealth: {}, locations: Object.fromEntries(addedLocations.filter((location) => location.countryCode === countryCode)
-        .map(({ id }) => [id, { ...emptyConditions(), limitations: ["update-pending"] }])),
-    })),
-  ];
-  const sizes = files.map((file) => Buffer.byteLength(serializeCatalog3Conditions(file)));
-  if (sizes.some((bytes, index) => bytes > catalog3ConditionsCountryLimit(files[index].countryCode))) throw new Error("Conditions exceed country publication limit");
-  if (sizes.reduce((sum, bytes) => sum + bytes, 0) > CONDITIONS_TOTAL_LIMIT) throw new Error("Conditions exceed total publication limit");
-  return files;
-}
-
 // Active projection is still pure: callers must finish the rollout gates before
 // selecting this output for publication. Only approved, destination-scoped
 // evidence can affect additions; neighboring polygons and legacy global health
 // never grant expanded coverage.
-export function buildCatalog3Snapshot(state: IngestionStateV15, now = new Date()) {
+export function buildCatalog3Snapshot(state: ProjectionState, now = new Date()) {
   const snapshot = buildPendingCatalog3Snapshot(state, now);
   for (const providerId of expandedProviderIds) {
     const receipt = state.expandedSourceHealth[providerId];
@@ -96,7 +81,7 @@ export function buildCatalog3Snapshot(state: IngestionStateV15, now = new Date()
       ? { ...partition, transports: systems.map((system) => transportState(transports[system.id], system, partition.status)) }
       : partition;
   }
-  const indexed = new Map<string, IngestionStateV15["events"]>();
+  const indexed = new Map<string, ProjectionState["events"]>();
   const addedById = new Map(addedLocations.map((location) => [location.id, location]));
   for (const event of state.events) {
     if (!eventIsPublishable(event, now)) continue;
@@ -132,18 +117,20 @@ export function buildCatalog3Snapshot(state: IngestionStateV15, now = new Date()
   return SnapshotV11Schema.parse(snapshot);
 }
 
-export function buildCatalog3Conditions(state: IngestionStateV15, now: Date, env: Record<string, string | undefined> = process.env) {
-  const legacy = projectCatalog2Conditions(state, now, env);
-  const files = legacy.map((file) => ConditionsV3Schema.parse({ ...file, schemaVersion: 3, catalogVersion: 3 }));
+export function buildCatalog3Conditions(state: ProjectionState, now: Date, env: Record<string, string | undefined> = process.env) {
   const enabled = (source: Parameters<typeof conditionSourceEnabled>[0]) => conditionSourceEnabled(source, env);
-  for (const countryCode of addedCountries) {
-    const entries = Object.fromEntries(addedLocations.filter((location) => location.countryCode === countryCode).map((location) => {
-      const raw = state.conditions.locations[location.id];
-      const allowed = emptyConditions();
-      if (raw?.weather?.sourceId === "open-meteo-weather") allowed.weather = raw.weather;
-      if (raw?.airQuality?.sourceId === "open-meteo-air") allowed.airQuality = raw.airQuality;
+  const sha = env.VERCEL_GIT_COMMIT_SHA;
+  const producerCommitSha = sha && /^[a-f0-9]{40}$/.test(sha) ? sha : null;
+  const files = catalogV3CountryCodes.map((countryCode) => {
+    const added = addedCountries.includes(countryCode);
+    const countryLocations = catalogLocationsV3.filter((location) => location.countryCode === countryCode);
+    const entries = Object.fromEntries(countryLocations.map((location) => {
+      const raw = state.conditions.locations[location.id] || emptyConditions();
+      const allowed = added ? emptyConditions() : raw;
+      if (added && raw.weather?.sourceId === "open-meteo-weather") allowed.weather = raw.weather;
+      if (added && raw.airQuality?.sourceId === "open-meteo-air") allowed.airQuality = raw.airQuality;
       const marineEligible = marineConditionEligible(location.id, 3);
-      if (marineEligible && raw?.marine?.sourceId === "open-meteo-marine") allowed.marine = raw.marine;
+      if (added && marineEligible && raw.marine?.sourceId === "open-meteo-marine") allowed.marine = raw.marine;
       const data = currentConditions(allowed, now, enabled);
       const anyEnabled = enabled("open-meteo-weather") || enabled("open-meteo-air") || (marineEligible && enabled("open-meteo-marine"));
       data.limitations = conditionRecords(data).length ? [] : [anyEnabled ? "update-pending" : "disabled"];
@@ -153,12 +140,19 @@ export function buildCatalog3Conditions(state: IngestionStateV15, now: Date, env
         || (marineEligible && enabled("open-meteo-marine") && !data.marine))) data.limitations.push("partial-data");
       return [location.id, data];
     }));
-    const sources = [...new Set(Object.values(entries).flatMap((entry) => conditionRecords(entry).map((item) => item.sourceId)))];
-    files.push(ConditionsV3Schema.parse({
-      schemaVersion: 3, catalogVersion: 3, countryCode, generatedAt: now.toISOString(), producerCommitSha: legacy[0].producerCommitSha,
-      sources: Object.fromEntries(sources.map((source) => [source, conditionAttribution(source)])), sourceHealth: {}, locations: entries,
-    }));
-  }
+    const applicable = added ? [] : Object.entries(state.conditions.health).filter(([id]) => !forecastHealthSources.has(id)
+      && enabled(id as Parameters<typeof conditionAttribution>[0])
+      && conditionSourceAppliesToCountry(id as Parameters<typeof conditionAttribution>[0], countryCode));
+    const sources = [...new Set([...Object.values(entries).flatMap((entry) => conditionRecords(entry).map((item) => item.sourceId)),
+      ...applicable.map(([id]) => id as Parameters<typeof conditionAttribution>[0])])];
+    return ConditionsV3Schema.parse({
+      schemaVersion: 3, catalogVersion: 3, countryCode, generatedAt: now.toISOString(), producerCommitSha,
+      sources: Object.fromEntries(sources.map((source) => [source, conditionAttribution(source)])),
+      sourceHealth: Object.fromEntries(applicable.map(([id, item]) => [id, {
+        status: item!.status, checkedAt: item!.checkedAt, limitationCode: item!.code,
+      }])), locations: entries,
+    });
+  });
   const sizes = files.map((file) => Buffer.byteLength(serializeCatalog3Conditions(file)));
   if (sizes.some((bytes, index) => bytes > catalog3ConditionsCountryLimit(files[index].countryCode)) || sizes.reduce((sum, bytes) => sum + bytes, 0) > CONDITIONS_TOTAL_LIMIT) {
     throw new Error("Conditions exceed catalog publication limits");

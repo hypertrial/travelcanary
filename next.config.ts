@@ -3,7 +3,13 @@ import type { NextConfig } from "next";
 const developmentScriptPolicy = process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : "";
 
 const nextConfig: NextConfig = {
+  agentRules: false,
   distDir: process.env.NEXT_DIST_DIR || ".next",
+  outputFileTracingIncludes: { "/api/v1/health": [
+    "./public/catalogs/3/publication/latest.json",
+    "./public/catalogs/3/generations/**/*",
+    "./public/catalogs/3/objects/**/*",
+  ] },
   poweredByHeader: false,
   reactStrictMode: true,
   allowedDevOrigins: ["127.0.0.1"],

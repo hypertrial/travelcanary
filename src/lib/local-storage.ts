@@ -2,28 +2,19 @@ import { DatabaseSync } from "node:sqlite";
 import { chmodSync, lstatSync, mkdirSync } from "node:fs";
 import { dirname, isAbsolute, resolve } from "node:path";
 import { z } from "zod";
-import { buildCatalog3Conditions, buildCatalog3Snapshot } from "./catalog-projections";
 import type { CatalogPublicationStores } from "./catalog-publication";
-import { catalog3ConditionsCountryLimit } from "./conditions/publication-budget";
-import { serializeCatalog3Conditions } from "./conditions/serialization";
 import { captureStateControl, assertStateControlChange } from "./publication-control";
 import { createEmptyState } from "./risk";
-import { IngestionStateV15Schema, parseCatalogState, type IngestionStateV15 } from "./domain/catalog-state";
-import { CONDITIONS_COUNTRY_LIMIT, CONDITIONS_TOTAL_LIMIT, ConditionsSchema, type Conditions } from "./domain/conditions";
-import { ConditionsV3Schema, SnapshotV11Schema } from "./domain/catalog-public";
-import { catalogV3CountryCodes } from "./domain/contract-identities";
-import { CompleteSnapshotSchema } from "./snapshot-validation";
-import { parseSnapshot, type Snapshot } from "./domain/schemas";
+import { IngestionStateV15Schema, IngestionStateV16Schema, parseCatalogState, type IngestionState } from "./domain/catalog-state";
 import { PRIVATE_STATE_HARD_LIMIT_BYTES } from "./ingestion/limits";
-import { catalogV2Paths, catalogV3Paths } from "./catalog-paths";
-import { ConcurrencyError, type ConditionsPublicationResult, type SnapshotStore, type StateStore, type Versioned } from "./storage";
+import { ConcurrencyError, type StateStore, type Versioned } from "./state-store";
 import { disabledLocalPolicy, LocalRuntimePolicySchema, type LocalRuntimePolicy } from "./local-policy";
-import catalogV2 from "../../data/catalog-releases/2.json";
+import type { PublicationStore } from "./publication-store";
+import { runtimePaths } from "./runtime-paths";
 
 const objectKey = z.string().min(1).max(240).regex(/^[A-Za-z0-9][A-Za-z0-9._/-]*$/)
   .refine((value) => !value.split("/").includes(".."), "Object keys cannot traverse namespaces");
-const namespace = z.enum(["private", "public"]);
-const SNAPSHOT_LIMIT_BYTES = 500_000;
+const namespace = z.literal("private");
 const DEFAULT_BUSY_TIMEOUT_MS = 5_000;
 const STATE_KEY = "ingestion/state.json";
 export const POLICY_KEY = "runtime/policy.json";
@@ -34,8 +25,7 @@ type ObjectRow = { value: Uint8Array | string; revision: number; updated_at: str
 export type LocalObject = { value: string; revision: number; updatedAt: string };
 
 export function localDataDirectory(environment: Record<string, string | undefined> = process.env) {
-  const configured = environment.TRAVELCANARY_DATA_DIR?.trim();
-  return resolve(/* turbopackIgnore: true */ configured || ".travelcanary");
+  return runtimePaths(environment, true).privateRoot;
 }
 
 export function localDatabasePath(environment: Record<string, string | undefined> = process.env) {
@@ -46,19 +36,6 @@ export function localDatabasePath(environment: Record<string, string | undefined
 
 function text(row: ObjectRow): string {
   return typeof row.value === "string" ? row.value : Buffer.from(row.value).toString("utf8");
-}
-
-export function publicObjectLimit(key: string) {
-  if (key === catalogV3Paths.snapshot || key === catalogV3Paths.previousSnapshot
-    || key === catalogV2Paths.snapshot || key === catalogV2Paths.previousSnapshot) return SNAPSHOT_LIMIT_BYTES;
-  const v3 = key.match(/^catalogs\/3\/conditions\/v3\/([A-Z]{2})\.json$/);
-  if (v3) return catalog3ConditionsCountryLimit(v3[1] as Parameters<typeof catalog3ConditionsCountryLimit>[0]);
-  if (/^conditions\/v2\/[A-Z]{2}\.json$/.test(key)) return CONDITIONS_COUNTRY_LIMIT;
-  throw new Error("Public object key is not allowlisted");
-}
-
-export function isAllowlistedPublicObjectKey(key: string) {
-  try { publicObjectLimit(key); return true; } catch { return false; }
 }
 
 export class LocalDatabase {
@@ -76,7 +53,7 @@ export class LocalDatabase {
     this.database.exec(`PRAGMA busy_timeout=${busyTimeoutMs}; PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA foreign_keys=ON;`);
     this.database.exec(`
       CREATE TABLE IF NOT EXISTS objects (
-        namespace TEXT NOT NULL CHECK(namespace IN ('private','public')),
+        namespace TEXT NOT NULL CHECK(namespace = 'private'),
         key TEXT NOT NULL,
         value BLOB NOT NULL,
         revision INTEGER NOT NULL CHECK(revision > 0),
@@ -107,13 +84,6 @@ export class LocalDatabase {
     const row = this.database.prepare("SELECT value, revision, updated_at FROM objects WHERE namespace = ? AND key = ?")
       .get(scope, key) as ObjectRow | undefined;
     return row ? { value: text(row), revision: Number(row.revision), updatedAt: row.updated_at } : undefined;
-  }
-
-  readPublic(key: string) {
-    publicObjectLimit(key);
-    const result = this.read("public", key);
-    if (result && Buffer.byteLength(result.value) > publicObjectLimit(key)) throw new Error("Stored public object exceeds its size limit");
-    return result;
   }
 
   compareAndSwap(scope: Namespace, key: string, value: string, expectedRevision: number | null, maxBytes: number) {
@@ -188,113 +158,38 @@ export class LocalStateStore implements StateStore {
     const row = this.database.read("private", STATE_KEY);
     if (!row) throw new Error("Local ingestion state is not initialized");
     if (Buffer.byteLength(row.value) > PRIVATE_STATE_HARD_LIMIT_BYTES) throw new Error("Private ingestion state exceeds 5 MB hard limit");
-    const data = parseCatalogState(JSON.parse(row.value));
-    return { data, etag: String(row.revision), ...captureStateControl(data) };
+    const raw = JSON.parse(row.value) as { schemaVersion?: unknown };
+    const data = parseCatalogState(raw);
+    const legacy = raw.schemaVersion === 15 ? { schemaVersion: 15, raw: row.value } : undefined;
+    return { data, etag: String(row.revision), legacy, ...captureStateControl(data) };
   }
-  async write(state: IngestionStateV15, expected: Versioned<IngestionStateV15>) {
-    const validated = IngestionStateV15Schema.parse(state);
+  async write(state: IngestionState, expected: Versioned<IngestionState>) {
+    const validated = IngestionStateV16Schema.parse({ ...state, stateRevision: state.stateRevision + 1 });
     assertStateControlChange(validated, expected);
     const value = JSON.stringify(validated);
+    if (expected.legacy?.schemaVersion === 15) {
+      const backup = JSON.stringify(IngestionStateV15Schema.parse(JSON.parse(expected.legacy.raw)));
+      const existing = this.database.read("private", "ingestion/state-v15-backup.json");
+      if (existing) {
+        const existingBody = JSON.stringify(IngestionStateV15Schema.parse(JSON.parse(existing.value)));
+        if (existingBody !== backup) throw new ConcurrencyError("V15 backup does not match the state being migrated");
+      } else {
+        const revisions = this.database.compareAndSwapBatch([
+          { scope: "private", key: "ingestion/state-v15-backup.json", value: backup, expectedRevision: null, maxBytes: PRIVATE_STATE_HARD_LIMIT_BYTES },
+          { scope: "private", key: STATE_KEY, value, expectedRevision: Number(expected.etag), maxBytes: PRIVATE_STATE_HARD_LIMIT_BYTES },
+        ]);
+        return { etag: String(revisions[1]) };
+      }
+    }
     const revision = this.database.compareAndSwap("private", STATE_KEY, value, Number(expected.etag), PRIVATE_STATE_HARD_LIMIT_BYTES);
     return { etag: String(revision) };
   }
 }
 
-export class LocalSnapshotStore implements SnapshotStore {
-  constructor(private readonly database: LocalDatabase) {}
-  async readLatest() {
-    const row = this.database.readPublic(catalogV2Paths.snapshot);
-    if (!row) throw new Error("Legacy local snapshot is not initialized");
-    return { data: CompleteSnapshotSchema.parse(parseSnapshot(JSON.parse(row.value))), etag: String(row.revision) };
-  }
-  async publish(snapshot: Snapshot, expected: Versioned<Snapshot>) {
-    const value = JSON.stringify(CompleteSnapshotSchema.parse(snapshot));
-    const revision = this.database.compareAndSwap("public", catalogV2Paths.snapshot, value, Number(expected.etag), SNAPSHOT_LIMIT_BYTES);
-    return { etag: String(revision) };
-  }
-}
-
-type SnapshotV11 = z.infer<typeof SnapshotV11Schema>;
-export class LocalCatalog3SnapshotStore {
-  constructor(private readonly database: LocalDatabase) {}
-  async readLatest(): Promise<Versioned<SnapshotV11> | undefined> {
-    const row = this.database.readPublic(catalogV3Paths.snapshot);
-    return row ? { data: SnapshotV11Schema.parse(JSON.parse(row.value)), etag: String(row.revision) } : undefined;
-  }
-  async publish(snapshot: SnapshotV11, expected?: Versioned<SnapshotV11>, now = new Date()) {
-    const candidate = SnapshotV11Schema.parse(snapshot);
-    const futureCutoff = now.getTime() + 5 * 60_000;
-    if (!Number.isFinite(now.getTime()) || Date.parse(candidate.generatedAt) > futureCutoff) throw new Error("Snapshot generation is in the future");
-    if (expected && Date.parse(expected.data.generatedAt) <= futureCutoff && Date.parse(expected.data.generatedAt) >= Date.parse(candidate.generatedAt)) {
-      return { etag: expected.etag, status: "unchanged" as const };
-    }
-    const value = JSON.stringify(candidate);
-    const writes: Parameters<LocalDatabase["compareAndSwapBatch"]>[0] = [];
-    if (expected) {
-      const prior = this.database.readPublic(catalogV3Paths.previousSnapshot);
-      if (!prior || Date.parse(JSON.parse(prior.value).generatedAt) < Date.parse(expected.data.generatedAt)) {
-        writes.push({ scope: "public", key: catalogV3Paths.previousSnapshot, value: JSON.stringify(expected.data), expectedRevision: prior?.revision ?? null, maxBytes: SNAPSHOT_LIMIT_BYTES });
-      }
-    }
-    writes.push({ scope: "public", key: catalogV3Paths.snapshot, value, expectedRevision: expected ? Number(expected.etag) : null, maxBytes: SNAPSHOT_LIMIT_BYTES });
-    const revision = this.database.compareAndSwapBatch(writes).at(-1)!;
-    return { etag: String(revision), url: `/live/${catalogV3Paths.snapshot}`, status: "published" as const };
-  }
-}
-
-type CatalogConditions = Conditions | z.infer<typeof ConditionsV3Schema>;
-async function publishConditions(database: LocalDatabase, files: CatalogConditions[], version: 2 | 3, exact: boolean, now: Date): Promise<ConditionsPublicationResult> {
-  const parse = (value: unknown) => version === 3 ? ConditionsV3Schema.parse(value) : ConditionsSchema.parse(value);
-  const paths = version === 3 ? catalogV3Paths : catalogV2Paths;
-  const entries = files.map((input) => {
-    const file = parse(input); const body = version === 3 ? serializeCatalog3Conditions(file) : JSON.stringify(file);
-    return { file, body, key: `${paths.conditions}${file.countryCode}.json` };
-  });
-  if (new Set(entries.map(({ file }) => file.countryCode)).size !== entries.length) throw new Error("Duplicate conditions country");
-  const cutoff = now.getTime() + 5 * 60_000;
-  if (!Number.isFinite(cutoff) || entries.some(({ file }) => Date.parse(file.generatedAt) > cutoff)) throw new Error("Conditions generation is in the future");
-  if (version === 3) {
-    if (entries.length !== catalogV3CountryCodes.length) throw new Error("Conditions publication requires all 45 countries");
-    if (new Set(entries.map(({ file }) => file.generatedAt)).size !== 1
-      || new Set(entries.map(({ file }) => "producerCommitSha" in file ? file.producerCommitSha : null)).size !== 1) {
-      throw new Error("Conditions publication must be one producer generation");
-    }
-  } else for (const { file } of entries) {
-    const expected = catalogV2.locationIds.filter((id) => id.startsWith(`${file.countryCode.toLowerCase()}-`)).sort();
-    if (!expected.length || expected.join(",") !== Object.keys(file.locations).sort().join(",")) throw new Error("Conditions publication catalog mismatch");
-  }
-  if (entries.reduce((sum, { body }) => sum + Buffer.byteLength(body), 0) > CONDITIONS_TOTAL_LIMIT) throw new Error("Conditions publication exceeds size limits");
-  const result: ConditionsPublicationResult = { published: [], unchanged: [], failed: [] };
-  const writes: Parameters<LocalDatabase["compareAndSwapBatch"]>[0] = [];
-  for (const { file, body, key } of entries) {
-    const prior = database.readPublic(key);
-    if (prior) {
-      const stored = parse(JSON.parse(prior.value));
-      if (stored.countryCode !== file.countryCode) throw new Error("Stored conditions country does not match pathname");
-      if (Date.parse(stored.generatedAt) <= cutoff && Date.parse(stored.generatedAt) >= Date.parse(file.generatedAt)) {
-        if (exact && JSON.stringify(stored) !== JSON.stringify(file)) result.failed.push({ countryCode: file.countryCode, code: "concurrent_update" });
-        else result.unchanged.push(file.countryCode);
-        continue;
-      }
-    }
-    writes.push({ scope: "public", key, value: body, expectedRevision: prior?.revision ?? null, maxBytes: publicObjectLimit(key) });
-    result.published.push(file.countryCode);
-  }
-  database.compareAndSwapBatch(writes);
-  return result;
-}
-
-export function localStores(database: LocalDatabase) {
+export function localStores(database: LocalDatabase, publicationStore: PublicationStore) {
   const stateStore = new LocalStateStore(database);
-  const snapshotStore = new LocalSnapshotStore(database);
-  const catalog3SnapshotStore = new LocalCatalog3SnapshotStore(database);
-  const catalogPublication: CatalogPublicationStores = {
-    snapshotStore,
-    catalog3SnapshotStore,
-    publishLegacyConditions: (files, exact, now) => publishConditions(database, files, 2, exact, now),
-    publishCatalog3Conditions: (files, exact, now) => publishConditions(database, files, 3, exact, now),
-  };
-  return { stateStore, snapshotStore, catalogPublication };
+  const catalogPublication: CatalogPublicationStores = { publicationStore };
+  return { stateStore, catalogPublication };
 }
 
 export function readLocalPolicy(database: LocalDatabase): { policy: LocalRuntimePolicy; revision: number | null } {
@@ -307,28 +202,18 @@ export function writeLocalPolicy(database: LocalDatabase, policy: LocalRuntimePo
   return database.compareAndSwap("private", POLICY_KEY, JSON.stringify(LocalRuntimePolicySchema.parse(policy)), expectedRevision, 4096);
 }
 
-export function initializeLocalRuntime(database: LocalDatabase, now = new Date(), environment: Record<string, string | undefined> = process.env) {
+export function initializeLocalRuntime(database: LocalDatabase, now = new Date()) {
   const state = createEmptyState(now);
-  state.collection = { catalogVersion: 3, revision: 1 };
-  state.publicationTransition = null;
-  const validatedState = IngestionStateV15Schema.parse(state);
-  const snapshot = buildCatalog3Snapshot(validatedState, now);
-  const conditionEnv = { ...environment, LOCAL_CONDITIONS_ENABLED: "true", NONCOMMERCIAL_DATA_ENABLED: "false" };
-  const conditions = buildCatalog3Conditions(validatedState, now, conditionEnv);
+  const validatedState = IngestionStateV16Schema.parse(state);
   const entries = [
     { namespace: "private" as const, key: STATE_KEY, value: JSON.stringify(validatedState), maxBytes: PRIVATE_STATE_HARD_LIMIT_BYTES },
     { namespace: "private" as const, key: POLICY_KEY, value: JSON.stringify(disabledLocalPolicy()), maxBytes: 4096 },
-    { namespace: "public" as const, key: catalogV3Paths.snapshot, value: JSON.stringify(snapshot), maxBytes: SNAPSHOT_LIMIT_BYTES },
-    { namespace: "public" as const, key: catalogV3Paths.previousSnapshot, value: JSON.stringify(snapshot), maxBytes: SNAPSHOT_LIMIT_BYTES },
-    ...conditions.map((file) => ({ namespace: "public" as const, key: `${catalogV3Paths.conditions}${file.countryCode}.json`, value: serializeCatalog3Conditions(file), maxBytes: publicObjectLimit(`${catalogV3Paths.conditions}${file.countryCode}.json`) })),
   ];
   const initialized = database.initialize(entries);
   const stored = database.read("private", STATE_KEY);
-  const complete = stored && database.read("private", POLICY_KEY)
-    && database.readPublic(catalogV3Paths.snapshot) && database.readPublic(catalogV3Paths.previousSnapshot)
-    && conditions.every((file) => database.readPublic(`${catalogV3Paths.conditions}${file.countryCode}.json`));
+  const complete = stored && database.read("private", POLICY_KEY);
   if (!complete || parseCatalogState(JSON.parse(stored.value)).collection.catalogVersion !== 3) {
     throw new Error("Local runtime is partially initialized");
   }
-  return { initialized, catalogVersion: 3 as const, destinations: Object.keys(snapshot.locations).length };
+  return { initialized, catalogVersion: 3 as const, destinations: 679 };
 }

@@ -2,6 +2,7 @@ import { type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { mapSnapshot } from "../fixtures/map-snapshots";
 import { expect, test, installDeterministicBasemap } from "../playwright-fixtures";
+import { abortDemoSnapshot, mutateDemoSnapshot } from "./helpers";
 
 const map = (page: Page) => page.getByRole("region", { name: /^Interactive map/ });
 const filters = (page: Page) => page.getByRole("group", { name: "Map filters" });
@@ -24,7 +25,7 @@ async function chooseFilter(page: Page, label: string) {
 async function loadSnapshot(page: Page, alerts = 108, unavailable = 33) {
   const snapshot = mapSnapshot(alerts, unavailable);
   await installDeterministicBasemap(page);
-  await page.route("**/demo-snapshot.json", (route) => route.fulfill({ json: snapshot }));
+  await mutateDemoSnapshot(page, (current) => { current.locations = snapshot.locations; });
   await page.goto("/");
   await expect(map(page)).toHaveAttribute("data-locations-ready", "true", { timeout: 30_000 });
   await page.addStyleTag({ content: "nextjs-portal { display: none !important; }" });
@@ -81,7 +82,7 @@ test("a genuine zero-alert snapshot gives qualified empty results without green 
 });
 
 test("missing data does not claim zero alerts", async ({ page }) => {
-  await page.route("**/demo-snapshot.json", (route) => route.abort());
+  await abortDemoSnapshot(page);
   await page.goto("/");
   await expect(page.getByText("Live updates unavailable.")).toBeVisible();
   const compact = page.getByRole("button", { name: /Map filter:/ });
@@ -147,7 +148,7 @@ test("empty-state recovery moves keyboard focus to the newly selected filter", a
 
 test("short-screen filters do not cover the failure banner or its retry control", async ({ page }) => {
   await page.setViewportSize({ width: 667, height: 375 });
-  await page.route("**/demo-snapshot.json", (route) => route.abort());
+  await abortDemoSnapshot(page);
   await page.goto("/");
   const retry = page.getByRole("button", { name: "Retry", exact: true });
   await expect(retry).toBeVisible();
@@ -174,7 +175,7 @@ test("an untouched map restores its core-Europe framing after rotation", { tag: 
   await page.setViewportSize({ width: 667, height: 375 });
   await page.goto("/");
   await expect(map(page)).toHaveAttribute("data-marker-count", "6", { timeout: 15_000 });
-  await page.addStyleTag({ content: '[class*="topChrome"], [class*="mapActions"], .maplibregl-control-container, nextjs-portal { visibility: hidden !important; }' });
+  await page.addStyleTag({ content: '[class*="topChrome"], [class*="mapActions"], [data-ui="data-health-banner"], .maplibregl-control-container, nextjs-portal { visibility: hidden !important; }' });
   const canvas = page.locator(".maplibregl-canvas");
   await expect(canvas).toHaveScreenshot("landscape-camera.png", { maxDiffPixelRatio: 0.001 });
   const camera = () => map(page).evaluate((element) => ({
@@ -242,8 +243,12 @@ test("manual zoom remains authoritative across filters and resize", async ({ pag
   await expect(map(page)).toHaveAttribute("data-locations-ready", "true", { timeout: 15_000 });
   const zoomIn = page.getByRole("button", { name: "Zoom in", exact: true });
   const zoomOut = page.getByRole("button", { name: "Zoom out", exact: true });
-  for (let attempt = 0; attempt < 6 && !(await zoomOut.isDisabled()); attempt += 1) {
-    await zoomOut.click();
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    const clicked = await zoomOut.evaluate((button: HTMLButtonElement) => {
+      if (button.disabled) return false;
+      button.click(); return true;
+    });
+    if (!clicked) break;
     await page.waitForTimeout(240);
   }
   await expect(zoomOut).toBeDisabled();

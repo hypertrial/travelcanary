@@ -2,11 +2,11 @@
   "files": {
     ".agents/skills/pad-engineering/SKILL.md": "3cb5185116663c2f8ee58764a4180784ff2604b05e2e75b2b6f13cc1ccfd0071",
     "AGENTS.md": "8e0e7df28f0df8d847f4981da0978c28c2c9615b0382c3bfc62c6af90a52f6b1",
-    "PROJECT_AGENT.md": "76b18d7535631b603f736185d85bb6d677a381ade962b56ddd143b2937301302",
+    "PROJECT_AGENT.md": "6c866dbe26fad50be014b41f79f6c359d6b297c39a551c50313f4c24599aea42",
     "scripts/verify": "6a99ecffb25aa27dbdfc750cb9618cc6d900703d122f2500f335b0a123a0121b",
     "scripts/verify-fast": "ac5cb87f802f3b4142c015643ed951327ecea8f46bb61d503afe248a35e51172"
   },
   "repository": "travelcanary",
   "version": "1.1.0",
-  "workspace": "travelcanary-risk-engineering"
+  "workspace": "travelcanary-vercel-engineering"
 }

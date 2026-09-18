@@ -172,7 +172,7 @@ describe("keyless provider safety rules", () => {
       now, locations, state, fetch: fetchMock as typeof fetch,
     });
     expect(Object.keys(nationalWarningSources)).toHaveLength(45);
-    expect(Object.keys(result.partitions)).toHaveLength(28);
+    expect(Object.keys(result.partitions)).toHaveLength(45);
     expect(Object.values(result.partitions).every((partition) => ["ok", "partial", "failed", "disabled"].includes(partition.status))).toBe(true);
     expect(result.partitions.FR.status).toBe("failed");
     expect(result.partitions.IT.status).toBe("failed");

@@ -4,20 +4,11 @@ import { loadCoveredCountriesLayer, COVERED_COUNTRIES_LAYER } from "@/lib/map-pr
 import { catalogLocationsV3 } from "@/lib/catalog-data";
 import { searchLocationSummaries } from "@/lib/ui-presentation";
 
-const origin = "https://unit.public.blob.vercel-storage.com";
-describe("explicit catalog client selection", () => {
-  it.each([undefined, "2", "3"])("selects the exact demo and live paths for version%s", (requested) => {
-    const version = requested === "3" ? 3 : 2;
-    const suffix = version === 3 ? "/catalogs/3" : "";
-    expect(getPublicDataConfig({ NEXT_PUBLIC_CATALOG_VERSION: requested })).toEqual({ mode: "demo", catalogVersion: version, snapshotUrl: `${suffix}/demo-snapshot.json` });
-    expect(getPublicDataConfig({ NEXT_PUBLIC_CATALOG_VERSION: requested, VERCEL_ENV: "production", NEXT_PUBLIC_DATA_MODE: "live", NEXT_PUBLIC_SNAPSHOT_URL: `${origin}${suffix}/latest.json` }))
-      .toEqual({ mode: "live", catalogVersion: version, snapshotUrl: `${origin}${suffix}/latest.json` });
-  });
-  it.each(["1", "4", "03", " 3", "3 ", "bogus"])("fails closed for invalid catalog selector %s even in demo mode", (version) => {
-    expect(getPublicDataConfig({ NEXT_PUBLIC_CATALOG_VERSION: version, NEXT_PUBLIC_DATA_MODE: "demo" })).toMatchObject({ mode: "unavailable", snapshotUrl: null });
-  });
-  it.each([["2", "/catalogs/3/latest.json"], ["3", "/latest.json"], ["3", "/nested/catalogs/3/latest.json"], ["3", "/catalogs/4/latest.json"]])("rejects version%s with mismatched namespace%s", (version, path) => {
-    expect(getPublicDataConfig({ NEXT_PUBLIC_CATALOG_VERSION: version, NEXT_PUBLIC_DATA_MODE: "live", NEXT_PUBLIC_SNAPSHOT_URL: `${origin}${path}` })).toMatchObject({ mode: "unavailable", snapshotUrl: null });
+describe("Catalog 3-only client selection", () => {
+  it("uses only the server-controlled data endpoint", () => {
+    expect(getPublicDataConfig({})).toEqual({ mode: "demo", catalogVersion: 3, snapshotUrl: "/api/v1/data" });
+    expect(getPublicDataConfig({ VERCEL_ENV: "production", TRAVELCANARY_PUBLICATION_URL: "https://unit.public.blob.vercel-storage.com/catalogs/3/publication/latest.json" }))
+      .toEqual({ mode: "live", catalogVersion: 3, snapshotUrl: "/api/v1/data" });
   });
 });
 

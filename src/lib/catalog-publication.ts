@@ -1,115 +1,181 @@
-import { assertSupportedCollection, type CollectionControl } from "./domain/catalog-state";
-import { conditionRecords, type Conditions } from "./domain/conditions";
-import type { z } from "zod";
-import type { ConditionsV3Schema } from "./domain/catalog-public";
+import { catalogMembershipHash } from "./catalog-membership";
+import { catalogLocationsV3 } from "./catalog-data";
 import { buildCatalog3Conditions, buildCatalog3Snapshot } from "./catalog-projections";
-import { projectCatalog2Conditions } from "./conditions/state";
-import { projectCatalog2Snapshot } from "./risk-snapshot";
-import { ConcurrencyError, type BlobCatalog3SnapshotStore, type ConditionsPublicationResult, type SnapshotStore, type StateStore } from "./storage";
+import { catalog3CoverageTarget } from "./coverage-measurement";
 import { serializeCatalog3Conditions } from "./conditions/serialization";
+import { ConditionsV3Schema, SnapshotV11Schema } from "./domain/catalog-public";
+import { PublicationManifestV1Schema, PublicationPointerV1Schema, publicationManifestPath,
+  publicationObjectPath, type PublicationManifestV1, type PublicationObject } from "./domain/publication";
+import { assertSupportedCollection, type CollectionControl } from "./domain/catalog-state";
+import { assertIngestionLease, type IngestionLease } from "./ingestion-lease";
+import { publicationSha256, readCurrentPublication, readPublishedObject, type PublicationStore } from "./publication-store";
+import type { StateStore } from "./state-store";
 
-export type CatalogPublicationStores = {
-  snapshotStore: SnapshotStore;
-  catalog3SnapshotStore: Pick<BlobCatalog3SnapshotStore, "readLatest" | "publish">;
-  publishLegacyConditions: (files: Conditions[], exact: boolean, now: Date) => Promise<ConditionsPublicationResult>;
-  publishCatalog3Conditions: (files: z.infer<typeof ConditionsV3Schema>[], exact: boolean, now: Date) => Promise<ConditionsPublicationResult>;
-};
+export type CatalogPublicationStores = { publicationStore: PublicationStore };
 
-const equal = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
-const completeConditions = (result: ConditionsPublicationResult, files: Array<{ countryCode: string }>) => {
-  const ids = [...result.published, ...result.unchanged];
-  return !result.failed.length && ids.length === files.length && new Set(ids).size === files.length
-    && files.every((file) => ids.includes(file.countryCode));
-};
-const maxSnapshotBytes = 500_000;
-const day = 24 * 3600000;
+function releaseSha(env: Record<string, string | undefined>) {
+  const value = (env.VERCEL_GIT_COMMIT_SHA || env.TRAVELCANARY_RELEASE_SHA || "").trim().toLowerCase();
+  return /^[a-f0-9]{40}$/.test(value) ? value : null;
+}
 
-/** Publish from one committed read. No collection, reservation or evidence merge occurs here. */
+function object(body: string, generatedAt: string): PublicationObject {
+  const sha256 = publicationSha256(body);
+  return { path: publicationObjectPath(sha256), sha256, bytes: Buffer.byteLength(body), generatedAt };
+}
+
+function statusCodes(state: Awaited<ReturnType<StateStore["read"]>>["data"]) {
+  const codes = new Set<string>();
+  for (const [id, health] of Object.entries(state.sources)) if (["failed", "delayed"].includes(health.status)) codes.add(`source/${id}/${health.status}`);
+  for (const [group, countries] of Object.entries(state.sourcePartitions)) for (const [country, health] of Object.entries(countries)) {
+    if (["failed", "delayed"].includes(health.status)) codes.add(`partition/${group.toLowerCase()}/${country.toLowerCase()}/${health.status}`);
+  }
+  return [...codes].sort().slice(0, 100);
+}
+
+function latestEvidenceTime(state: Awaited<ReturnType<StateStore["read"]>>["data"], requested: Date) {
+  const checked = [requested.getTime(), Date.parse(state.updatedAt),
+    ...Object.values(state.sources).flatMap((health) => health.lastAttempt ? [Date.parse(health.lastAttempt)] : []),
+    ...Object.values(state.conditions.health).map((health) => Date.parse(health.checkedAt)),
+  ];
+  const latest = Math.max(...checked.filter(Number.isFinite));
+  if (!Number.isFinite(requested.getTime()) || latest > requested.getTime() + 5 * 60_000) throw new Error("Committed evidence is in the future");
+  return new Date(Math.max(requested.getTime(), latest));
+}
+
 export async function publishCommittedCatalog(options: {
-  stateStore: StateStore; stores: CatalogPublicationStores; collection: CollectionControl;
-  now: Date; family: "snapshots" | "conditions" | "all"; env?: Record<string, string | undefined>;
-  completedAt?: () => Date; clock?: () => Date;
+  stateStore: StateStore;
+  stores: CatalogPublicationStores;
+  collection: CollectionControl;
+  lease: IngestionLease;
+  now: Date;
+  family: "snapshots" | "conditions" | "all";
+  env?: Record<string, string | undefined>;
 }) {
-  const { stores } = options;
-  const read = await options.stateStore.read();
-  const wall = (options.clock || (() => new Date()))();
-  // Collection start time can precede evidence committed by another worker.
-  // Capture publication time after the read and admit only bounded clock skew.
-  const checked = [options.now.getTime(), ...Object.values(read.data.expandedSourceHealth).map((receipt) => Date.parse(receipt.health.lastAttempt!)),
-    ...Object.values(read.data.sources).flatMap((health) => health.lastAttempt ? [Date.parse(health.lastAttempt)] : []),
-    ...Object.values(read.data.conditions.health).map((health) => Date.parse(health.checkedAt)),
-    ...Object.values(read.data.conditions.locations).flatMap((value) => conditionRecords(value).map((record) => Date.parse(record.checkedAt)))];
-  const latestCheck = Math.max(...checked);
-  if (!Number.isFinite(wall.getTime()) || !Number.isFinite(latestCheck) || latestCheck > wall.getTime() + 5 * 60_000) throw new Error("Committed evidence is in the future");
-  const now = new Date(Math.max(wall.getTime(), latestCheck));
-  assertSupportedCollection(read.data, options.collection);
-  if (read.data.collection.catalogVersion !== 3) throw new Error("Expanded publication requires catalog 3 collection");
-  const transition = read.data.publicationTransition;
-  const dual = Boolean(transition && (!transition.dualUntil || wall.getTime() < Date.parse(transition.dualUntil)));
-  const snapshots = options.family !== "conditions";
-  const conditions = options.family !== "snapshots";
   const env = options.env || process.env;
-  // Build and validate every candidate before the first public write.
-  const expandedSnapshot = snapshots ? buildCatalog3Snapshot(read.data, now) : undefined;
-  const legacySnapshot = snapshots && dual ? projectCatalog2Snapshot(read.data, now) : undefined;
-  for (const snapshot of [expandedSnapshot, legacySnapshot]) if (snapshot && Buffer.byteLength(JSON.stringify(snapshot)) > maxSnapshotBytes) {
-    throw new Error("Snapshot exceeds 500 KB hard limit");
+  const read = await options.stateStore.read();
+  assertSupportedCollection(read.data, options.collection);
+  if (!read.data.ingestionLease || read.data.ingestionLease.owner !== options.lease.owner
+    || read.data.ingestionLease.fence !== options.lease.fence) throw new Error("Publication requires the active ingestion lease");
+  const generatedAt = latestEvidenceTime(read.data, options.now);
+  const producerCommitSha = releaseSha(env);
+  const snapshot = buildCatalog3Snapshot(read.data, generatedAt);
+  const snapshotBody = JSON.stringify(snapshot);
+  const snapshotObject = object(snapshotBody, snapshot.generatedAt);
+  const current = await readCurrentPublication(options.stores.publicationStore);
+  const canReuseConditions = options.family === "snapshots" && current
+    && current.manifest.producerCommitSha === producerCommitSha
+    && current.manifest.conditions.length === 45
+    && current.manifest.conditions.every(({ generatedAt: value }) => generatedAt.getTime() - Date.parse(value) <= 60 * 60_000);
+  const conditionFiles = canReuseConditions ? [] : buildCatalog3Conditions(read.data, generatedAt, {
+    ...env, ...(producerCommitSha ? { VERCEL_GIT_COMMIT_SHA: producerCommitSha } : {}),
+  });
+  const conditionBodies = conditionFiles.map((file) => ({ file, body: serializeCatalog3Conditions(file) }));
+  const conditions = canReuseConditions ? current.manifest.conditions : conditionBodies.map(({ file, body }) => ({
+    ...object(body, file.generatedAt), countryCode: file.countryCode,
+  })).sort((a, b) => a.countryCode.localeCompare(b.countryCode));
+
+  await options.stores.publicationStore.putImmutable(snapshotObject.path, snapshotBody);
+  for (const { body, file } of conditionBodies) {
+    const reference = conditions.find(({ countryCode }) => countryCode === file.countryCode)!;
+    await options.stores.publicationStore.putImmutable(reference.path, body);
   }
-  const files = conditions ? buildCatalog3Conditions(read.data, now, env) : [];
-  const legacyFiles = conditions && dual ? projectCatalog2Conditions(read.data, now, env) : [];
-  const fence = async () => assertSupportedCollection((await options.stateStore.read()).data, options.collection);
-  let snapshotsComplete = snapshots;
-  const futureCutoff = wall.getTime() + 5 * 60_000;
-  if (expandedSnapshot) {
-    const prior = await stores.catalog3SnapshotStore.readLatest();
-    await fence();
-    if (prior && Date.parse(prior.data.generatedAt) <= futureCutoff && Date.parse(prior.data.generatedAt) >= now.getTime()) {
-      snapshotsComplete = equal(prior.data, expandedSnapshot);
-    } else {
-      const outcome = await stores.catalog3SnapshotStore.publish(expandedSnapshot, prior, wall);
-      if (outcome.status !== "published") {
-        const stored = await stores.catalog3SnapshotStore.readLatest();
-        snapshotsComplete = Boolean(stored && equal(stored.data, expandedSnapshot));
-      }
-    }
+
+  const codes = statusCodes(read.data);
+  const manifest = PublicationManifestV1Schema.parse({
+    schemaVersion: 1,
+    catalogVersion: 3,
+    generatedAt: generatedAt.toISOString(),
+    producerCommitSha,
+    stateRevision: read.data.stateRevision,
+    collectionRevision: read.data.collection.revision,
+    ingestionFence: options.lease.fence,
+    membershipHash: catalogMembershipHash(Object.keys(snapshot.locations)),
+    coverageContractHash: publicationSha256(JSON.stringify(catalog3CoverageTarget)),
+    complete: true,
+    snapshot: snapshotObject,
+    conditions,
+    status: { state: codes.length || snapshot.dataHealth !== "complete" ? "degraded" : "complete", codes,
+      collectorLastSuccess: generatedAt.toISOString() },
+  });
+  const manifestBody = JSON.stringify(manifest);
+  const manifestSha256 = publicationSha256(manifestBody);
+  const manifestPath = publicationManifestPath(manifestSha256);
+  await options.stores.publicationStore.putImmutable(manifestPath, manifestBody);
+
+  const latest = await assertIngestionLease(options.stateStore, options.lease, generatedAt);
+  if (latest.data.stateRevision !== read.data.stateRevision) throw new Error("Private state changed during publication");
+  const pointer = PublicationPointerV1Schema.parse({
+    schemaVersion: 1,
+    catalogVersion: 3,
+    manifestPath,
+    manifestSha256,
+    publishedAt: generatedAt.toISOString(),
+    producerCommitSha,
+    stateRevision: read.data.stateRevision,
+    collectionRevision: read.data.collection.revision,
+    ingestionFence: options.lease.fence,
+  });
+  const pointerWrite = await options.stores.publicationStore.replacePointer(JSON.stringify(pointer), current?.pointerEtag || null);
+  const publication = conditionFiles.length
+    ? { published: conditionFiles.map(({ countryCode }) => countryCode).sort(), unchanged: [] as string[], failed: [] as Array<{ countryCode: string; code: string }> }
+    : { published: [] as string[], unchanged: conditions.map(({ countryCode }) => countryCode).sort(), failed: [] as Array<{ countryCode: string; code: string }> };
+  if (options.family === "all") await prunePublications(options.stores.publicationStore, pointer, generatedAt);
+  return {
+    snapshot,
+    pointer,
+    pointerUrl: pointerWrite.url,
+    manifest,
+    snapshotsComplete: true,
+    publication,
+    countries: conditions.length,
+    conditionsBytes: conditionBodies.reduce((total, { body }) => total + Buffer.byteLength(body), 0),
+  };
+}
+
+export async function prunePublications(store: PublicationStore, current: { manifestPath: string }, now = new Date()) {
+  const cutoff = now.getTime() - 48 * 60 * 60_000;
+  const manifests = (await store.list("catalogs/3/generations/", 10_000)).filter(({ pathname }) => pathname.endsWith("/manifest.json"))
+    .sort((a, b) => b.uploadedAt.getTime() - a.uploadedAt.getTime());
+  const keepPaths = new Set<string>([current.manifestPath]);
+  const parsed = new Map<string, PublicationManifestV1>();
+  for (const { pathname } of manifests) {
+    if (pathname === current.manifestPath) continue;
+    try {
+      const item = await store.read(pathname, 512_000);
+      if (!item) continue;
+      const manifestSha = pathname.match(/^catalogs\/3\/generations\/([a-f0-9]{64})\/manifest\.json$/)?.[1];
+      if (!manifestSha || publicationSha256(item.body) !== manifestSha) continue;
+      const manifest = PublicationManifestV1Schema.parse(JSON.parse(item.body));
+      if (manifest.coverageContractHash !== publicationSha256(JSON.stringify(catalog3CoverageTarget))) continue;
+      const snapshot = SnapshotV11Schema.parse(JSON.parse(await readPublishedObject(store, manifest.snapshot)));
+      if (snapshot.generatedAt !== manifest.snapshot.generatedAt
+        || Date.parse(manifest.snapshot.generatedAt) > Date.parse(manifest.generatedAt)) continue;
+      const locationIds = Object.keys(snapshot.locations).sort();
+      const expectedIds = catalogLocationsV3.map(({ id }) => id).sort();
+      if (locationIds.join("\0") !== expectedIds.join("\0") || catalogMembershipHash(locationIds) !== manifest.membershipHash) continue;
+      await Promise.all(manifest.conditions.map(async (reference) => {
+        const conditions = ConditionsV3Schema.parse(JSON.parse(await readPublishedObject(store, reference)));
+        if (conditions.countryCode !== reference.countryCode || conditions.producerCommitSha !== manifest.producerCommitSha
+          || conditions.generatedAt !== reference.generatedAt) {
+          throw new Error("Rollback conditions identity mismatch");
+        }
+      }));
+      parsed.set(pathname, manifest); keepPaths.add(pathname); break;
+    } catch { /* incomplete generations are not rollback candidates */ }
   }
-  if (legacySnapshot) {
-    const prior = await stores.snapshotStore.readLatest();
-    await fence();
-    if (Date.parse(prior.data.generatedAt) <= futureCutoff && Date.parse(prior.data.generatedAt) >= now.getTime()) {
-      snapshotsComplete = equal(prior.data, legacySnapshot) && snapshotsComplete;
-    } else {
-      await stores.snapshotStore.publish(legacySnapshot, prior);
-    }
+  for (const item of manifests) if (item.uploadedAt.getTime() >= cutoff) keepPaths.add(item.pathname);
+  const referenced = new Set<string>();
+  for (const pathname of keepPaths) {
+    let manifest = parsed.get(pathname);
+    if (!manifest) try {
+      const item = await store.read(pathname, 512_000);
+      if (item) manifest = PublicationManifestV1Schema.parse(JSON.parse(item.body));
+    } catch { /* invalid recent manifests retain no objects */ }
+    if (!manifest) continue;
+    referenced.add(manifest.snapshot.path);
+    for (const item of manifest.conditions) referenced.add(item.path);
   }
-  let publication: ConditionsPublicationResult = { published: [], unchanged: [], failed: [] };
-  let legacyPublication: ConditionsPublicationResult = { published: [], unchanged: [], failed: [] };
-  if (conditions) {
-    await fence();
-    publication = await stores.publishCatalog3Conditions(files, true, wall);
-    if (dual) {
-      await fence();
-      legacyPublication = await stores.publishLegacyConditions(legacyFiles, true, wall);
-    }
-  }
-  let acknowledged = false;
-  if (options.family === "all" && dual && !transition!.dualStartedAt && snapshotsComplete
-    && completeConditions(publication, files) && completeConditions(legacyPublication, legacyFiles)) {
-    // Preserve evidence that changed during publication. Only acknowledge the
-    // original transition, and never move an already acknowledged deadline.
-    const completed = (options.completedAt || options.clock || (() => new Date()))();
-    if (!Number.isFinite(completed.getTime()) || completed < wall) throw new Error("Invalid publication completion time");
-    for (let attempt = 0; attempt < 3; attempt += 1) {
-      const latest = await options.stateStore.read();
-      assertSupportedCollection(latest.data, options.collection);
-      if (latest.data.publicationTransition?.dualStartedAt) { acknowledged = true; break; }
-      if (!equal(latest.data.publicationTransition, transition)) throw new Error("Publication transition changed during repair");
-      latest.data.publicationTransition = { ...transition!, dualStartedAt: completed.toISOString(), dualUntil: new Date(+completed + day).toISOString() };
-      try { await options.stateStore.write(latest.data, latest); acknowledged = true; break; }
-      catch (error) { if (!(error instanceof ConcurrencyError) || attempt === 2) throw error; }
-    }
-  }
-  return { dual, acknowledged, snapshot: expandedSnapshot, snapshotsComplete,
-    publication, legacyPublication, countries: files.length,
-    conditionsBytes: files.reduce((sum, file) => sum + Buffer.byteLength(serializeCatalog3Conditions(file)), 0) };
+  await store.deleteMany(manifests.filter(({ pathname }) => !keepPaths.has(pathname)).map(({ pathname }) => pathname));
+  const objects = await store.list("catalogs/3/objects/sha256/", 10_000);
+  await store.deleteMany(objects.filter(({ pathname, uploadedAt }) => uploadedAt.getTime() < cutoff && !referenced.has(pathname)).map(({ pathname }) => pathname));
 }

@@ -3,7 +3,6 @@ import { readFileSync } from "node:fs";
 import { expect } from "../playwright-fixtures";
 
 export const catalog = JSON.parse(readFileSync("public/catalogs/3/locations.json", "utf8")) as Array<{ id: string; name: string; countryCode: string; country: string }>;
-export const legacy = JSON.parse(readFileSync("public/demo-snapshot.json", "utf8"));
 export const representatives = ["al-tirana", "ad-andorra-la-vella", "by-minsk", "ba-sarajevo", "is-reykjavik", "xk-pristina", "li-malbun", "md-chisinau", "mc-monaco", "me-podgorica", "mk-skopje", "no-oslo", "sm-san-marino", "rs-belgrade", "gb-london", "va-vatican-city", "tr-istanbul", "tr-van", "gb-cardiff", "gb-belfast", "gb-edinburgh", "gb-shetland-islands", "no-lofoten"];
 export const smokeRepresentatives = new Set(["gb-london", "va-vatican-city", "tr-istanbul"]);
 export const search = (page: Page) => page.getByRole("combobox", { name: "Where are you going?" });

@@ -8,7 +8,6 @@ import { catalogLocationsV3 } from "../src/lib/catalog-data";
 import { LocationConditionsV2Schema, type ConditionSourceId } from "../src/lib/domain/conditions";
 import { marineConditionEligible } from "../src/lib/conditions/marine";
 import { buildCatalog3Conditions } from "../src/lib/catalog-projections";
-import { projectCatalog2Conditions } from "../src/lib/conditions/state";
 import fixture from "../tests/fixtures/europe-expansion/conditions-populated-capacity.json";
 
 export function measureEuropeConditions() {
@@ -56,17 +55,13 @@ export function measureEuropeConditions() {
     state.conditions.health[source] = { checkedAt: now.toISOString(), status: "ok", matched: 0, code: null };
   }
   const files = buildCatalog3Conditions(state, now, env);
-  const legacy = projectCatalog2Conditions(state, now, env);
   const countryBytes = Object.fromEntries(files.map((file) => [file.countryCode, Buffer.byteLength(serializeCatalog3Conditions(file))]));
   const totalBytes = Object.values(countryBytes).reduce((sum, bytes) => sum + bytes, 0);
-  const legacyBytes = legacy.reduce((sum, file) => sum + Buffer.byteLength(JSON.stringify(file)), 0);
   return { state, files, metrics: { catalogVersion: 3, destinations: catalogLocationsV3.length, countries: files.length,
     totalBytes, countryBytes, cacheBytes: Buffer.byteLength(JSON.stringify(state.conditions.locations)),
-    privateBytes: Buffer.byteLength(JSON.stringify(state)), legacyBytes, dualGenerationBytes: totalBytes + legacyBytes,
-    // Each file: HEAD + GET + PUT normally; cold namespace HEAD + PUT.
-    publication: { currentFiles: files.length, transitionFiles: files.length + legacy.length,
-      steadyOperations: files.length * 3, dualOperations: (files.length + legacy.length) * 3,
-      worstCaseDualAttempts: (files.length + legacy.length) * 3 * 3 } } };
+    privateBytes: Buffer.byteLength(JSON.stringify(state)),
+    publication: { conditionsObjects: files.length, payloadObjects: files.length + 1,
+      immutableObjects: files.length + 2, pointerCas: 1 } } };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

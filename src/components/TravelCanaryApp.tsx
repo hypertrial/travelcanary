@@ -49,7 +49,7 @@ function useResponsiveLayout() {
   return layout;
 }
 
-export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 2, conditionsEnabled = mode === "demo", selfHosted = false }: { mode: DataMode; snapshotUrl: string | null; catalogVersion?: 2 | 3; conditionsEnabled?: boolean; selfHosted?: boolean }) {
+export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 3, conditionsEnabled = mode === "demo", selfHosted = false }: { mode: DataMode; snapshotUrl: string | null; catalogVersion?: 3; conditionsEnabled?: boolean; selfHosted?: boolean }) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchTriggerRef = useRef<HTMLButtonElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);

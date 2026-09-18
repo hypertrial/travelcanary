@@ -88,14 +88,13 @@ export function parseCatalogStateV13(value: unknown): IngestionStateV13 {
   });
 }
 
-export type CollectionControl = IngestionStateV13["collection"];
+export type LegacyCollectionControl = IngestionStateV13["collection"];
+export type CollectionControl = { catalogVersion: 3; revision: number };
 export class CollectionChangedError extends Error {}
 
-/** Revision fence for the compatible runtime; operational activation is monotonic. */
-export function assertSupportedCollection(state: { collection: CollectionControl; publicationTransition?: PublicationTransition | null }, expected?: CollectionControl): CollectionControl {
-  if (state.publicationTransition?.from === 3 && state.publicationTransition.to === 2) {
-    throw new CollectionChangedError("Reverse collection requires an explicit withdrawal runtime; rollback must retain catalog 3");
-  }
+/** Catalog 3 is the only writable runtime. Revision changes fence stale work. */
+export function assertSupportedCollection(state: { collection: CollectionControl }, expected?: CollectionControl): CollectionControl {
+  if (state.collection.catalogVersion !== 3) throw new CollectionChangedError("Catalog 3 collection is required");
   if (expected && (state.collection.catalogVersion !== expected.catalogVersion || state.collection.revision !== expected.revision)) {
     throw new CollectionChangedError("Collection changed during work; discard stale results");
   }
@@ -103,7 +102,7 @@ export function assertSupportedCollection(state: { collection: CollectionControl
 }
 
 /** Reject unsupported collection and stale work; this is not a retryable CAS conflict. */
-export function assertCatalog2Collection(state: { collection: CollectionControl }, expected?: CollectionControl): CollectionControl {
+export function assertCatalog2Collection(state: { collection: LegacyCollectionControl }, expected?: LegacyCollectionControl): LegacyCollectionControl {
   if (state.collection.catalogVersion !== 2) throw new CollectionChangedError("Catalog 3 collection is not activated in this runtime");
   if (expected && (state.collection.catalogVersion !== expected.catalogVersion || state.collection.revision !== expected.revision)) {
     throw new CollectionChangedError("Collection changed during work; discard stale results");
@@ -267,8 +266,8 @@ export const IngestionStateV15Schema = z.object({ ...IngestionStateV14Schema.sha
 });
 export type IngestionStateV15 = z.infer<typeof IngestionStateV15Schema>;
 
-/** Deterministic V14→V15 migration. Existing expanded receipts become catalog-3-scoped evidence. */
-export function parseCatalogState(value: unknown): IngestionStateV15 {
+/** Frozen V1→V15 reader used only by the V16 migration. */
+export function parseCatalogStateV15(value: unknown): IngestionStateV15 {
   if (value && typeof value === "object" && "schemaVersion" in value && value.schemaVersion === 15) return IngestionStateV15Schema.parse(value);
   const legacy = parseCatalogStateV14(value);
   const receipts: IngestionStateV15["collectionReceipts"] = { 2: {}, 3: {} };
@@ -282,4 +281,55 @@ export function parseCatalogState(value: unknown): IngestionStateV15 {
     };
   }
   return IngestionStateV15Schema.parse({ ...legacy, schemaVersion: 15, collectionReceipts: receipts, frozenEaFloodAreaGeometries: {} });
+}
+
+const Catalog3ReceiptsSchema = z.partialRecord(SnapshotV10SourceIdSchema, CatalogReceiptSchema);
+export const IngestionLeaseSchema = z.object({
+  owner: z.string().regex(/^[A-Za-z0-9._:-]{8,160}$/),
+  fence: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+  expiresAt: timestamp,
+});
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const { schemaVersion: _schemaVersion, publicationTransition: _publicationTransition,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  collection: _collection, collectionReceipts: _collectionReceipts, ...runtimeShape } = IngestionStateV15Schema.shape;
+export const IngestionStateV16Schema = z.object({
+  ...runtimeShape,
+  schemaVersion: z.literal(16),
+  collection: z.object({ catalogVersion: z.literal(3), revision: z.number().int().positive().max(Number.MAX_SAFE_INTEGER) }),
+  collectionReceipts: z.object({ 3: Catalog3ReceiptsSchema }),
+  stateRevision: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+  ingestionFence: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+  ingestionLease: IngestionLeaseSchema.nullable(),
+}).superRefine((value, context) => {
+  if (value.ingestionLease && value.ingestionLease.fence !== value.ingestionFence) {
+    context.addIssue({ code: "custom", path: ["ingestionLease", "fence"], message: "Lease fence must match state fence" });
+  }
+  for (const [sourceId, receipt] of Object.entries(value.collectionReceipts[3])) {
+    if (receipt.catalogVersion !== 3 || receipt.collectionRevision > value.collection.revision) {
+      context.addIssue({ code: "custom", path: ["collectionReceipts", "3", sourceId], message: "Receipt must match Catalog 3 and cannot be newer than collection control" });
+    }
+  }
+});
+export type IngestionStateV16 = z.infer<typeof IngestionStateV16Schema>;
+export type IngestionState = IngestionStateV16;
+
+/** Deterministic, forward-only migration. V15 remains readable but is never written again. */
+export function parseCatalogState(value: unknown): IngestionStateV16 {
+  if (value && typeof value === "object" && "schemaVersion" in value && value.schemaVersion === 16) {
+    return IngestionStateV16Schema.parse(value);
+  }
+  const legacy = parseCatalogStateV15(value);
+  const revision = legacy.collection.revision + (legacy.collection.catalogVersion === 3 ? 0 : 1);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { publicationTransition: _discardedTransition, ...preserved } = legacy;
+  return IngestionStateV16Schema.parse({
+    ...preserved,
+    schemaVersion: 16,
+    collection: { catalogVersion: 3, revision: Math.max(1, revision) },
+    collectionReceipts: { 3: legacy.collectionReceipts[3] },
+    stateRevision: 0,
+    ingestionFence: 0,
+    ingestionLease: null,
+  });
 }

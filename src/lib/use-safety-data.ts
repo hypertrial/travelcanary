@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import type { DataMode } from "./config";
-import { parseCatalogSnapshot, PublicCatalogV2Schema, PublicCatalogV3Schema } from "./domain/catalog-public";
+import { PublicCatalogV3Schema } from "./domain/catalog-public";
 import { initialSafetyDataState, safetyDataReducer } from "./safety-data-state";
-import { catalogV2Paths, catalogV3Paths } from "./catalog-paths";
+import { catalogV3Paths } from "./catalog-paths";
+import { loadPublicationSnapshot } from "./publication-client";
 
-export function useSafetyData({ mode, snapshotUrl, catalogVersion = 2 }: { mode: DataMode; snapshotUrl: string | null; catalogVersion?: 2 | 3 }) {
+export function useSafetyData({ mode, snapshotUrl, catalogVersion = 3 }: { mode: DataMode; snapshotUrl: string | null; catalogVersion?: 3 }) {
   const [state, dispatch] = useReducer(safetyDataReducer, initialSafetyDataState);
   const resourceKey = JSON.stringify([catalogVersion, mode, snapshotUrl]);
   const epochRef = useRef(0);
@@ -17,24 +18,23 @@ export function useSafetyData({ mode, snapshotUrl, catalogVersion = 2 }: { mode:
     const request = ++catalogRequestRef.current;
     dispatch({ epoch, type: "catalog-loading", request });
     try {
-      const response = await fetch((catalogVersion === 3 ? catalogV3Paths : catalogV2Paths).catalog);
+      const response = await fetch(catalogV3Paths.catalog);
       if (!response.ok) throw new Error();
-      dispatch({ epoch, type: "catalog-ready", request, locations: (catalogVersion === 3 ? PublicCatalogV3Schema : PublicCatalogV2Schema).parse(await response.json()) });
+      dispatch({ epoch, type: "catalog-ready", request, locations: PublicCatalogV3Schema.parse(await response.json()) });
     } catch { dispatch({ epoch, type: "catalog-failed", request }); }
-  }, [catalogVersion]);
+  }, []);
   const fetchSnapshot = useCallback(async (epoch: number) => {
     const request = ++requestRef.current;
     dispatch({ epoch, type: "snapshot-loading", request });
     if (!snapshotUrl) return dispatch({ epoch, type: "snapshot-unconfigured", request });
     try {
-      const suffix = mode === "live" ? `?v=${Math.floor(Date.now() / 600_000)}` : "";
-      const response = await fetch(`${snapshotUrl}${suffix}`, { cache: "no-store" });
-      if (!response.ok) throw new Error();
-      const snapshot = parseCatalogSnapshot(await response.json());
-      if (catalogVersion === 2 && snapshot.catalogVersion !== 2) throw new Error("Snapshot catalog does not match requested release");
+      const separator = snapshotUrl.includes("?") ? "&" : "?";
+      const pointerUrl = mode === "live" ? `${snapshotUrl}${separator}v=${Math.floor(Date.now() / 600_000)}` : snapshotUrl;
+      const snapshot = await loadPublicationSnapshot(pointerUrl);
+      if (snapshot.catalogVersion !== 3) throw new Error("Snapshot catalog does not match Catalog 3");
       dispatch({ epoch, type: "snapshot-ready", request, snapshot, receivedAt: Date.now() });
     } catch { dispatch({ epoch, type: "snapshot-failed", request }); }
-  }, [mode, snapshotUrl, catalogVersion]);
+  }, [mode, snapshotUrl]);
   const loadCatalog = useCallback(async () => {
     const active = activeRef.current;
     if (active?.key === resourceKey) await fetchCatalog(active.epoch);

@@ -13,14 +13,16 @@ import { parseMetNorway, parseOpenMeteo, forecastUrl } from "@/lib/conditions/fo
 import { parseMetars, airportMappings } from "@/lib/conditions/metar";
 import { availableForecastWeight, buildConditionsFiles, currentConditions, fitConditionsState } from "@/lib/conditions/state";
 import { conditionAttribution, conditionSourceEnabled, conditionsDisabledSources } from "@/lib/conditions/sources";
-import { forecastBatches, forecastSplitHasLocalHeadroom, runConditions } from "@/lib/conditions/worker";
+import { forecastBatches, forecastSplitHasLocalHeadroom } from "@/lib/conditions/worker";
+import { runTestConditions as runConditions } from "../helpers/publication";
 import { ConditionsSchema, emptyConditions, conditionRecords, conditionSourceIds, CONDITIONS_CACHE_LIMIT, type Conditions } from "@/lib/domain/conditions";
 import { locations } from "@/lib/data";
+import { catalogLocationsV3 } from "@/lib/catalog-data";
 import { createEmptyState, buildSnapshot } from "@/lib/risk";
 import { downgradeIngestionStateV11, downgradeIngestionStateV12, parseIngestionState } from "@/lib/domain/schemas";
-import { MemoryStateStore } from "@/lib/storage";
+import { MemoryStateStore } from "@/lib/state-store";
 import { parseRwsWater, rwsWaterMappings, rwsWaterRequest } from "@/lib/conditions/rws-water";
-import { marineConditionMapping, marineEligibleLocationIds } from "@/lib/conditions/marine";
+import { catalog3MarineMappingByLocation, marineConditionMapping, marineEligibleLocationIds } from "@/lib/conditions/marine";
 import { ipmaStationMappings, parseIpmaEarthquakes, parseIpmaObservations } from "@/lib/conditions/ipma";
 import { readFileSync } from "node:fs";
 import { arsoHydroMappings, parseArsoHydrology } from "@/lib/conditions/arso-hydro";
@@ -109,7 +111,7 @@ describe("isolated local conditions", () => {
       status: "mapped", queryCoordinates: [-9.2916565, 53.208336], distanceKm: 17.5,
     });
     const marineIds = forecastBatches(createEmptyState(now), now, enabled).filter(({ kind }) => kind === "marine").flatMap(({ ids }) => ids);
-    expect(marineIds.every((id) => marineEligibleLocationIds.has(id))).toBe(true);
+    expect(marineIds.every((id) => catalog3MarineMappingByLocation.has(id))).toBe(true);
     const unsupported = marineConditionMapping.mappings.find(({ status }) => status === "unsupported")!.locationId;
     const file = buildConditionsFiles(createEmptyState(now), now, enabled).find(({ countryCode }) => unsupported.startsWith(`${countryCode.toLowerCase()}-`))!;
     expect(file.locations[unsupported].limitations).toContain("outside-product");
@@ -117,7 +119,7 @@ describe("isolated local conditions", () => {
   it("prioritizes missing, near-expiry, and ordinary due forecasts deterministically", () => {
     const state = createEmptyState(now); const env = { ...enabled,
       CONDITIONS_DISABLED_SOURCES: conditionSourceIds.filter((id) => id !== "open-meteo-weather").join(",") };
-    for (const location of locations) {
+    for (const location of catalogLocationsV3) {
       state.conditions.attempts[`weather:${location.id}`] = now.toISOString();
       state.conditions.locations[location.id] = { ...emptyConditions(), weather: weather() };
     }
@@ -245,7 +247,8 @@ describe("isolated local conditions", () => {
     const fetchMock = vi.fn(); const publish = vi.fn(successfulPublish);
     await runConditions({ stateStore: new MemoryStateStore(createEmptyState(now)), fetch: fetchMock, publish, now, env: {} });
     expect(fetchMock).not.toHaveBeenCalled(); expect(publish).toHaveBeenCalledOnce();
-    expect(publish.mock.calls[0][0][0].locations["at-vienna"].limitations).toEqual(["disabled"]);
+    const austria = publish.mock.calls[0][0].find(({ countryCode }) => countryCode === "AT")!;
+    expect(austria.locations["at-vienna"].limitations).toEqual(["disabled"]);
   });
   it("does not fetch or publish while another conditions worker owns the lease", async () => {
     const state = createEmptyState(now); state.conditions.lease = { id: "00000000-0000-4000-8000-000000000001", expiresAt: new Date(now.getTime() + 60000).toISOString() };

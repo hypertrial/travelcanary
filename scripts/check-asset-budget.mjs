@@ -36,7 +36,7 @@ if (inheritedOrigin) {
   port = await availablePort();
   origin = `http://127.0.0.1:${port}`;
   server = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-H", "127.0.0.1", "-p", String(port)], {
-    env: { ...process.env, NODE_ENV: "production", NEXT_PUBLIC_DATA_MODE: "demo", NEXT_DIST_DIR: distDir },
+    env: { ...process.env, NODE_ENV: "production", NEXT_DIST_DIR: distDir },
     stdio: ["ignore", "pipe", "pipe"],
   });
   server.stdout.on("data", (chunk) => { serverOutput += String(chunk); });

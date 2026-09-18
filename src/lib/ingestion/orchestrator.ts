@@ -1,24 +1,22 @@
 import { publishCommittedCatalog, type CatalogPublicationStores } from "../catalog-publication";
-import { CatalogPartitionedSourceResultSchema, ExpandedAggregateSourceResultSchema, assertSupportedCollection, assertCatalog2Collection,
-  type CatalogSourceResult as SourceResult, type CollectionControl, type IngestionStateV15 as IngestionState } from "../domain/catalog-state";
+import { CatalogPartitionedSourceResultSchema, ExpandedAggregateSourceResultSchema, assertSupportedCollection,
+  type CatalogSourceResult as SourceResult, type CollectionControl, type IngestionState } from "../domain/catalog-state";
 import { performance } from "node:perf_hooks";
 import { AggregateSourceResultSchema, SnapshotV10SourceIdSchema, countryCodes, PartitionedSourceResultSchema, type CountryCode, type SourceId } from "../domain/schemas";
 import { catalogV3CountryCodes } from "../domain/contract-identities";
 import { locations } from "../data";
 import { catalogLocationsV3 } from "../catalog-data";
-import { buildSnapshot, mergeSourceResults } from "../risk";
-import { snapshotProjectionMetrics } from "../risk-snapshot";
-import { ConcurrencyError, type SnapshotStore, type StateStore } from "../storage";
-import { CompleteSnapshotSchema } from "../snapshot-validation";
+import { mergeSourceResults } from "../risk";
+import { ConcurrencyError, type StateStore } from "../state-store";
 import { withFetchDiagnostics } from "./fetch";
 import { MAX_EVENTS_PER_PARTITION, MAX_EVENTS_PER_SOURCE_RESULT, PRIVATE_STATE_HARD_LIMIT_BYTES } from "./limits";
 import { createSourceDiagnostics, isExpandedSourceAdapter, partitionExecutionStatus, type Cadence, type MutableSourceDiagnostics, type SourceAdapter, type SourceExecutionSummary } from "./types";
 import { expandedAdapterLocations, scopeAdapterResult } from "./collection-scope";
 import { fitConditionsState } from "../conditions/state";
+import { assertVersionedIngestionLease, type IngestionLease } from "../ingestion-lease";
 
 type SourceExecution = { result: SourceResult; durationMs: number; diagnostics: MutableSourceDiagnostics };
 const SOURCE_PHASE_BUDGET_MS = 45_000;
-const MAX_FUTURE_SNAPSHOT_SKEW_MS = 5 * 60_000;
 const SNAPSHOT_WARNING_BYTES = 300_000;
 
 function assertSourceResultLimits(results: SourceResult[]) {
@@ -39,16 +37,15 @@ function assertSourceResultLimits(results: SourceResult[]) {
 
 function rounded(value: number) { return Math.max(0, Math.round(value)); }
 
-function failedSourceResult(sourceId: SourceId, checkedAt: string, error: unknown, catalogVersion: 2 | 3): SourceResult {
-  const message = (error instanceof Error ? error.message : String(error)).slice(0, 300) || "Source failed unexpectedly";
+function failedSourceResult(sourceId: SourceId, checkedAt: string, code: "transport_disabled" | "transport_failed", catalogVersion: 2 | 3): SourceResult {
   if (sourceId === "meteoalarm" || sourceId === "eea" || sourceId === "national-civil-alerts") {
     const codes = catalogVersion === 3 ? catalogV3CountryCodes : countryCodes;
     const schema = catalogVersion === 3 ? CatalogPartitionedSourceResultSchema : PartitionedSourceResultSchema;
     return schema.parse({ sourceId, checkedAt, partitions: Object.fromEntries(codes.map((countryCode) => [countryCode, {
-      status: "failed", sourceUpdatedAt: null, events: [], error: message,
+      status: "failed", sourceUpdatedAt: null, events: [], error: code,
     }])) });
   }
-  return (catalogVersion === 3 ? ExpandedAggregateSourceResultSchema : AggregateSourceResultSchema).parse({ sourceId, checkedAt, sourceUpdatedAt: null, events: [], status: "failed", error: message });
+  return (catalogVersion === 3 ? ExpandedAggregateSourceResultSchema : AggregateSourceResultSchema).parse({ sourceId, checkedAt, sourceUpdatedAt: null, events: [], status: "failed", error: code });
 }
 
 // Also used by the catalog-3 runner: only explicitly reviewed adapters receive
@@ -62,22 +59,9 @@ export async function collectAdapterResult(adapter: SourceAdapter, state: Ingest
       ? adapter.fetch({ ...context, state, locations: expandedAdapterLocations(adapter, version) })
       : adapter.fetch({ ...context, state, locations: version === 3 ? catalogLocationsV3 : locations }));
     return scopeAdapterResult(adapter, version, result);
-  } catch (error) {
-    return scopeAdapterResult(adapter, version, failedSourceResult(adapter.id, context.now.toISOString(), error, version));
+  } catch {
+    return scopeAdapterResult(adapter, version, failedSourceResult(adapter.id, context.now.toISOString(), "transport_failed", version));
   }
-}
-
-function buildValidatedSnapshot(state: IngestionState, now: Date) {
-  const snapshot = CompleteSnapshotSchema.parse(buildSnapshot(state, now));
-  const bytes = Buffer.byteLength(JSON.stringify(snapshot));
-  if (bytes > 500_000) throw new Error(`Snapshot exceeds 500 KB hard limit (${bytes} bytes)`);
-  return { snapshot, bytes };
-}
-
-function publicationTime(now: Date, latestGeneratedAt: string) {
-  const latest = Date.parse(latestGeneratedAt);
-  if (latest > now.getTime() + MAX_FUTURE_SNAPSHOT_SKEW_MS) return now;
-  return new Date(Math.max(now.getTime(), latest));
 }
 
 function sourceSummary(execution: SourceExecution): SourceExecutionSummary {
@@ -87,7 +71,7 @@ function sourceSummary(execution: SourceExecution): SourceExecutionSummary {
     events: result.events.length,
     durationMs: rounded(execution.durationMs),
     diagnostics: execution.diagnostics,
-    error: result.error,
+    error: result.error ? `source_${result.status}` : null,
   };
   const entries = Object.entries(result.partitions);
   const partialIds = entries.filter(([, partition]) => partition.status === "partial").map(([id]) => id as CountryCode);
@@ -95,11 +79,7 @@ function sourceSummary(execution: SourceExecution): SourceExecutionSummary {
   const disabled = entries.filter(([, partition]) => partition.status === "disabled").length;
   const succeeded = entries.filter(([, partition]) => partition.status === "ok").length;
   const status = partitionExecutionStatus(entries.map(([, partition]) => partition));
-  const error = [
-    partialIds.length ? `${partialIds.length} of ${entries.length} partitions partially unavailable` : null,
-    failedIds.length ? `${failedIds.length} of ${entries.length} partitions failed` : null,
-    disabled ? `${disabled} of ${entries.length} partitions readiness-gated` : null,
-  ].filter(Boolean).join("; ") || null;
+  const error = status === "ok" ? null : `source_${status}`;
   return {
     status,
     events: entries.reduce((total, [, partition]) => total + partition.events.length, 0),
@@ -114,8 +94,8 @@ export async function runIngestion(options: {
   cadence: Cadence;
   adapters: SourceAdapter[];
   stateStore: StateStore;
-  snapshotStore: SnapshotStore;
-  catalogPublication?: CatalogPublicationStores;
+  catalogPublication: CatalogPublicationStores;
+  lease: IngestionLease;
   now?: Date;
   fetch?: typeof fetch;
 }) {
@@ -127,7 +107,8 @@ export async function runIngestion(options: {
   const scheduled = options.adapters.filter((adapter) => adapter.cadence === options.cadence);
   const initialReadStarted = performance.now();
   const initialState = await options.stateStore.read();
-  const collection = (options.catalogPublication ? assertSupportedCollection : assertCatalog2Collection)(initialState.data);
+  assertVersionedIngestionLease(initialState, options.lease, now);
+  const collection = assertSupportedCollection(initialState.data);
   const adapters = scheduled.filter((adapter) => {
     if (adapter.id !== "gdelt" || process.env.GDELT_ENABLED !== "true") return true;
     const health = initialState.data.sources.gdelt;
@@ -153,7 +134,7 @@ export async function runIngestion(options: {
       // An operator transport stop consumes no request and retains unexpired
       // prior evidence through the existing failure lifecycle.
       const result = disabled.has(adapter.id)
-        ? scopeAdapterResult(adapter, collection.catalogVersion, failedSourceResult(adapter.id, now.toISOString(), new Error("transport_disabled"), collection.catalogVersion))
+        ? scopeAdapterResult(adapter, collection.catalogVersion, failedSourceResult(adapter.id, now.toISOString(), "transport_disabled", collection.catalogVersion))
         : await collectAdapterResult(adapter, initialState.data, {
           now, fetch: boundedFetch, deadlineAt, diagnostics,
         });
@@ -170,14 +151,14 @@ export async function runIngestion(options: {
 
 export async function runMaintenance(options: {
   stateStore: StateStore;
-  snapshotStore: SnapshotStore;
-  catalogPublication?: CatalogPublicationStores;
+  catalogPublication: CatalogPublicationStores;
+  lease: IngestionLease;
   now?: Date;
 }) {
   const totalStarted = performance.now();
   const now = options.now || new Date();
   const initial = await options.stateStore.read();
-  const collection = (options.catalogPublication ? assertSupportedCollection : assertCatalog2Collection)(initial.data);
+  const collection = assertSupportedCollection(initial.data);
   return publishResults({
     ...options, now, collection, publicationClock: options.now ? () => options.now! : undefined, results: [], executions: [], operation: "maintenance",
     sourceDurationMs: 0, totalStarted,
@@ -187,8 +168,8 @@ export async function runMaintenance(options: {
 
 async function publishResults(options: {
   stateStore: StateStore;
-  snapshotStore: SnapshotStore;
-  catalogPublication?: CatalogPublicationStores;
+  catalogPublication: CatalogPublicationStores;
+  lease: IngestionLease;
   now: Date;
   results: SourceResult[];
   publicationClock?: () => Date;
@@ -200,107 +181,36 @@ async function publishResults(options: {
   totalStarted: number;
 }) {
   assertSourceResultLimits(options.results);
-  if (options.collection.catalogVersion === 3) {
-    if (!options.catalogPublication) throw new Error("Expanded publication stores are required");
-    let committed = false;
-    let readMs = options.initialReadMs; let mergeAndBuildMs = 0; let publishMs = 0;
-    for (let attempt = 0; attempt < 2; attempt += 1) {
-      try {
-        let phase = performance.now();
-        const current = await options.stateStore.read();
-        readMs += performance.now() - phase;
-        assertSupportedCollection(current.data, options.collection);
-        if (!committed) {
-          phase = performance.now();
-          const next = fitConditionsState(mergeSourceResults(current.data, options.results, options.now), options.now);
-          if (options.operation === "maintenance" && next.publicationTransition?.dualUntil
-            && options.now.getTime() >= Date.parse(next.publicationTransition.dualUntil)) next.publicationTransition = null;
-          await options.stateStore.write(next, current); committed = true;
-          mergeAndBuildMs += performance.now() - phase;
-        }
-        phase = performance.now();
-        const publication = await publishCommittedCatalog({ stateStore: options.stateStore, stores: options.catalogPublication,
-          collection: options.collection, now: options.now, clock: options.publicationClock, family: options.operation === "maintenance" ? "all" : "snapshots" });
-        publishMs += performance.now() - phase;
-        const snapshot = publication.snapshot!; const bytes = Buffer.byteLength(JSON.stringify(snapshot));
-        return { operation: options.operation, generatedAt: snapshot.generatedAt,
-          status: publication.snapshotsComplete && !publication.publication.failed.length && !publication.legacyPublication.failed.length ? "ok" : "partial",
-          locations: Object.keys(snapshot.locations).length, bytes, snapshotSizeWarning: bytes >= SNAPSHOT_WARNING_BYTES,
-          sources: Object.fromEntries(options.executions.map((execution) => [execution.result.sourceId, sourceSummary(execution)])),
-          publication: { dual: publication.dual, acknowledged: publication.acknowledged, snapshotsComplete: publication.snapshotsComplete,
-            conditions: publication.publication, legacyConditions: publication.legacyPublication },
-          timings: { sourcesMs: rounded(options.sourceDurationMs), readMs: rounded(readMs), mergeAndBuildMs: rounded(mergeAndBuildMs), publishMs: rounded(publishMs), totalMs: rounded(performance.now() - options.totalStarted) } };
-      } catch (error) { if (!(error instanceof ConcurrencyError) || attempt === 1) throw error; }
-    }
-    throw new Error("Expanded publication could not resolve a concurrent write");
-  }
-  let snapshotConflictRetry = false;
-  let readMs = options.initialReadMs;
-  let mergeAndBuildMs = 0;
-  let publishMs = 0;
-  let resultsCommitted = false;
+  let committed = false;
+  let readMs = options.initialReadMs; let mergeAndBuildMs = 0; let publishMs = 0;
   for (let attempt = 0; attempt < 2; attempt += 1) {
-    let phaseStarted = performance.now();
-    const [versionedState, versionedSnapshot] = await Promise.all([
-      options.stateStore.read(), options.snapshotStore.readLatest(),
-    ]);
-    readMs += performance.now() - phaseStarted;
-
-    assertCatalog2Collection(versionedState.data, options.collection);
-    phaseStarted = performance.now();
-    const nextState = fitConditionsState(resultsCommitted
-      ? versionedState.data
-      : mergeSourceResults(versionedState.data, options.results, options.now), options.now);
-    const stateBytes = Buffer.byteLength(JSON.stringify(nextState));
-    if (stateBytes > PRIVATE_STATE_HARD_LIMIT_BYTES) throw new Error(`Private ingestion state exceeds 5 MB hard limit (${stateBytes} bytes)`);
-    const candidate = buildValidatedSnapshot(nextState, publicationTime(options.now, versionedSnapshot.data.generatedAt));
-    let projectionState = nextState;
-    mergeAndBuildMs += performance.now() - phaseStarted;
-
-    phaseStarted = performance.now();
     try {
-      if (!resultsCommitted) {
-        await options.stateStore.write(nextState, versionedState);
-        resultsCommitted = true;
+      let phase = performance.now();
+      const current = await options.stateStore.read();
+      readMs += performance.now() - phase;
+      assertVersionedIngestionLease(current, options.lease, options.publicationClock?.() || new Date());
+      assertSupportedCollection(current.data, options.collection);
+      if (!committed) {
+        phase = performance.now();
+        const next = fitConditionsState(mergeSourceResults(current.data, options.results, options.now), options.now);
+        const stateBytes = Buffer.byteLength(JSON.stringify(next));
+        if (stateBytes > PRIVATE_STATE_HARD_LIMIT_BYTES) throw new Error(`Private ingestion state exceeds 5 MB hard limit (${stateBytes} bytes)`);
+        await options.stateStore.write(next, current); committed = true;
+        mergeAndBuildMs += performance.now() - phase;
       }
-      assertCatalog2Collection((await options.stateStore.read()).data, options.collection);
-      try {
-        await options.snapshotStore.publish(candidate.snapshot, versionedSnapshot);
-      } catch (error) {
-        if (!(error instanceof ConcurrencyError) || snapshotConflictRetry) throw error;
-        snapshotConflictRetry = true;
-        const latest = await options.snapshotStore.readLatest();
-        const rebasedState = await options.stateStore.read();
-        assertCatalog2Collection(rebasedState.data, options.collection);
-        const rebuildStarted = performance.now();
-        const rebased = buildValidatedSnapshot(rebasedState.data, publicationTime(options.now, latest.data.generatedAt));
-        projectionState = rebasedState.data;
-        mergeAndBuildMs += performance.now() - rebuildStarted;
-        await options.snapshotStore.publish(rebased.snapshot, latest);
-        candidate.snapshot = rebased.snapshot;
-        candidate.bytes = rebased.bytes;
-      }
-      publishMs += performance.now() - phaseStarted;
-      const sources = Object.fromEntries(options.executions.map((execution) => [
-        execution.result.sourceId, sourceSummary(execution),
-      ])) as Record<SourceId, SourceExecutionSummary>;
-      return {
-        operation: options.operation, generatedAt: candidate.snapshot.generatedAt,
-        locations: Object.keys(candidate.snapshot.locations).length, bytes: candidate.bytes,
-        snapshotSizeWarning: candidate.bytes >= SNAPSHOT_WARNING_BYTES,
-        projection: snapshotProjectionMetrics(projectionState, candidate.snapshot, options.now),
-        sources,
-        timings: {
-          sourcesMs: rounded(options.sourceDurationMs), readMs: rounded(readMs),
-          mergeAndBuildMs: rounded(mergeAndBuildMs), publishMs: rounded(publishMs),
-          totalMs: rounded(performance.now() - options.totalStarted),
-        },
-      };
-    } catch (error) {
-      publishMs += performance.now() - phaseStarted;
-      if (error instanceof ConcurrencyError && attempt === 0) continue;
-      throw error;
-    }
+      phase = performance.now();
+      const publication = await publishCommittedCatalog({ stateStore: options.stateStore, stores: options.catalogPublication,
+        collection: options.collection, lease: options.lease, now: options.now,
+        family: options.operation === "maintenance" ? "all" : "snapshots" });
+      publishMs += performance.now() - phase;
+      const snapshot = publication.snapshot; const bytes = Buffer.byteLength(JSON.stringify(snapshot));
+      return { operation: options.operation, generatedAt: snapshot.generatedAt, status: "ok",
+        locations: Object.keys(snapshot.locations).length, bytes, snapshotSizeWarning: bytes >= SNAPSHOT_WARNING_BYTES,
+        sources: Object.fromEntries(options.executions.map((execution) => [execution.result.sourceId, sourceSummary(execution)])),
+        publication: { manifestSha256: publication.pointer.manifestSha256, conditions: publication.publication },
+        timings: { sourcesMs: rounded(options.sourceDurationMs), readMs: rounded(readMs), mergeAndBuildMs: rounded(mergeAndBuildMs),
+          publishMs: rounded(publishMs), totalMs: rounded(performance.now() - options.totalStarted) } };
+    } catch (error) { if (!(error instanceof ConcurrencyError) || attempt === 1) throw error; }
   }
-  throw new Error("Ingestion could not resolve a concurrent write");
+  throw new Error("Catalog 3 publication could not resolve a concurrent write");
 }

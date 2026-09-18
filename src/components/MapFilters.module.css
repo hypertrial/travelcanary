@@ -1,4 +1,4 @@
-.panel {
+.panel.panel {
   width: 100%;
   padding: 0;
   border: 0;
@@ -6,6 +6,7 @@
   background: transparent;
   color: var(--ink);
   box-shadow: none;
+  pointer-events: none;
 }
 
 .panelHeading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 1px 8px; }
@@ -38,6 +39,7 @@
   background: color-mix(in srgb, var(--surface) 72%, transparent);
   border: 1px solid var(--line);
   border-radius: var(--control-radius);
+  pointer-events: auto;
 }
 
 .filters button {
@@ -74,8 +76,8 @@
 
 .filters button:disabled { opacity: 0.6; cursor: default; }
 .panel button:focus-visible { outline: 2px solid #173a3f; outline-offset: 2px; }
-.summary { padding: 7px 2px 0; font-size: 11px; line-height: 1.45; }
-.hint { display: block; color: var(--muted); font-size: 10.5px; text-wrap: pretty; }
+.summary { padding: 7px 2px 0; font-size: 11px; line-height: 1.45; pointer-events: none; }
+.hint { display: block; color: var(--muted); font-size: 10.5px; pointer-events: none; text-wrap: pretty; }
 .summary p { margin: 8px 0 0; }
 .summary button {
   display: block;
@@ -89,6 +91,7 @@
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
+  pointer-events: auto;
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {

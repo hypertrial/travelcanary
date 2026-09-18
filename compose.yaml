@@ -7,17 +7,18 @@ services:
     restart: unless-stopped
     environment:
       TRAVELCANARY_RUNTIME: local
-      TRAVELCANARY_DATA_DIR: /data
-      NEXT_PUBLIC_CATALOG_VERSION: "3"
-      NEXT_PUBLIC_DATA_MODE: live
-      LOCAL_CONDITIONS_ENABLED: "true"
+      TRAVELCANARY_PUBLIC_DATA_DIR: /data/public
       PORT: "3000"
     ports:
       - "127.0.0.1:${TRAVELCANARY_PORT:-3000}:3000"
     volumes:
-      - travelcanary-data:/data
+      - travelcanary-public:/data/public:ro
+    read_only: true
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=64m"]
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/v1/plugin/summary').then(r=>{if(!r.ok)process.exit(1)})"]
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/healthz').then(r=>{if(!r.ok)process.exit(1)})"]
       interval: 30s
       timeout: 5s
       retries: 5
@@ -30,15 +31,39 @@ services:
     stop_grace_period: 60s
     environment:
       TRAVELCANARY_RUNTIME: local
-      TRAVELCANARY_DATA_DIR: /data
-      NEXT_PUBLIC_CATALOG_VERSION: "3"
-      NEXT_PUBLIC_DATA_MODE: live
+      TRAVELCANARY_PRIVATE_DATA_DIR: /data/private
+      TRAVELCANARY_PUBLIC_DATA_DIR: /data/public
+      TRAVELCANARY_CACHE_DIR: /data/cache
       LOCAL_CONDITIONS_ENABLED: "true"
     volumes:
-      - travelcanary-data:/data
-    depends_on:
-      web:
-        condition: service_started
+      - travelcanary-private:/data/private
+      - travelcanary-public:/data/public
+      - travelcanary-cache:/data/cache
+    read_only: true
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=64m"]
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+  collector-once:
+    image: travelcanary:local
+    command: npm run collector:once
+    profiles: ["tools"]
+    init: true
+    environment:
+      TRAVELCANARY_RUNTIME: local
+      TRAVELCANARY_PRIVATE_DATA_DIR: /data/private
+      TRAVELCANARY_PUBLIC_DATA_DIR: /data/public
+      TRAVELCANARY_CACHE_DIR: /data/cache
+      LOCAL_CONDITIONS_ENABLED: "true"
+    volumes:
+      - travelcanary-private:/data/private
+      - travelcanary-public:/data/public
+      - travelcanary-cache:/data/cache
+    read_only: true
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=64m"]
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
 
 volumes:
-  travelcanary-data:
+  travelcanary-private:
+  travelcanary-public:
+  travelcanary-cache:

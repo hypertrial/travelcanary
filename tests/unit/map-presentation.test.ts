@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { locations } from "@/lib/data";
 import { countryCodes } from "@/lib/domain/schemas";
 import { mapSnapshot } from "../fixtures/map-snapshots";
-import { CompleteSnapshotSchema } from "@/lib/snapshot-validation";
+import { SnapshotV11Schema } from "@/lib/domain/catalog-public";
 import {
   applyCoveredCountriesLayer,
   applyFieldGuideBasemap,
@@ -81,11 +81,11 @@ describe("map presentation", () => {
   });
 
   it("counts destinations once, not hazards or evidence links, with production-like elevated-only data", () => {
-    const snapshot = CompleteSnapshotSchema.parse(mapSnapshot());
+    const snapshot = SnapshotV11Schema.parse(mapSnapshot());
     const state = Object.values(snapshot.locations).find((state) => state.level === "ELEVATED")!;
     if (state.level === "ELEVATED") state.hazards.push({ ...state.hazards[0], id: "extra-incident" });
     expect(mapFilterCounts(locations, snapshot)).toEqual({ all: 108, high: 0, elevated: 108, unavailable: 33 });
-    expect(mapFilterCounts(locations, CompleteSnapshotSchema.parse(mapSnapshot(0, 0)))).toEqual({ all: 0, high: 0, elevated: 0, unavailable: 0 });
+    expect(mapFilterCounts(locations, SnapshotV11Schema.parse(mapSnapshot(0, 0)))).toEqual({ all: 0, high: 0, elevated: 0, unavailable: 0 });
     expect(mapFilterCounts(locations, null)).toBeNull();
     expect(mapFilterCounts([], snapshot)).toBeNull();
     const alertStates = Object.values(snapshot.locations).filter((state) => state.level === "ELEVATED");

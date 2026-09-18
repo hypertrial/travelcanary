@@ -1,42 +1,27 @@
+import { resolve } from "node:path";
 import { catalogLocationsV3 } from "./catalog-data";
-import { catalogV2Paths, catalogV2SnapshotUrl, catalogV3Paths, catalogV3SnapshotUrl } from "./catalog-paths";
-import { locations as catalogLocationsV2 } from "./data";
-import { ConditionsV3Schema, PublicCatalogV2Schema, PublicCatalogV3Schema, SnapshotV11Schema, type CatalogSnapshot, type PublicCatalogLocation } from "./domain/catalog-public";
-import { catalogV2CountryCodes, catalogV3CountryCodes } from "./domain/contract-identities";
-import { ConditionsSchema } from "./domain/conditions";
-import { CompleteSnapshotSchema } from "./snapshot-validation";
+import { catalogMembershipHash } from "./catalog-membership";
+import { coverageBreakdown, coverageMeetsCatalog3Target, catalog3CoverageTarget, emptyCoverageCounts } from "./coverage-measurement";
+import { ConditionsV3Schema, SnapshotV11Schema, type CatalogSnapshot, type PublicCatalogLocation } from "./domain/catalog-public";
+import { catalogV3CountryCodes } from "./domain/contract-identities";
+import { publicationPointerPath } from "./domain/publication";
+import { mapConcurrent, readBytesWithLimit } from "./ingestion/fetch";
+import { FilePublicationStore, publicationSha256, readCurrentPublication, readPublishedObject, type PublicationStore } from "./publication-store";
 import { expandedHazardCoverage, isExpandedDestination } from "./expanded-coverage";
 import { expandedCheckIsCurrent } from "./expanded-source-health";
 import { hazardAppliesToLocation } from "./risk-policy";
-import { mapConcurrent, readBytesWithLimit } from "./ingestion/fetch";
 import { nationalWarningManifest } from "./national-warning-sources";
 import { CoverageMatrixSchema, type HazardType, type ProviderId } from "./domain/schemas";
 import { providerRegistry } from "./provider-registry";
 import coverageJson from "../../data/coverage.json";
-import { catalog3CoverageTarget, coverageBreakdown, coverageMeetsCatalog3Target, emptyCoverageCounts } from "./coverage-measurement";
 
-const SNAPSHOT_LIMIT = 500_000; const CATALOG_LIMIT = 256_000; const CONDITIONS_LIMIT = 512_000;
-type HealthStatus = "ok" | "failed";
-type PublicHealthOptions = { env?: Record<string, string | undefined>; fetch?: typeof fetch; now?: Date; deadlineMs?: number };
 type PublicPartition = { status: string; lastSuccess: string | null; nextExpectedUpdate: string | null; transports?: Array<{
   id: string; status: string; lastSuccess?: string | null; sourceUpdatedAt?: string | null; nextExpectedUpdate?: string | null;
 }> };
 const coverageMatrix = CoverageMatrixSchema.parse(coverageJson);
 
-async function boundedJson(fetchImpl: typeof fetch, url: string, maxBytes: number, deadlineAt: number) {
-  const remaining = deadlineAt - Date.now();
-  if (remaining < 100) throw new Error("deadline");
-  const response = await fetchImpl(url, { cache: "no-store", redirect: "error", signal: AbortSignal.timeout(remaining) });
-  if (!response.ok) throw new Error("unavailable");
-  const bytes = await readBytesWithLimit(response, maxBytes);
-  return JSON.parse(new TextDecoder().decode(bytes));
-}
-
-function viable(
-  value: { status: string; lastSuccess?: string | null; sourceUpdatedAt?: string | null; nextExpectedUpdate?: string | null },
-  now: Date,
-  cadenceMinutes: number | null,
-) {
+function viable(value: { status: string; lastSuccess?: string | null; sourceUpdatedAt?: string | null; nextExpectedUpdate?: string | null },
+  now: Date, cadenceMinutes: number | null) {
   if (!["ok", "partial", "failed", "delayed"].includes(value.status)) return false;
   if (!cadenceMinutes) return value.status === "ok" || value.status === "partial";
   if (!value.lastSuccess) return false;
@@ -61,10 +46,8 @@ function providerViable(snapshot: CatalogSnapshot, location: PublicCatalogLocati
       )) || [];
       if (systems.length) return systems.some((system) => {
         const transport = partition.transports?.find(({ id }) => id === system.id);
-        return Boolean(transport && viable({ ...transport,
-          lastSuccess: transport.lastSuccess ?? partition.lastSuccess,
-          nextExpectedUpdate: transport.nextExpectedUpdate ?? partition.nextExpectedUpdate,
-        }, now, system.cadenceMinutes));
+        return Boolean(transport && viable({ ...transport, lastSuccess: transport.lastSuccess ?? partition.lastSuccess,
+          nextExpectedUpdate: transport.nextExpectedUpdate ?? partition.nextExpectedUpdate }, now, system.cadenceMinutes));
       });
     }
     return viable(partition, now, definition.cadenceMinutes);
@@ -111,78 +94,119 @@ export function requiredTransportFailures(snapshot: CatalogSnapshot, catalog: Pu
   return [...failed].sort();
 }
 
-function fixedPublicOrigin(env: Record<string, string | undefined>) {
-  const configured = env.TRAVELCANARY_PUBLIC_ORIGIN || env.VERCEL_PROJECT_PRODUCTION_URL || env.VERCEL_URL;
-  if (!configured) return "https://travelcanary.org";
-  const url = new URL(/^https?:\/\//.test(configured) ? configured : `https://${configured}`);
-  if (url.protocol !== "https:" || url.username || url.password || url.pathname !== "/" || url.search || url.hash) throw new Error("invalid public origin");
-  return url.origin;
-}
-
 export function coverageCounts(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date) {
   const measurement = coverageBreakdown(snapshot, catalog, now);
   return { ...measurement.totals, tiers: measurement.tiers };
 }
 
-export async function checkPublicHealth(options: PublicHealthOptions) {
-  const env = options.env || process.env; const now = options.now || new Date(); const fetchImpl = options.fetch || fetch;
-  const catalogVersion = env.NEXT_PUBLIC_CATALOG_VERSION === "3" ? 3 : 2;
-  const paths = catalogVersion === 3 ? catalogV3Paths : catalogV2Paths;
-  const expectedLocations = catalogVersion === 3 ? catalogLocationsV3.length : catalogLocationsV2.length;
-  const countryCodes = catalogVersion === 3 ? catalogV3CountryCodes : catalogV2CountryCodes;
-  const snapshotUrl = (catalogVersion === 3 ? catalogV3SnapshotUrl : catalogV2SnapshotUrl)(env.NEXT_PUBLIC_SNAPSHOT_URL);
-  let publicOrigin = "";
-  try { publicOrigin = fixedPublicOrigin(env); } catch { publicOrigin = ""; }
-  const deadlineAt = Date.now() + (options.deadlineMs || 4_000);
-  let snapshot: CatalogSnapshot | null = null; let catalog: PublicCatalogLocation[] | null = null;
-  let snapshotStatus: HealthStatus = "failed"; let catalogStatus: HealthStatus = "failed"; let snapshotAgeMinutes = 0;
-  if (snapshotUrl) {
-    try {
-      const value = await boundedJson(fetchImpl, snapshotUrl.href, SNAPSHOT_LIMIT, deadlineAt);
-      snapshot = (catalogVersion === 3 ? SnapshotV11Schema : CompleteSnapshotSchema).parse(value);
-      snapshotAgeMinutes = Math.max(0, Math.floor((now.getTime() - Date.parse(snapshot.generatedAt)) / 60_000));
-      snapshotStatus = now.getTime() - Date.parse(snapshot.generatedAt) <= 120 * 60_000 && Date.parse(snapshot.generatedAt) <= now.getTime() + 5 * 60_000 ? "ok" : "failed";
-    } catch { snapshotStatus = "failed"; }
+export class HttpPublicationStore implements PublicationStore {
+  private readonly root: URL;
+  constructor(pointerUrl: string, private readonly fetchImpl: typeof fetch = fetch) {
+    const pointer = new URL(pointerUrl);
+    if (pointer.protocol !== "https:" || pointer.username || pointer.password || pointer.search || pointer.hash
+      || !pointer.pathname.endsWith(`/${publicationPointerPath}`)) throw new Error("Invalid publication pointer URL");
+    pointer.pathname = pointer.pathname.slice(0, -publicationPointerPath.length); pointer.search = "";
+    this.root = pointer;
   }
-  try {
-    if (!publicOrigin) throw new Error("invalid public origin");
-    const value = await boundedJson(fetchImpl, new URL(paths.catalog, publicOrigin).href, CATALOG_LIMIT, deadlineAt);
-    catalog = (catalogVersion === 3 ? PublicCatalogV3Schema : PublicCatalogV2Schema).parse(value);
-    const snapshotIds = snapshot && Object.keys(snapshot.locations).sort(); const catalogIds = catalog.map(({ id }) => id).sort();
-    catalogStatus = catalog.length === expectedLocations && (!snapshotIds || snapshotIds.join("\0") === catalogIds.join("\0")) ? "ok" : "failed";
-  } catch { catalogStatus = "failed"; }
+  async read(pathname: string, maxBytes: number) {
+    if (!/^catalogs\/3\/(?:publication\/latest\.json|generations\/[a-f0-9]{64}\/manifest\.json|objects\/sha256\/[a-f0-9]{64}\.json)$/.test(pathname)) {
+      throw new Error("Publication object path is invalid");
+    }
+    const url = new URL(pathname, this.root);
+    const response = await this.fetchImpl(url, { cache: "no-store", redirect: "error", signal: AbortSignal.timeout(4_000) });
+    if (response.status === 404) return null;
+    if (!response.ok) throw new Error("Publication object is unavailable");
+    const body = new TextDecoder().decode(await readBytesWithLimit(response, maxBytes));
+    return { body, etag: response.headers.get("etag")?.replace(/^W\//, "") || "", url: url.href };
+  }
+  putImmutable(): Promise<never> { throw new Error("HTTP publication store is read-only"); }
+  replacePointer(): Promise<never> { throw new Error("HTTP publication store is read-only"); }
+  list(): Promise<never> { throw new Error("HTTP publication store cannot list"); }
+  deleteMany(): Promise<never> { throw new Error("HTTP publication store is read-only"); }
+}
 
-  const overdueCountryCodes: string[] = []; let present = 0; let releaseMismatch = false;
-  if (snapshotUrl) await mapConcurrent([...countryCodes], 8, async (countryCode) => {
-    try {
-      const base = catalogVersion === 3 ? new URL("/", snapshotUrl) : snapshotUrl;
-      const url = new URL(`${paths.conditions}${countryCode}.json`, base).href;
-      const value = await boundedJson(fetchImpl, url, CONDITIONS_LIMIT, deadlineAt);
-      const file = (catalogVersion === 3 ? ConditionsV3Schema : ConditionsSchema).parse(value);
-      if (file.countryCode !== countryCode) throw new Error("conditions country mismatch");
-      present += 1;
-      if (now.getTime() - Date.parse(file.generatedAt) > 75 * 60_000 || Date.parse(file.generatedAt) > now.getTime() + 5 * 60_000) overdueCountryCodes.push(countryCode);
-      const releaseSha = env.VERCEL_GIT_COMMIT_SHA || env.TRAVELCANARY_RELEASE_SHA;
-      if (releaseSha && (!file.producerCommitSha || !file.producerCommitSha.startsWith(releaseSha.toLowerCase()))) releaseMismatch = true;
-    } catch { overdueCountryCodes.push(countryCode); }
-  });
-  overdueCountryCodes.sort();
-  const conditionsStatus: HealthStatus = present === countryCodes.length && !overdueCountryCodes.length && !releaseMismatch ? "ok" : "failed";
-  const failed = snapshot && catalog ? requiredTransportFailures(snapshot, catalog, now) : ["snapshot/unavailable"];
-  const transportStatus: HealthStatus = failed.length ? "failed" : "ok";
-  const measurement = snapshot && catalog ? coverageBreakdown(snapshot, catalog, now) : null;
-  const coverageStatus: HealthStatus = measurement && (catalogVersion !== 3 || coverageMeetsCatalog3Target(measurement)) ? "ok" : "failed";
-  const status = [snapshotStatus, catalogStatus, conditionsStatus, transportStatus, coverageStatus].every((item) => item === "ok") ? "ok" : "degraded";
+export function unavailablePublicationHealth(now = new Date(), runtime: "vercel" | "filesystem" = "vercel", code = "publication_invalid") {
   const empty = emptyCoverageCounts();
   return {
-    schemaVersion: 1 as const, status, runtime: "vercel" as const, catalogVersion, checkedAt: now.toISOString(),
-    checks: {
-      snapshot: { status: snapshotStatus, ageMinutes: snapshotAgeMinutes },
-      catalog: { status: catalogStatus, expectedLocations, actualLocations: catalog?.length || 0 },
-      conditions: { status: conditionsStatus, expected: countryCodes.length, present, overdueCountryCodes },
-      transports: { status: transportStatus, failed },
-      coverage: { status: coverageStatus, minimums: catalogVersion === 3 ? catalog3CoverageTarget : null },
-    },
-    coverage: measurement ? { ...measurement.totals, tiers: measurement.tiers } : { ...empty, tiers: { lifeSafety: { ...empty } } },
+    schemaVersion: 1 as const, status: "degraded" as const, available: false, runtime,
+    catalogVersion: 3 as const, checkedAt: now.toISOString(), publication: { status: "failed" as const, code },
+    checks: { snapshot: { status: "failed" as const, ageMinutes: 0 }, catalog: { status: "failed" as const, expectedLocations: 679, actualLocations: 0 },
+      conditions: { status: "failed" as const, expected: 45, present: 0, overdueCountryCodes: [...catalogV3CountryCodes] },
+      transports: { status: "failed" as const, failed: ["publication/unavailable"] }, coverage: { status: "failed" as const, minimums: catalog3CoverageTarget } },
+    coverage: { ...empty, tiers: { lifeSafety: { ...empty } } },
   };
+}
+
+export async function checkPublicationHealth(store: PublicationStore, options: {
+  now?: Date; expectedSha?: string; runtime?: "vercel" | "filesystem"; allowStale?: boolean;
+} = {}) {
+  const now = options.now || new Date();
+  const unavailable = (code: string) => unavailablePublicationHealth(now, options.runtime || "vercel", code);
+  try {
+    const current = await readCurrentPublication(store);
+    if (!current) return unavailable("pointer_missing");
+    const snapshotBody = await readPublishedObject(store, current.manifest.snapshot);
+    const snapshot = SnapshotV11Schema.parse(JSON.parse(snapshotBody));
+    const snapshotIds = Object.keys(snapshot.locations).sort();
+    const expectedIds = catalogLocationsV3.map(({ id }) => id).sort();
+    if (snapshotIds.length !== expectedIds.length || snapshotIds.join("\0") !== expectedIds.join("\0")
+      || catalogMembershipHash(snapshotIds) !== current.manifest.membershipHash) return unavailable("membership_mismatch");
+    if (current.manifest.coverageContractHash !== publicationSha256(JSON.stringify(catalog3CoverageTarget))) return unavailable("coverage_contract_mismatch");
+    const producer = options.expectedSha?.trim().toLowerCase();
+    if (producer && (!current.manifest.producerCommitSha || !current.manifest.producerCommitSha.startsWith(producer))) return unavailable("producer_mismatch");
+    const overdueCountryCodes: string[] = []; let present = 0;
+    await mapConcurrent(current.manifest.conditions, 8, async (reference) => {
+      const body = await readPublishedObject(store, reference);
+      const file = ConditionsV3Schema.parse(JSON.parse(body));
+      if (file.countryCode !== reference.countryCode || file.producerCommitSha !== current.manifest.producerCommitSha) throw new Error("Conditions identity mismatch");
+      const expected = catalogLocationsV3.filter(({ countryCode }) => countryCode === reference.countryCode).map(({ id }) => id).sort();
+      if (Object.keys(file.locations).sort().join("\0") !== expected.join("\0")) throw new Error("Conditions membership mismatch");
+      present += 1;
+      const generated = Date.parse(file.generatedAt);
+      if (!options.allowStale && (now.getTime() - generated > 75 * 60_000 || generated > now.getTime() + 5 * 60_000)) {
+        overdueCountryCodes.push(file.countryCode);
+      }
+    });
+    const snapshotAgeMinutes = Math.max(0, Math.floor((now.getTime() - Date.parse(snapshot.generatedAt)) / 60_000));
+    if ((!options.allowStale && (snapshotAgeMinutes > 120 || Date.parse(snapshot.generatedAt) > now.getTime() + 5 * 60_000))
+      || present !== catalogV3CountryCodes.length || overdueCountryCodes.length) return unavailable("publication_stale_or_incomplete");
+    const failedTransports = requiredTransportFailures(snapshot, catalogLocationsV3, now);
+    const measurement = coverageBreakdown(snapshot, catalogLocationsV3, now);
+    const coverageOk = coverageMeetsCatalog3Target(measurement);
+    const collectorDelayed = current.manifest.status.collectorLastSuccess
+      ? now.getTime() - Date.parse(current.manifest.status.collectorLastSuccess) > 75 * 60_000 : true;
+    const degraded = current.manifest.status.state === "degraded" || failedTransports.length > 0 || !coverageOk || collectorDelayed;
+    return {
+      schemaVersion: 1 as const, status: degraded ? "degraded" as const : "ok" as const, available: true,
+      runtime: options.runtime || "vercel" as const, catalogVersion: 3 as const, checkedAt: now.toISOString(),
+      publication: { status: "ok" as const, manifestSha256: current.pointer.manifestSha256, publishedAt: current.pointer.publishedAt,
+        producerCommitSha: current.pointer.producerCommitSha, stateRevision: current.pointer.stateRevision,
+        collectionRevision: current.pointer.collectionRevision, ingestionFence: current.pointer.ingestionFence },
+      checks: {
+        snapshot: { status: "ok" as const, ageMinutes: snapshotAgeMinutes },
+        catalog: { status: "ok" as const, expectedLocations: 679, actualLocations: snapshotIds.length },
+        conditions: { status: "ok" as const, expected: 45, present, overdueCountryCodes },
+        transports: { status: failedTransports.length ? "failed" as const : "ok" as const, failed: failedTransports },
+        coverage: { status: coverageOk ? "ok" as const : "failed" as const, minimums: catalog3CoverageTarget },
+      },
+      coverage: { ...measurement.totals, tiers: measurement.tiers },
+    };
+  } catch { return unavailable("publication_invalid"); }
+}
+
+export async function checkPublicHealth(options: { env?: Record<string, string | undefined>; fetch?: typeof fetch; now?: Date } = {}) {
+  const env = options.env || process.env;
+  if (env.VERCEL_ENV !== "production") {
+    return checkPublicationHealth(new FilePublicationStore(resolve(process.cwd(), "public")), {
+      now: options.now, runtime: "filesystem", allowStale: true,
+    });
+  }
+  const url = env.TRAVELCANARY_PUBLICATION_URL;
+  if (!url) return checkPublicationHealth({ read: async () => null } as unknown as PublicationStore, { now: options.now });
+  try {
+    return await checkPublicationHealth(new HttpPublicationStore(url, options.fetch), { now: options.now,
+      expectedSha: env.VERCEL_GIT_COMMIT_SHA || env.TRAVELCANARY_RELEASE_SHA, runtime: "vercel" });
+  } catch {
+    return checkPublicationHealth({ read: async () => null } as unknown as PublicationStore, { now: options.now });
+  }
 }

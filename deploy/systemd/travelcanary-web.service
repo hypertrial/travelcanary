@@ -1,0 +1,29 @@
+[Unit]
+Description=TravelCanary read-only web service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=travelcanary-web
+Group=travelcanary-public
+UMask=0027
+WorkingDirectory=@REPOSITORY@
+EnvironmentFile=@WEB_ENVIRONMENT_FILE@
+ExecStart=@NODE@ @NEXT@ start --hostname 127.0.0.1 --port @PORT@
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictSUIDSGID=true
+ReadOnlyPaths=@PUBLIC_DIRECTORY@
+InaccessiblePaths=@PRIVATE_DIRECTORY@ @CACHE_DIRECTORY@ @COLLECTOR_ENVIRONMENT_FILE@
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

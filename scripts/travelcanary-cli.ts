@@ -1,18 +1,15 @@
 import { backup, DatabaseSync } from "node:sqlite";
-import { execFileSync, spawnSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
 import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
-import { homedir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { initializeLocalRuntime, localDatabasePath, LocalDatabase, publicObjectLimit, readLocalPolicy, writeLocalPolicy } from "../src/lib/local-storage";
+import { initializeLocalRuntime, localDatabasePath, LocalDatabase, readLocalPolicy, writeLocalPolicy } from "../src/lib/local-storage";
 import { disabledLocalPolicy, LocalRuntimePolicySchema, restrictedSourceManifestDigest } from "../src/lib/local-policy";
-import { localHealth } from "../src/lib/local-status";
-import { writeNativeFiles } from "../src/lib/native-setup";
-import { parseCatalogState } from "../src/lib/domain/catalog-state";
-import { ConditionsV3Schema, SnapshotV11Schema } from "../src/lib/domain/catalog-public";
-import { catalogV3Paths } from "../src/lib/catalog-paths";
-import { catalogV3CountryCodes } from "../src/lib/domain/contract-identities";
+import { IngestionStateV16Schema } from "../src/lib/domain/catalog-state";
 import { PRIVATE_STATE_HARD_LIMIT_BYTES } from "../src/lib/ingestion/limits";
+import { FilePublicationStore } from "../src/lib/publication-store";
+import { checkPublicationHealth } from "../src/lib/public-health";
+import { runtimePaths } from "../src/lib/runtime-paths";
 // @ts-expect-error Shared JavaScript CLI helper has no declaration file.
 import { fetchHealth } from "./fetch-health.mjs";
 
@@ -44,40 +41,20 @@ function composeArgs(install: Install, args: string[]) {
   const environmentFile = install.environmentFile || join(controlDirectory, "docker.env");
   return ["compose", "--env-file", environmentFile, ...args];
 }
-function exactNativeVersions() {
-  if (process.versions.node !== "24.19.0") fail(`Node 24.19.0 is required; found ${process.version}`);
-  const npm = execFileSync("npm", ["--version"], { encoding: "utf8" }).trim();
-  if (npm !== "11.6.2") fail(`npm 11.6.2 is required; found ${npm}`);
-}
-
 async function setup(args: string[]) {
   const runtimeIndex = args.indexOf("--runtime");
   const runtime = args[runtimeIndex + 1];
   const portIndex = args.indexOf("--port");
   const port = portValue(portIndex >= 0 ? args[portIndex + 1] : undefined);
-  if (runtime !== "docker" && runtime !== "native") fail("Usage: travelcanary setup --runtime docker|native [--port 3000]");
-  if (runtime === "docker") {
-    const environmentFile = join(controlDirectory, "docker.env");
-    mkdirSync(controlDirectory, { recursive: true, mode: 0o700 });
-    writeFileSync(environmentFile, `TRAVELCANARY_PORT=${port}\n`, { mode: 0o600 });
-    run("docker", ["compose", "version"]);
-    run("docker", ["compose", "--env-file", environmentFile, "up", "--build", "-d"]);
-    writeInstall({ runtime, port, environmentFile });
-    console.log(`TravelCanary is starting at http://127.0.0.1:${port}`);
-    return;
-  }
-  if (process.platform !== "linux") fail("Native setup requires Linux with user-level systemd; use Docker on this host");
-  exactNativeVersions();
-  if (process.env.TRAVELCANARY_DEPENDENCIES_READY !== "true") run("npm", ["ci"]);
-  const paths = writeNativeFiles({ home: homedir(), repository, node: process.execPath, port });
-  const env = { ...process.env, TRAVELCANARY_RUNTIME: "local", TRAVELCANARY_DATA_DIR: paths.dataDirectory,
-    NEXT_PUBLIC_CATALOG_VERSION: "3", NEXT_PUBLIC_DATA_MODE: "live", LOCAL_CONDITIONS_ENABLED: "true" };
-  const database = new LocalDatabase(localDatabasePath(env)); initializeLocalRuntime(database, new Date(), env); database.close();
-  run("npm", ["run", "build"], { env });
-  run("systemctl", ["--user", "daemon-reload"]);
-  run("systemctl", ["--user", "enable", "--now", "travelcanary-web.service", "travelcanary-collector.service"]);
-  writeInstall({ runtime, port, dataDirectory: paths.dataDirectory });
-  console.log(`TravelCanary is running at http://127.0.0.1:${port}`);
+  if (runtime === "native") fail("Native Linux requires the dedicated-user system services documented in docs/SELF_HOSTING.md; automated setup supports Docker only");
+  if (runtime !== "docker") fail("Usage: travelcanary setup --runtime docker [--port 3000]");
+  const environmentFile = join(controlDirectory, "docker.env");
+  mkdirSync(controlDirectory, { recursive: true, mode: 0o700 });
+  writeFileSync(environmentFile, `TRAVELCANARY_PORT=${port}\n`, { mode: 0o600 });
+  run("docker", ["compose", "version"]);
+  run("docker", ["compose", "--env-file", environmentFile, "up", "--build", "-d"]);
+  writeInstall({ runtime, port, environmentFile });
+  console.log(`TravelCanary is starting at http://127.0.0.1:${port}`);
 }
 
 async function status() {
@@ -90,8 +67,8 @@ async function status() {
       return;
     } catch { fail(`TravelCanary is unavailable at http://127.0.0.1:${install.port}`); }
   }
-  const database = new LocalDatabase();
-  try { initializeLocalRuntime(database); console.log(JSON.stringify(localHealth(database), null, 2)); } finally { database.close(); }
+  const paths = runtimePaths(process.env, false);
+  console.log(JSON.stringify(await checkPublicationHealth(new FilePublicationStore(paths.publicRoot), { runtime: "filesystem" }), null, 2));
 }
 
 function directPolicy(action: string) {
@@ -156,23 +133,16 @@ function validateBackup(path: string) {
     if (integrity.length !== 1 || integrity[0].quick_check !== "ok") throw new Error("Backup failed SQLite integrity validation");
     const decode = (value: Uint8Array | string) => typeof value === "string" ? value : Buffer.from(value).toString("utf8");
     const select = candidate.prepare("SELECT value FROM objects WHERE namespace=? AND key=?");
-    const required = <T>(scope: "private" | "public", key: string, maxBytes: number, parse: (value: unknown) => T) => {
+    const required = <T>(scope: "private", key: string, maxBytes: number, parse: (value: unknown) => T) => {
       const row = select.get(scope, key) as { value?: Uint8Array | string } | undefined;
       if (!row?.value) throw new Error(`Backup is missing required ${scope} object ${key}`);
       const raw = decode(row.value);
       if (Buffer.byteLength(raw) > maxBytes) throw new Error(`Backup object ${key} exceeds its size limit`);
       return parse(JSON.parse(raw));
     };
-    const state = required("private", "ingestion/state.json", PRIVATE_STATE_HARD_LIMIT_BYTES, parseCatalogState);
+    const state = required("private", "ingestion/state.json", PRIVATE_STATE_HARD_LIMIT_BYTES, IngestionStateV16Schema.parse);
     if (state.collection.catalogVersion !== 3) throw new Error("Backup catalog is not supported");
     required("private", "runtime/policy.json", 4096, LocalRuntimePolicySchema.parse);
-    required("public", catalogV3Paths.snapshot, publicObjectLimit(catalogV3Paths.snapshot), SnapshotV11Schema.parse);
-    required("public", catalogV3Paths.previousSnapshot, publicObjectLimit(catalogV3Paths.previousSnapshot), SnapshotV11Schema.parse);
-    for (const countryCode of catalogV3CountryCodes) {
-      const key = `${catalogV3Paths.conditions}${countryCode}.json`;
-      const conditions = required("public", key, publicObjectLimit(key), ConditionsV3Schema.parse);
-      if (conditions.countryCode !== countryCode) throw new Error(`Backup conditions object ${key} has the wrong country`);
-    }
   } finally { candidate.close(); }
 }
 
@@ -201,10 +171,9 @@ function restoreCommand(input?: string) {
     finally { run("docker", composeArgs(install, ["up", "-d"])); }
     return;
   }
-  if (install?.runtime === "native") run("systemctl", ["--user", "stop", "travelcanary-web.service", "travelcanary-collector.service"]);
+  if (install?.runtime === "native") fail("Migrate this legacy same-user native installation to the dedicated-user system services before restoring");
   if (install?.dataDirectory) process.env.TRAVELCANARY_DATA_DIR = install.dataDirectory;
-  try { directRestore(input); }
-  finally { if (install?.runtime === "native") run("systemctl", ["--user", "start", "travelcanary-web.service", "travelcanary-collector.service"]); }
+  directRestore(input);
 }
 
 const [command, ...args] = process.argv.slice(2);
@@ -213,4 +182,4 @@ else if (command === "status") await status();
 else if (command === "policy") policy(args[0]);
 else if (command === "backup") await backupCommand(args[0]);
 else if (command === "restore") restoreCommand(args[0]);
-else fail("Usage: travelcanary setup --runtime docker|native [--port 3000] | status | policy accept-restricted|disable-restricted | backup [output] | restore <backup>");
+else fail("Usage: travelcanary setup --runtime docker [--port 3000] | status | policy accept-restricted|disable-restricted | backup [output] | restore <backup>");

@@ -1,7 +1,6 @@
 import { aggregatePartitionHealth } from "./partition-health";
-import catalogV2 from "../../data/catalog-releases/2.json";
-import { EA_FLOOD_GEOMETRY_CACHE_LIMIT, expandedReceiptLocationIds, IngestionStateV15Schema, parseCatalogState, type RuntimePartitionedSourceResult,
-  type CatalogSourceResult, type CatalogTransportResult, type IngestionStateV15 as IngestionState, type NormalizedEventV13 as NormalizedEvent } from "./domain/catalog-state";
+import { EA_FLOOD_GEOMETRY_CACHE_LIMIT, expandedReceiptLocationIds, IngestionStateV16Schema, parseCatalogState, type RuntimePartitionedSourceResult,
+  type CatalogSourceResult, type CatalogTransportResult, type IngestionState, type NormalizedEventV13 as NormalizedEvent } from "./domain/catalog-state";
 import { createHash } from "node:crypto";
 import {
   providerIdForSourceId, sourceIds, type AggregateSourceResult, type CountryCode,
@@ -50,8 +49,9 @@ export function createEmptyState(now = new Date()): IngestionState {
     id, structuredClone(sources[providerRegistry[id as keyof typeof providerRegistry].sourceId]),
   ]));
   return parseCatalogState({
-    schemaVersion: 15, updatedAt: now.toISOString(), events: [], candidates: [], sources, providers,
-    collection: { catalogVersion: 2, revision: 0 }, publicationTransition: null, expandedSourceHealth: {}, collectionReceipts: { 2: {}, 3: {} },
+    schemaVersion: 16, updatedAt: now.toISOString(), events: [], candidates: [], sources, providers,
+    collection: { catalogVersion: 3, revision: 1 }, expandedSourceHealth: {}, collectionReceipts: { 3: {} },
+    stateRevision: 0, ingestionFence: 0, ingestionLease: null,
     frozenEaFloodAreaGeometries: {},
     sourcePartitions: { meteoalarm, eea, nationalCivilAlerts }, providerCoverage: {}, fingerprints: {},
     partitionTransports: { meteoalarm: meteoalarmTransports, nationalCivilAlerts: nationalTransports, eea: Object.fromEntries(catalogV3CountryCodes.map((code) => [code, {}])) },
@@ -132,24 +132,11 @@ function eventMatchesRemovalPrefix(eventId: string, prefix: string) {
   return prefix.endsWith(":") ? eventId.startsWith(prefix) : eventId === prefix || eventId.startsWith(`${prefix}:`);
 }
 
-const legacyLocationIds = new Set<string>(catalogV2.locationIds);
-
-function legacyAggregateHealthResult(result: AggregateSourceResult) {
-  if (!Object.hasOwn(expandedReceiptLocationIds, result.sourceId) || !result.checkedLocationIds || !result.unavailableLocationIds) return result;
-  const checked = result.checkedLocationIds.filter((id) => legacyLocationIds.has(id));
-  const unavailable = result.unavailableLocationIds.filter((id) => legacyLocationIds.has(id));
-  const status = result.status === "disabled" ? "disabled" : unavailable.length === 0 && checked.length ? "ok" : checked.length ? "partial" : "failed";
-  return { ...result, status, error: status === "ok" ? null : result.error,
-    events: result.events.filter((event) => event.geometry.kind === "locations" && event.geometry.ids.some((id) => legacyLocationIds.has(id))),
-  } as AggregateSourceResult;
-}
-
 function mergeAggregateResult(events: NormalizedEvent[], state: IngestionState, result: AggregateSourceResult): NormalizedEvent[] {
   mergeExpandedSourceReceipt(state, result);
-  const legacyResult = legacyAggregateHealthResult(result);
   const nextHealth = updateHealth(
     state.sources[result.sourceId] || emptyHealth(result.sourceId),
-    { ...legacyResult, itemCount: legacyResult.events.length },
+    { ...result, itemCount: result.events.length },
     sourceCadenceMinutes[result.sourceId],
     true,
   );
@@ -421,8 +408,8 @@ export function mergeSourceResults(state: IngestionState, results: CatalogSource
   const boundedFingerprints = Object.fromEntries(Object.entries(fingerprints)
     .sort(([, a], [, b]) => Date.parse(b) - Date.parse(a))
     .slice(0, MAX_RETAINED_FINGERPRINTS));
-  return IngestionStateV15Schema.parse({
-    ...nextState, schemaVersion: 15,
+  return IngestionStateV16Schema.parse({
+    ...nextState, schemaVersion: 16,
     updatedAt: Date.parse(nextState.updatedAt) > now.getTime() ? nextState.updatedAt : now.toISOString(),
     events: unique, fingerprints: boundedFingerprints,
   });

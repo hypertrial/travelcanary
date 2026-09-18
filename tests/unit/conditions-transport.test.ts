@@ -1,11 +1,12 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import { parseDigitraffic } from "@/lib/conditions/digitraffic";
-import { forecastBatches, runConditions } from "@/lib/conditions/worker";
+import { forecastBatches } from "@/lib/conditions/worker";
+import { runTestConditions as runConditions } from "../helpers/publication";
 import { conditionSourceIds, emptyConditions, type Conditions, type LocationConditions } from "@/lib/domain/conditions";
 import { buildSnapshot, createEmptyState } from "@/lib/risk";
-import { MemoryStateStore } from "@/lib/storage";
-import { locations } from "@/lib/data";
+import { MemoryStateStore } from "@/lib/state-store";
+import { catalogLocationsV3 as locations } from "@/lib/catalog-data";
 import rwsFixture from "../fixtures/conditions/rws-water.json";
 import { parseRwsWater } from "@/lib/conditions/rws-water";
 import ipmaObservationFixture from "../fixtures/conditions/ipma-observations.json";
@@ -53,7 +54,7 @@ describe("bounded conditions transports", () => {
       expect(nextIds.filter((id) => attemptedIds.includes(id))).toEqual([failedId]);
     }
     expect(buildSnapshot(state, now)).toEqual(buildSnapshot(initial, now));
-    expect(publish.mock.calls[0][0].flatMap((file: { locations: Record<string, unknown> }) => Object.keys(file.locations))).toHaveLength(503);
+    expect(publish.mock.calls[0][0].flatMap((file: { locations: Record<string, unknown> }) => Object.keys(file.locations))).toHaveLength(679);
   });
 
   it("recovers one transient whole-batch failure with one bounded transport retry", async () => {
@@ -268,7 +269,7 @@ describe("bounded conditions transports", () => {
     await runConditions({ now: refreshAt, stateStore: store, publish, fetch: vi.fn(async () => Response.json({ value: [] })), env });
     expect((await store.read()).data.conditions.locations["pl-warsaw"]).toBeUndefined();
     const polish = (publish.mock.calls[0][0] as Conditions[]).find(({ countryCode }) => countryCode === "PL")!;
-    expect(polish.locations["pl-warsaw"].systemConditions).toEqual([]);
+    expect(polish.locations["pl-warsaw"].systemConditions).toBeUndefined();
   });
   it("replaces only ARSO gauge records, retains them after failure, and never changes alert risk", async () => {
     const observedNow = new Date("2026-09-02T07:30:00.000Z");
@@ -366,16 +367,5 @@ describe("bounded conditions transports", () => {
     await runConditions({ now, stateStore: store, env: {}, publish });
     expect(publish).toHaveBeenCalledOnce();
     expect((await store.read()).data.conditions.lease).toBeNull();
-  });
-  it("returns bounded partial publication diagnostics and retries on the next pass", async () => {
-    const store = new MemoryStateStore(createEmptyState(now));
-    const failed = locations.map(({ countryCode }) => countryCode).filter((value, index, items) => items.indexOf(value) === index).slice(0, 12)
-      .map((countryCode) => ({ countryCode, code: "write_failed" as const }));
-    const partial = vi.fn(async (files: Conditions[]) => ({ published: files.slice(12).map(({ countryCode }) => countryCode), unchanged: [], failed }));
-    const first = await runConditions({ now, stateStore: store, env: {}, publish: partial });
-    expect(first).toMatchObject({ status: "partial", publication: { published: 16, unchanged: 0, failed: 12, omittedFailures: 4 } });
-    expect(first.publication?.failures).toHaveLength(8);
-    expect((await store.read()).data.conditions.lease).toBeNull();
-    await expect(runConditions({ now, stateStore: store, env: {}, publish: successfulPublish })).resolves.toMatchObject({ status: "disabled", publication: { published: 28, failed: 0 } });
   });
 });

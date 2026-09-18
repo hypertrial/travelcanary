@@ -1,4 +1,4 @@
-import type { IngestionStateV15 as IngestionState } from "@/lib/domain/catalog-state";
+import type { IngestionState } from "@/lib/domain/catalog-state";
 import { describe, expect, it } from "vitest";
 import { locations } from "@/lib/data";
 import { countryCodes, PartitionedSourceResultSchema, type NormalizedEvent, type PartitionedSourceResult } from "@/lib/domain/schemas";

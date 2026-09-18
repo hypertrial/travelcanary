@@ -1,32 +1,55 @@
-import { mkdtempSync, readFileSync, statSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { spawnSync } from "node:child_process";
 import { describe, expect, it } from "vitest";
-import { nativeUnitFiles, writeNativeFiles } from "@/lib/native-setup";
 // @ts-expect-error Shared JavaScript CLI helper has no declaration file.
 import { fetchHealth } from "../../scripts/fetch-health.mjs";
 
 describe("native self-host setup", () => {
-  it("generates rootless loopback user services in an isolated home", () => {
-    const home = mkdtempSync(join(tmpdir(), "travelcanary-home-"));
-    const paths = writeNativeFiles({ home, repository: "/opt/travelcanary", node: "/opt/node/bin/node", port: 3456, environment: {} });
-    const web = readFileSync(paths.webUnit, "utf8");
-    const collector = readFileSync(paths.collectorUnit, "utf8");
-    expect(web).toContain("--hostname 127.0.0.1 --port 3456");
+  it("runs web and collector system services under distinct operating-system identities", () => {
+    const web = readFileSync("deploy/systemd/travelcanary-web.service", "utf8");
+    const collector = readFileSync("deploy/systemd/travelcanary-collector.service", "utf8");
+    const once = readFileSync("deploy/systemd/travelcanary-collector-once.service", "utf8");
+    expect(web).toContain("--hostname 127.0.0.1 --port @PORT@");
     expect(web).toContain("NoNewPrivileges=true");
+    expect(web).toContain("User=travelcanary-web");
+    expect(web).toContain("Group=travelcanary-public");
+    expect(collector).toContain("User=travelcanary-collector");
+    expect(once).toContain("User=travelcanary-collector");
+    expect(web).not.toContain("User=travelcanary-collector");
+    expect(web).toContain("InaccessiblePaths=@PRIVATE_DIRECTORY@ @CACHE_DIRECTORY@ @COLLECTOR_ENVIRONMENT_FILE@");
     expect(collector).toContain("scripts/collector.ts");
-    expect(collector).not.toMatch(/sudo|apt|dnf|pacman/);
-    expect(readFileSync(paths.environmentFile, "utf8")).toContain(`TRAVELCANARY_DATA_DIR="${paths.dataDirectory}"`);
-    expect(statSync(paths.environmentFile).mode & 0o777).toBe(0o600);
   });
 
-  it("quotes paths and rejects newline injection", () => {
-    expect(nativeUnitFiles({ repository: "/opt/Travel Canary", node: "/opt/node", dataDirectory: "/tmp/data", environmentFile: "/tmp/env", port: 3000 }).web)
-      .toContain("WorkingDirectory=/opt/Travel\\x20Canary");
-    expect(() => nativeUnitFiles({ repository: "/opt/bad\npath", node: "/opt/node", dataDirectory: "/tmp/data", environmentFile: "/tmp/env", port: 3000 })).toThrow(/newlines/);
+  it("refuses the legacy same-user native installer", () => {
+    const cli = readFileSync("scripts/travelcanary-cli.ts", "utf8");
+    expect(cli).toContain("Native Linux requires the dedicated-user system services");
+    expect(cli).not.toContain('systemctl", ["--user"');
   });
 
-  it("keeps Docker on loopback with one image and one shared named volume", async () => {
+  it("disables every live source in the system-service smoke fixture", () => {
+    const renderer = readFileSync("scripts/render-systemd-smoke.ts", "utf8");
+    expect(renderer).toContain("INGESTION_DISABLED_SOURCES=${sourceIds.join");
+    expect(renderer).toContain("CONDITIONS_DISABLED_SOURCES=${conditionSourceIds.join");
+  });
+
+  it("renders system services against an accessible immutable deployment path", () => {
+    const directory = mkdtempSync(join(tmpdir(), "travelcanary-systemd-test-"));
+    try {
+      const result = spawnSync(process.execPath, ["--import", "tsx", "scripts/render-systemd-smoke.ts"], {
+        cwd: process.cwd(), env: { ...process.env, RUNNER_TEMP: directory, TRAVELCANARY_SYSTEMD_REPOSITORY: "/opt/travelcanary-smoke" }, encoding: "utf8",
+      });
+      expect(result.status, result.stderr).toBe(0);
+      const web = readFileSync(join(directory, "travelcanary-systemd/travelcanary-web.service"), "utf8");
+      const collector = readFileSync(join(directory, "travelcanary-systemd/travelcanary-collector.service"), "utf8");
+      expect(web).toContain("WorkingDirectory=/opt/travelcanary-smoke");
+      expect(web).toContain("/opt/travelcanary-smoke/node_modules/next/dist/bin/next");
+      expect(collector).toContain("/opt/travelcanary-smoke/scripts/collector.ts");
+    } finally { rmSync(directory, { recursive: true, force: true }); }
+  });
+
+  it("keeps Docker on loopback with one image and isolated private/public/cache volumes", async () => {
     const compose = await import("node:fs/promises").then(({ readFile }) => readFile("compose.yaml", "utf8"));
     const dockerfile = await import("node:fs/promises").then(({ readFile }) => readFile("Dockerfile", "utf8"));
     const cli = await import("node:fs/promises").then(({ readFile }) => readFile("bin/travelcanary", "utf8"));
@@ -34,13 +57,14 @@ describe("native self-host setup", () => {
     const packageJson = JSON.parse(await import("node:fs/promises").then(({ readFile }) => readFile("package.json", "utf8")));
     expect(compose).toContain('"127.0.0.1:${TRAVELCANARY_PORT:-3000}:3000"');
     expect(compose).toContain("command: npm run start:container");
-    expect(compose).toContain("http://127.0.0.1:3000/api/v1/plugin/summary");
-    expect(compose).not.toContain("http://127.0.0.1:3000/api/v1/health");
+    expect(compose).toContain("http://127.0.0.1:3000/api/healthz");
     expect(compose).toContain("if(!r.ok)process.exit(1)");
     expect(compose).toContain('command: ["node", "--import", "tsx", "scripts/collector.ts"]');
     expect(compose).toContain("stop_grace_period: 60s");
-    expect(compose.match(/image: travelcanary:local/g)).toHaveLength(2);
-    expect(compose.match(/travelcanary-data:\/data/g)).toHaveLength(2);
+    expect(compose.match(/image: travelcanary:local/g)).toHaveLength(3);
+    expect(compose).toContain("travelcanary-private:/data/private");
+    expect(compose).toContain("travelcanary-public:/data/public:ro");
+    expect(compose).toContain("travelcanary-cache:/data/cache");
     expect(compose).not.toMatch(/network_mode:\s*host|privileged:\s*true/);
     expect(packageJson.scripts["start:container"]).toBe("next start --hostname 0.0.0.0");
     expect(dockerfile).toContain("node:24.19.0-bookworm-slim");

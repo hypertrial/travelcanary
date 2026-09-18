@@ -1,5 +1,9 @@
 # Free official warning expansion — 2026-09-07
 
+> Historical implementation record. Catalog 3 is now the sole runtime and
+> publication contract; current operating guidance is in
+> [Architecture](ARCHITECTURE.md) and [Operations](OPERATIONS.md).
+
 The release adds LVĢMC hydrological warnings and failure-only AEMET/DHMZ recovery. All three are keyless and server-only. MeteoAlarm remains primary; IFRC remains the next recovery option if direct recovery fails. The catalog remains 503 EU + Switzerland destinations, with a 24-hour horizon, Snapshot V10, private state V12 and existing event/provider types. No additional cron job, visitor-triggered request, paid data, account or outreach is introduced.
 
 ## Configured coverage before and after

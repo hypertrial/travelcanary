@@ -5,8 +5,8 @@ import { LocationSchema } from "./domain/schemas";
 import { catalogV3CountryCodes } from "./domain/contract-identities";
 import { PublicCatalogV3LocationSchema, PublicCatalogV3Schema } from "./domain/catalog-public";
 
-// Inactive reviewed inputs. Runtime collectors continue to use catalog 2 until
-// each source's eligibility and mapping gates have passed.
+// Catalog 3 is the sole runtime membership. Individual source eligibility and
+// mapping gates still determine whether a destination is actively checked.
 export const CatalogLocationV3Schema = LocationSchema.extend({
   countryCode: z.enum(catalogV3CountryCodes),
   coverageRef: z.enum(catalogV3CountryCodes),

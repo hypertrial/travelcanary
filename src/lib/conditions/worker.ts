@@ -1,11 +1,10 @@
 import { publishCommittedCatalog, type CatalogPublicationStores } from "../catalog-publication";
-import { assertSupportedCollection, assertCatalog2Collection, CollectionChangedError, type CollectionControl, type IngestionStateV15 as IngestionState } from "../domain/catalog-state";
+import { assertSupportedCollection, CollectionChangedError, type CollectionControl, type IngestionState } from "../domain/catalog-state";
 import { randomUUID } from "node:crypto";
 import { gunzipSync } from "node:zlib";
-import { locations } from "../data";
 import { catalogLocationsV3 } from "../catalog-data";
-import { emptyConditions, type ConditionSourceId, type Conditions, type LocationConditions } from "../domain/conditions";
-import { ConcurrencyError, type ConditionsPublicationResult, type StateStore } from "../storage";
+import { emptyConditions, type ConditionSourceId, type LocationConditions } from "../domain/conditions";
+import { ConcurrencyError, type StateStore } from "../state-store";
 import { distanceKm } from "../geospatial";
 import { mapConcurrent, readBytesWithLimit } from "../ingestion/fetch";
 import { airportMappings, parseMetars } from "./metar";
@@ -13,13 +12,14 @@ import { parseDigitraffic } from "./digitraffic";
 import { forecastProducts, forecastUrl, parseMetNorway, parseOpenMeteo, type ForecastKind } from "./forecast";
 import { parseRwsWater, rwsWaterEndpoint, rwsWaterMappings, rwsWaterRequest } from "./rws-water";
 import { conditionSourceEnabled, conditionsDisabledSources } from "./sources";
-import { availableForecastWeight, buildConditionsFiles, fitConditionsState } from "./state";
-import { marineMappingByLocation, marineConditionEligible, catalog3MarineMappingByLocation } from "./marine";
+import { availableForecastWeight, fitConditionsState } from "./state";
+import { marineConditionEligible, catalog3MarineMappingByLocation } from "./marine";
 import { ipmaObservationEndpoint, ipmaStationMappings, parseIpmaEarthquakes, parseIpmaObservations } from "./ipma";
 import { opwHydroEndpoint, opwHydroMappings, parseOpwHydrology } from "./opw";
 import { arsoHydroEndpoint, arsoHydroMappings, parseArsoHydrology } from "./arso-hydro";
 import { mergeInfrastructure, parseAutobahnInfrastructure, parseEacInfrastructure, parseEnemaltaInfrastructure, parseKrisinformationInfrastructure, parseNdwInfrastructure, parsePseEnergyCompass, rankInfrastructure } from "./infrastructure";
 import { autobahnRoadIds } from "./infrastructure-mapping";
+import { assertVersionedIngestionLease, type IngestionLease } from "../ingestion-lease";
 
 type Batch = { kind: ForecastKind; ids: string[] };
 type FailureCode = "timeout" | "http_error" | "response_too_large" | "parse_failed" | "contract_mismatch" | "quota_exhausted" | "deadline_exhausted" | "unknown_failure";
@@ -43,7 +43,7 @@ export function forecastSplitHasLocalHeadroom(input: { splitRetry: boolean; batc
   return input.splitRetry && input.batchSize > 1 && input.remainingMs >= 8000 && input.requests <= 126 && input.remainingBytes >= 1024 * 1024;
 }
 export function forecastBatches(state: IngestionState, now: Date, env: Record<string, string | undefined>) {
-  const catalog = state.collection.catalogVersion === 3 ? catalogLocationsV3 : locations;
+  const catalog = catalogLocationsV3;
   const available = availableForecastWeight(state, now);
   const limits: Record<ForecastKind, number> = { weather: 200, airQuality: 120, marine: 80 };
   const selected: Record<ForecastKind, string[]> = { weather: [], airQuality: [], marine: [] };
@@ -51,7 +51,7 @@ export function forecastBatches(state: IngestionState, now: Date, env: Record<st
   for (const kind of ["weather", "airQuality", "marine"] as const) {
     const product = forecastProducts[kind];
     if (!conditionSourceEnabled(product.sourceId, env)) continue;
-    for (const location of catalog.filter((item) => kind !== "marine" || marineConditionEligible(item.id, state.collection.catalogVersion))) {
+    for (const location of catalog.filter((item) => kind !== "marine" || marineConditionEligible(item.id, 3))) {
       const last = state.conditions.attempts[`${kind}:${location.id}`];
       const record = state.conditions.locations[location.id]?.[kind];
       const expiry = Date.parse(record?.expiresAt || "1970-01-01T00:00:00Z");
@@ -74,9 +74,12 @@ export function forecastBatches(state: IngestionState, now: Date, env: Record<st
   });
 }
 
-async function releaseLease(stateStore: StateStore, leaseId: string, failedForecastAttempts: Set<string>, attemptAt: string, cooldown: string | null) {
+async function releaseLease(stateStore: StateStore, ingestionLease: IngestionLease, leaseId: string,
+  failedForecastAttempts: Set<string>, attemptAt: string, cooldown: string | null, now: () => Date) {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const latest = await stateStore.read();
+    try { assertVersionedIngestionLease(latest, ingestionLease, now()); }
+    catch (error) { if (error instanceof ConcurrencyError) return; throw error; }
     const ownsLease = latest.data.conditions.lease?.id === leaseId;
     const extendsCooldown = cooldown && Date.parse(cooldown) > Date.parse(latest.data.conditions.cooldownUntil || "1970-01-01T00:00:00Z");
     if (!ownsLease && !extendsCooldown) return;
@@ -92,13 +95,14 @@ async function releaseLease(stateStore: StateStore, leaseId: string, failedForec
 }
 
 export async function runConditions(options: {
-  stateStore: StateStore; publish: (files: Conditions[]) => Promise<ConditionsPublicationResult>; fetch?: typeof fetch;
-  now?: Date; env?: Record<string, string | undefined>; catalogPublication?: CatalogPublicationStores;
+  stateStore: StateStore; catalogPublication: CatalogPublicationStores; lease: IngestionLease; fetch?: typeof fetch;
+  now?: Date; env?: Record<string, string | undefined>;
 }) {
-  const assertCollection = options.catalogPublication ? assertSupportedCollection : assertCatalog2Collection;
+  const assertCollection = assertSupportedCollection;
   const started = performance.now();
   const deadline = Date.now() + 45_000;
   const now = options.now || new Date(); const env = options.env || process.env;
+  const leaseNow = () => options.now || new Date();
   conditionsDisabledSources(env.CONDITIONS_DISABLED_SOURCES);
   const leaseId = randomUUID();
   const attemptAt = now.toISOString();
@@ -111,6 +115,7 @@ export async function runConditions(options: {
   let batches: Batch[] = [];
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const versioned = await options.stateStore.read();
+    assertVersionedIngestionLease(versioned, options.lease, leaseNow());
     collection = assertCollection(versioned.data, collection);
     if (versioned.data.conditions.lease && Date.parse(versioned.data.conditions.lease.expiresAt) > now.getTime()) return { status: "skipped", code: "conditions_lease_held" };
     state = versioned.data;
@@ -242,6 +247,7 @@ export async function runConditions(options: {
       if (forecastFailure) throw forecastFailure;
       for (let attempt = 0; attempt < 3; attempt += 1) {
         const latest = await options.stateStore.read();
+        assertVersionedIngestionLease(latest, options.lease, leaseNow());
         if (forecastFailure) throw forecastFailure;
         try { assertCollection(latest.data, collection); }
         catch (error) {
@@ -263,14 +269,14 @@ export async function runConditions(options: {
     const matched: string[] = []; const failed: string[] = [];
     try {
       if (cooldown) throw new ConditionsFailure("quota_exhausted", false);
-      const coordinates = ids.map((id) => kind === "marine" ? (state!.collection.catalogVersion === 3 ? catalog3MarineMappingByLocation : marineMappingByLocation).get(id)!.queryCoordinates : byId.get(id)!.centroid);
+      const coordinates = ids.map((id) => kind === "marine" ? catalog3MarineMappingByLocation.get(id)!.queryCoordinates : byId.get(id)!.centroid);
       const { body } = await request(forecastUrl(kind, coordinates), 512 * 1024);
       const rows = Array.isArray(body) ? body : [body];
       if (rows.length !== ids.length) throw new ConditionsFailure("contract_mismatch");
       for (let index = 0; index < ids.length; index += 1) {
         const id = ids[index]; const row = rows[index] as { latitude?: unknown; longitude?: unknown };
         try {
-          const expected = kind === "marine" ? (state!.collection.catalogVersion === 3 ? catalog3MarineMappingByLocation : marineMappingByLocation).get(id)!.queryCoordinates : byId.get(id)!.centroid;
+          const expected = kind === "marine" ? catalog3MarineMappingByLocation.get(id)!.queryCoordinates : byId.get(id)!.centroid;
           if (typeof row?.latitude !== "number" || typeof row.longitude !== "number"
             || distanceKm(expected, [row.longitude, row.latitude]) > (kind === "marine" ? 5 : kind === "airQuality" ? 50 : 25)) throw new Error();
           changes.set(id, { ...changes.get(id), [kind]: parseOpenMeteo(row, kind, now) }); matched.push(id);
@@ -316,7 +322,7 @@ export async function runConditions(options: {
   });
   if (forecastFailure) throw forecastFailure;
   const fallbackDeadline = Math.min(deadline, Date.now() + 8000);
-  if (conditionSourceEnabled("met-norway", env)) await mapConcurrent([...failedWeather].filter((id) => locations.some((location) => location.id === id)).slice(0, 20), 4, async (id) => {
+  if (conditionSourceEnabled("met-norway", env)) await mapConcurrent([...failedWeather].filter((id) => catalogLocationsV3.some((location) => location.id === id)).slice(0, 20), 4, async (id) => {
     try {
       const cached = state!.conditions.locations[id]?.weather;
       if (cached && Date.parse(cached.expiresAt) > now.getTime()) return;
@@ -421,7 +427,7 @@ export async function runConditions(options: {
       const taskDeadline = Math.min(deadline, Date.now() + 8000);
       const feeds = await Promise.all([3, 7].map((area) => request(`https://api.ipma.pt/open-data/observation/seismic/${area}.json`, 512 * 1024, "json", taskDeadline)));
       const parsed = parseIpmaEarthquakes(feeds.map(({ body }) => body), now); let matched = 0;
-      for (const location of locations.filter(({ countryCode }) => countryCode === "PT")) {
+      for (const location of catalogLocationsV3.filter(({ countryCode }) => countryCode === "PT")) {
         const previous = changes.get(location.id)?.earthquakes || state.conditions.locations[location.id]?.earthquakes || [];
         const others = previous.filter((item) => item.sourceId !== "ipma-seismic"); const earthquakes = parsed[location.id] || [];
         changes.set(location.id, { ...changes.get(location.id), earthquakes: [...others, ...earthquakes].slice(0, 3) });
@@ -520,6 +526,7 @@ export async function runConditions(options: {
   let committed: IngestionState | undefined;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const latest = await options.stateStore.read();
+    assertVersionedIngestionLease(latest, options.lease, leaseNow());
     assertCollection(latest.data, collection);
     if (latest.data.conditions.lease?.id !== leaseId) throw new Error("Conditions lease superseded");
     // Failed forecast attempts remain quota-accounted, but become due on the
@@ -538,12 +545,10 @@ export async function runConditions(options: {
   diagnostics.matched = changes.size;
   const publicationState = await options.stateStore.read();
   assertCollection(publicationState.data, collection);
-  const expandedPublication = collection!.catalogVersion === 3
-    ? await publishCommittedCatalog({ stateStore: options.stateStore, stores: options.catalogPublication!, collection: collection!, now, clock: options.now ? () => options.now! : undefined, family: "conditions", env })
-    : undefined;
-  const files = expandedPublication ? [] : buildConditionsFiles(publicationState.data, now, env);
-  const publication = expandedPublication?.publication || await options.publish(files);
-  const combinedFailures = [...publication.failed, ...(expandedPublication?.legacyPublication.failed || [])];
+  const expandedPublication = await publishCommittedCatalog({ stateStore: options.stateStore, stores: options.catalogPublication,
+    collection: collection!, lease: options.lease, now, family: "conditions", env });
+  const publication = expandedPublication.publication;
+  const combinedFailures = publication.failed;
   const failures = combinedFailures.slice(0, MAX_PUBLICATION_FAILURES);
   const boundedDiagnostics = { ...diagnostics,
     forecasts: Object.fromEntries(Object.entries(forecastDiagnostics).map(([kind, item]) => {
@@ -557,10 +562,10 @@ export async function runConditions(options: {
       omittedTargets: Math.max(0, item.failed - MAX_PUBLICATION_FAILURES),
     }])) };
   return { status: combinedFailures.length ? "partial" : env.LOCAL_CONDITIONS_ENABLED === "true" ? "ok" : "disabled",
-    countries: expandedPublication?.countries ?? files.length, locations: collection!.catalogVersion === 3 ? catalogLocationsV3.length : locations.length,
-    bytes: expandedPublication?.conditionsBytes ?? files.reduce((total, file) => total + Buffer.byteLength(JSON.stringify(file)), 0), privateStateBytes: Buffer.byteLength(JSON.stringify(committed)),
+    countries: expandedPublication.countries, locations: catalogLocationsV3.length,
+    bytes: expandedPublication.conditionsBytes, privateStateBytes: Buffer.byteLength(JSON.stringify(committed)),
     cacheBytes: Buffer.byteLength(JSON.stringify(committed.conditions.locations)), sources: health, sourceDurationMs, diagnostics: boundedDiagnostics,
-    publication: { ...(expandedPublication ? { dual: expandedPublication.dual, legacy: expandedPublication.legacyPublication } : {}), published: publication.published.length, unchanged: publication.unchanged.length, failed: combinedFailures.length,
+    publication: { manifestSha256: expandedPublication.pointer.manifestSha256, published: publication.published.length, unchanged: publication.unchanged.length, failed: combinedFailures.length,
       failures, omittedFailures: Math.max(0, combinedFailures.length - failures.length) }, durationMs: Math.round(performance.now() - started) };
   } catch (error) {
     if (error instanceof CollectionChangedError) {
@@ -571,6 +576,6 @@ export async function runConditions(options: {
     throw error;
   } finally {
     // Keep the lease through publication, but never force the next pass to wait after an error.
-    await releaseLease(options.stateStore, leaseId, failedForecastAttempts, attemptAt, cooldown);
+    await releaseLease(options.stateStore, options.lease, leaseId, failedForecastAttempts, attemptAt, cooldown, leaseNow);
   }
 }

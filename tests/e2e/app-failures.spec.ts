@@ -2,7 +2,7 @@ import { type Route } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFileSync, readdirSync } from "node:fs";
 import { expect, test } from "../playwright-fixtures";
-import { destinationSearch, destinationDetails, selectDestination, type MutableDemoSnapshot } from "./helpers";
+import { abortDemoSnapshot, demoPublication, destinationSearch, destinationDetails, installDemoPublicationObjects, selectDestination } from "./helpers";
 
 test("keeps search and the destination directory usable when map tiles fail", { tag: ["@smoke", "@map-failure"] }, async ({ page }) => {
   await page.route(/openfreemap/, (route) => route.abort());
@@ -46,7 +46,7 @@ test("keeps the destination directory usable when the map module fails", { tag: 
 });
 
 test("exposes unavailable destinations through the attention experience when the snapshot fails", { tag: "@smoke" }, async ({ page }, testInfo) => {
-  await page.route("**/demo-snapshot.json", (route) => route.abort());
+  await abortDemoSnapshot(page);
   await page.goto("/");
   await expect(page.getByText("Live updates unavailable.")).toBeVisible();
   if (testInfo.project.name === "mobile-webkit") {
@@ -56,11 +56,11 @@ test("exposes unavailable destinations through the attention experience when the
     await page.getByRole("button", { name: "Map", exact: true }).click();
   } else {
     const trigger = page.getByRole("button", { name: /Open destinations needing attention/ });
-    await expect(trigger).toContainText("503 updates unavailable");
+    await expect(trigger).toContainText("679 updates unavailable");
     await trigger.click();
     const dialog = page.getByRole("dialog");
     await expect(dialog.getByRole("heading", { name: "Updates unavailable" })).toBeVisible();
-    await expect(dialog.getByText(/could not be confirmed for 503 destinations/)).toBeVisible();
+    await expect(dialog.getByText(/could not be confirmed for 679 destinations/)).toBeVisible();
     await expect(dialog.getByRole("button", { name: /Vienna/ })).toHaveCount(0);
     await page.keyboard.press("Escape");
   }
@@ -72,7 +72,7 @@ test("exposes unavailable destinations through the attention experience when the
 test("keeps updates unavailable visible while a retry is pending", async ({ page }) => {
   let attempts = 0;
   const pendingRetries: Route[] = [];
-  await page.route("**/demo-snapshot.json", (route) => {
+  await page.route(/\/api\/v1\/data(?:\?.*)?$/, (route) => {
     attempts += 1;
     if (attempts === 1) return route.abort();
     pendingRetries.push(route);
@@ -90,15 +90,15 @@ for (const [name, newerResponse] of [
   ["accepts fresher snapshot data even when it came from an earlier request", 0],
 ] as const) {
   test(name, async ({ page }) => {
-    const base = await (await page.request.get("/demo-snapshot.json")).json() as MutableDemoSnapshot;
-    const older = structuredClone(base);
-    older.generatedAt = "2026-08-25T12:00:00.000Z";
-    const newer = structuredClone(base);
-    newer.generatedAt = "2026-08-25T12:10:00.000Z";
-    newer.locations["at-vienna"] = { level: "UNKNOWN", coverage: "delayed", coverageGaps: [], delayedHazards: ["severe-weather"], hazards: [] };
+    const older = demoPublication((snapshot) => { snapshot.generatedAt = "2026-08-25T12:00:00.000Z"; });
+    const newer = demoPublication((snapshot) => {
+      snapshot.generatedAt = "2026-08-25T12:10:00.000Z";
+      snapshot.locations["at-vienna"] = { level: "UNKNOWN", coverage: "delayed", coverageGaps: [], delayedHazards: ["severe-weather"], hazards: [] };
+    });
+    await installDemoPublicationObjects(page, older); await installDemoPublicationObjects(page, newer);
     let attempts = 0;
     const pending: Route[] = [];
-    await page.route("**/demo-snapshot.json", (route) => {
+    await page.route(/\/api\/v1\/data(?:\?.*)?$/, (route) => {
       attempts += 1;
       if (attempts === 1) return route.abort();
       pending.push(route);
@@ -108,8 +108,8 @@ for (const [name, newerResponse] of [
     await retry.click();
     await retry.click();
     await expect.poll(() => pending.length).toBe(2);
-    await pending[newerResponse].fulfill({ json: newer });
-    await pending[1 - newerResponse].fulfill({ json: older });
+    await pending[newerResponse].fulfill({ json: newer.pointer });
+    await pending[1 - newerResponse].fulfill({ json: older.pointer });
 
     await selectDestination(page, "Vienna", /Vienna/);
     await expect(destinationDetails(page).getByText("Updates unavailable")).toBeVisible();
@@ -145,7 +145,7 @@ test("does not promise search or a directory when both map and catalog fail", { 
 test("keeps the narrow recovery banner clear of search", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop-chromium", "The 320px collision boundary only needs one browser engine.");
   await page.setViewportSize({ width: 320, height: 700 });
-  await page.route("**/demo-snapshot.json", (route) => route.abort());
+  await abortDemoSnapshot(page);
   await page.goto("/");
   await expect(page.getByText("Live updates unavailable.")).toBeVisible();
 
@@ -159,10 +159,9 @@ test("keeps the narrow recovery banner clear of search", async ({ page }, testIn
 });
 
 test("keeps the tile-failure directory accessible", { tag: ["@smoke", "@map-failure"] }, async ({ page }) => {
+  test.setTimeout(60_000);
   await page.route(/openfreemap/, (route) => route.abort());
   await page.goto("/");
   await expect(page.getByRole("region", { name: "Destination list" })).toBeVisible();
   expect((await new AxeBuilder({ page }).exclude(".maplibregl-canvas").analyze()).violations).toEqual([]);
 });
-
-

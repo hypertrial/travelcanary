@@ -1,9 +1,10 @@
 import { expect, test } from "../playwright-fixtures";
 import AxeBuilder from "@axe-core/playwright";
+import { isDemoConditionsRequest, mutateDemoConditions, routeAllDemoConditions, routeDemoConditions } from "./helpers";
 
 test("conditions are lazy, isolated, and available for all five island destinations", { tag: "@smoke" }, async ({ page }) => {
   const requests: string[] = [];
-  page.on("request", (request) => { if (/\/conditions\/v2\//.test(request.url())) requests.push(request.url()); });
+  page.on("request", (request) => { if (isDemoConditionsRequest(request.url())) requests.push(request.url()); });
   await page.goto("/");
   const search = page.getByRole("combobox", { name: "Where are you going?" });
   await expect(search).toBeEnabled(); expect(requests).toEqual([]);
@@ -41,7 +42,7 @@ test("Flores conditions are accessible at the narrow mobile viewport", async ({ 
 });
 
 test("offline conditions leave the map and risk result working", async ({ page }) => {
-  await page.route("**/conditions/v2/*.json", (route) => route.abort());
+  await routeAllDemoConditions(page, (route) => route.abort());
   await page.goto("/");
   await page.getByRole("combobox", { name: "Where are you going?" }).fill("Vienna");
   await page.getByRole("option", { name: /Vienna/ }).click();
@@ -77,11 +78,9 @@ test("infrastructure context stays in destination details and separates active, 
 });
 
 test("an infrastructure source failure is local and does not become an alert-health failure", async ({ page }) => {
-  await page.route("**/conditions/v2/FI.json", async (route) => {
-    const response = await route.fetch(); const conditions = await response.json();
+  await mutateDemoConditions(page, "FI", (conditions) => {
     conditions.sourceHealth.digitraffic = { status: "failed", checkedAt: conditions.generatedAt, limitationCode: "source_unavailable" };
     conditions.locations["fi-helsinki"].infrastructureIncidents = [];
-    await route.fulfill({ response, json: conditions });
   });
   await page.goto("/");
   await page.getByRole("combobox", { name: "Where are you going?" }).fill("Helsinki");
@@ -106,13 +105,10 @@ test("reviewed Rijkswaterstaat water levels remain labeled observations, not ale
 });
 
 test("partial conditions name each missing expected forecast without relying on server limitations", async ({ page }) => {
-  await page.route("**/conditions/v2/NL.json", async (route) => {
-    const response = await route.fetch();
-    const conditions = await response.json();
+  await mutateDemoConditions(page, "NL", (conditions) => {
     delete conditions.locations["nl-rotterdam"].airQuality;
     delete conditions.locations["nl-rotterdam"].marine;
     conditions.locations["nl-rotterdam"].limitations = [];
-    await route.fulfill({ response, json: conditions });
   });
   await page.goto("/");
   await page.getByRole("combobox", { name: "Where are you going?" }).fill("Rotterdam");
@@ -127,11 +123,12 @@ test("partial conditions name each missing expected forecast without relying on 
 
 test("conditions can be retried locally without reloading alerts or leaving the briefing", async ({ page }, testInfo) => {
   let attempts = 0;
+  const pageErrors: Error[] = []; page.on("pageerror", (error) => pageErrors.push(error));
   let release!: () => void;
   const pending = new Promise<void>((resolve) => { release = resolve; });
   const alertRequests: string[] = [];
-  page.on("request", (request) => { if (request.url().includes("demo-snapshot.json")) alertRequests.push(request.url()); });
-  await page.route("**/conditions/v2/AT.json", async (route) => {
+  page.on("request", (request) => { if (request.url().includes("/catalogs/3/publication/latest.json")) alertRequests.push(request.url()); });
+  await routeDemoConditions(page, "AT", async (route) => {
     attempts += 1;
     if (attempts === 1) return route.abort();
     await pending;
@@ -155,6 +152,7 @@ test("conditions can be retried locally without reloading alerts or leaving the 
   await expect(retry).toHaveCount(0);
   await expect(section.getByRole("heading", { name: "Local conditions", exact: true })).toBeFocused();
   expect(attempts).toBe(2);
+  expect(pageErrors).toEqual([]);
   expect(alertRequests).toHaveLength(alertsBefore);
   await expect(page.getByText("No major alert found in checked sources", { exact: true })).toBeVisible();
 });
@@ -164,7 +162,7 @@ test("conditions recovery does not steal focus moved during a pending retry", as
   let attempts = 0;
   let release!: () => void;
   const pending = new Promise<void>((resolve) => { release = resolve; });
-  await page.route("**/conditions/v2/AT.json", async (route) => {
+  await routeDemoConditions(page, "AT", async (route) => {
     attempts += 1;
     if (attempts === 1) return route.abort();
     await pending;
@@ -200,7 +198,7 @@ test("direct attention selection resets the briefing scroll and disclosure state
 test("conditions recovery fits narrow screens with reduced motion and accessible focus", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 320, height: 700 });
   await page.emulateMedia({ reducedMotion: "reduce", ...(testInfo.project.name === "desktop-chromium" ? { forcedColors: "active" as const } : {}) });
-  await page.route("**/conditions/v2/*.json", (route) => route.abort());
+  await routeAllDemoConditions(page, (route) => route.abort());
   await page.goto("/");
   await page.getByRole("combobox", { name: "Where are you going?" }).fill("Santa Cruz das Flores");
   await page.getByRole("option", { name: /Santa Cruz das Flores/ }).click();
@@ -220,7 +218,7 @@ test("conditions recovery fits narrow screens with reduced motion and accessible
 test("late conditions from an obsolete destination do not replace the selected country", async ({ page }) => {
   let release!: () => void;
   const delayed = new Promise<void>((resolve) => { release = resolve; });
-  await page.route("**/conditions/v2/PT.json", async (route) => { await delayed; await route.continue(); });
+  await routeDemoConditions(page, "PT", async (route) => { await delayed; await route.continue(); });
   await page.goto("/");
   const search = page.getByRole("combobox", { name: "Where are you going?" });
   await search.fill("Horta"); await page.getByRole("option", { name: /Horta/ }).click();
@@ -233,9 +231,7 @@ test("late conditions from an obsolete destination do not replace the selected c
 });
 
 test("shows a cached planned closure whose start has passed as active", async ({ page }) => {
-  await page.route("**/conditions/v2/DE.json", async (route) => {
-    const response = await route.fetch();
-    const conditions = await response.json();
+  await mutateDemoConditions(page, "DE", (conditions) => {
     const now = Date.parse(conditions.generatedAt);
     conditions.locations["de-berlin"].infrastructureIncidents = [{
       id: "autobahn:A100:scheduled", sourceId: "autobahn-traffic", status: "planned", kind: "road-closure",
@@ -244,7 +240,6 @@ test("shows a cached planned closure whose start has passed as active", async ({
       endsAt: new Date(now + 3600000).toISOString(), expiresAt: new Date(now + 3600000).toISOString(),
       estimatedRestorationAt: null, sourceUrl: "https://www.autobahn.de/verkehr",
     }];
-    await route.fulfill({ response, json: conditions });
   });
   await page.goto("/");
   await page.getByRole("combobox", { name: "Where are you going?" }).fill("Berlin");

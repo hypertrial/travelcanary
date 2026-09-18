@@ -1,12 +1,11 @@
-import { initializeLocalRuntime, LocalDatabase } from "./local-storage";
+import { FilePublicationStore } from "./publication-store";
+import { publicRuntimeRoot } from "./runtime-paths";
 
-let localDatabase: LocalDatabase | undefined;
+let publicationStore: FilePublicationStore | undefined;
 
-export function getLocalDatabase() {
+/** The web process receives only the read-only public directory. */
+export function getLocalPublicationStore() {
   if (process.env.TRAVELCANARY_RUNTIME !== "local") throw new Error("Local runtime is not enabled");
-  if (!localDatabase) {
-    localDatabase = new LocalDatabase();
-    initializeLocalRuntime(localDatabase);
-  }
-  return localDatabase;
+  publicationStore ??= new FilePublicationStore(publicRuntimeRoot(), false);
+  return publicationStore;
 }

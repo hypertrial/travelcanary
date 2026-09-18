@@ -7,7 +7,8 @@ const distDir = process.env.PLAYWRIGHT_DIST_DIR || process.env.NEXT_DIST_DIR || 
 const strict = process.env.PLAYWRIGHT_STRICT === "1" || Boolean(process.env.CI);
 
 export default defineConfig({
-  testDir: process.env.PLAYWRIGHT_CATALOG_VERSION === "3" ? "./tests/catalog3-e2e" : "./tests/e2e",
+  testDir: "./tests",
+  testMatch: ["e2e/**/*.spec.ts", "catalog3-e2e/**/*.spec.ts"],
   snapshotPathTemplate: "{testDir}/{testFilePath}-snapshots/{arg}-{projectName}{ext}",
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
@@ -24,8 +25,6 @@ export default defineConfig({
         url: baseURL,
         reuseExistingServer: false,
         env: {
-          NEXT_PUBLIC_DATA_MODE: "demo",
-          NEXT_PUBLIC_CATALOG_VERSION: process.env.PLAYWRIGHT_CATALOG_VERSION || "2",
           NEXT_DIST_DIR: distDir,
         },
       },
