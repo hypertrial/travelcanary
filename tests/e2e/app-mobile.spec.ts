@@ -37,7 +37,7 @@ test("uses a dismissible focus-trapped sheet on compact screens", { tag: "@webki
   await expect(dialog).toContainText("Flooding is affecting Klagenfurt am Wörthersee.");
   for (let step = 0; step < 5; step += 1) {
     await page.keyboard.press("Tab");
-    expect(await dialog.evaluate((element) => element.contains(document.activeElement))).toBe(true);
+    await expect.poll(() => dialog.evaluate((element) => element.contains(document.activeElement))).toBe(true);
   }
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
@@ -127,4 +127,3 @@ test("keeps primary compact controls at least 44 by 44 pixels", { tag: "@webkit-
     expect(box.height).toBeGreaterThanOrEqual(44);
   }
 });
-
