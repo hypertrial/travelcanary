@@ -233,8 +233,8 @@ async function fastLane() {
     () => npmRun("coverage:upgrade-check"),
     () => npmRun("sources:check"),
     () => npmRun("conditions:check"),
-    () => vitestLight(),
   ]);
+  await vitestLight();
   await vitestHeavy();
 }
 

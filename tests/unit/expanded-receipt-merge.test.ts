@@ -124,7 +124,7 @@ describe("expanded source receipt merging", () => {
     expect(Buffer.byteLength(JSON.stringify(merged))).toBeLessThan(5_000_000);
     expect(reversedMerged.frozenEaFloodAreaGeometries).toEqual(merged.frozenEaFloodAreaGeometries);
     expect(IngestionStateV16Schema.safeParse(merged).success).toBe(true);
-  });
+  }, 15_000);
 
   it.each(["missing", "duplicate", "overlap", "failed checked"])("rejects incomplete or contradictory cohort scope %s without changing state", (mode) => {
     const value = state(); const input = result("partial", 37); const before = structuredClone(value);
