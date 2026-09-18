@@ -178,8 +178,20 @@ export class BlobPublicationStore implements PublicationStore {
     assertReadableKey(pathname);
     const result = await get(pathname, { token: this.token, access: "public", useCache: false });
     if (!result || result.statusCode !== 200 || !result.stream) return null;
-    if (result.blob.size < 1 || result.blob.size > maxBytes) throw new Error("Invalid publication object size");
-    const body = await new Response(result.stream).text();
+    if (!Number.isFinite(result.blob.size) || result.blob.size < 0 || result.blob.size > maxBytes) {
+      await result.stream.cancel(); throw new Error("Invalid publication object size");
+    }
+    const reader = result.stream.getReader(); const chunks: Uint8Array[] = []; let bytes = 0;
+    try {
+      while (true) {
+        const { done, value } = await reader.read(); if (done) break;
+        bytes += value.byteLength;
+        if (bytes > maxBytes) { await reader.cancel(); throw new Error("Invalid publication object size"); }
+        chunks.push(value);
+      }
+    } finally { reader.releaseLock(); }
+    if (bytes < 1) throw new Error("Invalid publication object size");
+    const body = Buffer.concat(chunks.map((chunk) => Buffer.from(chunk.buffer, chunk.byteOffset, chunk.byteLength)), bytes).toString("utf8");
     return { body, etag: result.blob.etag.replace(/^W\//, ""), url: result.blob.url, updatedAt: result.blob.uploadedAt };
   }
   async putImmutable(pathname: string, body: string) {
