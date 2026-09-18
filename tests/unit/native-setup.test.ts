@@ -1,4 +1,7 @@
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { spawnSync } from "node:child_process";
 import { describe, expect, it } from "vitest";
 // @ts-expect-error Shared JavaScript CLI helper has no declaration file.
 import { fetchHealth } from "../../scripts/fetch-health.mjs";
@@ -29,6 +32,21 @@ describe("native self-host setup", () => {
     const renderer = readFileSync("scripts/render-systemd-smoke.ts", "utf8");
     expect(renderer).toContain("INGESTION_DISABLED_SOURCES=${sourceIds.join");
     expect(renderer).toContain("CONDITIONS_DISABLED_SOURCES=${conditionSourceIds.join");
+  });
+
+  it("renders system services against an accessible immutable deployment path", () => {
+    const directory = mkdtempSync(join(tmpdir(), "travelcanary-systemd-test-"));
+    try {
+      const result = spawnSync(process.execPath, ["--import", "tsx", "scripts/render-systemd-smoke.ts"], {
+        cwd: process.cwd(), env: { ...process.env, RUNNER_TEMP: directory, TRAVELCANARY_SYSTEMD_REPOSITORY: "/opt/travelcanary-smoke" }, encoding: "utf8",
+      });
+      expect(result.status, result.stderr).toBe(0);
+      const web = readFileSync(join(directory, "travelcanary-systemd/travelcanary-web.service"), "utf8");
+      const collector = readFileSync(join(directory, "travelcanary-systemd/travelcanary-collector.service"), "utf8");
+      expect(web).toContain("WorkingDirectory=/opt/travelcanary-smoke");
+      expect(web).toContain("/opt/travelcanary-smoke/node_modules/next/dist/bin/next");
+      expect(collector).toContain("/opt/travelcanary-smoke/scripts/collector.ts");
+    } finally { rmSync(directory, { recursive: true, force: true }); }
   });
 
   it("keeps Docker on loopback with one image and isolated private/public/cache volumes", async () => {

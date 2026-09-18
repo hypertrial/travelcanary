@@ -1,13 +1,14 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { conditionSourceIds } from "../src/lib/domain/conditions";
 import { sourceIds } from "../src/lib/domain/schemas";
 
 const directory = join(process.env.RUNNER_TEMP || "/tmp", "travelcanary-systemd");
+const repository = resolve(process.env.TRAVELCANARY_SYSTEMD_REPOSITORY || process.cwd());
 mkdirSync(directory, { recursive: true });
 const replacements: Record<string, string> = {
-  "@REPOSITORY@": process.cwd(), "@NODE@": process.execPath,
-  "@NEXT@": join(process.cwd(), "node_modules/next/dist/bin/next"), "@PORT@": "3199",
+  "@REPOSITORY@": repository, "@NODE@": process.execPath,
+  "@NEXT@": join(repository, "node_modules/next/dist/bin/next"), "@PORT@": "3199",
   "@WEB_ENVIRONMENT_FILE@": "/etc/travelcanary/web-environment",
   "@COLLECTOR_ENVIRONMENT_FILE@": "/etc/travelcanary/collector-environment",
   "@PRIVATE_DIRECTORY@": "/var/lib/travelcanary/private", "@PUBLIC_DIRECTORY@": "/var/lib/travelcanary/public",

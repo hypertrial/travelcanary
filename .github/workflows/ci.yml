@@ -52,6 +52,8 @@ jobs:
           cleanup() {
             sudo systemctl stop travelcanary-web.service travelcanary-collector.service 2>/dev/null || true
             sudo rm -f /etc/systemd/system/travelcanary-web.service /etc/systemd/system/travelcanary-collector.service
+            mountpoint -q /opt/travelcanary-smoke && sudo umount /opt/travelcanary-smoke || true
+            sudo rmdir /opt/travelcanary-smoke 2>/dev/null || true
             sudo rm -rf /etc/travelcanary /var/lib/travelcanary
             sudo userdel travelcanary-web 2>/dev/null || true
             sudo userdel travelcanary-collector 2>/dev/null || true
@@ -64,7 +66,10 @@ jobs:
           sudo install -d -o travelcanary-collector -g travelcanary-public -m 0700 /var/lib/travelcanary/private /var/lib/travelcanary/cache
           sudo install -d -o travelcanary-collector -g travelcanary-public -m 2750 /var/lib/travelcanary/public
           sudo install -d -o root -g root -m 0755 /etc/travelcanary
-          node --import tsx scripts/render-systemd-smoke.ts
+          sudo install -d -o root -g root -m 0755 /opt/travelcanary-smoke
+          sudo mount --bind "$GITHUB_WORKSPACE" /opt/travelcanary-smoke
+          sudo mount -o remount,bind,ro /opt/travelcanary-smoke
+          TRAVELCANARY_SYSTEMD_REPOSITORY=/opt/travelcanary-smoke node --import tsx scripts/render-systemd-smoke.ts
           unit_dir="$RUNNER_TEMP/travelcanary-systemd"
           sudo install -o travelcanary-web -g travelcanary-public -m 0600 "$unit_dir/web-environment" /etc/travelcanary/web-environment
           sudo install -o travelcanary-collector -g travelcanary-public -m 0600 "$unit_dir/collector-environment" /etc/travelcanary/collector-environment
