@@ -1,7 +1,8 @@
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { closeSync, constants, existsSync, fstatSync, fsyncSync, linkSync, lstatSync, mkdirSync, openSync,
   readFileSync, readdirSync, realpathSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
+import { DatabaseSync } from "node:sqlite";
 import { BlobPreconditionFailedError, del, get, list, put } from "@vercel/blob";
 import { PublicationManifestV1Schema, PublicationPointerV1Schema, publicationPointerPath,
 } from "./domain/publication";
@@ -117,13 +118,32 @@ export class FilePublicationStore implements PublicationStore {
     if (!this.writable) throw new Error("Publication store is read-only");
     const target = safePath(this.root, publicationPointerPath);
     ensureWriteParent(this.root, target);
-    const current = await this.read(publicationPointerPath, 64_000);
-    if ((current?.etag ?? null) !== expectedEtag) throw new ConcurrencyError("Publication pointer changed");
-    const temporary = `${target}.${process.pid}.${Date.now()}.tmp`;
-    const fd = openSync(temporary, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY | (constants.O_NOFOLLOW || 0), 0o640);
-    try { writeFileSync(fd, body); fsyncSync(fd); } finally { closeSync(fd); }
-    renameSync(temporary, target); syncDirectory(dirname(target));
-    return { etag: publicationSha256(body) };
+    const lockPath = `${target}.lock.sqlite`;
+    const lockFd = openSync(lockPath, constants.O_CREAT | constants.O_RDWR | (constants.O_NOFOLLOW || 0), 0o640);
+    try {
+      const stat = fstatSync(lockFd);
+      if (!stat.isFile() || stat.nlink !== 1) throw new Error("Publication pointer lock is unsafe");
+    } finally { closeSync(lockFd); }
+    const lockDatabase = new DatabaseSync(lockPath);
+    let transaction = false;
+    try {
+      try { lockDatabase.exec("PRAGMA busy_timeout=0; BEGIN IMMEDIATE"); transaction = true; }
+      catch (error) {
+        if (error instanceof Error && /busy|locked/i.test(error.message)) throw new ConcurrencyError("Publication pointer is being replaced");
+        throw error;
+      }
+      const current = await this.read(publicationPointerPath, 64_000);
+      if ((current?.etag ?? null) !== expectedEtag) throw new ConcurrencyError("Publication pointer changed");
+      const temporary = `${target}.${process.pid}.${randomUUID()}.tmp`;
+      const fd = openSync(temporary, constants.O_CREAT | constants.O_EXCL | constants.O_WRONLY | (constants.O_NOFOLLOW || 0), 0o640);
+      try { writeFileSync(fd, body); fsyncSync(fd); } finally { closeSync(fd); }
+      renameSync(temporary, target); syncDirectory(dirname(target));
+      lockDatabase.exec("COMMIT"); transaction = false;
+      return { etag: publicationSha256(body) };
+    } finally {
+      if (transaction) try { lockDatabase.exec("ROLLBACK"); } catch {}
+      lockDatabase.close();
+    }
   }
 
   async list(prefix: string, limit: number) {

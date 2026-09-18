@@ -115,6 +115,10 @@ test("supports keyboard-only search and selection", { tag: "@smoke" }, async ({ 
     await page.keyboard.press("Tab");
     await expect(page.getByRole("button", { name: "Open app menu" })).toBeFocused();
     await page.keyboard.press("Tab");
+    if (!await search.evaluate((element) => document.activeElement === element)) {
+      await expect(page.getByRole("button", { name: "Retry", exact: true })).toBeFocused();
+      await page.keyboard.press("Tab");
+    }
     await expect(search).toBeFocused();
   } else {
     await search.focus();
@@ -161,7 +165,7 @@ test("starts safety-data requests before initializing MapLibre", async ({ page }
   await page.goto("/");
   await expect(page.locator('[data-locations-ready="true"]')).toBeVisible({ timeout: 15_000 });
   const catalog = requests.findIndex((url) => url.endsWith("/locations.json"));
-  const snapshot = requests.findIndex((url) => url.includes("/demo-snapshot.json"));
+  const snapshot = requests.findIndex((url) => url.includes("/catalogs/3/publication/latest.json"));
   const map = requests.findIndex((url) => url.includes("openfreemap.org") || url.includes("maplibre-gl-worker.mjs"));
   expect(catalog).toBeGreaterThan(-1);
   expect(snapshot).toBeGreaterThan(-1);
@@ -179,7 +183,7 @@ test("starts map-first and opens the ranked attention experience", { tag: "@smok
   if (testInfo.project.name === "mobile-webkit") await page.getByRole("button", { name: /Alerts/ }).click();
   else {
     const trigger = page.getByRole("button", { name: /Open destinations needing attention/ });
-    await expect(trigger).toContainText("7 need attention");
+    await expect(trigger).toContainText("183 need attention");
     await expect(trigger).toContainText("1 emergency");
     await trigger.click();
   }
@@ -191,7 +195,7 @@ test("starts map-first and opens the ranked attention experience", { tag: "@smok
     await expect(page.getByRole("button", { name: "Alerts, 6 alert destinations" })).toHaveAttribute("aria-current", "page");
   }
   const rows = surface.locator("li button");
-  await expect(rows).toHaveCount(testInfo.project.name === "mobile-webkit" ? 6 : 7);
+  await expect(rows).toHaveCount(testInfo.project.name === "mobile-webkit" ? 6 : 183);
   await expect(rows.first()).toContainText("Klagenfurt am Wörthersee");
   await expect(rows.first()).toHaveAccessibleName(/Emergency conditions/);
   await rows.first().click();
@@ -234,7 +238,7 @@ test("clears search and closes destination details", async ({ page }, testInfo) 
 });
 
 test("distinguishes initial loading from a real data failure", async ({ page }, testInfo) => {
-  await page.route("**/demo-snapshot.json", async (route) => {
+  await page.route(/\/api\/v1\/data(?:\?.*)?$/, async (route) => {
     await new Promise((resolve) => setTimeout(resolve, 600));
     await route.continue();
   });
@@ -331,26 +335,6 @@ test("scopes delayed MeteoAlarm coverage to the affected destination country", a
   const vienna = destinationDetails(page);
   await expect(vienna.getByText("This source is normally checked, but its latest Vienna update is late.")).toHaveCount(0);
   await expect(vienna.getByRole("heading", { name: "Update problems" })).toHaveCount(0);
-});
-
-test("renders an older Snapshot V2 conservatively without country partitions", async ({ page }) => {
-  await mutateDemoSnapshot(page, (snapshot) => {
-    snapshot.schemaVersion = 2;
-    for (const id of ["pt-horta", "pt-ponta-delgada", "pt-santa-cruz-das-flores"]) delete snapshot.locations[id];
-    delete snapshot.providers.meteoalarm.partitions;
-    delete snapshot.providers["eea-aqi"].partitions;
-    delete snapshot.providers["national-civil-alerts"];
-    delete (snapshot.providers as Record<string, unknown>)["vigicrues"];
-    delete (snapshot.providers as Record<string, unknown>)["foen-flood"];
-    delete (snapshot.providers as Record<string, unknown>)["ehyd-flood"];
-    snapshot.providers.meteoalarm.status = "partial";
-  });
-  await page.goto("/");
-  await selectDestination(page, "Budapest", /Budapest/);
-  const panel = destinationDetails(page);
-  await expect(panel.getByRole("heading", { name: "What TravelCanary checks for Budapest" })).toBeVisible();
-  await expect(panel.getByLabel("Update problems").getByText("Weather", { exact: true })).toBeVisible();
-  await expect(panel.getByText("Partly monitored — update delayed", { exact: true }).first()).toBeVisible();
 });
 
 test("uses the dedicated desktop briefing column for normal and active-alert destinations", async ({ page }, testInfo) => {

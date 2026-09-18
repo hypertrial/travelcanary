@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { publishCommittedCatalog } from "@/lib/catalog-publication";
 import { publicationPointerPath } from "@/lib/domain/publication";
 import { acquireIngestionLease, releaseIngestionLease } from "@/lib/ingestion-lease";
-import { checkPublicationHealth } from "@/lib/public-health";
+import { checkPublicHealth, checkPublicationHealth } from "@/lib/public-health";
 import { readCurrentPublication } from "@/lib/publication-store";
 import { createEmptyState } from "@/lib/risk-state";
 import { MemoryStateStore } from "@/lib/state-store";
@@ -74,5 +74,14 @@ describe("atomic publication health", () => {
     vi.doMock("@/lib/local-server", () => ({ getLocalPublicationStore: () => valid.publicationStore }));
     route = await import("../../src/app/api/v1/health/route");
     expect((await route.GET()).status).toBe(503);
+  });
+
+  it.each([undefined, "development", "preview"])("never reads a production publication URL when VERCEL_ENV is %s", async (vercelEnvironment) => {
+    const fetch = vi.fn<typeof globalThis.fetch>();
+    await expect(checkPublicHealth({ env: { VERCEL_ENV: vercelEnvironment,
+      TRAVELCANARY_PUBLICATION_URL: "https://production.example/catalogs/3/publication/latest.json" }, fetch, now }))
+      .resolves.toMatchObject({ available: true, runtime: "filesystem", catalogVersion: 3,
+        checks: { catalog: { actualLocations: 679 }, conditions: { present: 45 } } });
+    expect(fetch).not.toHaveBeenCalled();
   });
 });

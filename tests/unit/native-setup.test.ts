@@ -1,33 +1,34 @@
-import { mkdtempSync, readFileSync, statSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { nativeUnitFiles, writeNativeFiles } from "@/lib/native-setup";
 // @ts-expect-error Shared JavaScript CLI helper has no declaration file.
 import { fetchHealth } from "../../scripts/fetch-health.mjs";
 
 describe("native self-host setup", () => {
-  it("generates rootless loopback user services in an isolated home", () => {
-    const home = mkdtempSync(join(tmpdir(), "travelcanary-home-"));
-    const paths = writeNativeFiles({ home, repository: "/opt/travelcanary", node: "/opt/node/bin/node", port: 3456, environment: {} });
-    const web = readFileSync(paths.webUnit, "utf8");
-    const collector = readFileSync(paths.collectorUnit, "utf8");
-    expect(web).toContain("--hostname 127.0.0.1 --port 3456");
+  it("runs web and collector system services under distinct operating-system identities", () => {
+    const web = readFileSync("deploy/systemd/travelcanary-web.service", "utf8");
+    const collector = readFileSync("deploy/systemd/travelcanary-collector.service", "utf8");
+    const once = readFileSync("deploy/systemd/travelcanary-collector-once.service", "utf8");
+    expect(web).toContain("--hostname 127.0.0.1 --port @PORT@");
     expect(web).toContain("NoNewPrivileges=true");
+    expect(web).toContain("User=travelcanary-web");
+    expect(web).toContain("Group=travelcanary-public");
+    expect(collector).toContain("User=travelcanary-collector");
+    expect(once).toContain("User=travelcanary-collector");
+    expect(web).not.toContain("User=travelcanary-collector");
+    expect(web).toContain("InaccessiblePaths=@PRIVATE_DIRECTORY@ @CACHE_DIRECTORY@ @COLLECTOR_ENVIRONMENT_FILE@");
     expect(collector).toContain("scripts/collector.ts");
-    expect(collector).not.toMatch(/sudo|apt|dnf|pacman/);
-    expect(readFileSync(paths.environmentFile, "utf8")).toContain(`TRAVELCANARY_PRIVATE_DATA_DIR="${paths.privateDirectory}"`);
-    expect(readFileSync(paths.environmentFile, "utf8")).toContain(`TRAVELCANARY_PUBLIC_DATA_DIR="${paths.publicDirectory}"`);
-    expect(readFileSync(paths.webEnvironmentFile, "utf8")).toContain(`TRAVELCANARY_PUBLIC_DATA_DIR="${paths.publicDirectory}"`);
-    expect(readFileSync(paths.webEnvironmentFile, "utf8")).not.toMatch(/PRIVATE|CACHE|TOKEN|SECRET/);
-    expect(statSync(paths.environmentFile).mode & 0o777).toBe(0o600);
-    expect(statSync(paths.webEnvironmentFile).mode & 0o777).toBe(0o600);
   });
 
-  it("quotes paths and rejects newline injection", () => {
-    expect(nativeUnitFiles({ repository: "/opt/Travel Canary", node: "/opt/node", dataDirectory: "/tmp/data", environmentFile: "/tmp/env", port: 3000 }).web)
-      .toContain("WorkingDirectory=/opt/Travel\\x20Canary");
-    expect(() => nativeUnitFiles({ repository: "/opt/bad\npath", node: "/opt/node", dataDirectory: "/tmp/data", environmentFile: "/tmp/env", port: 3000 })).toThrow(/newlines/);
+  it("refuses the legacy same-user native installer", () => {
+    const cli = readFileSync("scripts/travelcanary-cli.ts", "utf8");
+    expect(cli).toContain("Native Linux requires the dedicated-user system services");
+    expect(cli).not.toContain('systemctl", ["--user"');
+  });
+
+  it("disables every live source in the system-service smoke fixture", () => {
+    const renderer = readFileSync("scripts/render-systemd-smoke.ts", "utf8");
+    expect(renderer).toContain("INGESTION_DISABLED_SOURCES=${sourceIds.join");
+    expect(renderer).toContain("CONDITIONS_DISABLED_SOURCES=${conditionSourceIds.join");
   });
 
   it("keeps Docker on loopback with one image and isolated private/public/cache volumes", async () => {

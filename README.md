@@ -21,7 +21,7 @@ For a persistent self-hosted instance:
 docker compose up --build -d web collector
 ```
 
-The same image supports `web`, `collector`, and `collector-once` roles. Native Linux user-service templates are in `deploy/systemd/`; see [Self-hosting](docs/SELF_HOSTING.md).
+The same image supports `web`, `collector`, and `collector-once` roles. Native Linux system-service templates use separate web and collector identities; see [Self-hosting](docs/SELF_HOSTING.md).
 
 ## Runtime model
 

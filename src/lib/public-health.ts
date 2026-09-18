@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import { catalogLocationsV3 } from "./catalog-data";
 import { catalogMembershipHash } from "./catalog-membership";
 import { coverageBreakdown, coverageMeetsCatalog3Target, catalog3CoverageTarget, emptyCoverageCounts } from "./coverage-measurement";
@@ -5,7 +6,7 @@ import { ConditionsV3Schema, SnapshotV11Schema, type CatalogSnapshot, type Publi
 import { catalogV3CountryCodes } from "./domain/contract-identities";
 import { publicationPointerPath } from "./domain/publication";
 import { mapConcurrent, readBytesWithLimit } from "./ingestion/fetch";
-import { publicationSha256, readCurrentPublication, readPublishedObject, type PublicationStore } from "./publication-store";
+import { FilePublicationStore, publicationSha256, readCurrentPublication, readPublishedObject, type PublicationStore } from "./publication-store";
 import { expandedHazardCoverage, isExpandedDestination } from "./expanded-coverage";
 import { expandedCheckIsCurrent } from "./expanded-source-health";
 import { hazardAppliesToLocation } from "./risk-policy";
@@ -136,7 +137,9 @@ export function unavailablePublicationHealth(now = new Date(), runtime: "vercel"
   };
 }
 
-export async function checkPublicationHealth(store: PublicationStore, options: { now?: Date; expectedSha?: string; runtime?: "vercel" | "filesystem" } = {}) {
+export async function checkPublicationHealth(store: PublicationStore, options: {
+  now?: Date; expectedSha?: string; runtime?: "vercel" | "filesystem"; allowStale?: boolean;
+} = {}) {
   const now = options.now || new Date();
   const unavailable = (code: string) => unavailablePublicationHealth(now, options.runtime || "vercel", code);
   try {
@@ -160,10 +163,12 @@ export async function checkPublicationHealth(store: PublicationStore, options: {
       if (Object.keys(file.locations).sort().join("\0") !== expected.join("\0")) throw new Error("Conditions membership mismatch");
       present += 1;
       const generated = Date.parse(file.generatedAt);
-      if (now.getTime() - generated > 75 * 60_000 || generated > now.getTime() + 5 * 60_000) overdueCountryCodes.push(file.countryCode);
+      if (!options.allowStale && (now.getTime() - generated > 75 * 60_000 || generated > now.getTime() + 5 * 60_000)) {
+        overdueCountryCodes.push(file.countryCode);
+      }
     });
     const snapshotAgeMinutes = Math.max(0, Math.floor((now.getTime() - Date.parse(snapshot.generatedAt)) / 60_000));
-    if (snapshotAgeMinutes > 120 || Date.parse(snapshot.generatedAt) > now.getTime() + 5 * 60_000
+    if ((!options.allowStale && (snapshotAgeMinutes > 120 || Date.parse(snapshot.generatedAt) > now.getTime() + 5 * 60_000))
       || present !== catalogV3CountryCodes.length || overdueCountryCodes.length) return unavailable("publication_stale_or_incomplete");
     const failedTransports = requiredTransportFailures(snapshot, catalogLocationsV3, now);
     const measurement = coverageBreakdown(snapshot, catalogLocationsV3, now);
@@ -191,6 +196,11 @@ export async function checkPublicationHealth(store: PublicationStore, options: {
 
 export async function checkPublicHealth(options: { env?: Record<string, string | undefined>; fetch?: typeof fetch; now?: Date } = {}) {
   const env = options.env || process.env;
+  if (env.VERCEL_ENV !== "production") {
+    return checkPublicationHealth(new FilePublicationStore(resolve(process.cwd(), "public")), {
+      now: options.now, runtime: "filesystem", allowStale: true,
+    });
+  }
   const url = env.TRAVELCANARY_PUBLICATION_URL;
   if (!url) return checkPublicationHealth({ read: async () => null } as unknown as PublicationStore, { now: options.now });
   try {

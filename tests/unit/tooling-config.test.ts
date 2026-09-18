@@ -71,9 +71,16 @@ describe("tooling configuration", () => {
     expect(webServer?.reuseExistingServer).toBe(false);
     expect(playwrightConfig.retries).toBe(0);
     expect(playwrightConfig.snapshotPathTemplate).toBe("{testDir}/{testFilePath}-snapshots/{arg}-{projectName}{ext}");
+    expect(playwrightConfig.testMatch).toEqual(["e2e/**/*.spec.ts", "catalog3-e2e/**/*.spec.ts"]);
     expect(playwrightConfig.projects?.map((project) => project.name)).toEqual(["desktop-chromium", "mobile-webkit"]);
     expect(playwrightConfig.projects?.[0]?.grepInvert).toEqual(/@webkit-only/);
     expect(playwrightConfig.projects?.[1]?.grep).toEqual(/@webkit-only|@smoke/);
+    expect(await readFile("next.config.ts", "utf8")).toContain("agentRules: false");
+    const nextConfig = await readFile("next.config.ts", "utf8");
+    expect(nextConfig).toContain('outputFileTracingIncludes: { "/api/v1/health": [');
+    expect(nextConfig).toContain('"./public/catalogs/3/publication/latest.json"');
+    expect(nextConfig).toContain('"./public/catalogs/3/generations/**/*"');
+    expect(nextConfig).toContain('"./public/catalogs/3/objects/**/*"');
     expect(await readFile("next.config.ts", "utf8")).toContain('distDir: process.env.NEXT_DIST_DIR || ".next"');
     const source = await readFile("playwright.config.ts", "utf8");
     expect(source).toContain('failOnFlakyTests: strict');

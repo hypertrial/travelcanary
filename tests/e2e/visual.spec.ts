@@ -1,5 +1,6 @@
 import { type Page } from "@playwright/test";
 import { expect, test } from "../playwright-fixtures";
+import { abortDemoSnapshot, mutateDemoSnapshot } from "./helpers";
 
 test.describe.configure({ mode: "serial" });
 
@@ -15,6 +16,7 @@ async function hideDevelopmentChrome(page: Page) {
 }
 
 async function selectSevereDestination(page: Page) {
+  await expect(page.locator('[data-locations-ready="true"]')).toBeVisible({ timeout: 15_000 });
   const search = page.getByRole("combobox", { name: "Where are you going?" });
   await search.fill("Klagenfurt");
   const option = page.getByRole("option", { name: /Klagenfurt/ });
@@ -29,13 +31,8 @@ async function selectBudapest(page: Page) {
 }
 
 async function failHungarianWeather(page: Page) {
-  await page.route("**/demo-snapshot.json", async (route) => {
-    const response = await route.fetch();
-    const snapshot = await response.json() as {
-      providers: { meteoalarm: { partitions: Record<string, { status: string }> } };
-    };
-    snapshot.providers.meteoalarm.partitions.HU.status = "failed";
-    await route.fulfill({ response, json: snapshot });
+  await mutateDemoSnapshot(page, (snapshot) => {
+    snapshot.providers.meteoalarm.partitions!.HU.status = "failed";
   });
 }
 
@@ -69,7 +66,7 @@ test("desktop control rail is visually stable", async ({ page }) => {
 
 test("desktop unavailable rail is visually stable", async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 768 });
-  await page.route("**/demo-snapshot.json", (route) => route.abort());
+  await abortDemoSnapshot(page);
   await page.goto("/");
   await hideDevelopmentChrome(page);
   await expect(page.getByText("Live updates unavailable.")).toBeVisible();
@@ -193,7 +190,7 @@ test("mobile default chrome is visually stable", { tag: "@webkit-only" }, async 
 
 test("mobile unavailable-data recovery is visually stable", { tag: "@webkit-only" }, async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 700 });
-  await page.route("**/demo-snapshot.json", (route) => route.abort());
+  await abortDemoSnapshot(page);
   await page.goto("/");
   await hideDevelopmentChrome(page);
   await expect(page.getByText("Live updates unavailable.")).toBeVisible();

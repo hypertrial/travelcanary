@@ -6,10 +6,12 @@ const cache = new Map<string, { manifest: PublicationManifestV1; root: string; u
 function publicationRoot(pointerUrl: string) {
   const url = new URL(pointerUrl, window.location.href);
   const suffix = "catalogs/3/publication/latest.json";
+  const sameOriginProxy = url.origin === window.location.origin && url.pathname === "/api/v1/data";
   if (!(url.protocol === "https:" || url.protocol === "http:" && url.origin === window.location.origin)
-    || url.username || url.password || url.search || url.hash || !url.pathname.endsWith(suffix)) {
+    || url.username || url.password || url.hash || (!sameOriginProxy && (url.search || !url.pathname.endsWith(suffix)))) {
     throw new Error("Publication pointer URL is outside the Catalog 3 namespace");
   }
+  if (sameOriginProxy) return `${url.origin}/`;
   url.pathname = url.pathname.slice(0, -suffix.length);
   url.search = ""; url.hash = "";
   return url.href;

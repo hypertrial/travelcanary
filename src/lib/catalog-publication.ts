@@ -1,12 +1,14 @@
 import { catalogMembershipHash } from "./catalog-membership";
+import { catalogLocationsV3 } from "./catalog-data";
 import { buildCatalog3Conditions, buildCatalog3Snapshot } from "./catalog-projections";
 import { catalog3CoverageTarget } from "./coverage-measurement";
 import { serializeCatalog3Conditions } from "./conditions/serialization";
+import { ConditionsV3Schema, SnapshotV11Schema } from "./domain/catalog-public";
 import { PublicationManifestV1Schema, PublicationPointerV1Schema, publicationManifestPath,
   publicationObjectPath, type PublicationManifestV1, type PublicationObject } from "./domain/publication";
 import { assertSupportedCollection, type CollectionControl } from "./domain/catalog-state";
 import { assertIngestionLease, type IngestionLease } from "./ingestion-lease";
-import { publicationSha256, readCurrentPublication, type PublicationStore } from "./publication-store";
+import { publicationSha256, readCurrentPublication, readPublishedObject, type PublicationStore } from "./publication-store";
 import type { StateStore } from "./state-store";
 
 export type CatalogPublicationStores = { publicationStore: PublicationStore };
@@ -135,15 +137,41 @@ export async function prunePublications(store: PublicationStore, current: { mani
   const manifests = (await store.list("catalogs/3/generations/", 10_000)).filter(({ pathname }) => pathname.endsWith("/manifest.json"))
     .sort((a, b) => b.uploadedAt.getTime() - a.uploadedAt.getTime());
   const keepPaths = new Set<string>([current.manifestPath]);
-  const rollback = manifests.find(({ pathname }) => pathname !== current.manifestPath);
-  if (rollback) keepPaths.add(rollback.pathname);
+  const parsed = new Map<string, PublicationManifestV1>();
+  for (const { pathname } of manifests) {
+    if (pathname === current.manifestPath) continue;
+    try {
+      const item = await store.read(pathname, 512_000);
+      if (!item) continue;
+      const manifestSha = pathname.match(/^catalogs\/3\/generations\/([a-f0-9]{64})\/manifest\.json$/)?.[1];
+      if (!manifestSha || publicationSha256(item.body) !== manifestSha) continue;
+      const manifest = PublicationManifestV1Schema.parse(JSON.parse(item.body));
+      if (manifest.coverageContractHash !== publicationSha256(JSON.stringify(catalog3CoverageTarget))) continue;
+      const snapshot = SnapshotV11Schema.parse(JSON.parse(await readPublishedObject(store, manifest.snapshot)));
+      if (snapshot.generatedAt !== manifest.snapshot.generatedAt
+        || Date.parse(manifest.snapshot.generatedAt) > Date.parse(manifest.generatedAt)) continue;
+      const locationIds = Object.keys(snapshot.locations).sort();
+      const expectedIds = catalogLocationsV3.map(({ id }) => id).sort();
+      if (locationIds.join("\0") !== expectedIds.join("\0") || catalogMembershipHash(locationIds) !== manifest.membershipHash) continue;
+      await Promise.all(manifest.conditions.map(async (reference) => {
+        const conditions = ConditionsV3Schema.parse(JSON.parse(await readPublishedObject(store, reference)));
+        if (conditions.countryCode !== reference.countryCode || conditions.producerCommitSha !== manifest.producerCommitSha
+          || conditions.generatedAt !== reference.generatedAt) {
+          throw new Error("Rollback conditions identity mismatch");
+        }
+      }));
+      parsed.set(pathname, manifest); keepPaths.add(pathname); break;
+    } catch { /* incomplete generations are not rollback candidates */ }
+  }
   for (const item of manifests) if (item.uploadedAt.getTime() >= cutoff) keepPaths.add(item.pathname);
   const referenced = new Set<string>();
   for (const pathname of keepPaths) {
-    const item = await store.read(pathname, 512_000);
-    if (!item) continue;
-    let manifest: PublicationManifestV1;
-    try { manifest = PublicationManifestV1Schema.parse(JSON.parse(item.body)); } catch { continue; }
+    let manifest = parsed.get(pathname);
+    if (!manifest) try {
+      const item = await store.read(pathname, 512_000);
+      if (item) manifest = PublicationManifestV1Schema.parse(JSON.parse(item.body));
+    } catch { /* invalid recent manifests retain no objects */ }
+    if (!manifest) continue;
     referenced.add(manifest.snapshot.path);
     for (const item of manifest.conditions) referenced.add(item.path);
   }

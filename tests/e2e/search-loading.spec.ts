@@ -1,10 +1,11 @@
 import { expect, test } from "../playwright-fixtures";
+import { demoConditionsPath, isDemoConditionsRequest } from "./helpers";
 
 for (const selection of ["pointer", "keyboard", "exact Enter"] as const) {
   test(`opens the Paris briefing by ${selection} when deferred assets are unavailable`, async ({ page }) => {
     const conditionRequests: string[] = [];
     page.on("request", (request) => {
-      if (/\/conditions\/v2\//.test(request.url())) conditionRequests.push(request.url());
+      if (isDemoConditionsRequest(request.url())) conditionRequests.push(request.url());
     });
     await page.goto("/");
     const search = page.getByRole("combobox", { name: "Where are you going?" });
@@ -47,7 +48,7 @@ for (const selection of ["pointer", "keyboard", "exact Enter"] as const) {
 test("keeps the briefing usable while optional conditions code is delayed, then displays the conditions", async ({ page }) => {
   const conditionRequests: string[] = [];
   page.on("request", (request) => {
-    if (/\/conditions\/v2\//.test(request.url())) conditionRequests.push(request.url());
+    if (isDemoConditionsRequest(request.url())) conditionRequests.push(request.url());
   });
   await page.goto("/");
   const search = page.getByRole("combobox", { name: "Where are you going?" });
@@ -73,7 +74,7 @@ test("keeps the briefing usable while optional conditions code is delayed, then 
     const conditions = briefing.getByRole("region", { name: "Local conditions", exact: true });
     await expect(conditions.getByRole("heading", { name: "Forecast", exact: true })).toBeVisible();
     expect(conditionRequests).toHaveLength(1);
-    expect(new URL(conditionRequests[0]).pathname).toMatch(/\/conditions\/v2\/FR\.json$/);
+    expect(new URL(conditionRequests[0]).pathname).toBe(`/${demoConditionsPath("FR")}`);
     await briefing.getByRole("button", { name: "Close destination details" }).click();
     await expect(briefing).toBeHidden();
   } finally { release(); }

@@ -263,7 +263,6 @@ async function catalogPipeline() {
         PLAYWRIGHT_REUSE_SERVER: "1",
         PLAYWRIGHT_PORT: String(port),
         PLAYWRIGHT_USE_BUILD: "true",
-        PLAYWRIGHT_CATALOG_VERSION: String(version),
         PLAYWRIGHT_DIST_DIR: distDir,
         PLAYWRIGHT_STRICT: "1",
       },

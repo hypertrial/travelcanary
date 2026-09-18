@@ -5,6 +5,9 @@ Wants=network-online.target
 
 [Service]
 Type=simple
+User=travelcanary-collector
+Group=travelcanary-public
+UMask=0027
 WorkingDirectory=@REPOSITORY@
 EnvironmentFile=@COLLECTOR_ENVIRONMENT_FILE@
 ExecStart=@NODE@ --import tsx @REPOSITORY@/scripts/collector.ts

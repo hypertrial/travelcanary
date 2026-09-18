@@ -68,18 +68,23 @@ export function useConditions(snapshotUrl: string | null, country: string, ids: 
   const [result, setResult] = useState<{ key: string; url: string | null; data: Conditions | null; failed: boolean; retrying: boolean } | null>(null);
   const [attempt, setAttempt] = useState(0);
   const catalogKey = ids.join(",");
-  const key = JSON.stringify([url, country, catalogVersion, catalogKey]);
+  const key = JSON.stringify([snapshotUrl, country, catalogVersion, catalogKey]);
   useEffect(() => {
     if (!snapshotUrl || catalogVersion !== 3) return;
     let active = true;
-    void publicationConditionsUrl(snapshotUrl, country).then(async (resolved) => {
-      if (!resolved) throw new Error("Conditions country is absent from publication");
-      if (active) setUrl(resolved.url);
-      const data = await loadConditions(resolved.url, country, catalogKey.split(","), fetch, 3, resolved.reference);
-      if (active) setResult({ key: JSON.stringify([resolved.url, country, catalogVersion, catalogKey]), url: resolved.url, data, failed: false, retrying: false });
-    }, () => { if (active) setResult({ key, url, data: null, failed: true, retrying: false }); });
+    void (async () => {
+      let resolvedUrl: string | null = null;
+      try {
+        const resolved = await publicationConditionsUrl(snapshotUrl, country);
+        if (!resolved) throw new Error("Conditions country is absent from publication");
+        resolvedUrl = resolved.url;
+        if (active) setUrl(resolved.url);
+        const data = await loadConditions(resolved.url, country, catalogKey.split(","), fetch, 3, resolved.reference);
+        if (active) setResult({ key, url: resolved.url, data, failed: false, retrying: false });
+      } catch { if (active) setResult({ key, url: resolvedUrl, data: null, failed: true, retrying: false }); }
+    })();
     return () => { active = false; };
-  }, [snapshotUrl, country, catalogKey, attempt, catalogVersion, key, url]);
+  }, [snapshotUrl, country, catalogKey, attempt, catalogVersion, key]);
   return {
     ...(result?.key === key ? result : { url, data: null, failed: !url, retrying: false }),
     retry: () => {

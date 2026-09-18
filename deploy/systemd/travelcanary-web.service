@@ -5,6 +5,9 @@ Wants=network-online.target
 
 [Service]
 Type=simple
+User=travelcanary-web
+Group=travelcanary-public
+UMask=0027
 WorkingDirectory=@REPOSITORY@
 EnvironmentFile=@WEB_ENVIRONMENT_FILE@
 ExecStart=@NODE@ @NEXT@ start --hostname 127.0.0.1 --port @PORT@
@@ -18,6 +21,7 @@ CapabilityBoundingSet=
 AmbientCapabilities=
 RestrictSUIDSGID=true
 ReadOnlyPaths=@PUBLIC_DIRECTORY@
+InaccessiblePaths=@PRIVATE_DIRECTORY@ @CACHE_DIRECTORY@ @COLLECTOR_ENVIRONMENT_FILE@
 Restart=on-failure
 RestartSec=5
 
