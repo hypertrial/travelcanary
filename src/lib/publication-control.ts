@@ -25,9 +25,8 @@ export function captureStateControl(state: IngestionState): Required<CapturedSta
 }
 const equal = (left: unknown, right: unknown) => JSON.stringify(left) === JSON.stringify(right);
 
-// The storage CAS protects the captured controls. Ordinary evidence writes may
-// not erase transition progress, extend its acknowledged window or refresh an
-// expanded cohort during legacy-only collection.
+// The storage CAS protects collection receipts plus lease and fence ownership
+// while ordinary evidence writes update the rest of private state.
 export function assertStateControlChange(next: IngestionState, before: CapturedStateControl) {
   const collection = before.collectionControl;
   const receipts = before.expandedSourceControl;

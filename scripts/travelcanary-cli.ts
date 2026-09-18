@@ -48,16 +48,13 @@ async function setup(args: string[]) {
   const port = portValue(portIndex >= 0 ? args[portIndex + 1] : undefined);
   if (runtime === "native") fail("Native Linux requires the dedicated-user system services documented in docs/SELF_HOSTING.md; automated setup supports Docker only");
   if (runtime !== "docker") fail("Usage: travelcanary setup --runtime docker [--port 3000]");
-  if (runtime === "docker") {
-    const environmentFile = join(controlDirectory, "docker.env");
-    mkdirSync(controlDirectory, { recursive: true, mode: 0o700 });
-    writeFileSync(environmentFile, `TRAVELCANARY_PORT=${port}\n`, { mode: 0o600 });
-    run("docker", ["compose", "version"]);
-    run("docker", ["compose", "--env-file", environmentFile, "up", "--build", "-d"]);
-    writeInstall({ runtime, port, environmentFile });
-    console.log(`TravelCanary is starting at http://127.0.0.1:${port}`);
-    return;
-  }
+  const environmentFile = join(controlDirectory, "docker.env");
+  mkdirSync(controlDirectory, { recursive: true, mode: 0o700 });
+  writeFileSync(environmentFile, `TRAVELCANARY_PORT=${port}\n`, { mode: 0o600 });
+  run("docker", ["compose", "version"]);
+  run("docker", ["compose", "--env-file", environmentFile, "up", "--build", "-d"]);
+  writeInstall({ runtime, port, environmentFile });
+  console.log(`TravelCanary is starting at http://127.0.0.1:${port}`);
 }
 
 async function status() {

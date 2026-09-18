@@ -49,7 +49,6 @@
     "conditions:mappings": "node --import tsx scripts/generate-conditions-mappings.ts",
     "conditions:check": "node --import tsx scripts/generate-conditions-mappings.ts --check && node scripts/generate-hazard-applicability.mjs --input data/review-inputs/gvp-holocene.json --reviewed-at 2026-08-31 --check",
     "conditions:warm": "node --import tsx scripts/warm-conditions.ts",
-    "state:project-v11": "node --import tsx scripts/project-state-v11.ts",
     "smoke:conditions": "node --import tsx scripts/smoke-conditions.ts",
     "data:validate": "node --import tsx scripts/validate-data.ts",
     "storage:init": "node --import tsx scripts/init-storage.ts",
