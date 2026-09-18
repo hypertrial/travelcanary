@@ -66,6 +66,7 @@ describe("atomic publication health", () => {
   it("maps a valid degraded generation to HTTP 200 and an invalid generation to 503", async () => {
     const valid = await fixture();
     vi.stubEnv("TRAVELCANARY_RUNTIME", "local");
+    vi.stubEnv("TRAVELCANARY_RELEASE_SHA", sha);
     vi.doMock("@/lib/local-server", () => ({ getLocalPublicationStore: () => valid.publicationStore }));
     let route = await import("../../src/app/api/v1/health/route");
     expect((await route.GET()).status).toBe(200);
