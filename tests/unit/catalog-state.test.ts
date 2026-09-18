@@ -21,7 +21,7 @@ function populatedV12() {
   return legacy.IngestionStateV12Schema.parse(state);
 }
 
-function memoryBlob(initial: string) {
+function memoryBlob(initial: string, beforeBackupWrite?: (values: Map<string, { body: string; etag: number }>) => void) {
   const values = new Map<string, { body: string; etag: number }>([["ingestion-state.json", { body: initial, etag: 1 }]]);
   let revision = 1;
   const getBlob = (async (pathname: string) => {
@@ -32,6 +32,7 @@ function memoryBlob(initial: string) {
         contentType: "application/json", size: value.body.length } };
   }) as typeof get;
   const putBlob = (async (pathname: string, body: unknown, options?: { ifMatch?: string; allowOverwrite?: boolean }) => {
+    if (pathname === "ingestion-state-v15-backup.json" && !values.has(pathname)) beforeBackupWrite?.(values);
     const current = values.get(pathname);
     if (options?.ifMatch && String(current?.etag) !== options.ifMatch) throw new Error("precondition failed");
     if (options?.allowOverwrite === false && current) throw new Error("precondition failed");
@@ -119,6 +120,18 @@ describe("V16 private-state migration", () => {
     const current = await store.read();
     await expect(store.write(current.data, current)).rejects.toThrow(/backup does not match/);
     expect(JSON.parse(blob.values.get("ingestion-state.json")!.body)).toEqual(second);
+  });
+
+  it("rejects a different V15 backup that wins the Blob creation race", async () => {
+    const first = parseCatalogStateV15(populatedV12());
+    const second = parseCatalogStateV15({ ...first, updatedAt: new Date(now.getTime() + 1000).toISOString() });
+    const blob = memoryBlob(JSON.stringify(first), (values) => {
+      values.set("ingestion-state-v15-backup.json", { body: JSON.stringify(second), etag: 2 });
+    });
+    const store = new BlobStateStore("private-token", "ingestion-state.json", blob.getBlob, blob.putBlob);
+    const current = await store.read();
+    await expect(store.write(current.data, current)).rejects.toThrow(/backup does not match/);
+    expect(JSON.parse(blob.values.get("ingestion-state.json")!.body)).toEqual(first);
   });
 
   it("rejects V16 collection, fence, and lease regression", () => {
