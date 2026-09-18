@@ -1,0 +1,20 @@
+[Unit]
+Description=TravelCanary one-shot collector
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@REPOSITORY@
+EnvironmentFile=@COLLECTOR_ENVIRONMENT_FILE@
+ExecStart=@NODE@ --import tsx @REPOSITORY@/scripts/collector.ts --once
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictSUIDSGID=true
+ReadWritePaths=@PRIVATE_DIRECTORY@ @PUBLIC_DIRECTORY@ @CACHE_DIRECTORY@

@@ -1,7 +1,7 @@
 import { TravelCanaryApp } from "@/components/TravelCanaryApp";
 import { getPublicDataConfig } from "@/lib/config";
 
-export const dynamic = "force-static";
+export const dynamic = "force-dynamic";
 
 export default function Home() {
   const config = getPublicDataConfig();

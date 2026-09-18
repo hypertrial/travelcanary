@@ -1,56 +1,75 @@
-# Public operations guide
+# Operations
 
-This repository supports localhost-first SQLite operation and retains generic Vercel Blob adapters for hosted deployments. It does not contain Hypertrial production credentials, project settings, incident records, or production cutover instructions.
+## Vercel deployment
 
-## 1. Choose a runtime
+Import the public repository directly into a Vercel Pro project and keep Fluid Compute enabled. The repository root is the Vercel Root Directory. `vercel.json` owns all six schedules.
 
-For independent operation, follow [Self-hosting](SELF_HOSTING.md). Docker Compose and native Node 24.19.0/systemd both initialize catalog 3 directly, keep one SQLite database on local disk, and bind the web service to `127.0.0.1`.
+Production-only sensitive variables are:
 
-The hosted adapter requires separate private and public Vercel Blob stores. Keep `PRIVATE_INGESTION_BLOB_READ_WRITE_TOKEN`, `PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN`, and `CRON_SECRET` server-side. Never place secrets in `NEXT_PUBLIC_` variables. New hosted deployments must make their own catalog activation and rollback decisions; copying this code does not alter the existing TravelCanary production service.
+```text
+CRON_SECRET
+PRIVATE_INGESTION_BLOB_READ_WRITE_TOKEN
+PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN
+TRAVELCANARY_PUBLICATION_URL
+```
 
-## 2. Source policy
+`CRON_SECRET` must contain at least 32 random bytes. Preview and Development must receive none of these values; code still forces those environments to checked-in demo publication if production-looking values are accidentally injected. No Met Office or MeteoAlarm credential is required.
 
-Review [the data policy](DATA_POLICY.md), [third-party notices](../THIRD_PARTY_NOTICES.md), and `data/source-inventory.json`. Open sources are eligible by default. Restricted local sources require the recorded manifest-digest acceptance. Gated sources make zero requests until their documented gate passes; blocked sources never run. Optional credential-gated transports, including Met Office, remain request-free and non-contributing when unconfigured.
+Initialize empty stores once from a secure operator environment:
 
-Keep `GDELT_ENABLED=false` unless a later reviewed change supplies representative live reliability evidence and trustworthy publication timestamps. Do not bypass a source gate, access control, paywall, authentication requirement, response-size limit, or documented request budget.
+```bash
+npm run storage:init
+```
 
-The SQLite runtime supports one host and one collector. Do not place `travelcanary.db` on NFS, SMB, cloud-synchronized folders, or another network filesystem. Do not run clustered web or collector replicas against it.
+The command creates V16 state, acquires the global lease, publishes one complete Catalog 3 generation, and prints only safe identifiers.
+
+## Collection
+
+Vercel schedules these authenticated Production-only routes:
+
+```text
+/api/cron/fast
+/api/cron/slow
+/api/cron/daily
+/api/cron/satellite
+/api/cron/conditions
+/api/cron/maintenance
+```
+
+To invoke one manually, pass the secret in an authorization header, never a command argument. `HEAD` verifies authentication without work. `GET` performs bounded work. A busy response is successful and makes no writes.
+
+Do not delete leases, cursors, state, or quotas to force a run. Wait for lease expiry or diagnose the bounded failure. `INGESTION_PAUSED=true` pauses hosted writes during recovery.
+
+## Health and verification
 
 ## 3. Verify cron routes
 
-Hosted operators may invoke the authenticated routes with their own domain and secret:
+Verify authenticated `HEAD` and one bounded `GET` for each configured route:
 
-```bash
-curl -H "Authorization: Bearer $CRON_SECRET" https://YOUR_DOMAIN/api/cron/fast
-curl -H "Authorization: Bearer $CRON_SECRET" https://YOUR_DOMAIN/api/cron/slow
-curl -H "Authorization: Bearer $CRON_SECRET" https://YOUR_DOMAIN/api/cron/daily
-curl -H "Authorization: Bearer $CRON_SECRET" https://YOUR_DOMAIN/api/cron/satellite
-curl -H "Authorization: Bearer $CRON_SECRET" https://YOUR_DOMAIN/api/cron/maintenance
-curl -H "Authorization: Bearer $CRON_SECRET" https://YOUR_DOMAIN/api/cron/conditions
+```text
+/api/cron/fast
+/api/cron/slow
+/api/cron/daily
+/api/cron/satellite
+/api/cron/conditions
+/api/cron/maintenance
 ```
 
-Local collection does not call these routes. The long-running collector imports the same ingestion functions, serializes all six jobs, and reloads local source policy before each run. It persists successful completion times per cadence so a restart runs missing or due work immediately without repeating recently completed jobs.
-
-## 4. Backups and recovery
-
-Use `bin/travelcanary backup` and `bin/travelcanary restore`. Backups include private ingestion state and must be handled as private data. Restore validates catalog 3, both required snapshots, all 45 conditions files, and required private objects before replacing anything; it preserves the replaced database with a timestamp and restarts services managed by setup.
-
-If collection is unhealthy, check `bin/travelcanary status` and service logs. Do not delete leases, cursors, reservations, or the database to force a refresh. A restart preserves state and an expired collector lease can be acquired by exactly one replacement process.
-
-## 5. Public exposure
-
-Loopback is the default security boundary. LAN exposure is an explicit configuration change. Internet exposure additionally requires a maintained TLS reverse proxy, host firewalling, and the operator's own authentication/access decision. Never expose the SQLite volume, environment file, collector process, or authenticated cron routes without appropriate controls.
-
-`GET /api/v1/health` is the sole public production-health surface. It performs no upstream requests: it reads the selected snapshot, catalog identity, all expected country condition files, shared coverage measurement, and required transport health through fixed internal paths. It returns 503 for a snapshot older than 120 minutes, a missing or older-than-75-minute condition file, a catalog/release mismatch, catalog-3 coverage below its release floor, or an applicable partition with no viable required transport. Credential-gated fallback and context-only providers, including optional Met Office, remain health-neutral. Responses contain only aggregate provider/country/transport identifiers, are cached for at most 60 seconds with mandatory revalidation, and never expose request URLs, upstream bodies, credentials, private state, or destination-level operations.
-
-## 6. Verification
-
-During development run:
+Keep `GDELT_ENABLED=false` unless its separately reviewed reliability gate is completed.
 
 ```bash
-scripts/verify-fast
+curl --fail https://YOUR_DOMAIN/api/healthz
+curl --fail https://YOUR_DOMAIN/api/v1/health
+EXPECTED_COMMIT_SHA=<40-char-sha> EXPECTED_CATALOG_VERSION=3 \
+  PRODUCTION_ORIGIN=https://YOUR_DOMAIN npm run verify:production
 ```
 
-Before release work, commit the candidate and run `scripts/verify` from a clean checkout at that exact SHA. The full gate validates deterministic generated artifacts, unit and browser behavior, accessibility, assets, and builds. Docker Compose syntax and native unit generation have focused tests; run the documented Linux systemd smoke and a real Docker fresh-install test in their target environments.
+Liveness is constant and dependency-free. Data health validates the current pointer, manifest, object digests, 679-member snapshot, exactly 45 fresh conditions objects, release identity, and coverage contract. It returns HTTP 200 with a degraded status for reviewed upstream failure while last-good publication remains valid; integrity or freshness failure returns 503.
 
-The health and plugin-summary APIs intentionally omit paths, SQL details, raw errors, credentials, request targets, and private state. `/live/...` serves only exact allowlisted Snapshot V10/V11 and Conditions V2/V3 object paths.
+Before release, run `scripts/verify-fast`, then commit and run `scripts/verify` from a clean checkout at the exact candidate SHA. Require a green demo-only Vercel Preview. GitHub Actions availability is not a runtime dependency.
+
+## Recovery
+
+Pause ingestion before changing publication state. A web rollback may CAS `latest.json` to the preceding valid Catalog 3 manifest and deploy only a V16-compatible read-only web version. Collector failures require a forward fix. Never restore V15, reactivate an older writer, reverse collection revision, or resume Catalog 2 publication.
+
+Maintenance retains the current generation, one preceding valid generation, and all generations younger than 48 hours.

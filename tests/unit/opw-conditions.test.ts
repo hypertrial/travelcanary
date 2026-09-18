@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import fixture from "../fixtures/conditions/opw-hydrology.json";
 import { opwHydroEndpoint, opwHydroMappings, parseOpwHydrology } from "@/lib/conditions/opw";
-import { runConditions } from "@/lib/conditions/worker";
+import { runTestConditions as runConditions } from "../helpers/publication";
 import { conditionSourceIds, emptyConditions, type Conditions } from "@/lib/domain/conditions";
 import { buildSnapshot, createEmptyState } from "@/lib/risk";
-import { MemoryStateStore } from "@/lib/storage";
+import { MemoryStateStore } from "@/lib/state-store";
 
 const now = new Date("2026-09-08T07:30:00Z");
 const env = { LOCAL_CONDITIONS_ENABLED: "true", CONDITIONS_DISABLED_SOURCES: conditionSourceIds.filter((id) => id !== "opw-hydro").join(",") };
@@ -109,7 +109,7 @@ describe("OPW worker publication and recovery", () => {
     expect(fetchMock).not.toHaveBeenCalled();
     expect(publish).toHaveBeenCalledOnce();
     for (const file of publish.mock.calls[0][0]) for (const location of Object.values(file.locations)) {
-      expect(location.rivers.some(({ sourceId }) => sourceId === "opw-hydro")).toBe(false);
+      expect((location.rivers || []).some(({ sourceId }) => sourceId === "opw-hydro")).toBe(false);
     }
     expect(buildSnapshot((await store.read()).data, now)).toEqual(before);
   });

@@ -1,7 +1,7 @@
-import { mkdtempSync } from "node:fs";
+import { cpSync, mkdtempSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 const originalRuntime = process.env.TRAVELCANARY_RUNTIME;
 const originalDataDirectory = process.env.TRAVELCANARY_DATA_DIR;
@@ -9,22 +9,26 @@ const directory = mkdtempSync(join(tmpdir(), "travelcanary-api-"));
 
 beforeAll(() => {
   process.env.TRAVELCANARY_RUNTIME = "local";
-  process.env.TRAVELCANARY_DATA_DIR = directory;
+  process.env.TRAVELCANARY_PUBLIC_DATA_DIR = join(directory, "public");
+  mkdirSync(join(directory, "public"));
+  cpSync("public/catalogs", join(directory, "public/catalogs"), { recursive: true });
 });
 afterAll(() => {
   if (originalRuntime === undefined) delete process.env.TRAVELCANARY_RUNTIME; else process.env.TRAVELCANARY_RUNTIME = originalRuntime;
+  delete process.env.TRAVELCANARY_PUBLIC_DATA_DIR;
   if (originalDataDirectory === undefined) delete process.env.TRAVELCANARY_DATA_DIR; else process.env.TRAVELCANARY_DATA_DIR = originalDataDirectory;
 });
+beforeEach(() => vi.resetModules());
 
 describe("local public APIs", () => {
   it("serves only exact public live keys with ETags", async () => {
     const { GET } = await import("../../src/app/live/[...path]/route");
-    const context = { params: Promise.resolve({ path: ["catalogs", "3", "latest.json"] }) };
-    const first = await GET(new Request("http://127.0.0.1/live/catalogs/3/latest.json"), context);
+    const context = { params: Promise.resolve({ path: ["catalogs", "3", "publication", "latest.json"] }) };
+    const first = await GET(new Request("http://127.0.0.1/live/catalogs/3/publication/latest.json"), context);
     expect(first.status).toBe(200);
     expect((await first.json()).catalogVersion).toBe(3);
     const etag = first.headers.get("etag")!;
-    expect((await GET(new Request("http://127.0.0.1/live/catalogs/3/latest.json", { headers: { "if-none-match": etag } }), context)).status).toBe(304);
+    expect((await GET(new Request("http://127.0.0.1/live/catalogs/3/publication/latest.json", { headers: { "if-none-match": etag } }), context)).status).toBe(304);
     expect((await GET(new Request("http://127.0.0.1/live/private"), { params: Promise.resolve({ path: ["ingestion", "state.json"] }) })).status).toBe(404);
     expect((await GET(new Request("http://127.0.0.1/live/traversal"), { params: Promise.resolve({ path: ["..", "ingestion", "state.json"] }) })).status).toBe(404);
   });
@@ -33,13 +37,13 @@ describe("local public APIs", () => {
     const health = await (await import("../../src/app/api/v1/health/route")).GET();
     expect(health.status).toBe(503);
     const healthBody = await health.json();
-    expect(healthBody).toMatchObject({ status: "degraded", checks: { transports: { status: "failed" } } });
+    expect(healthBody).toMatchObject({ status: "degraded", available: false, publication: { status: "failed" } });
     expect(JSON.stringify(healthBody)).not.toContain("travelcanary.db");
     const summary = await (await import("../../src/app/api/v1/plugin/summary/route")).GET();
     const body = await summary.json();
     expect(summary.status).toBe(200);
     expect(body.destinations.length).toBeLessThanOrEqual(10);
-    expect(body.counts.UNKNOWN).toBe(679);
+    expect(body.counts.UNKNOWN).toBe(177);
     expect(body.restrictedSources.active).toBe(false);
     expect(JSON.stringify(body)).not.toMatch(/ingestion|acceptedManifestDigest|lastError/);
   });

@@ -1,7 +1,8 @@
 import { catalog3ConditionsCountryLimit } from "./conditions/publication-budget";
 import { serializeCatalog3Conditions } from "./conditions/serialization";
 import { assertStateControlChange, captureStateControl, type CapturedStateControl } from "./publication-control";
-import { IngestionStateV13Schema, IngestionStateV14Schema, IngestionStateV15Schema, parseCatalogState, type IngestionStateV15 as IngestionState } from "./domain/catalog-state";
+import { IngestionStateV13Schema, IngestionStateV14Schema, IngestionStateV15Schema, IngestionStateV16Schema,
+  parseCatalogState, type IngestionState } from "./domain/catalog-state";
 import { BlobNotFoundError, BlobPreconditionFailedError, get, head, put } from "@vercel/blob";
 import {
   IngestionStateV1Schema,
@@ -125,7 +126,7 @@ async function preserveJsonBackup(options: {
 }
 
 function stateForWrite(state: IngestionState, before: CapturedStateControl) {
-  const next = IngestionStateV15Schema.parse(state);
+  const next = IngestionStateV16Schema.parse({ ...state, stateRevision: state.stateRevision + 1 });
   assertStateControlChange(next, before);
   if (Buffer.byteLength(JSON.stringify(next)) > PRIVATE_STATE_HARD_LIMIT_BYTES) throw new Error("Private ingestion state exceeds 5 MB hard limit");
   return next;
@@ -134,7 +135,7 @@ function stateForWrite(state: IngestionState, before: CapturedStateControl) {
 export class BlobStateStore implements StateStore {
   constructor(private token: string, private pathname = "ingestion-state.json", private getBlob: GetBlob = get, private putBlob: PutBlob = put) {}
   async read() {
-    const state = await readBlobJson(this.pathname, this.token, "private", parseCatalogState, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], this.getBlob);
+    const state = await readBlobJson(this.pathname, this.token, "private", parseCatalogState, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], this.getBlob);
     return { ...state, ...captureStateControl(state.data) };
   }
   async write(state: IngestionState, expected: Versioned<IngestionState>) {
@@ -143,7 +144,7 @@ export class BlobStateStore implements StateStore {
       if (expected.legacy) {
         const { schemaVersion: version, raw } = expected.legacy;
         const pathname = `ingestion-state-v${version}-backup.json`;
-        const validate = version === 14 ? IngestionStateV14Schema.parse : version === 13 ? IngestionStateV13Schema.parse : version === 12 ? IngestionStateV12Schema.parse : version === 11 ? IngestionStateV11Schema.parse : version === 10 ? IngestionStateV10Schema.parse : version === 9 ? IngestionStateV9Schema.parse : version === 8 ? IngestionStateV8Schema.parse : version === 7 ? IngestionStateV7Schema.parse : version === 6 ? IngestionStateV6Schema.parse : version === 5 ? IngestionStateV5Schema.parse : version === 4 ? IngestionStateV4Schema.parse : version === 3 ? IngestionStateV3Schema.parse : version === 2 ? IngestionStateV2Schema.parse : IngestionStateV1Schema.parse;
+        const validate = version === 15 ? IngestionStateV15Schema.parse : version === 14 ? IngestionStateV14Schema.parse : version === 13 ? IngestionStateV13Schema.parse : version === 12 ? IngestionStateV12Schema.parse : version === 11 ? IngestionStateV11Schema.parse : version === 10 ? IngestionStateV10Schema.parse : version === 9 ? IngestionStateV9Schema.parse : version === 8 ? IngestionStateV8Schema.parse : version === 7 ? IngestionStateV7Schema.parse : version === 6 ? IngestionStateV6Schema.parse : version === 5 ? IngestionStateV5Schema.parse : version === 4 ? IngestionStateV4Schema.parse : version === 3 ? IngestionStateV3Schema.parse : version === 2 ? IngestionStateV2Schema.parse : IngestionStateV1Schema.parse;
         await preserveJsonBackup({ pathname, raw, token: this.token, access: "private", validate, getBlob: this.getBlob, putBlob: this.putBlob });
       }
       const result = await this.putBlob(this.pathname, JSON.stringify(validated), { token: this.token, access: "private", allowOverwrite: true, ifMatch: expected.etag, contentType: "application/json", cacheControlMaxAge: 60 });
@@ -252,7 +253,7 @@ export class BlobCatalog3SnapshotStore {
 export class MemoryStateStore implements StateStore {
   private version = 1;
   private data: IngestionState;
-  constructor(data: IngestionState) { this.data = IngestionStateV15Schema.parse(data); }
+  constructor(data: IngestionState) { this.data = IngestionStateV16Schema.parse(data); }
   async read() { return { data: structuredClone(this.data), etag: String(this.version), ...captureStateControl(this.data) }; }
   async write(state: IngestionState, expected: Versioned<IngestionState>) {
     if (expected.etag !== String(this.version)) throw new ConcurrencyError("State conflict");

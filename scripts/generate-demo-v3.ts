@@ -1,39 +1,57 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { buildPendingCatalog3Snapshot, buildPendingCatalog3Conditions } from "../src/lib/catalog-projections";
-import { SnapshotV11Schema, ConditionsV3Schema } from "../src/lib/domain/catalog-public";
-import { CompleteSnapshotV10Schema } from "../src/lib/snapshot-validation";
-import { createEmptyState } from "../src/lib/risk-state";
-import { CONDITIONS_TOTAL_LIMIT, ConditionsV2Schema } from "../src/lib/domain/conditions";
-import { catalog3ConditionsCountryLimit } from "../src/lib/conditions/publication-budget";
+import { fileURLToPath } from "node:url";
+import { dirname, resolve } from "node:path";
+import { buildCatalog3Conditions } from "../src/lib/catalog-projections";
+import { catalogMembershipHash } from "../src/lib/catalog-membership";
+import { catalog3CoverageTarget } from "../src/lib/coverage-measurement";
 import { serializeCatalog3Conditions } from "../src/lib/conditions/serialization";
-import { catalogV2CountryCodes } from "../src/lib/domain/contract-identities";
+import { ConditionsV3Schema, SnapshotV11Schema } from "../src/lib/domain/catalog-public";
+import { PublicationManifestV1Schema, PublicationPointerV1Schema, publicationManifestPath, publicationObjectPath } from "../src/lib/domain/publication";
+import { publicationSha256 } from "../src/lib/publication-store";
+import { createEmptyState } from "../src/lib/risk-state";
 
-const legacy = CompleteSnapshotV10Schema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")));
-const now = new Date(legacy.generatedAt); const state = createEmptyState(now);
-const pending = buildPendingCatalog3Snapshot(state, now);
-const providers = Object.fromEntries(Object.entries(legacy.providers).map(([id, provider]) => [id, provider.partitions ? {
-  ...provider, partitions: { ...pending.providers[id as keyof typeof pending.providers].partitions, ...provider.partitions },
-} : provider]));
-const snapshot = SnapshotV11Schema.parse({ ...pending, dataHealth: "delayed", providers, locations: { ...pending.locations, ...legacy.locations } });
-const files = buildPendingCatalog3Conditions(state, now, {});
-for (const country of catalogV2CountryCodes) {
-  const file = ConditionsV2Schema.parse(JSON.parse(await readFile(`public/conditions/v2/${country}.json`, "utf8")));
-  const delta = now.getTime() - Date.parse(file.generatedAt);
-  const times = new Set(["checkedAt", "sourceUpdatedAt", "startAt", "expiresAt", "observedAt", "occurredAt"]);
-  // Synthetic demo only: preserve each record's relative age and expiry, while
-  // giving all45 files one deterministic demo generation and no production SHA.
-  const retimed = JSON.parse(JSON.stringify(file, (key, value) => times.has(key) && typeof value === "string"
-    ? new Date(Date.parse(value) + delta).toISOString() : value));
-  files[files.findIndex((candidate) => candidate.countryCode === country)] = ConditionsV3Schema.parse({ ...retimed,
-    generatedAt: now.toISOString(), producerCommitSha: null, schemaVersion: 3, catalogVersion: 3 });
-}
-const sizes = files.map((file) => Buffer.byteLength(serializeCatalog3Conditions(file)) + 1);
-if (sizes.some((bytes, index) => bytes > catalog3ConditionsCountryLimit(files[index].countryCode))
-  || sizes.reduce((sum, bytes) => sum + bytes, 0) > CONDITIONS_TOTAL_LIMIT) throw new Error("Demo conditions exceed publication budgets");
-if (Buffer.byteLength(JSON.stringify(snapshot)) + 1 > 500_000) throw new Error("Demo snapshot exceeds publication budget");
-const artifacts = new Map<string, string>([["public/catalogs/3/demo-snapshot.json", `${JSON.stringify(snapshot)}\n`],
-  ...files.map((file) => [`public/catalogs/3/conditions/v3/${file.countryCode}.json`, `${serializeCatalog3Conditions(file)}\n`] as const)]);
-for (const [path, body] of artifacts) {
+const sourceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const snapshot = SnapshotV11Schema.parse(JSON.parse(await readFile(resolve(sourceRoot, "public/catalogs/3/demo-snapshot.json"), "utf8")));
+const now = new Date(snapshot.generatedAt);
+const state = createEmptyState(now);
+const conditions = await Promise.all(buildCatalog3Conditions(state, now, {}).map(async (empty) => {
+  const legacyPath = resolve(sourceRoot, `public/conditions/v2/${empty.countryCode}.json`);
+  try {
+    const legacy = JSON.parse(await readFile(legacyPath, "utf8"));
+    return ConditionsV3Schema.parse({ ...legacy, schemaVersion: 3, catalogVersion: 3 });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    return empty;
+  }
+}));
+const objects = new Map<string, string>();
+const reference = (body: string, generatedAt: string) => {
+  const sha256 = publicationSha256(body); const path = publicationObjectPath(sha256);
+  objects.set(`public/${path}`, body);
+  return { path, sha256, bytes: Buffer.byteLength(body), generatedAt };
+};
+const snapshotBody = JSON.stringify(snapshot);
+const manifest = PublicationManifestV1Schema.parse({
+  schemaVersion: 1, catalogVersion: 3, generatedAt: now.toISOString(), producerCommitSha: null,
+  stateRevision: 0, collectionRevision: 1, ingestionFence: 1,
+  membershipHash: catalogMembershipHash(Object.keys(snapshot.locations)),
+  coverageContractHash: publicationSha256(JSON.stringify(catalog3CoverageTarget)), complete: true,
+  snapshot: reference(snapshotBody, snapshot.generatedAt),
+  conditions: conditions.map((file) => ({ ...reference(serializeCatalog3Conditions(file), file.generatedAt), countryCode: file.countryCode }))
+    .sort((a, b) => a.countryCode.localeCompare(b.countryCode)),
+  status: { state: "degraded", codes: ["demo/static"], collectorLastSuccess: now.toISOString() },
+});
+const manifestBody = JSON.stringify(manifest);
+const manifestSha256 = publicationSha256(manifestBody);
+const manifestPath = publicationManifestPath(manifestSha256);
+const pointer = PublicationPointerV1Schema.parse({
+  schemaVersion: 1, catalogVersion: 3, manifestPath, manifestSha256, publishedAt: now.toISOString(), producerCommitSha: null,
+  stateRevision: 0, collectionRevision: 1, ingestionFence: 1,
+});
+objects.set(`public/${manifestPath}`, manifestBody);
+objects.set("public/catalogs/3/publication/latest.json", JSON.stringify(pointer));
+
+for (const [path, body] of objects) {
   if (process.argv.includes("--check")) {
     if (await readFile(path, "utf8") !== body) throw new Error(`Demo artifact is out of date: ${path}`);
   } else {
@@ -41,4 +59,4 @@ for (const [path, body] of artifacts) {
     await writeFile(path, body);
   }
 }
-console.log(`Prepared catalog3 demo: ${Object.keys(snapshot.locations).length} destinations, ${files.length} countries; additions are explicitly pending`);
+console.log(`Prepared atomic Catalog 3 demo: ${Object.keys(snapshot.locations).length} destinations, ${conditions.length} countries`);

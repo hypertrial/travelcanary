@@ -6,7 +6,7 @@ import release2 from "../data/catalog-releases/2.json";
 import { buildCatalog3Snapshot } from "../src/lib/catalog-projections";
 import { createEmptyState } from "../src/lib/risk-state";
 import { projectCatalog2Snapshot } from "../src/lib/risk-snapshot";
-import type { IngestionStateV15 } from "../src/lib/domain/catalog-state";
+import type { IngestionState } from "../src/lib/domain/catalog-state";
 import type { HazardType } from "../src/lib/domain/schemas";
 import { PublicCatalogV2Schema, PublicCatalogV3Schema } from "../src/lib/domain/catalog-public";
 import { coveragePairStates, measureCoverage } from "./coverage-measurement";
@@ -20,7 +20,7 @@ const added = catalog3.filter(({ id }) => !release2.locationIds.includes(id)).ma
 const healthy = { status: "ok" as const, lastAttempt: measuredAt.toISOString(), lastSuccess: measuredAt.toISOString(), sourceUpdatedAt: measuredAt.toISOString(),
   nextExpectedUpdate: new Date(+measuredAt + 60 * 60_000).toISOString(), itemCount: 0, consecutiveFailures: 0, error: null };
 
-function receipt(state: IngestionStateV15, source: "usgs" | "slf-avalanche", checked: string[]) {
+function receipt(state: IngestionState, source: "usgs" | "slf-avalanche", checked: string[]) {
   state.expandedSourceHealth[source] = { health: { ...healthy }, checkedLocationIds: checked, unavailableLocationIds: [] };
 }
 

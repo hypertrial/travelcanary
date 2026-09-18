@@ -2,10 +2,10 @@ import { readFileSync } from "node:fs";
 import { gzipSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import { parseNdwInfrastructure } from "@/lib/conditions/infrastructure";
-import { runConditions } from "@/lib/conditions/worker";
+import { runTestConditions as runConditions } from "../helpers/publication";
 import { conditionSourceIds, emptyConditions } from "@/lib/domain/conditions";
 import { createEmptyState } from "@/lib/risk";
-import { MemoryStateStore } from "@/lib/storage";
+import { MemoryStateStore } from "@/lib/state-store";
 
 const now = new Date("2026-09-08T07:50:00Z");
 const closures = readFileSync("tests/fixtures/conditions/ndw-v3-closures.xml", "utf8");

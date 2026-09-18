@@ -1,5 +1,5 @@
 import { aggregatePartitionHealth } from "./partition-health";
-import { assertCatalog2Collection, type IngestionStateV15 as IngestionState, type NormalizedEventV13 as NormalizedEvent } from "./domain/catalog-state";
+import { assertCatalog2Collection, type IngestionStateV15, type IngestionStateV16, type NormalizedEventV13 as NormalizedEvent } from "./domain/catalog-state";
 import { coverageByCountry, coverageByLocation, locations, locationsById } from "./data";
 import {
   countryCodes, providerIdForSourceId, SnapshotSchema, type HazardType,
@@ -134,16 +134,18 @@ function transportIsOverdue(health: SourceHealth, cadenceMinutes: number, now: D
   return Number.isFinite(nextExpected) && now.getTime() > nextExpected + cadenceMinutes * 60_000;
 }
 
-function effectiveSources(state: IngestionState, now: Date): IngestionState["sources"] {
+type ProjectionState = IngestionStateV15 | IngestionStateV16;
+
+function effectiveSources(state: ProjectionState, now: Date): ProjectionState["sources"] {
   return Object.fromEntries((Object.entries(state.sources) as [SourceId, SourceHealth][]).map(([sourceId, health]) => [
     sourceId,
     sourceIsDelayed(sourceId, health, now)
       ? { ...health, status: "delayed" as const, error: health.error || "Expected source update is overdue" }
       : health,
-  ])) as IngestionState["sources"];
+  ])) as ProjectionState["sources"];
 }
 
-function sourceDelaysGlobalHealth(sourceId: SourceId, sources: IngestionState["sources"], now: Date) {
+function sourceDelaysGlobalHealth(sourceId: SourceId, sources: ProjectionState["sources"], now: Date) {
   const provider = Object.values(providerRegistry).find((definition) => definition.sourceId === sourceId);
   if (provider?.healthScope === "coverage" || provider?.healthScope === "non_blocking") return false;
   if (sourceId === "gdacs" || sourceId === "effis-active-fire" || sourceId === "national-civil-alerts") return false;
@@ -151,7 +153,7 @@ function sourceDelaysGlobalHealth(sourceId: SourceId, sources: IngestionState["s
   return sourceIsDelayed(sourceId, sources[sourceId], now);
 }
 
-function providerUnavailableAtLocation(state: IngestionState, providerId: ProviderId, health: SourceHealth, locationId: string, now: Date) {
+function providerUnavailableAtLocation(state: ProjectionState, providerId: ProviderId, health: SourceHealth, locationId: string, now: Date) {
   const providerCoverage = state.providerCoverage[providerId];
   const currentPartialScope = health.status === "delayed"
     && providerCoverage?.checkedAt === health.lastAttempt
@@ -160,7 +162,7 @@ function providerUnavailableAtLocation(state: IngestionState, providerId: Provid
   return !currentPartialScope || providerCoverage.unavailableLocationIds.includes(locationId);
 }
 
-function delayedHazards(sources: IngestionState["sources"], excludedSource?: SourceId): Set<HazardType> {
+function delayedHazards(sources: ProjectionState["sources"], excludedSource?: SourceId): Set<HazardType> {
   const hazards = new Set<HazardType>();
   for (const [sourceId, health] of Object.entries(sources) as [SourceId, SourceHealth][]) {
     if (sourceId === excludedSource) continue;
@@ -201,14 +203,14 @@ export function indexEventsByLocation(events: NormalizedEvent[], now: Date): Map
   return indexed;
 }
 
-export function buildSnapshot(state: IngestionState, now = new Date()): Snapshot {
-  assertCatalog2Collection(state);
-  return projectCatalog2Snapshot(state, now);
+export function buildSnapshot(state: ProjectionState, now = new Date()): Snapshot {
+  if (state.collection.catalogVersion === 2) assertCatalog2Collection(state);
+  return projectCoreSnapshot(state, now);
 }
 
 // A compatibility publication uses the same evidence, scoped to the frozen old
 // destinations. Expanded country failures must not change the old aggregate.
-export function projectCatalog2Snapshot(input: IngestionState, now = new Date()): Snapshot {
+export function projectCoreSnapshot(input: ProjectionState, now = new Date()): Snapshot {
   const sourcesForLegacy = { ...input.sources };
   if (input.collection.catalogVersion === 3) {
     for (const [source, group] of [["meteoalarm", "meteoalarm"], ["eea", "eea"], ["national-civil-alerts", "nationalCivilAlerts"]] as const) {
@@ -345,7 +347,10 @@ export function projectCatalog2Snapshot(input: IngestionState, now = new Date())
   return SnapshotSchema.parse({ schemaVersion: 10, catalogVersion: 2, generatedAt: now.toISOString(), valid: true, dataHealth, providers, locations: locationStates });
 }
 
-export function snapshotProjectionMetrics(state: IngestionState, snapshot: Snapshot, now: Date) {
+/** Frozen migration/test alias. Active Catalog 3 runtime imports projectCoreSnapshot. */
+export const projectCatalog2Snapshot = projectCoreSnapshot;
+
+export function snapshotProjectionMetrics(state: ProjectionState, snapshot: Snapshot, now: Date) {
   const visibleIncidents = Object.values(snapshot.locations).reduce((total, location) => total + location.hazards.length, 0);
   const evidenceLinks = Object.values(snapshot.locations).reduce((total, location) => total
     + location.hazards.reduce((count, hazard) => count + hazard.evidence.length, 0), 0);

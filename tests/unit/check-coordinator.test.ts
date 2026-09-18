@@ -35,9 +35,8 @@ function initGitRepo() {
 
 describe("verification coordinator", () => {
   it("uses isolated catalog output directories", () => {
-    expect(distDirForCatalog(2)).toBe(".next-c2");
     expect(distDirForCatalog(3)).toBe(".next-c3");
-    expect(() => distDirForCatalog(1)).toThrow(/Unsupported catalog version/);
+    expect(() => distDirForCatalog(2)).toThrow(/Unsupported catalog version/);
   });
 
   it("isolates raster, generator, and long catalog-capacity tests in the heavy pool", () => {
@@ -49,9 +48,8 @@ describe("verification coordinator", () => {
       "tests/unit/catalog3-demo.test.ts",
       "tests/unit/catalog3-conditions-projection.test.ts",
       "tests/unit/catalog3-conditions-serialization.test.ts",
-      "tests/unit/catalog3-production-verification.test.ts",
-      "tests/unit/catalog-publication.test.ts",
-      "tests/unit/legacy-demo-generator.test.ts",
+      "tests/unit/production-verification.test.ts",
+      "tests/unit/atomic-publication.test.ts",
       "tests/unit/avalanche-mapping.test.ts",
       "tests/unit/europe-expansion-capacity.test.ts",
       "tests/unit/europe-populated-capacity.test.ts",
@@ -70,8 +68,8 @@ describe("verification coordinator", () => {
   });
 
   it("matches catalog metadata and rejects Next.js development chrome", () => {
-    expect(catalogHtmlMatches(`<meta name="travelcanary-catalog-version" content="2">`, 2)).toBe(true);
-    expect(catalogHtmlMatches(`<meta name="travelcanary-catalog-version" content="3">`, 2)).toBe(false);
+    expect(catalogHtmlMatches(`<meta name="travelcanary-catalog-version" content="3">`, 3)).toBe(true);
+    expect(catalogHtmlMatches(`<meta name="travelcanary-catalog-version" content="2">`, 3)).toBe(false);
     expect(looksLikeNextDev(`<button aria-label="Open Next.js Dev Tools">`)).toBe(true);
     expect(looksLikeNextDev(`<html><body>TravelCanary</body></html>`)).toBe(false);
   });

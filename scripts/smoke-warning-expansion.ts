@@ -1,16 +1,17 @@
 // Read-only, server-side smoke. Calls each new authority once, independently of
 // primary availability, without storage credentials or publication side effects.
-import { locations } from "../src/lib/data";
+import { catalogLocationsV3 as locations } from "../src/lib/catalog-data";
 import { NormalizedEventSchema } from "../src/lib/domain/schemas";
 import { fetchDirectWeatherCaps } from "../src/lib/ingestion/adapters/direct-weather-cap";
 import { fetchLvPartition } from "../src/lib/ingestion/adapters/national-civil-alerts-lv";
 import { createSourceDiagnostics } from "../src/lib/ingestion/types";
 import { withFetchDiagnostics } from "../src/lib/ingestion/fetch";
-import { buildSnapshot, createEmptyState } from "../src/lib/risk";
+import { createEmptyState } from "../src/lib/risk";
+import { buildCatalog3Snapshot } from "../src/lib/catalog-projections";
 
 const now = new Date();
 const state = createEmptyState(now);
-const beforeBytes = Buffer.byteLength(JSON.stringify(buildSnapshot(state, now)));
+const beforeBytes = Buffer.byteLength(JSON.stringify(buildCatalog3Snapshot(state, now)));
 for (const country of ["LV", "ES", "HR"] as const) {
   const diagnostics = createSourceDiagnostics();
   const started = performance.now();
@@ -31,7 +32,7 @@ for (const country of ["LV", "ES", "HR"] as const) {
     process.exitCode = 1;
   } finally { clearTimeout(timer); }
 }
-const afterBytes = Buffer.byteLength(JSON.stringify(buildSnapshot(state, now)));
-console.log(JSON.stringify({ snapshotV10: { beforeBytes, afterBytes, addedBytes: afterBytes - beforeBytes, warning: afterBytes > 300_000, hardLimitBytes: 500_000 },
+const afterBytes = Buffer.byteLength(JSON.stringify(buildCatalog3Snapshot(state, now)));
+console.log(JSON.stringify({ snapshotV11: { beforeBytes, afterBytes, addedBytes: afterBytes - beforeBytes, warning: afterBytes > 300_000, hardLimitBytes: 500_000 },
   note: "Isolated event projection against an empty local state; not a production snapshot or incident-detection rate." }));
 if (afterBytes > 500_000) process.exitCode = 1;

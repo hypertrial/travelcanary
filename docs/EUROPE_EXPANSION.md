@@ -1,5 +1,10 @@
 # Seventeen-country expansion — implementation record
 
+> Historical record. Catalog 3 is now the sole runtime and publication contract.
+> See [Architecture](ARCHITECTURE.md), [Operations](OPERATIONS.md), and the
+> [current publication contract](europe-expansion/publication.md). References
+> below to Catalog 2 and an in-progress rollout describe the pre-cutover design.
+
 This is an **in-progress implementation**, not a release announcement. Production
 still uses catalog 2 with 503 destinations in 28 countries. No new transport or
 destination is activated by the review inputs in this branch.

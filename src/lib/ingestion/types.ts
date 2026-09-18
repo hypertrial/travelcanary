@@ -1,5 +1,5 @@
 import type { CatalogLocation } from "../catalog-data";
-import { expandedReceiptSourceIds, type CatalogSourceResult, type IngestionStateV15 as IngestionState } from "../domain/catalog-state";
+import { expandedReceiptSourceIds, type CatalogSourceResult, type IngestionState } from "../domain/catalog-state";
 import type { CountryCode, SourceId } from "../domain/schemas";
 
 export type Cadence = "fast" | "slow" | "satellite" | "daily";

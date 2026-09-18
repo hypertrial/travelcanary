@@ -1,29 +1,20 @@
 import { z } from "zod";
 import catalog from "../../public/catalogs/3/locations.json";
 import packageJson from "../../package.json";
-import { ConditionsV3Schema, SnapshotV11Schema } from "./domain/catalog-public";
-import { catalogV3Paths } from "./catalog-paths";
-import { COLLECTOR_STATUS_KEY, LocalDatabase, readLocalPolicy } from "./local-storage";
-import { restrictedConditionSourceIds, restrictedSourceCount, restrictedSourcesActive } from "./local-policy";
-import { catalogV3CountryCodes } from "./domain/contract-identities";
-import { catalogLocationsV3 } from "./catalog-data";
-import { coverageCounts, requiredTransportFailures } from "./public-health";
-import { catalog3CoverageTarget, emptyCoverageCounts } from "./coverage-measurement";
+import { SnapshotV11Schema } from "./domain/catalog-public";
+import { COLLECTOR_STATUS_KEY, LocalDatabase } from "./local-storage";
+import { restrictedSourceCount } from "./local-policy";
+import { readCurrentPublication, readPublishedObject, type PublicationStore } from "./publication-store";
 
 export const CollectorStatusSchema = z.object({
-  schemaVersion: z.literal(1),
-  state: z.enum(["starting", "running", "idle", "failed", "stopping"]),
-  lastHeartbeat: z.string().datetime({ offset: true }),
-  lastSuccess: z.string().datetime({ offset: true }).nullable(),
+  schemaVersion: z.literal(1), state: z.enum(["starting", "running", "idle", "failed", "stopping"]),
+  lastHeartbeat: z.string().datetime({ offset: true }), lastSuccess: z.string().datetime({ offset: true }).nullable(),
   lastOperation: z.enum(["fast", "slow", "conditions", "satellite", "daily", "maintenance"]).nullable(),
   lastError: z.string().max(300).nullable(),
   completedAt: z.object({
-    fast: z.string().datetime({ offset: true }).optional(),
-    slow: z.string().datetime({ offset: true }).optional(),
-    conditions: z.string().datetime({ offset: true }).optional(),
-    satellite: z.string().datetime({ offset: true }).optional(),
-    daily: z.string().datetime({ offset: true }).optional(),
-    maintenance: z.string().datetime({ offset: true }).optional(),
+    fast: z.string().datetime({ offset: true }).optional(), slow: z.string().datetime({ offset: true }).optional(),
+    conditions: z.string().datetime({ offset: true }).optional(), satellite: z.string().datetime({ offset: true }).optional(),
+    daily: z.string().datetime({ offset: true }).optional(), maintenance: z.string().datetime({ offset: true }).optional(),
   }).strict().default({}),
 }).strict();
 export type CollectorStatus = z.infer<typeof CollectorStatusSchema>;
@@ -45,119 +36,24 @@ export function readCollectorStatus(database: LocalDatabase) {
 const levelRank = { SEVERE: 5, HIGH: 4, ELEVATED: 3, UNKNOWN: 2, NORMAL: 1 } as const;
 const names = new Map(catalog.map((location) => [location.id, location]));
 
-function publishedRestrictedSources(database: LocalDatabase) {
-  for (const countryCode of catalogV3CountryCodes) {
-    const row = database.readPublic(`${catalogV3Paths.conditions}${countryCode}.json`);
-    if (!row) continue;
-    const conditions = ConditionsV3Schema.parse(JSON.parse(row.value));
-    if (Object.keys(conditions.sources).some((id) => restrictedConditionSourceIds.has(id))) return true;
-  }
-  return false;
-}
-
-export function localHealth(database: LocalDatabase, now = new Date()) {
-  const collector = readCollectorStatus(database);
-  const snapshotRow = database.readPublic(catalogV3Paths.snapshot);
-  let snapshot: z.infer<typeof SnapshotV11Schema> | null = null;
-  try { snapshot = snapshotRow ? SnapshotV11Schema.parse(JSON.parse(snapshotRow.value)) : null; } catch {}
-  const snapshotTime = Date.parse(snapshot?.generatedAt || "");
-  const snapshotAgeMinutes = Number.isFinite(snapshotTime) ? Math.max(0, Math.floor((now.getTime() - snapshotTime) / 60_000)) : 0;
-  const snapshotOk = Boolean(snapshot && now.getTime() - snapshotTime <= 120 * 60_000 && snapshotTime <= now.getTime() + 5 * 60_000);
-  const overdueCountryCodes: string[] = []; const producerCommits = new Set<string | null>(); let present = 0;
-  for (const countryCode of catalogV3CountryCodes) {
-    try {
-      const row = database.readPublic(`${catalogV3Paths.conditions}${countryCode}.json`);
-      if (!row) throw new Error("missing conditions");
-      const conditions = ConditionsV3Schema.parse(JSON.parse(row.value));
-      const generatedAt = Date.parse(conditions.generatedAt);
-      if (conditions.countryCode !== countryCode || now.getTime() - generatedAt > 75 * 60_000 || generatedAt > now.getTime() + 5 * 60_000) {
-        throw new Error("invalid conditions");
-      }
-      producerCommits.add(conditions.producerCommitSha); present += 1;
-    } catch { overdueCountryCodes.push(countryCode); }
-  }
-  const expectedCommit = process.env.TRAVELCANARY_RELEASE_SHA || process.env.VERCEL_GIT_COMMIT_SHA;
-  const releaseMismatch = producerCommits.size > 1 || Boolean(expectedCommit
-    && [...producerCommits].some((commit) => !commit?.startsWith(expectedCommit.toLowerCase())));
-  const failedTransports = snapshot ? requiredTransportFailures(snapshot, catalogLocationsV3, now) : ["snapshot/unavailable"];
-  const emptyCoverage = emptyCoverageCounts();
-  const coverage = snapshot ? coverageCounts(snapshot, catalogLocationsV3, now) : { ...emptyCoverage, tiers: { lifeSafety: { ...emptyCoverage } } };
-  const coverageOk = coverage.applicable === catalog3CoverageTarget.allHazards.applicable
-    && coverage.fullyChecked >= catalog3CoverageTarget.allHazards.fullyChecked
-    && coverage.fullyChecked + coverage.partlyChecked >= catalog3CoverageTarget.allHazards.coveredOrPartial
-    && coverage.tiers.lifeSafety.applicable === catalog3CoverageTarget.lifeSafety.applicable
-    && coverage.tiers.lifeSafety.fullyChecked >= catalog3CoverageTarget.lifeSafety.fullyChecked
-    && coverage.tiers.lifeSafety.fullyChecked + coverage.tiers.lifeSafety.partlyChecked >= catalog3CoverageTarget.lifeSafety.coveredOrPartial;
-  const heartbeatAge = collector ? now.getTime() - Date.parse(collector.lastHeartbeat) : Number.POSITIVE_INFINITY;
-  const warming = !collector?.lastSuccess || (snapshot && Object.values(snapshot.locations).every(({ level }) => level === "UNKNOWN"));
-  const degraded = collector?.state === "failed" || heartbeatAge > 3 * 60_000 || !snapshotOk
-    || present !== catalogV3CountryCodes.length || overdueCountryCodes.length > 0 || releaseMismatch || failedTransports.length > 0 || !coverageOk;
-  return {
-    schemaVersion: 1 as const,
-    status: degraded ? "degraded" as const : warming ? "warming" as const : "ok" as const,
-    runtime: "sqlite" as const,
-    catalogVersion: 3 as const,
-    checkedAt: now.toISOString(),
-    checks: {
-      snapshot: { status: snapshotOk ? "ok" as const : "failed" as const, ageMinutes: snapshotAgeMinutes },
-      catalog: { status: snapshot ? "ok" as const : "failed" as const, expectedLocations: catalogLocationsV3.length,
-        actualLocations: snapshot ? Object.keys(snapshot.locations).length : 0 },
-      conditions: { status: present === catalogV3CountryCodes.length && !overdueCountryCodes.length && !releaseMismatch ? "ok" as const : "failed" as const,
-        expected: catalogV3CountryCodes.length, present, overdueCountryCodes },
-      transports: { status: failedTransports.length ? "failed" as const : "ok" as const, failed: failedTransports },
-      coverage: { status: coverageOk ? "ok" as const : "failed" as const, minimums: catalog3CoverageTarget },
-    },
-    coverage,
-    database: { available: Boolean(snapshot), writable: true },
-    collector: collector ? {
-      state: collector.state,
-      lastHeartbeat: collector.lastHeartbeat,
-      lastSuccess: collector.lastSuccess,
-      lastOperation: collector.lastOperation,
-    } : { state: "unavailable" as const, lastHeartbeat: null, lastSuccess: null, lastOperation: null },
-  };
-}
-
-export function localPluginSummary(database: LocalDatabase, now = new Date()) {
-  const health = localHealth(database, now);
-  const row = database.readPublic(catalogV3Paths.snapshot);
-  if (!row) throw new Error("Public snapshot is unavailable");
-  const snapshot = SnapshotV11Schema.parse(JSON.parse(row.value));
-  const policy = readLocalPolicy(database).policy;
-  const restrictedAccepted = restrictedSourcesActive(policy);
-  const restrictedPublished = publishedRestrictedSources(database);
-  const restrictedActive = restrictedAccepted || restrictedPublished;
+export async function publishedPluginSummary(store: PublicationStore, now = new Date()) {
+  const current = await readCurrentPublication(store);
+  if (!current) throw new Error("Public snapshot is unavailable");
+  const snapshot = SnapshotV11Schema.parse(JSON.parse(await readPublishedObject(store, current.manifest.snapshot)));
   const counts = { NORMAL: 0, ELEVATED: 0, HIGH: 0, SEVERE: 0, UNKNOWN: 0 };
   for (const value of Object.values(snapshot.locations)) counts[value.level] += 1;
   const destinations = Object.entries(snapshot.locations).map(([id, state]) => ({
-    id,
-    name: names.get(id)?.name || id,
-    countryCode: names.get(id)?.countryCode || id.slice(0, 2).toUpperCase(),
-    level: state.level,
-    updatePending: "updatePending" in state && state.updatePending === true,
+    id, name: names.get(id)?.name || id, countryCode: names.get(id)?.countryCode || id.slice(0, 2).toUpperCase(),
+    level: state.level, updatePending: "updatePending" in state && state.updatePending === true,
   })).filter(({ level, updatePending }) => level !== "NORMAL" || updatePending)
     .sort((a, b) => levelRank[b.level] - levelRank[a.level] || Number(b.updatePending) - Number(a.updatePending) || a.name.localeCompare(b.name))
     .slice(0, 10);
-  const age = now.getTime() - Date.parse(snapshot.generatedAt);
-  const allPending = Object.values(snapshot.locations).every(({ level }) => level === "UNKNOWN");
-  const freshness = allPending || health.status === "warming" ? "warming" : health.status === "degraded" || age > 30 * 60_000 || snapshot.dataHealth !== "complete" ? "delayed" : "fresh";
+  const delayed = now.getTime() - Date.parse(snapshot.generatedAt) > 30 * 60_000 || current.manifest.status.state === "degraded";
   return {
-    schemaVersion: 1 as const,
-    appVersion: packageJson.version,
-    catalogVersion: 3 as const,
-    health: health.status,
-    freshness,
+    schemaVersion: 1 as const, appVersion: packageJson.version, catalogVersion: 3 as const,
+    health: delayed ? "degraded" as const : "ok" as const, freshness: delayed ? "delayed" as const : "fresh" as const,
     generatedAt: snapshot.generatedAt,
-    restrictedSources: {
-      active: restrictedActive,
-      count: restrictedSourceCount,
-      disclosure: restrictedAccepted
-        ? "This instance uses operator-accepted restricted, noncommercial data sources."
-        : restrictedPublished
-          ? "Published data still includes restricted, noncommercial sources while collection is disabled."
-          : null,
-    },
-    counts: { ...counts, attention: counts.ELEVATED + counts.HIGH + counts.SEVERE + counts.UNKNOWN },
-    destinations,
+    restrictedSources: { active: false, count: restrictedSourceCount, disclosure: null },
+    counts: { ...counts, attention: counts.ELEVATED + counts.HIGH + counts.SEVERE + counts.UNKNOWN }, destinations,
   };
 }

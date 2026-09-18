@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createEmptyState, mergeExpandedSourceReceipt, mergeSourceResults } from "@/lib/risk-state";
-import { CatalogPartitionedSourceResultSchema, EA_FLOOD_GEOMETRY_CACHE_LIMIT, IngestionStateV15Schema } from "@/lib/domain/catalog-state";
+import { CatalogPartitionedSourceResultSchema, EA_FLOOD_GEOMETRY_CACHE_LIMIT, IngestionStateV16Schema } from "@/lib/domain/catalog-state";
 import type { AggregateSourceResult } from "@/lib/domain/schemas";
 import release2 from "../../data/catalog-releases/2.json";
 import release3 from "../../data/catalog-releases/3.json";
@@ -22,7 +22,7 @@ describe("expanded source receipt merging", () => {
     const value = state(); mergeExpandedSourceReceipt(value, result("failed", 0));
     expect(value.expandedSourceHealth.usgs).toMatchObject({ checkedLocationIds: [], unavailableLocationIds: [...ids].sort(),
       health: { status: "failed", lastAttempt: now.toISOString(), lastSuccess: null, sourceUpdatedAt: null, consecutiveFailures: 1 } });
-    expect(IngestionStateV15Schema.safeParse(value).success).toBe(true);
+    expect(IngestionStateV16Schema.safeParse(value).success).toBe(true);
   });
 
   it("records exact partial cohort checks without mutating the adapter result", () => {
@@ -30,7 +30,7 @@ describe("expanded source receipt merging", () => {
     mergeExpandedSourceReceipt(value, input);
     expect(value.expandedSourceHealth.usgs).toMatchObject({ checkedLocationIds: ids.slice(0, 37).sort(), unavailableLocationIds: ids.slice(37).sort(),
       health: { status: "partial", lastAttempt: now.toISOString(), lastSuccess: now.toISOString(), sourceUpdatedAt: now.toISOString(), itemCount: 0 } });
-    expect(input).toEqual(before); expect(IngestionStateV15Schema.safeParse(value).success).toBe(true);
+    expect(input).toEqual(before); expect(IngestionStateV16Schema.safeParse(value).success).toBe(true);
   });
 
   it("retains last known successful source freshness after a newer failed attempt", () => {
@@ -39,7 +39,7 @@ describe("expanded source receipt merging", () => {
     expect(value.expandedSourceHealth.usgs!.health).toMatchObject({ lastAttempt: failure.checkedAt, lastSuccess: success.health.lastSuccess,
       sourceUpdatedAt: success.health.sourceUpdatedAt, consecutiveFailures: 1 });
     expect(value.expandedSourceHealth.usgs!.checkedLocationIds).toEqual([]);
-    expect(IngestionStateV15Schema.safeParse(value).success).toBe(true);
+    expect(IngestionStateV16Schema.safeParse(value).success).toBe(true);
   });
 
   it("ignores stale and same-time replays, including a contradictory replayed result", () => {
@@ -55,11 +55,6 @@ describe("expanded source receipt merging", () => {
     expect(mergeSourceResults(first, [replay], now)).toEqual(before);
   });
 
-  it("does not refresh or remove expanded receipts during legacy collection", () => {
-    const value = state(); mergeExpandedSourceReceipt(value, result("ok", 176)); value.collection = { catalogVersion: 2, revision: 2 };
-    const before = structuredClone(value); mergeExpandedSourceReceipt(value, result("failed", 0, 1)); expect(value).toEqual(before);
-  });
-
   it("excludes disabled country scope from a catalog receipt aggregate", () => {
     const value = state();
     const partitions = Object.fromEntries(catalogV3CountryCodes.map((code) => [code, { status: "disabled", sourceUpdatedAt: null,
@@ -73,7 +68,7 @@ describe("expanded source receipt merging", () => {
     const input = CatalogPartitionedSourceResultSchema.parse({ sourceId: "meteoalarm", checkedAt: now.toISOString(), partitions });
     const merged = mergeSourceResults(value, [input], now);
     expect(merged.collectionReceipts[3].meteoalarm).toMatchObject({ status: "ok", checkedLocationIds: ["ad-andorra-la-vella"], unavailableLocationIds: [] });
-    expect(IngestionStateV15Schema.safeParse(merged).success).toBe(true);
+    expect(IngestionStateV16Schema.safeParse(merged).success).toBe(true);
   });
 
   it("persists validated Environment Agency geometry independently of active events", () => {
@@ -89,7 +84,7 @@ describe("expanded source receipt merging", () => {
 
     expect(merged.frozenEaFloodAreaGeometries.area1).toHaveLength(1);
     expect(merged.events).toEqual([]);
-    expect(IngestionStateV15Schema.safeParse(merged).success).toBe(true);
+    expect(IngestionStateV16Schema.safeParse(merged).success).toBe(true);
   });
 
   it("does not turn an all-unavailable partial transport into fresh health", () => {
@@ -128,7 +123,7 @@ describe("expanded source receipt merging", () => {
     expect(Buffer.byteLength(JSON.stringify(merged.frozenEaFloodAreaGeometries))).toBeLessThanOrEqual(EA_FLOOD_GEOMETRY_CACHE_LIMIT);
     expect(Buffer.byteLength(JSON.stringify(merged))).toBeLessThan(5_000_000);
     expect(reversedMerged.frozenEaFloodAreaGeometries).toEqual(merged.frozenEaFloodAreaGeometries);
-    expect(IngestionStateV15Schema.safeParse(merged).success).toBe(true);
+    expect(IngestionStateV16Schema.safeParse(merged).success).toBe(true);
   });
 
   it.each(["missing", "duplicate", "overlap", "failed checked"])("rejects incomplete or contradictory cohort scope %s without changing state", (mode) => {

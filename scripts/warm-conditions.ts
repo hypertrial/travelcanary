@@ -31,7 +31,7 @@ async function main() {
   const nextAction = conditionsWarmNextAction(response.ok, result.status, verification);
   console.log(JSON.stringify({ status: response.status, result, verification: {
     status: verification.status, blockers: verification.blockers, warnings: verification.warnings,
-    releaseSha: verification.metrics.releaseSha, conditions: verification.metrics.conditions,
+    releaseSha: verification.metrics.releaseSha, conditionsCountries: verification.metrics.conditionsCountries,
   }, nextAction }, null, 2));
   if (!response.ok || result.status === "partial" || verification.blockers.length) process.exitCode = 1;
 }

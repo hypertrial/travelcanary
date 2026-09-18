@@ -1,4 +1,4 @@
-import { assertCatalog2Collection, type IngestionStateV15 as IngestionState } from "../domain/catalog-state";
+import { assertCatalog2Collection, type IngestionStateV15, type IngestionStateV16 } from "../domain/catalog-state";
 import { countryCodes, } from "../domain/schemas";
 import { locations } from "../data";
 import { CONDITIONS_CACHE_LIMIT, CONDITIONS_COUNTRY_LIMIT, CONDITIONS_TOTAL_LIMIT, ConditionsSchema, conditionRecords, conditionSourceAppliesToCountry, emptyConditions, type Conditions, type LocationConditions } from "../domain/conditions";
@@ -10,8 +10,9 @@ import { currentConditions } from "./presentation";
 export { currentConditions } from "./presentation";
 
 const forecastHealthSources = new Set(["open-meteo-weather", "open-meteo-air", "open-meteo-marine", "met-norway"]);
+type ConditionsState = IngestionStateV15 | IngestionStateV16;
 
-export function fitConditionsState(state: IngestionState, now: Date) {
+export function fitConditionsState<T extends ConditionsState>(state: T, now: Date): T {
   state.conditions.reservations = state.conditions.reservations.filter((item) => Date.parse(item.at) > now.getTime() - 24 * 3_600_000);
   for (const [id, value] of Object.entries(state.conditions.locations)) {
     const current = currentConditions(value, now);
@@ -37,12 +38,12 @@ export function fitConditionsState(state: IngestionState, now: Date) {
   return state;
 }
 
-export function buildConditionsFiles(state: IngestionState, now: Date, env: Record<string, string | undefined> = process.env): Conditions[] {
-  assertCatalog2Collection(state);
-  return projectCatalog2Conditions(state, now, env);
+export function buildConditionsFiles(state: ConditionsState, now: Date, env: Record<string, string | undefined> = process.env): Conditions[] {
+  if (state.collection.catalogVersion === 2) assertCatalog2Collection(state);
+  return projectCoreConditions(state, now, env);
 }
 
-export function projectCatalog2Conditions(state: IngestionState, now: Date, env: Record<string, string | undefined> = process.env): Conditions[] {
+export function projectCoreConditions(state: ConditionsState, now: Date, env: Record<string, string | undefined> = process.env): Conditions[] {
   const files = countryCodes.map((countryCode) => {
     const entries = Object.fromEntries(locations.filter((location) => location.countryCode === countryCode).map((location) => {
       const data = currentConditions(state.conditions.locations[location.id] || emptyConditions(), now, (id) => conditionSourceEnabled(id, env));
@@ -68,7 +69,10 @@ export function projectCatalog2Conditions(state: IngestionState, now: Date, env:
   return files;
 }
 
-export function availableForecastWeight(state: IngestionState, now: Date) {
+/** Frozen migration/test alias. Active Catalog 3 runtime imports projectCoreConditions. */
+export const projectCatalog2Conditions = projectCoreConditions;
+
+export function availableForecastWeight(state: ConditionsState, now: Date) {
   if (state.conditions.cooldownUntil && Date.parse(state.conditions.cooldownUntil) > now.getTime()) return 0;
   return Math.max(0, Math.min(...[[60_000, 400], [3_600_000, 2000], [24 * 3_600_000, 8000]].map(([window, limit]) =>
     limit - state.conditions.reservations.filter((item) => Date.parse(item.at) > now.getTime() - window).reduce((sum, item) => sum + item.weight, 0))));

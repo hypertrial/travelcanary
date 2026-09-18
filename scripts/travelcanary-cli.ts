@@ -4,15 +4,14 @@ import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSy
 import { homedir } from "node:os";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { initializeLocalRuntime, localDatabasePath, LocalDatabase, publicObjectLimit, readLocalPolicy, writeLocalPolicy } from "../src/lib/local-storage";
+import { initializeLocalRuntime, localDatabasePath, LocalDatabase, readLocalPolicy, writeLocalPolicy } from "../src/lib/local-storage";
 import { disabledLocalPolicy, LocalRuntimePolicySchema, restrictedSourceManifestDigest } from "../src/lib/local-policy";
-import { localHealth } from "../src/lib/local-status";
 import { writeNativeFiles } from "../src/lib/native-setup";
 import { parseCatalogState } from "../src/lib/domain/catalog-state";
-import { ConditionsV3Schema, SnapshotV11Schema } from "../src/lib/domain/catalog-public";
-import { catalogV3Paths } from "../src/lib/catalog-paths";
-import { catalogV3CountryCodes } from "../src/lib/domain/contract-identities";
 import { PRIVATE_STATE_HARD_LIMIT_BYTES } from "../src/lib/ingestion/limits";
+import { FilePublicationStore } from "../src/lib/publication-store";
+import { checkPublicationHealth } from "../src/lib/public-health";
+import { runtimePaths } from "../src/lib/runtime-paths";
 // @ts-expect-error Shared JavaScript CLI helper has no declaration file.
 import { fetchHealth } from "./fetch-health.mjs";
 
@@ -70,9 +69,9 @@ async function setup(args: string[]) {
   exactNativeVersions();
   if (process.env.TRAVELCANARY_DEPENDENCIES_READY !== "true") run("npm", ["ci"]);
   const paths = writeNativeFiles({ home: homedir(), repository, node: process.execPath, port });
-  const env = { ...process.env, TRAVELCANARY_RUNTIME: "local", TRAVELCANARY_DATA_DIR: paths.dataDirectory,
-    NEXT_PUBLIC_CATALOG_VERSION: "3", NEXT_PUBLIC_DATA_MODE: "live", LOCAL_CONDITIONS_ENABLED: "true" };
-  const database = new LocalDatabase(localDatabasePath(env)); initializeLocalRuntime(database, new Date(), env); database.close();
+  const env = { ...process.env, TRAVELCANARY_RUNTIME: "local", TRAVELCANARY_PRIVATE_DATA_DIR: paths.privateDirectory,
+    TRAVELCANARY_PUBLIC_DATA_DIR: paths.publicDirectory, TRAVELCANARY_CACHE_DIR: paths.cacheDirectory, LOCAL_CONDITIONS_ENABLED: "true" };
+  const database = new LocalDatabase(localDatabasePath(env)); initializeLocalRuntime(database, new Date()); database.close();
   run("npm", ["run", "build"], { env });
   run("systemctl", ["--user", "daemon-reload"]);
   run("systemctl", ["--user", "enable", "--now", "travelcanary-web.service", "travelcanary-collector.service"]);
@@ -90,8 +89,8 @@ async function status() {
       return;
     } catch { fail(`TravelCanary is unavailable at http://127.0.0.1:${install.port}`); }
   }
-  const database = new LocalDatabase();
-  try { initializeLocalRuntime(database); console.log(JSON.stringify(localHealth(database), null, 2)); } finally { database.close(); }
+  const paths = runtimePaths(process.env, false);
+  console.log(JSON.stringify(await checkPublicationHealth(new FilePublicationStore(paths.publicRoot), { runtime: "filesystem" }), null, 2));
 }
 
 function directPolicy(action: string) {
@@ -156,7 +155,7 @@ function validateBackup(path: string) {
     if (integrity.length !== 1 || integrity[0].quick_check !== "ok") throw new Error("Backup failed SQLite integrity validation");
     const decode = (value: Uint8Array | string) => typeof value === "string" ? value : Buffer.from(value).toString("utf8");
     const select = candidate.prepare("SELECT value FROM objects WHERE namespace=? AND key=?");
-    const required = <T>(scope: "private" | "public", key: string, maxBytes: number, parse: (value: unknown) => T) => {
+    const required = <T>(scope: "private", key: string, maxBytes: number, parse: (value: unknown) => T) => {
       const row = select.get(scope, key) as { value?: Uint8Array | string } | undefined;
       if (!row?.value) throw new Error(`Backup is missing required ${scope} object ${key}`);
       const raw = decode(row.value);
@@ -166,13 +165,6 @@ function validateBackup(path: string) {
     const state = required("private", "ingestion/state.json", PRIVATE_STATE_HARD_LIMIT_BYTES, parseCatalogState);
     if (state.collection.catalogVersion !== 3) throw new Error("Backup catalog is not supported");
     required("private", "runtime/policy.json", 4096, LocalRuntimePolicySchema.parse);
-    required("public", catalogV3Paths.snapshot, publicObjectLimit(catalogV3Paths.snapshot), SnapshotV11Schema.parse);
-    required("public", catalogV3Paths.previousSnapshot, publicObjectLimit(catalogV3Paths.previousSnapshot), SnapshotV11Schema.parse);
-    for (const countryCode of catalogV3CountryCodes) {
-      const key = `${catalogV3Paths.conditions}${countryCode}.json`;
-      const conditions = required("public", key, publicObjectLimit(key), ConditionsV3Schema.parse);
-      if (conditions.countryCode !== countryCode) throw new Error(`Backup conditions object ${key} has the wrong country`);
-    }
   } finally { candidate.close(); }
 }
 

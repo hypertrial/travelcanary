@@ -15,16 +15,15 @@ export const HEAVY_VITEST_FILES = [
   "tests/unit/catalog3-demo.test.ts",
   "tests/unit/catalog3-conditions-projection.test.ts",
   "tests/unit/catalog3-conditions-serialization.test.ts",
-  "tests/unit/catalog3-production-verification.test.ts",
-  "tests/unit/catalog-publication.test.ts",
-  "tests/unit/legacy-demo-generator.test.ts",
+  "tests/unit/production-verification.test.ts",
+  "tests/unit/atomic-publication.test.ts",
   "tests/unit/avalanche-mapping.test.ts",
   "tests/unit/europe-expansion-capacity.test.ts",
   "tests/unit/europe-populated-capacity.test.ts",
   "tests/unit/warning-expansion.test.ts",
 ];
 
-export const CATALOG_DIST_DIRS: Record<number, string> = { 2: ".next-c2", 3: ".next-c3" };
+export const CATALOG_DIST_DIRS: Record<number, string> = { 3: ".next-c3" };
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const npmBin = process.platform === "win32" ? "npm.cmd" : "npm";
@@ -168,15 +167,14 @@ async function waitForUrl(url: string, child: ChildProcess) {
   throw new Error(`Server did not become ready at ${url}`);
 }
 
-async function startProductionServer({ distDir, port, catalogVersion }: { distDir: string; port: number; catalogVersion: number }) {
+async function startProductionServer({ distDir, port }: { distDir: string; port: number }) {
   const child = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-H", "127.0.0.1", "-p", String(port)], {
     cwd: root,
     env: {
       ...process.env,
       NODE_ENV: "production",
       NEXT_DIST_DIR: distDir,
-      NEXT_PUBLIC_DATA_MODE: "demo",
-      NEXT_PUBLIC_CATALOG_VERSION: String(catalogVersion),
+      VERCEL_ENV: "preview",
     },
     stdio: ["ignore", "pipe", "pipe"],
   });
@@ -187,8 +185,8 @@ async function startProductionServer({ distDir, port, catalogVersion }: { distDi
   const origin = `http://127.0.0.1:${port}`;
   try {
     const html = await waitForUrl(origin, child);
-    if (!catalogHtmlMatches(html, catalogVersion)) {
-      throw new Error(`Production server at ${origin} is not catalog ${catalogVersion}`);
+    if (!catalogHtmlMatches(html, 3)) {
+      throw new Error(`Production server at ${origin} is not catalog 3`);
     }
     if (looksLikeNextDev(html)) {
       throw new Error(`Refusing to attach browser checks to a development server at ${origin}`);
@@ -240,17 +238,15 @@ async function fastLane() {
   await vitestHeavy();
 }
 
-async function catalogPipeline(version: number) {
-  const distDir = distDirForCatalog(version);
+async function catalogPipeline() {
+  const version = 3; const distDir = distDirForCatalog(version);
   const buildEnv = {
-    NEXT_PUBLIC_CATALOG_VERSION: String(version),
-    NEXT_PUBLIC_DATA_MODE: "demo",
     VERCEL_ENV: "preview",
     NEXT_DIST_DIR: distDir,
   };
   await npmRun("build", [], { name: `next build catalog ${version}`, env: buildEnv });
   const port = await availablePort();
-  const server = await startProductionServer({ distDir, port, catalogVersion: version });
+  const server = await startProductionServer({ distDir, port });
   try {
     await npmRun("perf:assets", [], {
       name: `perf:assets catalog ${version}`,
@@ -312,10 +308,9 @@ export async function runCheck(mode: "fast" | "full", env: NodeJS.Dict<string> =
     await fastLane();
     if (mode === "full") {
       const audit = npmRun("check:audit", [], { name: "npm audit" });
-      const catalog2 = catalogPipeline(2);
-      await Promise.all([audit, catalog2]);
+      const catalog3 = catalogPipeline();
+      await Promise.all([audit, catalog3]);
       await npmRun("perf:bench");
-      await catalogPipeline(3);
     }
     return printEvidence(mode, started);
   } finally {

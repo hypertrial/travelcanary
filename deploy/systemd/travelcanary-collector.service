@@ -1,0 +1,26 @@
+[Unit]
+Description=TravelCanary writer-only collector
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=@REPOSITORY@
+EnvironmentFile=@COLLECTOR_ENVIRONMENT_FILE@
+ExecStart=@NODE@ --import tsx @REPOSITORY@/scripts/collector.ts
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictSUIDSGID=true
+ReadWritePaths=@PRIVATE_DIRECTORY@ @PUBLIC_DIRECTORY@ @CACHE_DIRECTORY@
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=120
+
+[Install]
+WantedBy=default.target

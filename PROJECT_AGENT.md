@@ -1,36 +1,24 @@
 # TravelCanary project notes
 
-This checkout is the canonical public application (`hypertrial/travelcanary`).
-Pad work for it shares `travelcanary-risk-engineering` with the private
-`travelcanary-risk` wrapper. Every Work item in that workspace MUST start with
-`Repository: travelcanary`.
+This checkout is the canonical public application (`hypertrial/travelcanary`). Pad work shares the `travelcanary-vercel-engineering` workspace with the private `travelcanary-vercel` wrapper. Every Work or Plan item must begin with its repository name.
 
-Public application work stays in this repository. Private wrapper operations
-(`docs/OPERATIONS.md`, environment examples, Vercel configuration, the `app/`
-submodule pin, `PUBLIC_APP_COMMIT`) stay in `travelcanary-risk`. Never copy
-private wrapper content into this public repository.
-
-Use the workspace from `.pad.toml`. Follow `AGENTS.md` and the local
-`pad-engineering` skill.
+The public repository owns all application code, deployment configuration, environment-variable documentation, Docker/systemd support, and generated public/demo data. The private wrapper owns only the exact `travelcanary/` gitlink, Pad metadata, wrapper verification, and concise private deployment notes. Never copy private deployment evidence, credentials, or operator state into this repository.
 
 ## Invariants
 
-- Preserve the public/private data boundary documented in `docs/DATA_POLICY.md`
-  and `PUBLIC_PROVENANCE.md`.
-- Never commit credentials, local databases, backups, raw upstream captures, or
-  operator state.
-- Keep Snapshot V10/V11 and Conditions V2/V3 wire contracts backward compatible.
-- Treat generated catalogs, mappings, and `data/source-inventory.json` as
-  reproducible artifacts; use their checked-in generators.
-- Do not enable gated or blocked sources without a completed source review,
-  bounded fixtures, and tests.
+- Preserve the public/private data boundary in `docs/DATA_POLICY.md` and `PUBLIC_PROVENANCE.md`.
+- Never commit credentials, local databases, backups, raw upstream captures, or operator state.
+- Keep Snapshot V11 and Conditions V3 wire contracts backward compatible.
+- Catalog 3 is the only active catalog; V1–V15 state readers are migration-only.
+- Only `catalogs/3/publication/latest.json` is mutable. Immutable objects and manifests never change.
+- The web process reads only public publication storage. The collector alone writes private state and public generations.
+- Treat catalogs, mappings, demo objects, and `data/source-inventory.json` as reproducible artifacts.
+- Do not enable gated or blocked sources without completed evidence, bounded fixtures, and tests.
 
 ## Verification
 
-Wrappers (do not rewrite without a dedicated ticket):
+- Development: `scripts/verify-fast`
+- Completion: `scripts/verify` from a clean exact-SHA checkout
+- Release: exact-SHA `npm run verify:production`, a green Vercel Preview, and production health/liveness
 
-- Fast: `npm run check:fast`
-- Completion: `npm run check:full` from a clean exact-SHA checkout before
-  release work
-
-Native GitHub CI is the independent verification source.
+Never push directly to `main`.
