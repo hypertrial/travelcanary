@@ -13,7 +13,9 @@ PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN
 TRAVELCANARY_PUBLICATION_URL
 ```
 
-`CRON_SECRET` must contain at least 32 random bytes. Preview and Development must receive none of these values; code still forces those environments to checked-in demo publication if production-looking values are accidentally injected. No Met Office or MeteoAlarm credential is required.
+For a direct deployment, Vercel supplies the producer identity through `VERCEL_GIT_COMMIT_SHA`. If the Vercel Root Directory points at this repository inside a deployment wrapper, also set the non-secret `TRAVELCANARY_RELEASE_SHA` to the wrapper's exact 40-character commit SHA. The collector and health verifier use that explicit identity instead of the public submodule SHA.
+
+`CRON_SECRET` must contain at least 32 random bytes. Preview and Development must receive none of the four sensitive values or the optional release override; code still forces those environments to checked-in demo publication if production-looking values are accidentally injected. No Met Office or MeteoAlarm credential is required.
 
 Initialize empty stores once from a secure operator environment:
 

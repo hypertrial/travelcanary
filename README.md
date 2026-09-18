@@ -44,6 +44,8 @@ Import this repository directly into a Vercel Pro project; no wrapper repository
 - `PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN`
 - `TRAVELCANARY_PUBLICATION_URL` — the public Blob `catalogs/3/publication/latest.json` URL
 
+Direct Vercel deployments use `VERCEL_GIT_COMMIT_SHA` as the publication producer. A deployment wrapper whose Root Directory is this repository as a submodule must additionally set `TRAVELCANARY_RELEASE_SHA` to the wrapper's exact 40-character commit SHA; that explicit identity takes precedence over the submodule SHA.
+
 The six schedules in `vercel.json` are inert outside Vercel Production. Initialize storage once with `npm run storage:init`, then run the six bounded routes with `npm run release:initialize` or let Vercel Cron run them. No Met Office or MeteoAlarm credential is required. See [Operations](docs/OPERATIONS.md).
 
 ## Verification
