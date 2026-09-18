@@ -9,6 +9,7 @@ import { readCollectorStatus, writeCollectorStatus, type CollectorStatus } from 
 import { FilePublicationStore } from "../src/lib/publication-store";
 import { runtimePaths } from "../src/lib/runtime-paths";
 import { acquireIngestionLease, newLeaseOwner, releaseIngestionLease } from "../src/lib/ingestion-lease";
+import { publicOperationSummary } from "../src/lib/operation-summary";
 
 export async function runLocalCollector(options: { once?: boolean } = {}) {
   if (process.env.TRAVELCANARY_RUNTIME !== "local") throw new Error("Collector requires TRAVELCANARY_RUNTIME=local");
@@ -52,11 +53,10 @@ export async function runLocalCollector(options: { once?: boolean } = {}) {
           : await runIngestion({ cadence: operation, adapters: sourceAdapters, stateStore: stores.stateStore,
             catalogPublication: stores.catalogPublication, lease: ingestionLease });
       lastSuccess = new Date().toISOString(); completedAt[operation] = lastSuccess; status("idle");
-      console.info(JSON.stringify({ event: "collector_complete", operation, result }));
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      status("failed", message);
-      console.error(JSON.stringify({ event: "collector_failed", operation, message }));
+      console.info(JSON.stringify({ event: "collector_complete", operation, ...publicOperationSummary(result) }));
+    } catch {
+      status("failed", "operation_failed");
+      console.error(JSON.stringify({ event: "collector_failed", operation, code: "operation_failed" }));
     } finally { await releaseIngestionLease(stores.stateStore, ingestionLease); }
   });
   if (options.once) {

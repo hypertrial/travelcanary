@@ -164,13 +164,23 @@ export class LocalStateStore implements StateStore {
     return { data, etag: String(row.revision), legacy, ...captureStateControl(data) };
   }
   async write(state: IngestionState, expected: Versioned<IngestionState>) {
-    if (expected.legacy?.schemaVersion === 15 && !this.database.read("private", "ingestion/state-v15-backup.json")) {
-      IngestionStateV15Schema.parse(JSON.parse(expected.legacy.raw));
-      this.database.compareAndSwap("private", "ingestion/state-v15-backup.json", expected.legacy.raw, null, PRIVATE_STATE_HARD_LIMIT_BYTES);
-    }
     const validated = IngestionStateV16Schema.parse({ ...state, stateRevision: state.stateRevision + 1 });
     assertStateControlChange(validated, expected);
     const value = JSON.stringify(validated);
+    if (expected.legacy?.schemaVersion === 15) {
+      const backup = JSON.stringify(IngestionStateV15Schema.parse(JSON.parse(expected.legacy.raw)));
+      const existing = this.database.read("private", "ingestion/state-v15-backup.json");
+      if (existing) {
+        const existingBody = JSON.stringify(IngestionStateV15Schema.parse(JSON.parse(existing.value)));
+        if (existingBody !== backup) throw new ConcurrencyError("V15 backup does not match the state being migrated");
+      } else {
+        const revisions = this.database.compareAndSwapBatch([
+          { scope: "private", key: "ingestion/state-v15-backup.json", value: backup, expectedRevision: null, maxBytes: PRIVATE_STATE_HARD_LIMIT_BYTES },
+          { scope: "private", key: STATE_KEY, value, expectedRevision: Number(expected.etag), maxBytes: PRIVATE_STATE_HARD_LIMIT_BYTES },
+        ]);
+        return { etag: String(revisions[1]) };
+      }
+    }
     const revision = this.database.compareAndSwap("private", STATE_KEY, value, Number(expected.etag), PRIVATE_STATE_HARD_LIMIT_BYTES);
     return { etag: String(revision) };
   }

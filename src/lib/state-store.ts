@@ -45,7 +45,9 @@ export class BlobStateStore implements StateStore {
     try { existing = await this.getBlob(pathname, { token: this.token, access: "private", useCache: false }); }
     catch (error) { if (!(error instanceof BlobNotFoundError)) throw error; }
     if (existing?.statusCode === 200 && existing.stream) {
-      IngestionStateV15Schema.parse(JSON.parse(await new Response(existing.stream).text())); return;
+      const existingBody = JSON.stringify(IngestionStateV15Schema.parse(JSON.parse(await new Response(existing.stream).text())));
+      if (existingBody !== body) throw new ConcurrencyError("V15 backup does not match the state being migrated");
+      return;
     }
     try {
       await this.putBlob(pathname, body, { token: this.token, access: "private", allowOverwrite: false,
@@ -55,7 +57,8 @@ export class BlobStateStore implements StateStore {
       try { raced = await this.getBlob(pathname, { token: this.token, access: "private", useCache: false }); }
       catch (readError) { if (!(readError instanceof BlobNotFoundError)) throw readError; }
       if (!raced || raced.statusCode !== 200 || !raced.stream) throw error;
-      IngestionStateV15Schema.parse(JSON.parse(await new Response(raced.stream).text()));
+      const racedBody = JSON.stringify(IngestionStateV15Schema.parse(JSON.parse(await new Response(raced.stream).text())));
+      if (racedBody !== body) throw new ConcurrencyError("V15 backup does not match the state being migrated");
     }
   }
   async write(state: IngestionState, expected: Versioned<IngestionState>) {

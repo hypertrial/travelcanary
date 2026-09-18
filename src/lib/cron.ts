@@ -8,6 +8,7 @@ import { runConditions } from "./conditions/worker";
 import type { Cadence } from "./ingestion/types";
 import { assertSourceRuntimeIntegrity } from "./ingestion/source-runtime";
 import { acquireIngestionLease, newLeaseOwner, releaseIngestionLease } from "./ingestion-lease";
+import { publicOperationSummary } from "./operation-summary";
 
 assertSourceRuntimeIntegrity();
 
@@ -46,8 +47,9 @@ async function handleCronRequest(request: Request, operation: Cadence | "mainten
       : operation === "maintenance"
       ? await runMaintenance({ ...stores, lease })
       : await runIngestion({ cadence: operation, adapters: sourceAdapters, ...stores, lease });
-    console.info(JSON.stringify({ event: "ingestion_complete", operation, status: summary.status }));
-    return Response.json(summary, { headers: { "Cache-Control": "no-store" } });
+    const response = publicOperationSummary(summary);
+    console.info(JSON.stringify({ event: "ingestion_complete", operation, ...response }));
+    return Response.json(response, { headers: { "Cache-Control": "no-store" } });
   } catch {
     console.error(JSON.stringify({ event: "ingestion_failed", operation, code: "operation_failed" }));
     return Response.json({ error: "Ingestion failed", code: "operation_failed" }, { status: 500, headers: { "Cache-Control": "no-store" } });

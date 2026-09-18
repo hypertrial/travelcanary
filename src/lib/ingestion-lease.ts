@@ -1,7 +1,20 @@
 import { randomUUID } from "node:crypto";
-import { ConcurrencyError, type StateStore } from "./state-store";
+import { ConcurrencyError, type StateStore, type Versioned } from "./state-store";
+import type { IngestionState } from "./domain/catalog-state";
 
 export type IngestionLease = { owner: string; fence: number; expiresAt: string; collectionRevision: number };
+
+export function assertVersionedIngestionLease(
+  current: Versioned<IngestionState>,
+  expected: IngestionLease,
+  now = new Date(),
+) {
+  const lease = current.data.ingestionLease;
+  if (!lease || lease.owner !== expected.owner || lease.fence !== expected.fence
+    || current.data.ingestionFence !== expected.fence || current.data.collection.revision !== expected.collectionRevision
+    || Date.parse(lease.expiresAt) <= now.getTime()) throw new ConcurrencyError("Ingestion lease was lost");
+  return current;
+}
 
 export function newLeaseOwner(prefix: string) {
   return `${prefix}:${randomUUID()}`;
@@ -34,12 +47,7 @@ export async function acquireIngestionLease(
 }
 
 export async function assertIngestionLease(store: StateStore, expected: IngestionLease, now = new Date()) {
-  const current = await store.read();
-  const lease = current.data.ingestionLease;
-  if (!lease || lease.owner !== expected.owner || lease.fence !== expected.fence
-    || current.data.ingestionFence !== expected.fence || current.data.collection.revision !== expected.collectionRevision
-    || Date.parse(lease.expiresAt) <= now.getTime()) throw new ConcurrencyError("Ingestion lease was lost");
-  return current;
+  return assertVersionedIngestionLease(await store.read(), expected, now);
 }
 
 export async function releaseIngestionLease(store: StateStore, expected: IngestionLease) {

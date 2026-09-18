@@ -13,7 +13,7 @@ import { MAX_EVENTS_PER_PARTITION, MAX_EVENTS_PER_SOURCE_RESULT, PRIVATE_STATE_H
 import { createSourceDiagnostics, isExpandedSourceAdapter, partitionExecutionStatus, type Cadence, type MutableSourceDiagnostics, type SourceAdapter, type SourceExecutionSummary } from "./types";
 import { expandedAdapterLocations, scopeAdapterResult } from "./collection-scope";
 import { fitConditionsState } from "../conditions/state";
-import type { IngestionLease } from "../ingestion-lease";
+import { assertVersionedIngestionLease, type IngestionLease } from "../ingestion-lease";
 
 type SourceExecution = { result: SourceResult; durationMs: number; diagnostics: MutableSourceDiagnostics };
 const SOURCE_PHASE_BUDGET_MS = 45_000;
@@ -37,16 +37,15 @@ function assertSourceResultLimits(results: SourceResult[]) {
 
 function rounded(value: number) { return Math.max(0, Math.round(value)); }
 
-function failedSourceResult(sourceId: SourceId, checkedAt: string, error: unknown, catalogVersion: 2 | 3): SourceResult {
-  const message = (error instanceof Error ? error.message : String(error)).slice(0, 300) || "Source failed unexpectedly";
+function failedSourceResult(sourceId: SourceId, checkedAt: string, code: "transport_disabled" | "transport_failed", catalogVersion: 2 | 3): SourceResult {
   if (sourceId === "meteoalarm" || sourceId === "eea" || sourceId === "national-civil-alerts") {
     const codes = catalogVersion === 3 ? catalogV3CountryCodes : countryCodes;
     const schema = catalogVersion === 3 ? CatalogPartitionedSourceResultSchema : PartitionedSourceResultSchema;
     return schema.parse({ sourceId, checkedAt, partitions: Object.fromEntries(codes.map((countryCode) => [countryCode, {
-      status: "failed", sourceUpdatedAt: null, events: [], error: message,
+      status: "failed", sourceUpdatedAt: null, events: [], error: code,
     }])) });
   }
-  return (catalogVersion === 3 ? ExpandedAggregateSourceResultSchema : AggregateSourceResultSchema).parse({ sourceId, checkedAt, sourceUpdatedAt: null, events: [], status: "failed", error: message });
+  return (catalogVersion === 3 ? ExpandedAggregateSourceResultSchema : AggregateSourceResultSchema).parse({ sourceId, checkedAt, sourceUpdatedAt: null, events: [], status: "failed", error: code });
 }
 
 // Also used by the catalog-3 runner: only explicitly reviewed adapters receive
@@ -60,8 +59,8 @@ export async function collectAdapterResult(adapter: SourceAdapter, state: Ingest
       ? adapter.fetch({ ...context, state, locations: expandedAdapterLocations(adapter, version) })
       : adapter.fetch({ ...context, state, locations: version === 3 ? catalogLocationsV3 : locations }));
     return scopeAdapterResult(adapter, version, result);
-  } catch (error) {
-    return scopeAdapterResult(adapter, version, failedSourceResult(adapter.id, context.now.toISOString(), error, version));
+  } catch {
+    return scopeAdapterResult(adapter, version, failedSourceResult(adapter.id, context.now.toISOString(), "transport_failed", version));
   }
 }
 
@@ -72,7 +71,7 @@ function sourceSummary(execution: SourceExecution): SourceExecutionSummary {
     events: result.events.length,
     durationMs: rounded(execution.durationMs),
     diagnostics: execution.diagnostics,
-    error: result.error,
+    error: result.error ? `source_${result.status}` : null,
   };
   const entries = Object.entries(result.partitions);
   const partialIds = entries.filter(([, partition]) => partition.status === "partial").map(([id]) => id as CountryCode);
@@ -80,11 +79,7 @@ function sourceSummary(execution: SourceExecution): SourceExecutionSummary {
   const disabled = entries.filter(([, partition]) => partition.status === "disabled").length;
   const succeeded = entries.filter(([, partition]) => partition.status === "ok").length;
   const status = partitionExecutionStatus(entries.map(([, partition]) => partition));
-  const error = [
-    partialIds.length ? `${partialIds.length} of ${entries.length} partitions partially unavailable` : null,
-    failedIds.length ? `${failedIds.length} of ${entries.length} partitions failed` : null,
-    disabled ? `${disabled} of ${entries.length} partitions readiness-gated` : null,
-  ].filter(Boolean).join("; ") || null;
+  const error = status === "ok" ? null : `source_${status}`;
   return {
     status,
     events: entries.reduce((total, [, partition]) => total + partition.events.length, 0),
@@ -112,6 +107,7 @@ export async function runIngestion(options: {
   const scheduled = options.adapters.filter((adapter) => adapter.cadence === options.cadence);
   const initialReadStarted = performance.now();
   const initialState = await options.stateStore.read();
+  assertVersionedIngestionLease(initialState, options.lease, now);
   const collection = assertSupportedCollection(initialState.data);
   const adapters = scheduled.filter((adapter) => {
     if (adapter.id !== "gdelt" || process.env.GDELT_ENABLED !== "true") return true;
@@ -138,7 +134,7 @@ export async function runIngestion(options: {
       // An operator transport stop consumes no request and retains unexpired
       // prior evidence through the existing failure lifecycle.
       const result = disabled.has(adapter.id)
-        ? scopeAdapterResult(adapter, collection.catalogVersion, failedSourceResult(adapter.id, now.toISOString(), new Error("transport_disabled"), collection.catalogVersion))
+        ? scopeAdapterResult(adapter, collection.catalogVersion, failedSourceResult(adapter.id, now.toISOString(), "transport_disabled", collection.catalogVersion))
         : await collectAdapterResult(adapter, initialState.data, {
           now, fetch: boundedFetch, deadlineAt, diagnostics,
         });
@@ -192,6 +188,7 @@ async function publishResults(options: {
       let phase = performance.now();
       const current = await options.stateStore.read();
       readMs += performance.now() - phase;
+      assertVersionedIngestionLease(current, options.lease, options.publicationClock?.() || new Date());
       assertSupportedCollection(current.data, options.collection);
       if (!committed) {
         phase = performance.now();

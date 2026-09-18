@@ -19,7 +19,7 @@ import { opwHydroEndpoint, opwHydroMappings, parseOpwHydrology } from "./opw";
 import { arsoHydroEndpoint, arsoHydroMappings, parseArsoHydrology } from "./arso-hydro";
 import { mergeInfrastructure, parseAutobahnInfrastructure, parseEacInfrastructure, parseEnemaltaInfrastructure, parseKrisinformationInfrastructure, parseNdwInfrastructure, parsePseEnergyCompass, rankInfrastructure } from "./infrastructure";
 import { autobahnRoadIds } from "./infrastructure-mapping";
-import type { IngestionLease } from "../ingestion-lease";
+import { assertVersionedIngestionLease, type IngestionLease } from "../ingestion-lease";
 
 type Batch = { kind: ForecastKind; ids: string[] };
 type FailureCode = "timeout" | "http_error" | "response_too_large" | "parse_failed" | "contract_mismatch" | "quota_exhausted" | "deadline_exhausted" | "unknown_failure";
@@ -74,9 +74,12 @@ export function forecastBatches(state: IngestionState, now: Date, env: Record<st
   });
 }
 
-async function releaseLease(stateStore: StateStore, leaseId: string, failedForecastAttempts: Set<string>, attemptAt: string, cooldown: string | null) {
+async function releaseLease(stateStore: StateStore, ingestionLease: IngestionLease, leaseId: string,
+  failedForecastAttempts: Set<string>, attemptAt: string, cooldown: string | null, now: () => Date) {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const latest = await stateStore.read();
+    try { assertVersionedIngestionLease(latest, ingestionLease, now()); }
+    catch (error) { if (error instanceof ConcurrencyError) return; throw error; }
     const ownsLease = latest.data.conditions.lease?.id === leaseId;
     const extendsCooldown = cooldown && Date.parse(cooldown) > Date.parse(latest.data.conditions.cooldownUntil || "1970-01-01T00:00:00Z");
     if (!ownsLease && !extendsCooldown) return;
@@ -99,6 +102,7 @@ export async function runConditions(options: {
   const started = performance.now();
   const deadline = Date.now() + 45_000;
   const now = options.now || new Date(); const env = options.env || process.env;
+  const leaseNow = () => options.now || new Date();
   conditionsDisabledSources(env.CONDITIONS_DISABLED_SOURCES);
   const leaseId = randomUUID();
   const attemptAt = now.toISOString();
@@ -111,6 +115,7 @@ export async function runConditions(options: {
   let batches: Batch[] = [];
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const versioned = await options.stateStore.read();
+    assertVersionedIngestionLease(versioned, options.lease, leaseNow());
     collection = assertCollection(versioned.data, collection);
     if (versioned.data.conditions.lease && Date.parse(versioned.data.conditions.lease.expiresAt) > now.getTime()) return { status: "skipped", code: "conditions_lease_held" };
     state = versioned.data;
@@ -242,6 +247,7 @@ export async function runConditions(options: {
       if (forecastFailure) throw forecastFailure;
       for (let attempt = 0; attempt < 3; attempt += 1) {
         const latest = await options.stateStore.read();
+        assertVersionedIngestionLease(latest, options.lease, leaseNow());
         if (forecastFailure) throw forecastFailure;
         try { assertCollection(latest.data, collection); }
         catch (error) {
@@ -520,6 +526,7 @@ export async function runConditions(options: {
   let committed: IngestionState | undefined;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const latest = await options.stateStore.read();
+    assertVersionedIngestionLease(latest, options.lease, leaseNow());
     assertCollection(latest.data, collection);
     if (latest.data.conditions.lease?.id !== leaseId) throw new Error("Conditions lease superseded");
     // Failed forecast attempts remain quota-accounted, but become due on the
@@ -569,6 +576,6 @@ export async function runConditions(options: {
     throw error;
   } finally {
     // Keep the lease through publication, but never force the next pass to wait after an error.
-    await releaseLease(options.stateStore, leaseId, failedForecastAttempts, attemptAt, cooldown);
+    await releaseLease(options.stateStore, options.lease, leaseId, failedForecastAttempts, attemptAt, cooldown, leaseNow);
   }
 }
