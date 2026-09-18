@@ -48,6 +48,20 @@ describe("atomic public generations", () => {
     expect(await store.list("catalogs/3/objects/sha256/", 100)).toHaveLength(46);
   });
 
+  it("uses an explicit wrapper release identity ahead of Vercel's public-submodule identity", async () => {
+    const store = new MemoryPublicationStore();
+    const stateStore = new MemoryStateStore(createEmptyState(now));
+    const lease = await acquireIngestionLease(stateStore, "wrapper-release-test", now, 330_000);
+    if (!lease) throw new Error("lease unavailable");
+    const wrapperSha = "b".repeat(40);
+    await publishCommittedCatalog({ stateStore, stores: { publicationStore: store },
+      collection: { catalogVersion: 3, revision: 1 }, lease, now, family: "all",
+      env: { VERCEL_GIT_COMMIT_SHA: "a".repeat(40), TRAVELCANARY_RELEASE_SHA: wrapperSha } });
+    const current = await readCurrentPublication(store);
+    expect(current?.pointer.producerCommitSha).toBe(wrapperSha);
+    expect(current?.manifest.producerCommitSha).toBe(wrapperSha);
+  });
+
   it("fences overlapping, expired, and stale writers", async () => {
     const stateStore = new MemoryStateStore(createEmptyState(now));
     const first = await acquireIngestionLease(stateStore, "writer-first", now, 60_000);

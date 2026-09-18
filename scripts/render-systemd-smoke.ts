@@ -27,6 +27,6 @@ writeFileSync(join(directory, "collector-environment"), [
 for (const name of ["travelcanary-web.service", "travelcanary-collector.service", "travelcanary-collector-once.service"]) {
   let unit = readFileSync(join("deploy/systemd", name), "utf8");
   for (const [placeholder, value] of Object.entries(replacements)) unit = unit.replaceAll(placeholder, value);
-  if (unit.includes("@")) throw new Error(`Unresolved systemd placeholder in ${name}`);
+  if (/@[A-Z_]+@/.test(unit)) throw new Error(`Unresolved systemd placeholder in ${name}`);
   const output = join(directory, name); writeFileSync(output, unit); console.log(output);
 }

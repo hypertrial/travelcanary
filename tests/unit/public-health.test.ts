@@ -85,4 +85,17 @@ describe("atomic publication health", () => {
         checks: { catalog: { actualLocations: 679 }, conditions: { present: 45 } } });
     expect(fetch).not.toHaveBeenCalled();
   });
+
+  it("validates production against an explicit wrapper identity ahead of Vercel's public-submodule identity", async () => {
+    const { publicationStore } = await fixture();
+    const fetch = vi.fn<typeof globalThis.fetch>(async (input) => {
+      const pathname = new URL(String(input)).pathname.replace(/^\//, "");
+      const object = await publicationStore.read(pathname, 2_000_000);
+      return object ? new Response(object.body) : new Response(null, { status: 404 });
+    });
+    await expect(checkPublicHealth({ env: { VERCEL_ENV: "production",
+      TRAVELCANARY_PUBLICATION_URL: "https://production.example/catalogs/3/publication/latest.json",
+      VERCEL_GIT_COMMIT_SHA: "b".repeat(40), TRAVELCANARY_RELEASE_SHA: sha }, fetch, now }))
+      .resolves.toMatchObject({ available: true, publication: { producerCommitSha: sha } });
+  });
 });

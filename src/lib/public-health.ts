@@ -205,7 +205,7 @@ export async function checkPublicHealth(options: { env?: Record<string, string |
   if (!url) return checkPublicationHealth({ read: async () => null } as unknown as PublicationStore, { now: options.now });
   try {
     return await checkPublicationHealth(new HttpPublicationStore(url, options.fetch), { now: options.now,
-      expectedSha: env.VERCEL_GIT_COMMIT_SHA || env.TRAVELCANARY_RELEASE_SHA, runtime: "vercel" });
+      expectedSha: env.TRAVELCANARY_RELEASE_SHA || env.VERCEL_GIT_COMMIT_SHA, runtime: "vercel" });
   } catch {
     return checkPublicationHealth({ read: async () => null } as unknown as PublicationStore, { now: options.now });
   }

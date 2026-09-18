@@ -14,7 +14,7 @@ import type { StateStore } from "./state-store";
 export type CatalogPublicationStores = { publicationStore: PublicationStore };
 
 function releaseSha(env: Record<string, string | undefined>) {
-  const value = (env.VERCEL_GIT_COMMIT_SHA || env.TRAVELCANARY_RELEASE_SHA || "").trim().toLowerCase();
+  const value = (env.TRAVELCANARY_RELEASE_SHA || env.VERCEL_GIT_COMMIT_SHA || "").trim().toLowerCase();
   return /^[a-f0-9]{40}$/.test(value) ? value : null;
 }
 
