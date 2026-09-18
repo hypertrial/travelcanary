@@ -29,7 +29,7 @@ export async function initializeStorage(options: { privateToken: string; publicT
     const state = await stateStore.read();
     const publication = await publishCommittedCatalog({ stateStore, stores: { publicationStore: options.publicationStore || new BlobPublicationStore(options.publicToken) },
       collection: state.data.collection, lease, now, family: "all" });
-    return { initialized, latestUrl: publication.pointerUrl || null, manifestSha256: publication.pointer.manifestSha256 };
+    return { initialized, publicationUrl: publication.pointerUrl || null, manifestSha256: publication.pointer.manifestSha256 };
   } finally { await releaseIngestionLease(stateStore, lease); }
 }
 
@@ -38,7 +38,7 @@ async function main() {
   const publicToken = process.env.PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN;
   if (!privateToken || !publicToken) throw new Error("Both Blob tokens are required");
   const result = await initializeStorage({ privateToken, publicToken });
-  console.log(JSON.stringify({ initialized: result.initialized, manifestSha256: result.manifestSha256 }));
+  console.log(JSON.stringify(result));
 }
 
 const invokedUrl = process.argv[1] ? pathToFileURL(resolve(process.argv[1])).href : null;

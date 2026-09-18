@@ -63,4 +63,3 @@ export type PublicationPointerV1 = z.infer<typeof PublicationPointerV1Schema>;
 export const publicationPointerPath = "catalogs/3/publication/latest.json";
 export function publicationObjectPath(sha256: string) { return `catalogs/3/objects/sha256/${sha256Schema.parse(sha256)}.json`; }
 export function publicationManifestPath(sha256: string) { return `catalogs/3/generations/${sha256Schema.parse(sha256)}/manifest.json`; }
-

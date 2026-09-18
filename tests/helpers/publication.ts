@@ -27,7 +27,7 @@ export class MemoryPublicationStore implements PublicationStore {
     if ((current?.etag ?? null) !== expectedEtag) throw new Error("Pointer conflict");
     const etag = publicationSha256(body);
     this.objects.set(pathname, { body, etag, uploadedAt: new Date() });
-    return { etag };
+    return { etag, url: `memory://publication/${pathname}` };
   }
 
   async list(prefix: string, limit: number) {

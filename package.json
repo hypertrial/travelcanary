@@ -52,6 +52,7 @@
     "smoke:conditions": "node --import tsx scripts/smoke-conditions.ts",
     "data:validate": "node --import tsx scripts/validate-data.ts",
     "storage:init": "node --import tsx scripts/init-storage.ts",
+    "release:initialize": "node --import tsx scripts/initialize-release.ts",
     "smoke:sources": "node --import tsx scripts/smoke-sources.ts",
     "smoke:met-office": "node --import tsx scripts/smoke-credentialed-warnings.ts met-office",
     "smoke:meteoalarm-edr": "node --import tsx scripts/smoke-credentialed-warnings.ts meteoalarm-edr",

@@ -21,7 +21,7 @@ Initialize empty stores once from a secure operator environment:
 npm run storage:init
 ```
 
-The command creates V16 state, acquires the global lease, publishes one complete Catalog 3 generation, and prints only safe identifiers.
+The command creates V16 state, acquires the global lease, publishes one complete Catalog 3 generation, and prints only the public publication URL and safe identifiers.
 
 ## Collection
 
@@ -36,7 +36,13 @@ Vercel schedules these authenticated Production-only routes:
 /api/cron/maintenance
 ```
 
-To invoke one manually, pass the secret in an authorization header, never a command argument. `HEAD` verifies authentication without work. `GET` performs bounded work. A busy response is successful and makes no writes.
+To initialize every cadence after a deployment, keep the secret in the environment and run:
+
+```bash
+PRODUCTION_ORIGIN=https://YOUR_DOMAIN npm run release:initialize
+```
+
+The command authenticates `HEAD` before each sequential `GET`, applies a bounded request deadline, and prints only route status and aggregate counters. A busy, paused, unauthorized, malformed, or non-successful response exits nonzero. To invoke one route manually, pass the secret in an authorization header, never a command argument. `HEAD` verifies authentication without work. `GET` performs bounded work.
 
 Do not delete leases, cursors, state, or quotas to force a run. Wait for lease expiry or diagnose the bounded failure. `INGESTION_PAUSED=true` pauses hosted writes during recovery.
 

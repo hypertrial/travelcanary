@@ -44,7 +44,7 @@ Import this repository directly into a Vercel Pro project; no wrapper repository
 - `PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN`
 - `TRAVELCANARY_PUBLICATION_URL` — the public Blob `catalogs/3/publication/latest.json` URL
 
-The six schedules in `vercel.json` are inert outside Vercel Production. Initialize storage once with `npm run storage:init`, then invoke the six bounded routes or let Vercel Cron run them. No Met Office or MeteoAlarm credential is required. See [Operations](docs/OPERATIONS.md).
+The six schedules in `vercel.json` are inert outside Vercel Production. Initialize storage once with `npm run storage:init`, then run the six bounded routes with `npm run release:initialize` or let Vercel Cron run them. No Met Office or MeteoAlarm credential is required. See [Operations](docs/OPERATIONS.md).
 
 ## Verification
 
