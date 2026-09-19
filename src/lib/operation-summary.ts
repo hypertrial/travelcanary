@@ -2,6 +2,7 @@ import { conditionSourceIds } from "./domain/conditions";
 import { sourceIds } from "./domain/schemas";
 
 const counterKeys = ["locations", "countries", "bytes", "privateStateBytes", "cacheBytes", "durationMs", "sourceDurationMs"] as const;
+const timingKeys = ["sourcesMs", "readMs", "mergeAndBuildMs", "publishMs", "totalMs"] as const;
 const publicationCounterKeys = ["published", "unchanged", "failed", "omittedFailures"] as const;
 const diagnosticSourceIds = new Set<string>([...sourceIds, ...conditionSourceIds]);
 
@@ -35,6 +36,15 @@ export function publicOperationSummary(value: unknown) {
     }
     summary.sourceSummary = counts;
     summary.degradedSourceIds = degradedSourceIds;
+  }
+  const timings = source.timings;
+  if (timings && typeof timings === "object" && !Array.isArray(timings)) {
+    const copied: Record<string, number> = {};
+    for (const key of timingKeys) {
+      const value = (timings as Record<string, unknown>)[key];
+      if (typeof value === "number" && Number.isFinite(value) && value >= 0) copied[key] = value;
+    }
+    if (Object.keys(copied).length) summary.timings = copied;
   }
   return summary;
 }

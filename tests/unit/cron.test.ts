@@ -1,6 +1,12 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { readFile } from "node:fs/promises";
 import { handleCron } from "@/lib/cron";
+import { CollectionChangedError } from "@/lib/domain/catalog-state";
+import * as lease from "@/lib/ingestion-lease";
+import * as orchestrator from "@/lib/ingestion/orchestrator";
+import { StateLimitError } from "@/lib/ingestion/limits";
+import { PublicationRaceError } from "@/lib/operation-failure";
+import { ConcurrencyError } from "@/lib/state-store";
 
 const originalSecret = process.env.CRON_SECRET;
 const originalVercelEnv = process.env.VERCEL_ENV;
@@ -77,5 +83,35 @@ describe("cron authentication", () => {
     expect(output).toContain("operation_failed");
     expect(output).not.toContain(sentinel);
     expect(output).not.toContain("secret-sentinel");
+  });
+
+  it.each([
+    [new ConcurrencyError("lease lost"), "concurrency"],
+    [new CollectionChangedError("collection moved"), "collection_changed"],
+    [new PublicationRaceError("Private state changed during publication"), "state_changed_during_publication"],
+    [new StateLimitError("Private ingestion state exceeds 5 MB hard limit"), "state_limit"],
+    [new Error("secret-sentinel"), "operation_failed"],
+  ] as const)("returns and logs classified code %s", async (error, code) => {
+    process.env.VERCEL_ENV = "production";
+    process.env.CRON_SECRET = "correct-secret-that-is-at-least-32-bytes";
+    process.env.PRIVATE_INGESTION_STORE_ID = "store_private";
+    process.env.PUBLIC_SNAPSHOT_STORE_ID = "store_public";
+    process.env.VERCEL_OIDC_TOKEN = "oidc-token";
+    delete process.env.PRIVATE_INGESTION_BLOB_READ_WRITE_TOKEN;
+    delete process.env.PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN;
+    vi.spyOn(lease, "acquireIngestionLease").mockResolvedValue({
+      owner: "vercel-fast", fence: 1, expiresAt: "2099-01-01T00:00:00.000Z", collectionRevision: 1,
+    });
+    vi.spyOn(lease, "releaseIngestionLease").mockResolvedValue(undefined);
+    vi.spyOn(orchestrator, "runIngestion").mockRejectedValue(error);
+    const log = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const response = await handleCron(new Request("https://example.test/api/cron/fast", {
+      headers: { authorization: `Bearer ${process.env.CRON_SECRET}` },
+    }), "fast");
+    const body = await response.json();
+    expect(response.status).toBe(500);
+    expect(body).toEqual({ error: "Ingestion failed", code });
+    expect(log).toHaveBeenCalledTimes(1);
+    expect(JSON.parse(String(log.mock.calls[0][0]))).toEqual({ event: "ingestion_failed", operation: "fast", code });
   });
 });

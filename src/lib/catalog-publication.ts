@@ -10,7 +10,10 @@ import { assertSupportedCollection, type CollectionControl } from "./domain/cata
 import { assertIngestionLease, type IngestionLease } from "./ingestion-lease";
 import { publicationSha256, readCurrentPublication, readPublishedObject, type PublicationStore } from "./publication-store";
 import { providerRegistry } from "./provider-registry";
+import { PublicationRaceError } from "./operation-failure";
 import type { StateStore } from "./state-store";
+
+export { PublicationRaceError };
 
 export type CatalogPublicationStores = { publicationStore: PublicationStore };
 
@@ -107,7 +110,7 @@ export async function publishCommittedCatalog(options: {
   await options.stores.publicationStore.putImmutable(manifestPath, manifestBody);
 
   const latest = await assertIngestionLease(options.stateStore, options.lease, generatedAt);
-  if (latest.data.stateRevision !== read.data.stateRevision) throw new Error("Private state changed during publication");
+  if (latest.data.stateRevision !== read.data.stateRevision) throw new PublicationRaceError("Private state changed during publication");
   const pointer = PublicationPointerV1Schema.parse({
     schemaVersion: 1,
     catalogVersion: 3,

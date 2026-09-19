@@ -9,7 +9,7 @@ import { catalogLocationsV3 } from "../catalog-data";
 import { mergeSourceResults } from "../risk";
 import { ConcurrencyError, type StateStore } from "../state-store";
 import { withFetchDiagnostics } from "./fetch";
-import { MAX_EVENTS_PER_PARTITION, MAX_EVENTS_PER_SOURCE_RESULT, PRIVATE_STATE_HARD_LIMIT_BYTES } from "./limits";
+import { MAX_EVENTS_PER_PARTITION, MAX_EVENTS_PER_SOURCE_RESULT, PRIVATE_STATE_HARD_LIMIT_BYTES, StateLimitError } from "./limits";
 import { createSourceDiagnostics, isExpandedSourceAdapter, partitionExecutionStatus, type Cadence, type MutableSourceDiagnostics, type SourceAdapter, type SourceExecutionSummary } from "./types";
 import { expandedAdapterLocations, scopeAdapterResult } from "./collection-scope";
 import { fitConditionsState } from "../conditions/state";
@@ -194,7 +194,7 @@ async function publishResults(options: {
         phase = performance.now();
         const next = fitConditionsState(mergeSourceResults(current.data, options.results, options.now), options.now);
         const stateBytes = Buffer.byteLength(JSON.stringify(next));
-        if (stateBytes > PRIVATE_STATE_HARD_LIMIT_BYTES) throw new Error(`Private ingestion state exceeds 5 MB hard limit (${stateBytes} bytes)`);
+        if (stateBytes > PRIVATE_STATE_HARD_LIMIT_BYTES) throw new StateLimitError(`Private ingestion state exceeds 5 MB hard limit (${stateBytes} bytes)`);
         await options.stateStore.write(next, current); committed = true;
         mergeAndBuildMs += performance.now() - phase;
       }
