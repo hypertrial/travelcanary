@@ -6,7 +6,7 @@ import { expandedCoverageProviderIds, expandedHazardCoverage, expandedProviderAp
 import { delayedHazardsRequireUnknown, sourceHazards } from "./risk-policy";
 import { eventIsPublishable } from "./hazard-lifecycle";
 import { clusterPublicHazards, projectCoreSnapshot } from "./risk-snapshot";
-import { HazardTypeSchema, countryCodes, providerIdForSourceId, type SourceHealth } from "./domain/schemas";
+import { HazardTypeSchema, countryCodes, providerIdForSourceId } from "./domain/schemas";
 import { catalogV3CountryCodes } from "./domain/contract-identities";
 import type { IngestionStateV15, IngestionStateV16 } from "./domain/catalog-state";
 import { SnapshotV11Schema, ConditionsV3Schema } from "./domain/catalog-public";
@@ -15,8 +15,9 @@ import { marineConditionEligible } from "./conditions/marine";
 import { currentConditions } from "./conditions/presentation";
 import { conditionRecords, conditionSourceAppliesToCountry, CONDITIONS_TOTAL_LIMIT, emptyConditions } from "./domain/conditions";
 import { eventAffectsLocation } from "./geospatial";
-import { nationalWarningManifest, type NationalWarningSystem } from "./national-warning-sources";
+import { nationalWarningManifest } from "./national-warning-sources";
 import { providerRegistry, publicProviderPartitionState } from "./provider-registry";
+import { deriveTransportState } from "./transport-state";
 
 const legacyCountries = new Set<string>(countryCodes);
 const forecastHealthSources = new Set(["open-meteo-weather", "open-meteo-air", "open-meteo-marine"]);
@@ -77,17 +78,6 @@ export function buildCatalog3Snapshot(state: ProjectionState, now = new Date()) 
       : checkedLocationIds.length ? "partial" as const : receipt.status === "disabled" ? "disabled" as const : "failed" as const;
     snapshot.providers[providerId].expandedCoverage = { status, checkedAt: receipt.checkedAt, checkedLocationIds, unavailableLocationIds };
   }
-  const transportState = (health: SourceHealth | undefined, system: NationalWarningSystem, fallback: ReturnType<typeof publicProviderPartitionState>["status"]) => {
-    const authorized = system.status === "active" || system.status === "credential_gated" && Boolean(health && health.status !== "not_monitored");
-    const status = !authorized || health?.status === "not_monitored" ? "disabled" as const
-      : health?.status === "ok" || health?.status === "partial" || health?.status === "delayed" ? health.status
-        : health?.status === "failed" ? "failed" as const : fallback;
-    return { id: system.id, name: system.systemName, role: system.role, status,
-      lastSuccess: health?.lastSuccess || null, sourceUpdatedAt: health?.sourceUpdatedAt || null,
-      nextExpectedUpdate: health?.nextExpectedUpdate || null,
-      limitationCode: status === "disabled" ? system.limitationCode || "credential_not_configured" : null,
-      officialUrl: system.officialUrl };
-  };
   for (const country of addedCountries) for (const providerId of ["meteoalarm", "eea-aqi", "national-civil-alerts"] as const) {
     const group = providerId === "meteoalarm" ? "meteoalarm" : providerId === "eea-aqi" ? "eea" : "nationalCivilAlerts";
     const health = state.sourcePartitions[group][country];
@@ -97,7 +87,9 @@ export function buildCatalog3Snapshot(state: ProjectionState, now = new Date()) 
     const transports = providerId === "meteoalarm" ? state.partitionTransports.meteoalarm[country]
       : providerId === "national-civil-alerts" ? state.partitionTransports.nationalCivilAlerts[country] : {};
     snapshot.providers[providerId].partitions![country] = systems.length
-      ? { ...partition, transports: systems.map((system) => transportState(transports[system.id], system, partition.status)) }
+      ? { ...partition, transports: systems.map((system) => deriveTransportState({
+        mode: "expanded", system, health: transports[system.id], fallbackStatus: partition.status,
+      })) }
       : partition;
   }
   const indexed = new Map<string, ProjectionState["events"]>();
