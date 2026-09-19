@@ -3,7 +3,7 @@ import { assertSupportedCollection, CollectionChangedError, type CollectionContr
 import { randomUUID } from "node:crypto";
 import { gunzipSync } from "node:zlib";
 import { catalogLocationsV3 } from "../catalog-data";
-import { conditionSourceIds, emptyConditions, type ConditionSourceId, type LocationConditions } from "../domain/conditions";
+import { conditionSourceIds, emptyConditions, type ConditionSourceId, type LocationConditions, type Observation } from "../domain/conditions";
 import { ConcurrencyError, type StateStore } from "../state-store";
 import { distanceKm } from "../geospatial";
 import { mapConcurrent, readBytesWithLimit } from "../ingestion/fetch";
@@ -17,6 +17,7 @@ import { marineConditionEligible, catalog3MarineMappingByLocation } from "./mari
 import { ipmaObservationEndpoint, ipmaStationMappings, parseIpmaEarthquakes, parseIpmaObservations } from "./ipma";
 import { opwHydroEndpoint, opwHydroMappings, parseOpwHydrology } from "./opw";
 import { arsoHydroEndpoint, arsoHydroMappings, parseArsoHydrology } from "./arso-hydro";
+import { ingestStationSource, retainStationItems, type StationSourceSpec } from "./station-sources";
 import { mergeInfrastructure, parseAutobahnInfrastructure, parseEacInfrastructure, parseEnemaltaInfrastructure, parseKrisinformationInfrastructure, parseNdwInfrastructure, parsePseEnergyCompass, rankInfrastructure } from "./infrastructure";
 import { autobahnRoadIds } from "./infrastructure-mapping";
 import { assertVersionedIngestionLease, type IngestionLease } from "../ingestion-lease";
@@ -371,70 +372,53 @@ export async function runConditions(options: {
       } catch { updateHealth("awc-metar", 0, true); }
     }
   }
-  const rwsDue = sourceIsDue(state.conditions.health["rws-water"]?.checkedAt, 1, now);
-  if (rwsDue && conditionSourceEnabled("rws-water", env)) {
-    try {
-      const taskDeadline = Math.min(deadline, Date.now() + 8000);
-      const { body } = await request(rwsWaterEndpoint, 512 * 1024, "json", taskDeadline, {
+  const stationSources: Array<StationSourceSpec<Map<string, Observation>>> = [
+    {
+      sourceId: "rws-water", field: "rivers",
+      isDue: () => sourceIsDue(state.conditions.health["rws-water"]?.checkedAt, 1, now) && conditionSourceEnabled("rws-water", env),
+      request: () => request(rwsWaterEndpoint, 512 * 1024, "json", Math.min(deadline, Date.now() + 8000), {
         method: "POST", headers: { "Content-Type": "application/json", "X-API-KEY": "TravelCanary" }, body: JSON.stringify(rwsWaterRequest()),
-      });
-      const parsed = parseRwsWater(body, now); let matched = 0;
-      for (const mapping of rwsWaterMappings) {
-        const observation = parsed.get(mapping.stationId);
-        const previous = changes.get(mapping.locationId)?.rivers || state.conditions.locations[mapping.locationId]?.rivers || [];
-        const others = previous.filter((item) => item.sourceId !== "rws-water");
-        changes.set(mapping.locationId, { ...changes.get(mapping.locationId), rivers: [...others, ...(observation ? [observation] : [])].slice(0, 3) });
-        if (observation) matched += 1;
-      }
-      updateHealth("rws-water", matched, false);
-    } catch { updateHealth("rws-water", 0, true); }
-  }
-  const opwDue = sourceIsDue(state.conditions.health["opw-hydro"]?.checkedAt, 1, now);
-  if (opwDue && conditionSourceEnabled("opw-hydro", env)) {
-    try {
-      const { body } = await request(opwHydroEndpoint, 1024 * 1024, "json", Math.min(deadline, Date.now() + 8000));
-      const parsed = parseOpwHydrology(body, now); let matched = 0;
-      for (const mapping of opwHydroMappings) {
-        const previous = changes.get(mapping.locationId)?.rivers || state.conditions.locations[mapping.locationId]?.rivers || [];
-        const others = previous.filter((item) => item.sourceId !== "opw-hydro");
-        const observation = parsed.get(mapping.stationId);
-        changes.set(mapping.locationId, { ...changes.get(mapping.locationId), rivers: [...others, ...(observation ? [observation] : [])].slice(0, 3) });
-        if (observation) matched += 1;
-      }
-      updateHealth("opw-hydro", matched, false);
-    } catch { updateHealth("opw-hydro", 0, true); }
-  }
-  const arsoDue = sourceIsDue(state.conditions.health["arso-hydro"]?.checkedAt, 1, now);
-  if (arsoDue && conditionSourceEnabled("arso-hydro", env)) {
-    try {
-      const { body } = await request(arsoHydroEndpoint, 256 * 1024, "xml", Math.min(deadline, Date.now() + 8000));
-      const parsed = parseArsoHydrology(String(body), now); let matched = 0;
-      for (const locationId of new Set(arsoHydroMappings.map((item) => item.locationId))) {
-        const previous = changes.get(locationId)?.rivers || state.conditions.locations[locationId]?.rivers || [];
-        const others = previous.filter((item) => item.sourceId !== "arso-hydro");
-        const observations = arsoHydroMappings.filter((item) => item.locationId === locationId)
-          .flatMap((item) => parsed.get(item.stationId) || []);
-        changes.set(locationId, { ...changes.get(locationId), rivers: [...others, ...observations].slice(0, 3) });
-        matched += observations.length;
-      }
-      updateHealth("arso-hydro", matched, false);
-    } catch { updateHealth("arso-hydro", 0, true); }
-  }
-  const ipmaObservationDue = sourceIsDue(state.conditions.health["ipma-observations"]?.checkedAt, 1, now);
-  if (ipmaObservationDue && conditionSourceEnabled("ipma-observations", env)) {
-    try {
-      const { body } = await request(ipmaObservationEndpoint, 512 * 1024, "json", Math.min(deadline, Date.now() + 8000));
-      const parsed = parseIpmaObservations(body, now); let matched = 0;
-      for (const mapping of ipmaStationMappings) {
-        const previous = changes.get(mapping.locationId)?.observations || state.conditions.locations[mapping.locationId]?.observations || [];
-        const others = previous.filter((item) => item.sourceId !== "ipma-observations");
-        const observation = parsed.get(mapping.locationId);
-        changes.set(mapping.locationId, { ...changes.get(mapping.locationId), observations: [...others, ...(observation ? [observation] : [])].slice(0, 3) });
-        if (observation) matched += 1;
-      }
-      updateHealth("ipma-observations", matched, false);
-    } catch { updateHealth("ipma-observations", 0, true); }
-  }
+      }),
+      parse: (body) => parseRwsWater(body, now),
+      mappings: (parsed) => rwsWaterMappings.map((mapping) => ({
+        locationId: mapping.locationId, fresh: parsed.has(mapping.stationId) ? [parsed.get(mapping.stationId)!] : [],
+      })),
+      retention: retainStationItems,
+    },
+    {
+      sourceId: "opw-hydro", field: "rivers",
+      isDue: () => sourceIsDue(state.conditions.health["opw-hydro"]?.checkedAt, 1, now) && conditionSourceEnabled("opw-hydro", env),
+      request: () => request(opwHydroEndpoint, 1024 * 1024, "json", Math.min(deadline, Date.now() + 8000)),
+      parse: (body) => parseOpwHydrology(body, now),
+      mappings: (parsed) => opwHydroMappings.map((mapping) => ({
+        locationId: mapping.locationId, fresh: parsed.has(mapping.stationId) ? [parsed.get(mapping.stationId)!] : [],
+      })),
+      retention: retainStationItems,
+    },
+    {
+      sourceId: "arso-hydro", field: "rivers",
+      isDue: () => sourceIsDue(state.conditions.health["arso-hydro"]?.checkedAt, 1, now) && conditionSourceEnabled("arso-hydro", env),
+      request: () => request(arsoHydroEndpoint, 256 * 1024, "xml", Math.min(deadline, Date.now() + 8000)),
+      parse: (body) => parseArsoHydrology(String(body), now),
+      mappings: (parsed) => [...new Set(arsoHydroMappings.map((item) => item.locationId))].map((locationId) => ({
+        locationId,
+        fresh: arsoHydroMappings.filter((item) => item.locationId === locationId)
+          .flatMap((item) => parsed.get(item.stationId) || []),
+      })),
+      retention: retainStationItems,
+    },
+    {
+      sourceId: "ipma-observations", field: "observations",
+      isDue: () => sourceIsDue(state.conditions.health["ipma-observations"]?.checkedAt, 1, now) && conditionSourceEnabled("ipma-observations", env),
+      request: () => request(ipmaObservationEndpoint, 512 * 1024, "json", Math.min(deadline, Date.now() + 8000)),
+      parse: (body) => parseIpmaObservations(body, now),
+      mappings: (parsed) => ipmaStationMappings.map((mapping) => ({
+        locationId: mapping.locationId, fresh: parsed.has(mapping.locationId) ? [parsed.get(mapping.locationId)!] : [],
+      })),
+      retention: retainStationItems,
+    },
+  ];
+  for (const spec of stationSources) await ingestStationSource(spec, { state, changes, updateHealth });
   const ipmaSeismicDue = sourceIsDue(state.conditions.health["ipma-seismic"]?.checkedAt, 1, now);
   if (ipmaSeismicDue && conditionSourceEnabled("ipma-seismic", env)) {
     try {
