@@ -460,9 +460,17 @@ test("has no serious automated accessibility violations", { tag: "@smoke" }, asy
   await expect(mapKey).toContainText("Counts are destinations, not incidents.");
   await expect(mapKey).toContainText("Search and Alerts still reach every supported place.");
   expect((await new AxeBuilder({ page }).exclude(".maplibregl-canvas").analyze()).violations).toEqual([]);
-  await page.keyboard.press("Escape");
+  if (testInfo.project.name === "mobile-webkit") {
+    // Linux WebKit does not dismiss the React Aria overlay on Escape; Back+Done does.
+    await page.getByRole("button", { name: /Back/ }).click();
+    await page.getByRole("button", { name: "Done" }).click();
+  } else {
+    await page.keyboard.press("Escape");
+  }
+  await expect(mapKey).toBeHidden();
 
   await search.fill("Austrian Alps");
+  await expect(page.getByRole("option", { name: /Austrian Alps/ })).toBeVisible();
   await page.getByRole("option", { name: /Austrian Alps/ }).click();
   await expect(destinationDetails(page).getByRole("heading", { name: "Austrian Alps", exact: true })).toBeVisible();
   expect((await new AxeBuilder({ page }).exclude(".maplibregl-canvas").analyze()).violations).toEqual([]);

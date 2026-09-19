@@ -1,6 +1,31 @@
 import { type Locator } from "@playwright/test";
 import { expect, test } from "../playwright-fixtures";
-import { destinationSearch, selectDestination } from "./helpers";
+import { destinationDetails, destinationSearch, selectDestination } from "./helpers";
+
+test("closes compact Map key with Back then Done so destination search can run", { tag: "@webkit-only" }, async ({ page }) => {
+  await page.goto("/");
+  const search = destinationSearch(page);
+  await expect(search).toBeEnabled();
+  await page.getByRole("button", { name: "Open app menu" }).click();
+  await page.getByRole("dialog").getByRole("button", { name: /Map key/ }).click();
+  const mapKey = page.getByRole("dialog");
+  await expect(mapKey.getByRole("heading", { name: "Map key", exact: true })).toBeVisible();
+  await expect(mapKey.getByRole("button", { name: "Done", exact: true })).toHaveCount(0);
+  await expect(mapKey.getByRole("button", { name: /Back/ })).toBeVisible();
+
+  await mapKey.getByRole("button", { name: /Back/ }).click();
+  await expect(mapKey.getByRole("heading", { name: "Map key", exact: true })).toHaveCount(0);
+  await expect(mapKey.getByRole("button", { name: "Done", exact: true })).toBeVisible();
+  await mapKey.getByRole("button", { name: "Done", exact: true }).click();
+  await expect(mapKey).toBeHidden();
+  await expect(search).toBeEnabled();
+
+  await search.fill("Austrian Alps");
+  const option = page.getByRole("option", { name: /Austrian Alps/ });
+  await expect(option).toBeVisible();
+  await option.click();
+  await expect(destinationDetails(page).getByRole("heading", { name: "Austrian Alps", exact: true })).toBeVisible();
+});
 
 test("closes full-screen mobile search with Escape", { tag: "@webkit-only" }, async ({ page }) => {
   await page.goto("/");
