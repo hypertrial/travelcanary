@@ -86,6 +86,16 @@ describe("atomic Catalog 3 production verification", () => {
 
     const wrong = await fixture();
     expect((await wrong.verify({ expectedSha: "b".repeat(40) })).blockers).toContainEqual(expect.objectContaining({ code: "release_sha_mismatch" }));
+
+    const unreachable = await fixture();
+    const previous = unreachable.fetch.getMockImplementation();
+    unreachable.fetch.mockImplementation(async (input, init) => {
+      if (new URL(String(input)).origin === blobOrigin) throw new Error("secret-sentinel");
+      return previous!(input, init);
+    });
+    const report = await unreachable.verify();
+    expect(report.blockers).toContainEqual(expect.objectContaining({ code: "publication_unreachable" }));
+    expect(JSON.stringify(report.blockers)).not.toContain("secret-sentinel");
   });
 
   it("blocks stale condition publications and unavailable public health", async () => {
