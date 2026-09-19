@@ -12,6 +12,20 @@ const now = new Date("2026-09-08T07:30:00.000Z");
 const stationCountries = ["NL", "IE", "SI", "PT"] as const;
 const item = (sourceId: Observation["sourceId"], id: string) => ({ sourceId, id }) as unknown as Observation;
 
+function catalog2ConditionsCandidates(country: string) {
+  return [
+    `public/conditions/v2/${country}.json`,
+    `tests/fixtures/legacy-catalog-2/conditions/v2/${country}.json`,
+  ] as const;
+}
+
+function resolveCatalog2ConditionsPath(country: string, exists: (path: string) => boolean = existsSync): string {
+  const [publicPath, fixturePath] = catalog2ConditionsCandidates(country);
+  if (exists(publicPath)) return publicPath;
+  if (exists(fixturePath)) return fixturePath;
+  throw new Error(`missing catalog-2 conditions fixture for ${country}`);
+}
+
 function spec(overrides: Partial<StationSourceSpec<Map<string, Observation>>> = {}): StationSourceSpec<Map<string, Observation>> {
   return {
     sourceId: "rws-water", field: "rivers", isDue: () => true,
@@ -109,8 +123,8 @@ describe("station source ingest helper", () => {
 
 describe("catalog3 conditions fixtures stay byte-stable", () => {
   it.each(stationCountries)("roundtrips serializeCatalog3Conditions for %s", (country) => {
-    const path = `public/conditions/v2/${country}.json`;
-    if (!existsSync(path)) return;
+    const path = resolveCatalog2ConditionsPath(country);
+    expect(existsSync(path), `missing catalog-2 conditions fixture for ${country}`).toBe(true);
     const v2 = ConditionsV2Schema.parse(JSON.parse(readFileSync(path, "utf8")));
     const input = ConditionsV3Schema.parse({ ...v2, schemaVersion: 3, catalogVersion: 3 });
     const frozen = JSON.stringify(input);
@@ -118,5 +132,35 @@ describe("catalog3 conditions fixtures stay byte-stable", () => {
     expect(ConditionsV3Schema.parse(JSON.parse(wire))).toEqual(input);
     expect(JSON.stringify(input)).toBe(frozen);
     expect(serializeCatalog3Conditions(JSON.parse(wire))).toBe(wire);
+  });
+});
+
+describe("catalog-2 conditions fixture path resolution", () => {
+  it("fails closed when neither the public nor the fixture path exists", () => {
+    const country = "ZZ";
+    const [publicPath, fixturePath] = catalog2ConditionsCandidates(country);
+    const exists = vi.fn(() => false);
+    expect(() => resolveCatalog2ConditionsPath(country, exists)).toThrow(`missing catalog-2 conditions fixture for ${country}`);
+    expect(exists).toHaveBeenCalledWith(publicPath);
+    expect(exists).toHaveBeenCalledWith(fixturePath);
+    expect(exists).not.toHaveBeenCalledWith(`public/conditions/v2/AT.json`);
+    expect(exists).not.toHaveBeenCalledWith(`tests/fixtures/legacy-catalog-2/conditions/v2/AT.json`);
+  });
+
+  it("does not substitute another country's file when both candidate paths are missing on disk", () => {
+    const country = "ZZ";
+    const [publicPath, fixturePath] = catalog2ConditionsCandidates(country);
+    expect(existsSync(publicPath)).toBe(false);
+    expect(existsSync(fixturePath)).toBe(false);
+    expect(existsSync("public/conditions/v2/AT.json")).toBe(true);
+    expect(() => resolveCatalog2ConditionsPath(country)).toThrow(`missing catalog-2 conditions fixture for ${country}`);
+  });
+
+  it("prefers the public path and falls back only when that file is absent", () => {
+    const country = "NL";
+    const [publicPath, fixturePath] = catalog2ConditionsCandidates(country);
+    expect(resolveCatalog2ConditionsPath(country, (path) => path === publicPath || path === fixturePath)).toBe(publicPath);
+    expect(resolveCatalog2ConditionsPath(country, (path) => path === fixturePath)).toBe(fixturePath);
+    expect(() => resolveCatalog2ConditionsPath(country, () => false)).toThrow(`missing catalog-2 conditions fixture for ${country}`);
   });
 });
