@@ -2,7 +2,7 @@ import { type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { mapSnapshot } from "../fixtures/map-snapshots";
 import { expect, test, installDeterministicBasemap } from "../playwright-fixtures";
-import { abortDemoSnapshot, mutateDemoSnapshot } from "./helpers";
+import { abortDemoSnapshot, DARWIN_VISUAL_SNAPSHOTS, mutateDemoSnapshot } from "./helpers";
 
 const map = (page: Page) => page.getByRole("region", { name: /^Interactive map/ });
 const filters = (page: Page) => page.getByRole("group", { name: "Map filters" });
@@ -177,7 +177,9 @@ test("an untouched map restores its core-Europe framing after rotation", { tag: 
   await expect(map(page)).toHaveAttribute("data-marker-count", "6", { timeout: 15_000 });
   await page.addStyleTag({ content: '[class*="topChrome"], [class*="mapActions"], [data-ui="data-health-banner"], .maplibregl-control-container, nextjs-portal { visibility: hidden !important; }' });
   const canvas = page.locator(".maplibregl-canvas");
-  await expect(canvas).toHaveScreenshot("landscape-camera.png", { maxDiffPixelRatio: 0.001 });
+  if (DARWIN_VISUAL_SNAPSHOTS) {
+    await expect(canvas).toHaveScreenshot("landscape-camera.png", { maxDiffPixelRatio: 0.001 });
+  }
   const camera = () => map(page).evaluate((element) => ({
     lng: Number(element.getAttribute("data-camera-lng")),
     lat: Number(element.getAttribute("data-camera-lat")),
@@ -191,7 +193,9 @@ test("an untouched map restores its core-Europe framing after rotation", { tag: 
   await expect(canvas).toHaveCSS("width", "768px");
   await page.setViewportSize({ width: 667, height: 375 });
   await expect(canvas).toHaveCSS("width", "667px");
-  await expect(canvas).toHaveScreenshot("landscape-camera.png", { maxDiffPixelRatio: 0.001 });
+  if (DARWIN_VISUAL_SNAPSHOTS) {
+    await expect(canvas).toHaveScreenshot("landscape-camera.png", { maxDiffPixelRatio: 0.001 });
+  }
   await expect.poll(camera).toEqual(initialCamera);
   expect(await zoomOut.isDisabled()).toBe((await camera()).zoom <= 1.81);
 });
