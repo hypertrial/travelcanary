@@ -66,14 +66,15 @@ function canonicalEvidenceUrl(value: string) {
 
 function clusteredEvents(events: NormalizedEvent[], now: Date) {
   const pending = events.slice().sort(primaryEventOrder);
+  const keys = new Map(pending.map((event) => [event, incidentKey(event, now)]));
   const groups: NormalizedEvent[][] = [];
   while (pending.length) {
     const primary = pending.shift()!;
-    const key = incidentKey(primary, now);
+    const key = keys.get(primary)!;
     const group = [primary];
     for (let index = pending.length - 1; index >= 0; index -= 1) {
       const candidate = pending[index];
-      if (incidentKey(candidate, now) !== key
+      if (keys.get(candidate) !== key
         || Date.parse(candidate.startsAt) >= Date.parse(primary.endsAt)
         || Date.parse(candidate.endsAt) <= Date.parse(primary.startsAt)) continue;
       group.push(...pending.splice(index, 1));

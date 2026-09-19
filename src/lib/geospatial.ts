@@ -5,8 +5,11 @@ import { earthRadius, point, polygon } from "@turf/helpers";
 import type { CatalogLocation as Location } from "./catalog-data";
 
 type Position = [number, number];
+type BBox = { minLon: number; minLat: number; maxLon: number; maxLat: number };
 const locationPolygonCache = new WeakMap<Location, ReturnType<typeof polygon>>();
 const eventPolygonCache = new WeakMap<NormalizedEvent, ReturnType<typeof polygon>>();
+const locationBboxCache = new WeakMap<Location, BBox | null>();
+const eventBboxCache = new WeakMap<NormalizedEvent, BBox | null>();
 
 function radiusRing([longitude, latitude]: Position, radiusKm: number, steps = 24): Position[] {
   const result: Position[] = [];
@@ -40,7 +43,57 @@ function eventPolygon(event: NormalizedEvent) {
   return result;
 }
 
-export function eventAffectsLocation(event: NormalizedEvent, location: Location): boolean {
+function ringBbox(ring: Position[]): BBox | null {
+  let minLon = Infinity; let minLat = Infinity; let maxLon = -Infinity; let maxLat = -Infinity;
+  for (const [lon, lat] of ring) {
+    if (!Number.isFinite(lon) || !Number.isFinite(lat)) return null;
+    if (lon < minLon) minLon = lon;
+    if (lat < minLat) minLat = lat;
+    if (lon > maxLon) maxLon = lon;
+    if (lat > maxLat) maxLat = lat;
+  }
+  return Number.isFinite(minLon) ? { minLon, minLat, maxLon, maxLat } : null;
+}
+
+function radiusBbox(center: Position, radiusKm: number): BBox | null {
+  return ringBbox(radiusRing(center, radiusKm));
+}
+
+export function locationBbox(location: Location): BBox | null {
+  const cached = locationBboxCache.get(location);
+  if (cached !== undefined) return cached;
+  const box = location.geometry.kind === "polygon"
+    ? ringBbox(location.geometry.coordinates.flat())
+    : radiusBbox(location.geometry.center, location.geometry.radiusKm);
+  locationBboxCache.set(location, box);
+  return box;
+}
+
+export function eventBbox(event: NormalizedEvent): BBox | null {
+  const cached = eventBboxCache.get(event);
+  if (cached !== undefined) return cached;
+  const box = event.geometry.kind === "point"
+    ? radiusBbox(event.geometry.coordinates, event.geometry.radiusKm)
+    : event.geometry.kind === "polygon" ? ringBbox(event.geometry.coordinates.flat()) : null;
+  eventBboxCache.set(event, box);
+  return box;
+}
+
+function usableBbox(box: BBox | null): box is BBox {
+  return Boolean(box
+    && box.minLon <= box.maxLon
+    && box.minLat <= box.maxLat
+    && box.maxLon - box.minLon < 180);
+}
+
+/** `false` means disjoint; `null` means fail open and run Turf. */
+export function bboxesOverlap(left: BBox | null, right: BBox | null): boolean | null {
+  if (!usableBbox(left) || !usableBbox(right)) return null;
+  return left.minLon <= right.maxLon && left.maxLon >= right.minLon
+    && left.minLat <= right.maxLat && left.maxLat >= right.minLat;
+}
+
+function eventAffectsLocationInternal(event: NormalizedEvent, location: Location, prefilter: boolean): boolean {
   if (event.geometry.kind === "locations") return event.geometry.ids.includes(location.id);
   if (event.geometry.kind === "regions") {
     if (event.geometry.countryCode !== location.countryCode) return false;
@@ -62,20 +115,21 @@ export function eventAffectsLocation(event: NormalizedEvent, location: Location)
     if (location.geometry.kind === "radius") {
       return distance(point(event.geometry.coordinates), point(location.geometry.center), { units: "kilometers" }) <= event.geometry.radiusKm + location.geometry.radiusKm;
     }
-    try {
-      return booleanIntersects(
-        eventPolygon(event)!,
-        locationPolygon(location),
-      );
-    } catch {
-      return false;
-    }
   }
+  if (prefilter && bboxesOverlap(eventBbox(event), locationBbox(location)) === false) return false;
   try {
     return booleanIntersects(eventPolygon(event)!, locationPolygon(location));
   } catch {
     return false;
   }
+}
+
+export function eventAffectsLocation(event: NormalizedEvent, location: Location): boolean {
+  return eventAffectsLocationInternal(event, location, true);
+}
+
+export function eventAffectsLocationExact(event: NormalizedEvent, location: Location): boolean {
+  return eventAffectsLocationInternal(event, location, false);
 }
 
 export function distanceKm(a: Position, b: Position) {

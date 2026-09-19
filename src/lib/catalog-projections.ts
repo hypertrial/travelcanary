@@ -102,12 +102,23 @@ export function buildCatalog3Snapshot(state: ProjectionState, now = new Date()) 
   }
   const indexed = new Map<string, ProjectionState["events"]>();
   const addedById = new Map(addedLocations.map((location) => [location.id, location]));
+  const coverageById = new Map(addedLocations.map((location) => [location.id, expandedHazardCoverage(location)]));
+  const appliesByProvider = new Map<string, Map<string, boolean>>();
+  const providerApplies = (providerId: string, location: (typeof addedLocations)[number]) => {
+    let byLocation = appliesByProvider.get(providerId);
+    if (!byLocation) { byLocation = new Map(); appliesByProvider.set(providerId, byLocation); }
+    const cached = byLocation.get(location.id);
+    if (cached !== undefined) return cached;
+    const value = expandedProviderApplies(providerId, location);
+    byLocation.set(location.id, value);
+    return value;
+  };
   for (const event of state.events) {
     if (!eventIsPublishable(event, now)) continue;
     const providerId = event.providerId || providerIdForSourceId(event.sourceId);
     for (const [id, location] of addedById) {
-      const capability = expandedHazardCoverage(location)[event.type];
-      if (!expandedProviderApplies(providerId, location) || !sourceHazards[event.sourceId]?.includes(event.type)
+      const capability = coverageById.get(id)![event.type];
+      if (!providerApplies(providerId, location) || !sourceHazards[event.sourceId]?.includes(event.type)
         || providerRegistry[providerId]?.satisfiesCoverage !== false && !capability.providerIds.includes(providerId)
         || !eventAffectsLocation(event, location)) continue;
       const events = indexed.get(id) || [];
@@ -116,11 +127,11 @@ export function buildCatalog3Snapshot(state: ProjectionState, now = new Date()) 
   }
   for (const location of addedLocations) {
     const hazards = clusterPublicHazards(indexed.get(location.id) || [], now).hazards;
-    const coverage = expandedHazardCoverage(location);
+    const coverage = coverageById.get(location.id)!;
     const coverageGaps = HazardTypeSchema.options.filter((hazard) => coverage[hazard].status !== "monitored");
-    const warningAttempted = ["usgs", "emsc", "slf-avalanche"].some((source) => expandedProviderApplies(source, location)
+    const warningAttempted = ["usgs", "emsc", "slf-avalanche"].some((source) => providerApplies(source, location)
       && state.expandedSourceHealth[source as ExpandedProviderId])
-      || (["meteoalarm", "national-civil-alerts"] as const).some((source) => expandedProviderApplies(source, location)
+      || (["meteoalarm", "national-civil-alerts"] as const).some((source) => providerApplies(source, location)
         && state.collectionReceipts[3][source]?.checkedLocationIds.includes(location.id));
     if (!warningAttempted && !hazards.length) {
       snapshot.locations[location.id] = { level: "UNKNOWN", coverage: "partial", coverageGaps, delayedHazards: [], hazards: [], updatePending: true };
