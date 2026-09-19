@@ -152,8 +152,11 @@ export function parseFrExports(value: unknown, context: IngestionContext): { eve
       invalid += 1; locations.forEach(({ id }) => unavailable.add(id)); continue;
     }
     const references = cleanText(raw.references || raw.reference).split(/[\s,]+/).filter((part) => part.startsWith("FR-ALERT."));
-    if (references.length) events = events.filter((event) => !references.some((reference) => event.id.startsWith(`fr-alert:${reference}:`)));
-    if (["cancel", "cancellation", "annulation"].includes(msgType)) { parseable += 1; continue; }
+    if (["cancel", "cancellation", "annulation"].includes(msgType)) {
+      if (references.length) events = events.filter((event) => !references.some((reference) => event.id.startsWith(`fr-alert:${reference}:`)));
+      parseable += 1;
+      continue;
+    }
     const infos = Array.isArray(raw.infos) ? raw.infos : [];
     if (infos.length === 0) { invalid += 1; locations.forEach(({ id }) => unavailable.add(id)); continue; }
     let recordParsed = false;
@@ -165,8 +168,20 @@ export function parseFrExports(value: unknown, context: IngestionContext): { eve
         const starts = frDate(info.dateEffective || info.effective || info.dateDébut, timezone);
         const ends = frDate(info["dateExpiré"] || info.dateExpire || info.expires, timezone);
         const updated = frDate(raw.dateEmission || raw.sent || info.dateEffective, timezone);
-        if (!Number.isFinite(starts) || !Number.isFinite(ends) || starts >= ends || !Number.isFinite(updated)
+        if (!Number.isFinite(starts) || !Number.isFinite(ends) || !Number.isFinite(updated)
           || updated > context.now.getTime() + 300_000) throw new Error("Incomplete FR-Alert record");
+        // The provider archive currently includes a small number of old records
+        // whose end precedes their start. They are rejected as incidents, but an
+        // already-expired malformed record must not make today's monitoring
+        // unavailable. Current or future inverted lifecycles still fail closed.
+        if (starts >= ends && starts <= context.now.getTime() && ends <= context.now.getTime()
+          && updated <= context.now.getTime()) {
+          invalid += 1;
+          recordParsed = true;
+          continue;
+        }
+        if (starts >= ends) throw new Error("Incomplete FR-Alert record");
+        if (references.length) events = events.filter((event) => !references.some((reference) => event.id.startsWith(`fr-alert:${reference}:`)));
         if (ends <= context.now.getTime()) {
           recordParsed = true;
           continue;
@@ -234,7 +249,7 @@ export async function fetchFrPartition(context: IngestionContext): Promise<Natio
     throw error;
   }
   const parsed = parseFrExports(await exported.json(), context);
-  const partial = archive.overflow || parsed.invalid > 0;
+  const partial = archive.overflow || parsed.unavailableLocationIds.length > 0;
   if (partial) return {
     status: "partial", sourceUpdatedAt: modified || context.now.toISOString(),
     events: archive.overflow ? [] : parsed.events.filter((event) => event.geometry.kind === "locations" && event.geometry.ids.every((id) => !parsed.unavailableLocationIds.includes(id))),

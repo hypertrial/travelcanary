@@ -4,7 +4,8 @@ import { PartitionedSourceResultSchema, countryCodes, type NormalizedEvent, type
 import { CatalogPartitionedSourceResultSchema, type RuntimePartitionedSourceResult } from "../../domain/catalog-state";
 import { catalogV2CountryCodes, catalogV3CountryCodes } from "../../domain/contract-identities";
 import { locationPolygon } from "../../geospatial";
-import { nationalWarningSources, runtimeNationalSystems } from "../../national-warning-sources";
+import { nationalWarningSources, runtimeNationalSystems, type WarningCountryCode } from "../../national-warning-sources";
+import { lifeSafetyHazards } from "../../risk-policy";
 import { fetchWithRetry, isAllowlistedHttpsUrl, mapConcurrent, withFetchByteBudget } from "../fetch";
 import { recordSourceDiagnostics, type IngestionContext, type SourceAdapter } from "../types";
 import { MAX_EVENTS_PER_PARTITION } from "../limits";
@@ -111,6 +112,20 @@ export function disabledNationalTransports(value = process.env.NATIONAL_ALERTS_D
   return new Set(ids);
 }
 
+export function orderedNationalRuntimeTasks(codes: readonly WarningCountryCode[]) {
+  const priority = (system: ReturnType<typeof runtimeNationalSystems>[number]) => {
+    if (system.status !== "active") return 4;
+    const lifeSafety = system.hazards.some((hazard) => lifeSafetyHazards.has(hazard));
+    if (system.role === "coverage" && lifeSafety) return 0;
+    if (system.role === "coverage") return 1;
+    if (lifeSafety) return 2;
+    return system.role === "fallback" ? 3 : 4;
+  };
+  return codes.flatMap((code) => runtimeNationalSystems(code).map((system) => ({ code, system })))
+    .sort((left, right) => priority(left.system) - priority(right.system)
+      || left.code.localeCompare(right.code) || left.system.id.localeCompare(right.system.id));
+}
+
 export class NationalCivilAlertsAdapter implements SourceAdapter {
   readonly id = "national-civil-alerts" as const;
   readonly cadence = "fast" as const;
@@ -124,7 +139,9 @@ export class NationalCivilAlertsAdapter implements SourceAdapter {
     const disabledTransports = disabledNationalTransports();
     type Transport = NonNullable<PartitionedSourceResult["partitions"]["AT"]["transports"]>[string];
     const results = new Map<string, Transport>();
-    const tasks = codes.flatMap((code) => runtimeNationalSystems(code).map((system) => ({ code, system })));
+    // Start required life-safety coverage first so slow optional transports
+    // cannot consume the shared source deadline before those checks begin.
+    const tasks = orderedNationalRuntimeTasks(codes);
     recordSourceDiagnostics(context, { targetsScheduled: tasks.filter(({ code, system }) => !disabledCountries.has(code) && !disabledTransports.has(system.id)).length });
     await withFetchByteBudget({ remaining: 24 * 1024 * 1024 }, () => mapConcurrent(tasks, 8, async ({ code, system }) => {
       if (disabledCountries.has(code) || disabledTransports.has(system.id)) {
