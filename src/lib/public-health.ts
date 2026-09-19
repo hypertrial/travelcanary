@@ -9,7 +9,7 @@ import { mapConcurrent, readBytesWithLimit } from "./ingestion/fetch";
 import { FilePublicationStore, publicationSha256, readCurrentPublication, readPublishedObject, type PublicationStore } from "./publication-store";
 import { expandedHazardCoverage, isExpandedDestination } from "./expanded-coverage";
 import { expandedCheckIsCurrent } from "./expanded-source-health";
-import { hazardAppliesToLocation } from "./risk-policy";
+import { hazardAppliesToLocation, lifeSafetyHazards } from "./risk-policy";
 import { nationalWarningManifest } from "./national-warning-sources";
 import { CoverageMatrixSchema, type HazardType, type ProviderId } from "./domain/schemas";
 import { providerRegistry } from "./provider-registry";
@@ -21,8 +21,9 @@ type PublicPartition = { status: string; lastSuccess: string | null; nextExpecte
 const coverageMatrix = CoverageMatrixSchema.parse(coverageJson);
 
 function viable(value: { status: string; lastSuccess?: string | null; sourceUpdatedAt?: string | null; nextExpectedUpdate?: string | null },
-  now: Date, cadenceMinutes: number | null) {
+  now: Date, cadenceMinutes: number | null, strictCurrentStatus = false) {
   if (!["ok", "partial", "failed", "delayed"].includes(value.status)) return false;
+  if (strictCurrentStatus && !["ok", "partial"].includes(value.status)) return false;
   if (!cadenceMinutes) return value.status === "ok" || value.status === "partial";
   if (!value.lastSuccess) return false;
   const expected = Date.parse(value.nextExpectedUpdate || "");
@@ -32,10 +33,17 @@ function viable(value: { status: string; lastSuccess?: string | null; sourceUpda
   return freshUntil >= now.getTime();
 }
 
-function providerViable(snapshot: CatalogSnapshot, location: PublicCatalogLocation, hazard: HazardType, providerId: ProviderId, now: Date) {
+function providerViable(snapshot: CatalogSnapshot, location: PublicCatalogLocation, hazard: HazardType, providerId: ProviderId, now: Date,
+  strictCurrentStatus = false) {
   const definition = providerRegistry[providerId];
-  if (!definition || definition.satisfiesCoverage === false || definition.mode === "disabled" || definition.mode === "discovery") return false;
+  if (!definition || definition.satisfiesCoverage === false || definition.healthScope === "non_blocking"
+    || definition.mode === "disabled" || definition.mode === "discovery") return false;
   const provider = snapshot.providers[providerId];
+  if (isExpandedDestination(location) && "expandedCoverage" in provider && provider.expandedCoverage) {
+    const receipt = provider.expandedCoverage;
+    return (!strictCurrentStatus || receipt.status === "ok" || receipt.status === "partial")
+      && expandedCheckIsCurrent(receipt, location.id, definition.cadenceMinutes, now);
+  }
   if (provider.partitions) {
     const partition = (provider.partitions as Record<string, PublicPartition>)[location.countryCode];
     if (!partition) return false;
@@ -47,19 +55,32 @@ function providerViable(snapshot: CatalogSnapshot, location: PublicCatalogLocati
       if (systems.length) return systems.some((system) => {
         const transport = partition.transports?.find(({ id }) => id === system.id);
         return Boolean(transport && viable({ ...transport, lastSuccess: transport.lastSuccess ?? partition.lastSuccess,
-          nextExpectedUpdate: transport.nextExpectedUpdate ?? partition.nextExpectedUpdate }, now, system.cadenceMinutes));
+          nextExpectedUpdate: transport.nextExpectedUpdate ?? partition.nextExpectedUpdate }, now, system.cadenceMinutes, strictCurrentStatus));
       });
     }
-    return viable(partition, now, definition.cadenceMinutes);
+    return viable(partition, now, definition.cadenceMinutes, strictCurrentStatus);
   }
   if (isExpandedDestination(location)) {
     const receipt = "expandedCoverage" in provider ? provider.expandedCoverage : undefined;
-    return expandedCheckIsCurrent(receipt, location.id, definition.cadenceMinutes, now);
+    return (!strictCurrentStatus || receipt?.status === "ok" || receipt?.status === "partial")
+      && expandedCheckIsCurrent(receipt, location.id, definition.cadenceMinutes, now);
   }
-  return viable(provider, now, definition.cadenceMinutes);
+  return viable(provider, now, definition.cadenceMinutes, strictCurrentStatus);
 }
 
-export function requiredTransportFailures(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date) {
+function providerIsRequired(location: PublicCatalogLocation, hazard: HazardType, providerId: ProviderId) {
+  const definition = providerRegistry[providerId];
+  if (!definition || definition.satisfiesCoverage === false || definition.healthScope === "non_blocking") return false;
+  if (providerId !== "national-civil-alerts") return true;
+  return Boolean(nationalWarningManifest.countries[location.countryCode as keyof typeof nationalWarningManifest.countries]?.systems.some((system) => (
+    system.status === "active" && system.runtimeTarget === "national-civil-alerts" && system.role === "coverage"
+    && system.coverageContribution !== "none" && system.hazards.includes(hazard)
+    && (!system.coverageLocationIds || system.coverageLocationIds.includes(location.id))
+  )));
+}
+
+export function requiredTransportFailures(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date,
+  includedHazards?: ReadonlySet<HazardType>, strictCurrentStatus = false) {
   const failed = new Set<string>();
   const national = snapshot.providers["national-civil-alerts"].partitions as Record<string, PublicPartition> | undefined;
   for (const [countryCode, country] of Object.entries(nationalWarningManifest.countries)) {
@@ -68,12 +89,12 @@ export function requiredTransportFailures(snapshot: CatalogSnapshot, catalog: Pu
     for (const system of country.systems.filter((candidate) => candidate.status === "active"
       && candidate.runtimeTarget === "national-civil-alerts" && candidate.role === "coverage" && candidate.coverageContribution !== "none")) {
       const applicable = locations.some((location) => (!system.coverageLocationIds || system.coverageLocationIds.includes(location.id))
-        && system.hazards.some((hazard) => hazardAppliesToLocation(hazard, location)));
+        && system.hazards.some((hazard) => (!includedHazards || includedHazards.has(hazard)) && hazardAppliesToLocation(hazard, location)));
       if (!applicable) continue;
       const partition = national?.[countryCode];
       const transport = partition?.transports?.find(({ id }) => id === system.id);
-      if (!transport || !viable({ ...transport, lastSuccess: transport.lastSuccess ?? partition?.lastSuccess ?? null,
-        nextExpectedUpdate: transport.nextExpectedUpdate ?? partition?.nextExpectedUpdate ?? null }, now, system.cadenceMinutes)) {
+      if (!strictCurrentStatus && (!transport || !viable({ ...transport, lastSuccess: transport.lastSuccess ?? partition?.lastSuccess ?? null,
+        nextExpectedUpdate: transport.nextExpectedUpdate ?? partition?.nextExpectedUpdate ?? null }, now, system.cadenceMinutes))) {
         failed.add(`transport/${countryCode}/${system.id}`);
       }
     }
@@ -84,14 +105,20 @@ export function requiredTransportFailures(snapshot: CatalogSnapshot, catalog: Pu
       : { ...country?.hazards, ...(coverageMatrix.locationOverrides[location.id] || {}) };
     for (const hazard of Object.keys(entries) as HazardType[]) {
       const entry = entries[hazard];
-      if (!entry || entry.status === "not_monitored" || !hazardAppliesToLocation(hazard, location)) continue;
-      const providers = entry.providerIds.filter((providerId) => providerRegistry[providerId]?.satisfiesCoverage !== false);
-      if (!providers.length || !providers.some((providerId) => providerViable(snapshot, location, hazard, providerId, now))) {
+      if (!entry || entry.status === "not_monitored" || (includedHazards && !includedHazards.has(hazard))
+        || !hazardAppliesToLocation(hazard, location)) continue;
+      const providers = entry.providerIds.filter((providerId) => providerIsRequired(location, hazard, providerId));
+      if (!providers.length) continue;
+      if (!providers.some((providerId) => providerViable(snapshot, location, hazard, providerId, now, strictCurrentStatus))) {
         failed.add(`coverage/${location.countryCode}/${hazard}/${providers.slice().sort().join("+") || "no-viable-transport"}`);
       }
     }
   }
   return [...failed].sort();
+}
+
+export function requiredLifeSafetyTransportFailures(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date) {
+  return requiredTransportFailures(snapshot, catalog, now, lifeSafetyHazards, true);
 }
 
 export function coverageCounts(snapshot: CatalogSnapshot, catalog: PublicCatalogLocation[], now: Date) {

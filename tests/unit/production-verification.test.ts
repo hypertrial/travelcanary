@@ -7,6 +7,12 @@ import { MemoryStateStore } from "@/lib/state-store";
 import { readCurrentPublication } from "@/lib/publication-store";
 import { verifyProduction } from "../../scripts/verify-production";
 import { MemoryPublicationStore } from "../helpers/publication";
+import { expandedReceiptLocationIds } from "@/lib/domain/catalog-state";
+import { buildCatalog3Snapshot } from "@/lib/catalog-projections";
+import { catalogLocationsV3 } from "@/lib/catalog-data";
+import { requiredLifeSafetyTransportFailures } from "@/lib/public-health";
+import type { IngestionState } from "@/lib/domain/catalog-state";
+import { expandedProviderApplies } from "@/lib/expanded-coverage";
 
 const origin = "https://travelcanary.test";
 const blobOrigin = "https://unit.public.blob.vercel-storage.com";
@@ -14,12 +20,32 @@ const pointer = `${blobOrigin}/${publicationPointerPath}`;
 const now = new Date("2026-09-18T06:00:00.000Z");
 const sha = "a".repeat(40);
 
-async function fixture() {
-  const stateStore = new MemoryStateStore(createEmptyState(now)); const publicationStore = new MemoryPublicationStore();
+async function fixture(healthy = true, mutate?: (state: IngestionState) => void,
+  env: Record<string, string | undefined> = { VERCEL_GIT_COMMIT_SHA: sha }) {
+  const state = createEmptyState(now);
+  const health = { status: "ok" as const, lastAttempt: now.toISOString(), lastSuccess: now.toISOString(),
+    sourceUpdatedAt: now.toISOString(), nextExpectedUpdate: now.toISOString(), itemCount: 0, consecutiveFailures: 0, error: null };
+  if (healthy) {
+    for (const source of Object.values(state.sources)) if (source.status !== "not_monitored") Object.assign(source, health);
+    for (const partitions of Object.values(state.sourcePartitions)) {
+      for (const partition of Object.values(partitions)) if (partition.status !== "not_monitored") Object.assign(partition, health);
+    }
+    for (const partitions of Object.values(state.partitionTransports)) {
+      for (const transports of Object.values(partitions)) {
+        for (const transport of Object.values(transports)) if (transport.status !== "not_monitored") Object.assign(transport, health);
+      }
+    }
+    for (const source of Object.keys(expandedReceiptLocationIds) as Array<keyof typeof expandedReceiptLocationIds>) {
+      state.expandedSourceHealth[source] = { health: { ...health }, checkedLocationIds: [...expandedReceiptLocationIds[source]], unavailableLocationIds: [] };
+    }
+    expect(requiredLifeSafetyTransportFailures(buildCatalog3Snapshot(state, now), catalogLocationsV3, now)).toEqual([]);
+  }
+  mutate?.(state);
+  const stateStore = new MemoryStateStore(state); const publicationStore = new MemoryPublicationStore();
   const lease = await acquireIngestionLease(stateStore, "production-verifier-test", now, 330_000);
   if (!lease) throw new Error("lease unavailable");
   await publishCommittedCatalog({ stateStore, stores: { publicationStore }, collection: { catalogVersion: 3, revision: 1 }, lease,
-    now, family: "all", env: { VERCEL_GIT_COMMIT_SHA: sha } });
+    now, family: "all", env: { VERCEL_GIT_COMMIT_SHA: sha, ...env } });
   const current = await readCurrentPublication(publicationStore);
   if (!current) throw new Error("publication unavailable");
   const fetch = vi.fn<typeof globalThis.fetch>().mockImplementation(async (input) => {
@@ -73,5 +99,39 @@ describe("atomic Catalog 3 production verification", () => {
     unhealthy.fetch.mockImplementation(async (input, init) => String(input) === `${origin}/api/v1/health`
       ? Response.json({ available: false, status: "degraded" }, { status: 503 }) : base(input, init));
     expect((await unhealthy.verify()).blockers).toContainEqual(expect.objectContaining({ code: "health_failed" }));
+  });
+
+  it("blocks delayed required life-safety monitoring while leaving other source degradation as warnings", async () => {
+    const delayed = await fixture(false);
+    const report = await delayed.verify();
+    expect(report.blockers).toContainEqual(expect.objectContaining({ code: "life_safety_monitoring_delayed" }));
+    expect(report.warnings).toContainEqual(expect.objectContaining({ code: "source_degradation" }));
+  });
+
+  it("blocks a currently delayed life-safety source even when its last success is recent", async () => {
+    const delayed = await fixture(true, (state) => {
+      Object.assign(state.sources.usgs, { status: "delayed", lastAttempt: now.toISOString(), lastSuccess: now.toISOString(),
+        nextExpectedUpdate: now.toISOString(), consecutiveFailures: 1, error: "timeout" });
+    });
+    expect((await delayed.verify()).blockers).toContainEqual(expect.objectContaining({ code: "life_safety_monitoring_delayed" }));
+  });
+
+  it("warns when a reviewed conditions source is incomplete without blocking a complete publication", async () => {
+    const degraded = await fixture(true, (state) => {
+      state.conditions.health["awc-metar"] = { checkedAt: now.toISOString(), status: "failed", matched: 0, code: "source_unavailable" };
+    }, { VERCEL_GIT_COMMIT_SHA: sha, LOCAL_CONDITIONS_ENABLED: "true" });
+    const report = await degraded.verify();
+    expect(report.blockers).toEqual([]);
+    expect(report.warnings).toContainEqual(expect.objectContaining({ code: "conditions_source_degradation", message: expect.stringContaining("awc-metar") }));
+  });
+
+  it("blocks a location-scoped Catalog 3 MeteoAlarm receipt gap even when its country partition is fresh", async () => {
+    const scope = catalogLocationsV3.filter((location) => expandedProviderApplies("meteoalarm", location)).map(({ id }) => id);
+    const unavailableId = scope.find((id) => id.startsWith("is-"))!;
+    const partial = await fixture(true, (state) => {
+      state.collectionReceipts[3].meteoalarm = { catalogVersion: 3, collectionRevision: 1, checkedAt: now.toISOString(), status: "partial",
+        checkedLocationIds: scope.filter((id) => id !== unavailableId), unavailableLocationIds: [unavailableId] };
+    });
+    expect((await partial.verify()).blockers).toContainEqual(expect.objectContaining({ code: "life_safety_monitoring_delayed" }));
   });
 });

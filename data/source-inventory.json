@@ -581,7 +581,7 @@
         "flood"
       ],
       "healthScope": "non_blocking",
-      "satisfiesCoverage": true,
+      "satisfiesCoverage": false,
       "officialUrl": "https://mapping.emergency.copernicus.eu/",
       "limitationCode": null
     },

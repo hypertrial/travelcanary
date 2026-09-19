@@ -264,9 +264,10 @@ export function RiskMap({ catalogVersion = 2, locations, snapshot, selectedId, f
     const selectedFeatures: GeoJSON.Feature<GeoJSON.Point>[] = [];
     const visibleFeatures: GeoJSON.Feature<GeoJSON.Point>[] = [];
     for (const location of locations) {
-      const level = snapshot?.locations[location.id]?.level || "UNKNOWN";
+      const state = snapshot?.locations[location.id] || { level: "UNKNOWN" as const, coverage: "delayed" as const };
+      const level = state.level;
       const selected = location.id === selectedId;
-      if (!locationAppearsOnMap(level, selected, filter)) continue;
+      if (!locationAppearsOnMap(state, selected, filter)) continue;
       const feature: GeoJSON.Feature<GeoJSON.Point> = {
         type: "Feature",
         geometry: { type: "Point", coordinates: location.centroid },

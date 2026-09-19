@@ -70,6 +70,7 @@ export interface AttentionActionGroup {
 
 export interface AttentionPresentation {
   groups: AttentionActionGroup[];
+  delayedItems: LocationSummary[];
   total: number;
   label: string;
   compactLabel: string;
@@ -84,7 +85,7 @@ export const publicLabels: Record<RiskLevel, string> = {
   ELEVATED: "Be aware",
   HIGH: "Consider changing plans",
   SEVERE: "Emergency conditions",
-  UNKNOWN: "Updates unavailable",
+  UNKNOWN: "Checks delayed",
 };
 
 export const publicAccessibleLabels: Record<RiskLevel, string> = {
@@ -141,7 +142,7 @@ const attentionGroups: Array<{
   { key: "emergency", label: "Emergency conditions", level: "SEVERE" },
   { key: "change-plans", label: "Consider changing plans", level: "HIGH" },
   { key: "be-aware", label: "Be aware", level: "ELEVATED" },
-  { key: "unavailable", label: "Updates unavailable", level: "UNKNOWN" },
+  { key: "unavailable", label: "Checks delayed", level: "UNKNOWN" },
 ];
 
 function plural(count: number, singular: string, pluralValue = `${singular}s`) {
@@ -255,7 +256,7 @@ export function attentionLocationSummaries(
 ): LocationSummary[] {
   return locations
     .map((location) => ({ location, state: locationState(snapshot, location.id) }))
-    .filter(({ state }) => state.level !== "NORMAL")
+    .filter(({ state }) => state.level !== "NORMAL" || state.coverage === "delayed")
     .sort((a, b) => {
       const levelDifference = riskRank[b.state.level] - riskRank[a.state.level];
       if (levelDifference) return levelDifference;
@@ -267,29 +268,29 @@ export function attentionLocationSummaries(
 
 export function attentionPresentation(
   summaries: LocationSummary[],
-  options: { catalogCount?: number; catalogAvailable?: boolean } = {},
+  options: { catalogCount?: number; catalogAvailable?: boolean; snapshotAvailable?: boolean } = {},
 ): AttentionPresentation {
+  const delayedItems = summaries.filter(({ state }) => state.coverage === "delayed");
   const groups = attentionGroups
-    .map((group) => ({ ...group, items: summaries.filter(({ state }) => state.level === group.level) }))
+    .map((group) => ({ ...group, items: summaries.filter(({ state }) => group.key === "unavailable"
+      ? state.level === "UNKNOWN" || state.level === "NORMAL" && state.coverage === "delayed"
+      : state.level === group.level) }))
     .filter((group) => group.items.length > 0);
   const total = summaries.length;
   const catalogCount = options.catalogCount ?? 0;
   if (options.catalogAvailable === false) {
     return {
-      groups: [], total: 0,
+      groups: [], delayedItems: [], total: 0,
       label: "Destinations unavailable", compactLabel: "Unavailable",
       railTitle: "Destinations unavailable", railDetail: "Destination list could not load",
       accessibleLabel: "Destination alerts are unavailable because the destination list could not be loaded.",
       globalUnavailable: true,
     };
   }
-  const globalUnavailable =
-    catalogCount > 0 &&
-    total === catalogCount &&
-    summaries.every(({ state }) => state.level === "UNKNOWN");
+  const globalUnavailable = options.snapshotAvailable === false && catalogCount > 0 && total === catalogCount;
   if (total === 0) {
     return {
-      groups,
+      groups, delayedItems,
       total,
       label: "No destinations flagged",
       compactLabel: "None flagged",
@@ -301,7 +302,7 @@ export function attentionPresentation(
   }
   if (globalUnavailable) {
     return {
-      groups: [],
+      groups: [], delayedItems,
       total,
       label: `${plural(total, "update")} unavailable`,
       compactLabel: `${total} unavailable`,
@@ -315,7 +316,7 @@ export function attentionPresentation(
   const leading = groups[0];
   const leadingCount = leading.items.length;
   const label = leading.key === "unavailable"
-    ? `${plural(leadingCount, "update")} unavailable`
+    ? `${plural(leadingCount, "destination")} with delayed checks`
     : leading.key === "emergency"
       ? `${plural(leadingCount, "emergency")} · ${total} need attention`
       : leading.key === "change-plans"
@@ -326,25 +327,25 @@ export function attentionPresentation(
     if (group.key === "emergency") return plural(count, "emergency condition");
     if (group.key === "change-plans") return `${plural(count, "destination")} where plans may need changing`;
     if (group.key === "be-aware") return `${plural(count, "destination")} to be aware of`;
-    return `${plural(count, "destination")} with updates unavailable`;
+    return `${plural(count, "destination")} with delayed checks`;
   }).join(", ");
   const compactLabel = leading.key === "unavailable"
-    ? `${leadingCount} unavailable`
+    ? `${leadingCount} delayed`
     : total === 1 ? "1 needs attention" : `${total} need attention`;
   const railDetail = leading.key === "unavailable"
-    ? "Open affected destinations"
+    ? "Open destinations with delayed checks"
     : leading.key === "emergency"
       ? plural(leadingCount, "emergency")
       : leading.key === "change-plans"
         ? `${leadingCount} may need plan changes`
         : `${leadingCount} marked Be aware`;
   return {
-    groups,
+    groups, delayedItems,
     total,
     label,
     compactLabel,
     railTitle: leading.key === "unavailable"
-      ? `${plural(leadingCount, "update")} unavailable`
+      ? `${plural(leadingCount, "destination")} with delayed checks`
       : total === 1 ? "1 needs attention" : `${total} need attention`,
     railDetail,
     accessibleLabel: `${accessibleLabel}.`,
@@ -376,7 +377,9 @@ export function destinationSummary(state: LocationState, locationName: string): 
 
 export function evidenceLabel(hazard: PublicHazard): string {
   if (hazard.providerId === "gdelt") return "Multiple independent reports";
-  if (providerRegistry[hazard.providerId].satisfiesCoverage === false || hazard.id.startsWith("catalonia-plan:")) return "Context only";
+  if (providerRegistry[hazard.providerId].satisfiesCoverage === false
+    || providerRegistry[hazard.providerId].healthScope === "non_blocking"
+    || hazard.id.startsWith("catalonia-plan:")) return "Context only";
   return hazard.confidence === "HIGH" ? "Official source" : "Preliminary official source";
 }
 

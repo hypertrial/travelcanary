@@ -9,6 +9,7 @@ import { PublicationManifestV1Schema, PublicationPointerV1Schema, publicationMan
 import { assertSupportedCollection, type CollectionControl } from "./domain/catalog-state";
 import { assertIngestionLease, type IngestionLease } from "./ingestion-lease";
 import { publicationSha256, readCurrentPublication, readPublishedObject, type PublicationStore } from "./publication-store";
+import { providerRegistry } from "./provider-registry";
 import type { StateStore } from "./state-store";
 
 export type CatalogPublicationStores = { publicationStore: PublicationStore };
@@ -25,7 +26,10 @@ function object(body: string, generatedAt: string): PublicationObject {
 
 function statusCodes(state: Awaited<ReturnType<StateStore["read"]>>["data"]) {
   const codes = new Set<string>();
-  for (const [id, health] of Object.entries(state.sources)) if (["failed", "delayed"].includes(health.status)) codes.add(`source/${id}/${health.status}`);
+  const nonBlockingSources = new Set<string>(Object.values(providerRegistry)
+    .filter(({ healthScope }) => healthScope === "non_blocking").map(({ sourceId }) => sourceId));
+  for (const [id, health] of Object.entries(state.sources)) if (!nonBlockingSources.has(id)
+    && ["failed", "delayed"].includes(health.status)) codes.add(`source/${id}/${health.status}`);
   for (const [group, countries] of Object.entries(state.sourcePartitions)) for (const [country, health] of Object.entries(countries)) {
     if (["failed", "delayed"].includes(health.status)) codes.add(`partition/${group.toLowerCase()}/${country.toLowerCase()}/${health.status}`);
   }

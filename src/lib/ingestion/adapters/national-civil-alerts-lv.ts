@@ -43,13 +43,24 @@ export function rigaWarningTime(value: string): number {
 }
 
 export type LatvianTables = { -readonly [K in keyof typeof latviaResources]: unknown[] };
+function normalizeEmptySentinel(rows: unknown[], table: string) {
+  const blank = (value: unknown) => {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+    const fields = Object.entries(value).filter(([key]) => key !== "_id");
+    return fields.length > 0 && fields.every(([, item]) => item === null || typeof item === "string" && item.trim() === "");
+  };
+  if (rows.length === 1 && blank(rows[0])) return [];
+  if (rows.some(blank)) throw new Error(`Latvian ${table} contains a mixed blank sentinel`);
+  return rows;
+}
+
 export function parseLatvianWarnings(tables: LatvianTables, context: IngestionContext, sourceUpdatedAt: string): NationalPartition {
   const locations = countryLocations(context, "LV");
   const updated = Date.parse(sourceUpdatedAt);
   if (!Number.isFinite(updated) || updated > context.now.getTime() + 300_000) throw new Error("Invalid Latvian source update time");
-  const warnings = z.array(warningSchema).max(500).parse(tables.warnings);
-  const points = z.array(pointSchema).max(40_000).parse(tables.polygons);
-  const joins = z.array(joinSchema).max(5000).parse(tables.warningMunicipalities);
+  const warnings = z.array(warningSchema).max(500).parse(normalizeEmptySentinel(tables.warnings, "warnings"));
+  const points = z.array(pointSchema).max(40_000).parse(normalizeEmptySentinel(tables.polygons, "polygons"));
+  const joins = z.array(joinSchema).max(5000).parse(normalizeEmptySentinel(tables.warningMunicipalities, "warning municipalities"));
   const municipalities = z.array(municipalitySchema).max(100).parse(tables.municipalities);
   const municipalityIds = new Set(municipalities.map((m) => m.NOV_ID));
   if (municipalityIds.size !== municipalities.length || Object.values(cities).some((c) => !municipalities.some((m) => m.NOV_ID === c.id && m.NOSAUKUMS_EN === c.name))) {

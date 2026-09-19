@@ -1,5 +1,9 @@
+import { conditionSourceIds } from "./domain/conditions";
+import { sourceIds } from "./domain/schemas";
+
 const counterKeys = ["locations", "countries", "bytes", "privateStateBytes", "cacheBytes", "durationMs", "sourceDurationMs"] as const;
 const publicationCounterKeys = ["published", "unchanged", "failed", "omittedFailures"] as const;
+const diagnosticSourceIds = new Set<string>([...sourceIds, ...conditionSourceIds]);
 
 export function publicOperationSummary(value: unknown) {
   const source = value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
@@ -17,6 +21,20 @@ export function publicOperationSummary(value: unknown) {
       if (typeof counter === "number" && Number.isFinite(counter) && counter >= 0) counters[key] = counter;
     }
     if (Object.keys(counters).length) summary.publication = counters;
+  }
+  if (source.sources && typeof source.sources === "object" && !Array.isArray(source.sources)) {
+    const counts = { successful: 0, partial: 0, failed: 0, disabled: 0 };
+    const degradedSourceIds: string[] = [];
+    for (const [id, value] of Object.entries(source.sources).sort(([left], [right]) => left.localeCompare(right)).slice(0, 64)) {
+      if (!diagnosticSourceIds.has(id) || !value || typeof value !== "object" || Array.isArray(value)) continue;
+      const status = (value as Record<string, unknown>).status;
+      if (status === "ok") counts.successful += 1;
+      else if (status === "partial") { counts.partial += 1; degradedSourceIds.push(id); }
+      else if (status === "disabled" || status === "not_monitored") counts.disabled += 1;
+      else if (status === "failed" || status === "delayed") { counts.failed += 1; degradedSourceIds.push(id); }
+    }
+    summary.sourceSummary = counts;
+    summary.degradedSourceIds = degradedSourceIds;
   }
   return summary;
 }

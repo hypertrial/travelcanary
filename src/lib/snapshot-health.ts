@@ -3,7 +3,7 @@ import { expandedHazardCoverage, isExpandedDestination } from "./expanded-covera
 import type { HazardType } from "./domain/schemas";
 import { parseCatalogSnapshot, type PublicCatalogLocation as PublicLocation, type CatalogSnapshot as Snapshot } from "./domain/catalog-public";
 import { currentPublicHazards } from "./hazard-lifecycle";
-import { enabledHazards, hazardAppliesToLocation } from "./risk-policy";
+import { delayedHazardsRequireUnknown, enabledHazards, hazardAppliesToLocation } from "./risk-policy";
 
 function withoutExpiredHazards(snapshot: Snapshot, now: Date): Snapshot {
   return parseCatalogSnapshot({
@@ -15,12 +15,12 @@ function withoutExpiredHazards(snapshot: Snapshot, now: Date): Snapshot {
         const delayedHazards = expandedDelayedHazards(identity, snapshot.providers, now);
         const coverage = delayedHazards.length ? "delayed" : "partial";
         return [id, hazards.length ? { ...state, hazards, delayedHazards, coverage, level: hazards[0].level, timing: hazards[0].timing }
-          : { coverage, coverageGaps: state.coverageGaps, delayedHazards, level: delayedHazards.length ? "UNKNOWN" : "NORMAL", hazards: [] }];
+          : { coverage, coverageGaps: state.coverageGaps, delayedHazards, level: delayedHazardsRequireUnknown(delayedHazards) ? "UNKNOWN" : "NORMAL", hazards: [] }];
       }
       if (state.level === "NORMAL" || state.level === "UNKNOWN") return [id, state];
       const hazards = currentPublicHazards(state.hazards, now);
       if (hazards.length === 0) return [id, {
-        level: state.coverage === "delayed" ? "UNKNOWN" as const : "NORMAL" as const,
+        level: delayedHazardsRequireUnknown(state.delayedHazards) ? "UNKNOWN" as const : "NORMAL" as const,
         coverage: state.coverage,
         coverageGaps: state.coverageGaps,
         delayedHazards: state.delayedHazards,

@@ -38,7 +38,7 @@ test("elevated-only snapshots populate the default map and expose exclusive dest
   else {
     await expect(filters(page).getByRole("button", { name: "All alerts · 108", exact: true })).toHaveAttribute("aria-pressed", "true");
     await expect(filters(page).getByRole("button", { name: "High & Severe · 0", exact: true })).toBeVisible();
-    await expect(filters(page).getByRole("button", { name: "Updates unavailable · 33", exact: true })).toBeVisible();
+    await expect(filters(page).getByRole("button", { name: "Checks delayed · 33", exact: true })).toBeVisible();
   }
   await expect(map(page)).toHaveAttribute("data-marker-count", "108");
   await page.screenshot({ path: testInfo.outputPath("elevated-only-map.png") });
@@ -49,9 +49,9 @@ test("elevated-only snapshots populate the default map and expose exclusive dest
   await page.getByRole("button", { name: /Show (108 )?Be aware/ }).click();
   await expect(map(page)).toHaveAttribute("data-marker-count", "108");
 
-  await chooseFilter(page, "Updates unavailable");
+  await chooseFilter(page, "Checks delayed");
   await expect(map(page)).toHaveAttribute("data-marker-count", "33");
-  if (await compact.count()) await expect(compact).toContainText("Updates unavailable · 33");
+  if (await compact.count()) await expect(compact).toContainText("Checks delayed · 33");
   else await expect(filters(page).getByRole("button", { name: "All alerts · 108", exact: true })).toHaveAttribute("aria-pressed", "false");
   expect((await new AxeBuilder({ page }).include('[data-ui="map-filters"]').analyze()).violations).toEqual([]);
 });
@@ -77,8 +77,8 @@ test("a genuine zero-alert snapshot gives qualified empty results without green 
   await chooseFilter(page, "High & Severe");
   await expect(page.getByText(/No High or Severe alerts found/)).toBeVisible();
   await expect(page.getByRole("button", { name: /Show .* Be aware destinations/ })).toHaveCount(0);
-  await chooseFilter(page, "Updates unavailable");
-  await expect(page.getByText(/No destinations have updates unavailable/)).toBeVisible();
+  await chooseFilter(page, "Checks delayed");
+  await expect(page.getByText(/No destinations have delayed checks/)).toBeVisible();
 });
 
 test("missing data does not claim zero alerts", async ({ page }) => {
@@ -95,14 +95,14 @@ test("zero alerts with unavailable updates offers the separate unavailable view"
   await loadSnapshot(page, 0, 33);
   await expect(map(page)).toHaveAttribute("data-marker-count", "0");
   await expect(page.getByText(/No alerts found in checked sources/).first()).toBeVisible();
-  await page.getByRole("button", { name: /Show (33 destinations with updates unavailable|unavailable)/ }).click();
+  await page.getByRole("button", { name: /Show 33 destinations with delayed checks/ }).click();
   await expect(map(page)).toHaveAttribute("data-marker-count", "33");
   const compact = page.getByRole("button", { name: /Map filter:/ });
   if (await compact.count()) {
-    await expect(compact).toContainText("Updates unavailable · 33");
-    await expect(page.getByRole("button", { name: "Alerts, 33 destinations with updates unavailable" })).toBeVisible();
+    await expect(compact).toContainText("Checks delayed · 33");
+    await expect(page.getByRole("button", { name: "Alerts, 33 destinations with delayed checks" })).toBeVisible();
   }
-  else await expect(filters(page).getByRole("button", { name: "Updates unavailable · 33", exact: true })).toHaveAttribute("aria-pressed", "true");
+  else await expect(filters(page).getByRole("button", { name: "Checks delayed · 33", exact: true })).toHaveAttribute("aria-pressed", "true");
 });
 
 test("filter buttons support keyboard navigation and activation", async ({ page }, testInfo) => {
@@ -128,7 +128,7 @@ test("filter buttons support keyboard navigation and activation", async ({ page 
   await expect(high).toHaveAttribute("aria-pressed", "true");
   if (testInfo.project.name === "desktop-chromium") {
     await page.keyboard.press("Tab");
-    await expect(filters(page).getByRole("button", { name: "Updates unavailable · 33", exact: true })).toBeFocused();
+    await expect(filters(page).getByRole("button", { name: "Checks delayed · 33", exact: true })).toBeFocused();
   }
 });
 
@@ -141,9 +141,9 @@ test("empty-state recovery moves keyboard focus to the newly selected filter", a
   await page.keyboard.press("Enter");
   await expect(filters(page).getByRole("button", { name: "All alerts · 108", exact: true })).toBeFocused();
   await filters(page).getByRole("button", { name: "High & Severe · 0", exact: true }).click();
-  await page.getByRole("button", { name: "Show 33 destinations with updates unavailable", exact: true }).focus();
+  await page.getByRole("button", { name: "Show 33 destinations with delayed checks", exact: true }).focus();
   await page.keyboard.press("Enter");
-  await expect(filters(page).getByRole("button", { name: "Updates unavailable · 33", exact: true })).toBeFocused();
+  await expect(filters(page).getByRole("button", { name: "Checks delayed · 33", exact: true })).toBeFocused();
 });
 
 test("short-screen filters do not cover the failure banner or its retry control", async ({ page }) => {

@@ -22,28 +22,26 @@ function timestamp(value: unknown, options: { norwayLocal?: boolean } = {}) {
     throw new Error("Warning timestamp is invalid");
   }
   if (!options.norwayLocal) throw new Error("Warning timestamp has no UTC offset");
-  const iso = /^(\d{4})-(\d\d)-(\d\d)[T ](\d\d):(\d\d)(?::(\d\d))?$/.exec(raw);
-  const nve = /^(\d\d)\/(\d\d)\/(\d{4}) (\d\d):(\d\d)(?::(\d\d))?$/.exec(raw);
+  const iso = /^(\d{4})-(\d\d)-(\d\d)[T ](\d\d):(\d\d)(?::(\d\d)(?:\.(\d{1,7}))?)?$/.exec(raw);
+  const nve = /^(\d\d)\/(\d\d)\/(\d{4}) (\d\d):(\d\d)(?::(\d\d)(?:\.(\d{1,7}))?)?$/.exec(raw);
   if (!iso && !nve) throw new Error("Warning timestamp has no UTC offset");
   const [year, month, day, hour, minute, second] = iso
     ? [iso[1], iso[2], iso[3], iso[4], iso[5], iso[6] || "0"].map(Number)
     : [nve![3], nve![2], nve![1], nve![4], nve![5], nve![6] || "0"].map(Number);
-  const calendar = new Date(Date.UTC(year, month - 1, day, hour, minute, second));
+  const milliseconds = Number(`0.${iso?.[7] || nve?.[7] || "0"}`) * 1000;
+  const calendar = new Date(Date.UTC(year, month - 1, day, hour, minute, second, milliseconds));
   if (calendar.getUTCFullYear() !== year || calendar.getUTCMonth() !== month - 1 || calendar.getUTCDate() !== day
     || calendar.getUTCHours() !== hour || calendar.getUTCMinutes() !== minute || calendar.getUTCSeconds() !== second) {
     throw new Error("Warning timestamp is invalid");
   }
-  let utc = Date.UTC(year, month - 1, day, hour, minute, second);
   const formatter = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Oslo", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" });
-  for (let iteration = 0; iteration < 2; iteration += 1) {
+  const local = Date.UTC(year, month - 1, day, hour, minute, second, milliseconds);
+  const candidates = [60, 120].map((offset) => local - offset * 60_000).filter((utc) => {
     const parts = Object.fromEntries(formatter.formatToParts(new Date(utc)).filter(({ type }) => type !== "literal").map(({ type, value }) => [type, Number(value)]));
-    utc += Date.UTC(year, month - 1, day, hour, minute, second) - Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, parts.second);
-  }
-  const parts = Object.fromEntries(formatter.formatToParts(new Date(utc)).filter(({ type }) => type !== "literal").map(({ type, value }) => [type, Number(value)]));
-  if (parts.year !== year || parts.month !== month || parts.day !== day || parts.hour !== hour || parts.minute !== minute || parts.second !== second) {
-    throw new Error("Warning timestamp is invalid");
-  }
-  return utc;
+    return parts.year === year && parts.month === month && parts.day === day && parts.hour === hour && parts.minute === minute && parts.second === second;
+  });
+  if (candidates.length !== 1) throw new Error("Warning timestamp is invalid");
+  return candidates[0];
 }
 
 function ring(value: unknown): Position[] {

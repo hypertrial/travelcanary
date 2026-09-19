@@ -19,7 +19,9 @@ describe("release initialization", () => {
       calls.push({ path: url.pathname, method });
       expect(new Headers(init?.headers).get("authorization")).toBe(`Bearer ${secret}`);
       return method === "HEAD" ? new Response(null) : response({ status: "ok", locations: 679,
-        publication: { published: 45, manifestSha256: "secret-manifest" }, error: "secret-upstream-detail" });
+        publication: { published: 45, manifestSha256: "secret-manifest" },
+        sourceSummary: { successful: 7, partial: 1, failed: 2, disabled: 3 },
+        degradedSourceIds: ["secret-source"], error: "secret-upstream-detail" });
     };
     const results = await initializeRelease({ env, fetch: fetchImpl as typeof fetch, write: (result) => written.push(result) });
     expect(calls).toEqual(releaseRoutes.flatMap((route) => [
@@ -27,9 +29,11 @@ describe("release initialization", () => {
     ]));
     expect(results).toHaveLength(6);
     expect(written[0]).toEqual({ route: "fast", headStatus: 200, getStatus: 200, status: "ok",
-      counters: { locations: 679, "publication.published": 45 } });
+      counters: { locations: 679, "publication.published": 45,
+        "sources.successful": 7, "sources.partial": 1, "sources.failed": 2, "sources.disabled": 3 } });
     expect(JSON.stringify(written)).not.toContain("secret-manifest");
     expect(JSON.stringify(written)).not.toContain("secret-upstream-detail");
+    expect(JSON.stringify(written)).not.toContain("secret-source");
     expect(JSON.stringify(written)).not.toContain(secret);
   });
 

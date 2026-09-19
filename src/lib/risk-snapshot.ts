@@ -11,7 +11,7 @@ import { comparePublicHazards, eventIsPublishable, hazardTiming } from "./hazard
 import { providerRegistry, publicProviderPartitionState, publicProviderState } from "./provider-registry";
 import { nationalWarningManifest, type NationalWarningSystem } from "./national-warning-sources";
 import {
-  enabledHazards, enabledSources, hazardAppliesToLocation, sourceCadenceMinutes, sourceHazards, weatherFamily,
+  delayedHazardsRequireUnknown, enabledHazards, enabledSources, hazardAppliesToLocation, sourceCadenceMinutes, sourceHazards, weatherFamily,
 } from "./risk-policy";
 
 function compactCoverageGaps(gaps: HazardType[]) {
@@ -162,6 +162,34 @@ function providerUnavailableAtLocation(state: ProjectionState, providerId: Provi
   return !currentPartialScope || providerCoverage.unavailableLocationIds.includes(locationId);
 }
 
+function providerCurrentAtLocation(state: ProjectionState, providerId: ProviderId, hazard: HazardType, location: Location, now: Date) {
+  const definition = providerRegistry[providerId];
+  if (!definition || definition.satisfiesCoverage === false || definition.healthScope === "non_blocking") return false;
+  if (providerId === "national-civil-alerts") {
+    return nationalWarningManifest.countries[location.countryCode].systems.some((system) => {
+      if (system.status !== "active" || system.runtimeTarget !== "national-civil-alerts" || system.role !== "coverage"
+        || system.coverageContribution === "none" || !system.hazards.includes(hazard)
+        || system.coverageLocationIds && !system.coverageLocationIds.includes(location.id)) return false;
+      const health = state.partitionTransports.nationalCivilAlerts[location.countryCode][system.id];
+      return Boolean(health && !transportIsDelayed(health, system.cadenceMinutes || 10, now)
+        && health.checkedLocationIds.includes(location.id) && !health.unavailableLocationIds.includes(location.id));
+    });
+  }
+  const health = providerId === "meteoalarm" ? state.sourcePartitions.meteoalarm[location.countryCode]
+    : providerId === "eea-aqi" ? state.sourcePartitions.eea[location.countryCode]
+      : state.sources[definition.sourceId];
+  if (!health || sourceIsDelayed(definition.sourceId, health, now)) return false;
+  if (providerId === "meteoalarm") {
+    const receipt = state.providerCoverage.meteoalarm;
+    if (!receipt || receipt.checkedAt !== health.lastAttempt) return health.status === "ok";
+    return receipt.checkedLocationIds.includes(location.id) && !receipt.unavailableLocationIds.includes(location.id);
+  }
+  if (definition.healthScope !== "coverage") return true;
+  const receipt = state.providerCoverage[providerId];
+  if (!receipt || receipt.checkedAt !== health.lastAttempt) return health.status === "ok";
+  return receipt.checkedLocationIds.includes(location.id) && !receipt.unavailableLocationIds.includes(location.id);
+}
+
 function delayedHazards(sources: ProjectionState["sources"], excludedSource?: SourceId): Set<HazardType> {
   const hazards = new Set<HazardType>();
   for (const [sourceId, health] of Object.entries(sources) as [SourceId, SourceHealth][]) {
@@ -290,14 +318,15 @@ export function projectCoreSnapshot(input: ProjectionState, now = new Date()): S
       }
     }
     coverageGaps = compactCoverageGaps(coverageGaps);
-    const delayedHazards = [...new Set(applicableDelayed)];
+    const delayedHazards = [...new Set(applicableDelayed)].filter((hazard) => stale
+      || !coverage[hazard]?.providerIds.some((providerId) => providerCurrentAtLocation(state, providerId, hazard, location, now)));
     const hazards = clusterPublicHazards(locationEvents, now).hazards;
     const coverageState = delayedHazards.length > 0 ? "delayed" : coverageGaps.length ? "partial" : "complete";
     if (hazards.length) {
       locationStates[location.id] = {
         level: hazards[0].level, timing: hazards[0].timing, coverage: coverageState, coverageGaps, delayedHazards, hazards,
       };
-    } else if (delayedHazards.length > 0) {
+    } else if (delayedHazardsRequireUnknown(delayedHazards)) {
       locationStates[location.id] = { level: "UNKNOWN", coverage: coverageState, coverageGaps, delayedHazards, hazards: [] };
     } else {
       locationStates[location.id] = { level: "NORMAL", coverage: coverageState, coverageGaps, delayedHazards, hazards: [] };

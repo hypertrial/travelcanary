@@ -3,7 +3,7 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 import { locations } from "@/lib/data";
 import { countryCodes, PartitionedSourceResultSchema, type NormalizedEvent, type PartitionedSourceResult } from "@/lib/domain/schemas";
 import { atAlertPartition } from "@/lib/ingestion/adapters/national-civil-alerts-at";
-import { fetchFrPartition, parseFrArchive, parseFrExports } from "@/lib/ingestion/adapters/national-civil-alerts-fr";
+import { fetchFrPartition, frDate, parseFrArchive, parseFrExports } from "@/lib/ingestion/adapters/national-civil-alerts-fr";
 import { withFrAlertTlsFallback } from "@/lib/ingestion/adapters/fr-alert-fetch";
 import { fetchLuPartition, parseLuCap } from "@/lib/ingestion/adapters/national-civil-alerts-lu";
 import { capPolygon, capSeverity, structuredHazard } from "@/lib/ingestion/adapters/national-civil-alerts-shared";
@@ -137,6 +137,30 @@ describe("national civil alert country partitions", () => {
     expect(parseFrArchive(epochArchive, now).identifiers).toEqual(["FR-ALERT.1787776026.90000.0"]);
   });
 
+  it.each([["Jan", 1], ["Fév", 2], ["Mar", 3], ["Avr", 4], ["Mai", 5], ["Juin", 6], ["Juil", 7], ["Aoû", 8], ["Sep", 9], ["Oct", 10], ["Nov", 11], ["Déc", 12]] as const)
+  ("parses strict French abbreviated month timestamps (%s)", (month, numericMonth) => {
+    expect(new Date(frDate(`20 ${month} 2026 - 07:13`, { utc: "UTC+02" })).toISOString())
+      .toBe(`2026-${String(numericMonth).padStart(2, "0")}-20T05:13:00.000Z`);
+  });
+
+  it.each([["FEV", 2], ["aou", 8], ["dec.", 12]] as const)
+  ("accepts case-insensitive unaccented French month abbreviations (%s)", (month, numericMonth) => {
+    expect(new Date(frDate(`20 ${month} 2026 - 07:13`, { utc: "UTC+02" })).toISOString())
+      .toBe(`2026-${String(numericMonth).padStart(2, "0")}-20T05:13:00.000Z`);
+  });
+
+  it.each([["Feb", 2], ["Apr", 4], ["May", 5], ["Jun", 6], ["Jul", 7], ["Aug", 8]] as const)
+  ("accepts the provider's observed English-compatible month aliases (%s)", (month, numericMonth) => {
+    expect(new Date(frDate(`20 ${month} 2026 - 07:13`, { utc: "UTC+02" })).toISOString())
+      .toBe(`2026-${String(numericMonth).padStart(2, "0")}-20T05:13:00.000Z`);
+  });
+
+  it.each(["31 Fév 2026 - 07:13", "20 inconnu 2026 - 07:13", "20 Aoû 2026 - 25:13"])
+  ("rejects malformed French timestamps (%s)", (value) => {
+    expect(frDate(value, { utc: "UTC+02" })).toBeNaN();
+    expect(frDate("20 Aoû 2026 - 07:13", null)).toBeNaN();
+  });
+
   it("ignores generic Fire categories until an exact official wildfire code is evidenced", () => {
     const genericFrFire = structuredClone(frExport) as Array<Record<string, unknown>>;
     (genericFrFire[0].infos as Array<Record<string, unknown>>)[0]["catégorie"] = "Fire";
@@ -168,7 +192,7 @@ describe("national civil alert country partitions", () => {
     const invertedExpiredInfo = (invertedExpired.infos as Array<Record<string, unknown>>)[0];
     invertedExpiredInfo.dateEffective = "29/07/2026 19:11:40";
     invertedExpiredInfo["dateExpiré"] = "29/07/2026 08:54:14";
-    expect(parseFrExports([invertedExpired], context)).toMatchObject({ events: [], invalid: 0, unavailableLocationIds: [] });
+    expect(() => parseFrExports([invertedExpired], context)).toThrow(/no parseable records/);
     const invertedCurrent = structuredClone(alert);
     const invertedCurrentInfo = (invertedCurrent.infos as Array<Record<string, unknown>>)[0];
     invertedCurrentInfo.dateEffective = "28/08/2026 08:00:00";

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { expandedProviderApplies, expandedProviderIds } from "../expanded-coverage";
+import { expandedCoverageProviderIds, expandedProviderApplies } from "../expanded-coverage";
 import membershipJson from "../../../data/catalog-membership.json";
 import { catalogMembershipHash } from "../catalog-membership";
 import { catalogV2CountryCodes, catalogV3CountryCodes, snapshotV10ProviderIds } from "./contract-identities";
@@ -54,7 +54,7 @@ export const SnapshotV11Schema = z.object({
       const receipt = health.expandedCoverage;
       const expected = new Set(Object.keys(value.locations).filter((locationId) => expandedProviderApplies(id, { id: locationId, countryCode: locationId.slice(0, 2).toUpperCase() })));
       const all = [...receipt.checkedLocationIds, ...receipt.unavailableLocationIds];
-      if (!(expandedProviderIds as readonly string[]).includes(id) || !exactIds(all, expected)
+      if (!(expandedCoverageProviderIds as readonly string[]).includes(id) || !exactIds(all, expected)
         || (receipt.status === "ok" && receipt.unavailableLocationIds.length)
         || (["failed", "disabled"].includes(receipt.status) && receipt.checkedLocationIds.length)
         || Date.parse(receipt.checkedAt) > Date.parse(value.generatedAt)) {

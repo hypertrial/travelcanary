@@ -26,7 +26,7 @@ function populated() {
   for (const id of added) state.conditions.locations[id] = forecasts();
   return state;
 }
-function decoded(state = populated(), at = now, settings = env) { return buildCatalog3Conditions(state, at, settings).map((file) => ConditionsV3Schema.parse(JSON.parse(serializeCatalog3Conditions(file)))); }
+function decoded(state = populated(), at = now, settings: Record<string, string | undefined> = env) { return buildCatalog3Conditions(state, at, settings).map((file) => ConditionsV3Schema.parse(JSON.parse(serializeCatalog3Conditions(file)))); }
 
 describe("approved catalog3 conditions projection", () => {
   it("preserves legacy503 after wire decode and emits exact679 IDs in45 coherent country files without state mutation", () => {
@@ -85,11 +85,25 @@ describe("approved catalog3 conditions projection", () => {
     expect(file.locations[id].limitations).toEqual(["update-pending"]);
   });
 
-  it.each([{ LOCAL_CONDITIONS_ENABLED: "false" }, { NONCOMMERCIAL_DATA_ENABLED: "false" }, { CONDITIONS_DISABLED_SOURCES: "open-meteo-weather,open-meteo-air,open-meteo-marine" }])("applies disabled and noncommercial gates: %j", (override) => {
+  it("publishes commercially enabled MET Norway health and marks empty files as attempted", () => {
+    const state = createEmptyState(now);
+    state.conditions.health["met-norway"] = { checkedAt: now.toISOString(), status: "failed", matched: 0, code: "source_unavailable" };
+    const production = decoded(state, now, { LOCAL_CONDITIONS_ENABLED: "true", VERCEL_GIT_COMMIT_SHA: env.VERCEL_GIT_COMMIT_SHA });
+    const legacyFile = production.find(({ countryCode }) => countryCode === "AT")!;
+    expect(legacyFile.sourceHealth["met-norway"]).toMatchObject({ status: "failed", limitationCode: "source_unavailable" });
+    expect(legacyFile.sources["met-norway"]?.name).toBe("MET Norway");
+    expect(legacyFile.locations["at-vienna"].limitations).toContain("update-pending");
+  });
+
+  it.each([
+    { override: { LOCAL_CONDITIONS_ENABLED: "false" }, limitation: "disabled" },
+    { override: { NONCOMMERCIAL_DATA_ENABLED: "false" }, limitation: "disabled" },
+    { override: { CONDITIONS_DISABLED_SOURCES: "open-meteo-weather,open-meteo-air,open-meteo-marine" }, limitation: "disabled" },
+  ])("applies disabled and noncommercial gates: $override", ({ override, limitation }) => {
     const files = decoded(populated(), now, { ...env, ...override });
     for (const file of files.filter(({ countryCode }) => added.some((id) => id.startsWith(`${countryCode.toLowerCase()}-`)))) {
       expect(file.sources).toEqual({}); expect(file.sourceHealth).toEqual({});
-      for (const entry of Object.values(file.locations)) { expect(conditionRecords(entry)).toEqual([]); expect(entry.limitations).toEqual(["disabled"]); }
+      for (const entry of Object.values(file.locations)) { expect(conditionRecords(entry)).toEqual([]); expect(entry.limitations).toEqual([limitation]); }
     }
   });
 

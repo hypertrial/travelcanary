@@ -1,5 +1,6 @@
 import type { z } from "zod";
 import { AttributionSchema, conditionSourceIds, type ConditionSourceId } from "../domain/conditions";
+import { countryCodes } from "../domain/schemas";
 
 type Source = z.infer<typeof AttributionSchema> & {
   enabled: boolean; noncommercial: boolean; cadenceHours: number; reviewDate: string;
@@ -89,4 +90,6 @@ export function conditionSourceEnabled(id: ConditionSourceId, env: Record<string
   return env.LOCAL_CONDITIONS_ENABLED === "true" && source.enabled
     && (!source.noncommercial || env.NONCOMMERCIAL_DATA_ENABLED === "true") && !conditionsDisabledSources(env.CONDITIONS_DISABLED_SOURCES).has(id);
 }
+const reviewedMetNorwayCountries = new Set<string>(countryCodes);
+export function metNorwayAppliesToCatalog3Country(countryCode: string) { return reviewedMetNorwayCountries.has(countryCode); }
 export function conditionAttribution(id: ConditionSourceId) { return AttributionSchema.parse(conditionSources[id]); }

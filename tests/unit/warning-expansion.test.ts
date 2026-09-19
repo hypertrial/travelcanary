@@ -66,6 +66,15 @@ describe("Latvian official hydrological warnings", () => {
     expect(parseLatvianWarnings(data, localContext, updated).events).toHaveLength(0);
     expect(parseLatvianWarnings({ ...data, warnings: [], polygons: [], warningMunicipalities: [] }, localContext, updated)).toMatchObject({ status: "ok", events: [] });
   });
+  it("accepts the CKAN single blank-row sentinel only as a complete empty event generation", () => {
+    const blank = { _id: 1, WEATHER_WARNING_EV_ID: "", PARADIBA_EN: "", INTENSITY_EN: "", TIME_FROM: "", TIME_TILL: "", REGIONS_EN: "", TEKSTS_EN: "" };
+    expect(parseLatvianWarnings({ warnings: [blank], polygons: [{ _id: 1, WEATHER_WARNING_EV_ID: "", POLIGON_ID: "", NPK: "", LAT: "", LON: "" }],
+      warningMunicipalities: [{ _id: 1, WEATHER_WARNING_EV_ID: "", NOV_ID: "" }], municipalities: realTables.municipalities }, localContext, updated))
+      .toMatchObject({ status: "ok", events: [], checkedLocationIds: expect.arrayContaining(["lv-riga"]) });
+    expect(() => parseLatvianWarnings({ ...tables(), warnings: [blank, ...tables().warnings] }, localContext, updated)).toThrow(/mixed blank sentinel/);
+    expect(() => parseLatvianWarnings({ ...tables(), warnings: [{ ...blank, PARADIBA_EN: "Water level" }] }, localContext, updated)).toThrow();
+    expect(() => parseLatvianWarnings({ ...tables(), municipalities: [blank] }, localContext, updated)).toThrow();
+  });
   it.each(["missing-join", "missing-vertex", "duplicate-vertex", "open-ring", "unknown-intensity"])("marks %s partial without clearing any destination", (problem) => {
     const data = tables();
     if (problem === "missing-join") data.warningMunicipalities = [];

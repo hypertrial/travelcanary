@@ -4,7 +4,7 @@ import { applySnapshotStaleness } from "@/lib/snapshot-health";
 import { projectCatalog2Snapshot } from "@/lib/risk-snapshot";
 import { buildCatalog3Snapshot } from "@/lib/catalog-projections";
 import { catalogLocationsV3 } from "@/lib/catalog-data";
-import { expandedHazardCoverage } from "@/lib/expanded-coverage";
+import { expandedHazardCoverage, expandedProviderApplies } from "@/lib/expanded-coverage";
 import { nationalWarningManifest } from "@/lib/national-warning-sources";
 import { locationCoveragePresentation } from "@/lib/coverage-presentation";
 import { SnapshotV11Schema, catalogLocationState } from "@/lib/domain/catalog-public";
@@ -12,6 +12,7 @@ import { HazardTypeSchema, type NormalizedEvent } from "@/lib/domain/schemas";
 import type { IngestionState } from "@/lib/domain/catalog-state";
 import release2 from "../../data/catalog-releases/2.json";
 import release3 from "../../data/catalog-releases/3.json";
+import { requiredLifeSafetyTransportFailures } from "@/lib/public-health";
 
 const now = new Date("2026-09-08T12:00:00Z");
 const added = release3.locationIds.filter((id) => !release2.locationIds.includes(id));
@@ -106,6 +107,21 @@ describe("reviewed expanded monitoring coverage", () => {
     const checkedId = scopes.usgs.find((id) => id !== "gb-london" && id !== "li-malbun")!;
     expect(view(snapshot, checkedId).categories.flatMap(({ subchecks }) => subchecks)
       .find(({ hazard }) => hazard === "earthquake")!.freshnessStatus).toBe("current");
+  });
+
+  it("uses Catalog 3 partition receipts for each expanded MeteoAlarm destination and blocks unavailable life-safety scope", () => {
+    const value = state(); receipt(value, "usgs");
+    const scope = catalogLocationsV3.filter((location) => added.includes(location.id) && expandedProviderApplies("meteoalarm", location)).map(({ id }) => id);
+    const unavailableId = scope.find((id) => id.startsWith("is-"))!;
+    value.collectionReceipts[3].meteoalarm = { catalogVersion: 3, collectionRevision: 1, checkedAt: now.toISOString(), status: "partial",
+      checkedLocationIds: scope.filter((id) => id !== unavailableId), unavailableLocationIds: [unavailableId] };
+    const currentId = scope.find((id) => id.startsWith("is-") && id !== unavailableId)!;
+    const snapshot = buildCatalog3Snapshot(value, now);
+    expect(snapshot.providers.meteoalarm.expandedCoverage).toMatchObject({ status: "partial", unavailableLocationIds: [unavailableId] });
+    expect(snapshot.locations[currentId].delayedHazards).not.toContain("severe-weather");
+    expect(snapshot.locations[unavailableId]).toMatchObject({ level: "UNKNOWN", delayedHazards: expect.arrayContaining(["severe-weather"]) });
+    expect(requiredLifeSafetyTransportFailures(snapshot, catalogLocationsV3, now))
+      .toContain("coverage/IS/severe-weather/meteoalarm");
   });
 
   it("expires the same public USGS receipt immediately after its twenty-minute cadence window", () => {

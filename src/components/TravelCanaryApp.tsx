@@ -138,7 +138,9 @@ export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 3, conditi
   const filterCounts = useMemo(() => locationsLoaded && !catalogError ? mapFilterCounts(locations, displayedSnapshot) : null, [catalogError, displayedSnapshot, locations, locationsLoaded]);
   const searchResults = useMemo(() => searchLocationSummaries(locations, displayedSnapshot, query), [displayedSnapshot, locations, query]);
   const attention = useMemo(() => attentionLocationSummaries(locations, displayedSnapshot), [displayedSnapshot, locations]);
-  const attentionState = useMemo(() => attentionPresentation(attention, { catalogCount: locations.length, catalogAvailable: locationsLoaded && !catalogError }), [attention, catalogError, locations.length, locationsLoaded]);
+  const attentionState = useMemo(() => attentionPresentation(attention, { catalogCount: locations.length,
+    catalogAvailable: locationsLoaded && !catalogError, snapshotAvailable: Boolean(displayedSnapshot) }),
+  [attention, catalogError, displayedSnapshot, locations.length, locationsLoaded]);
   const selected = locations.find((location) => location.id === selectedId) || null;
   const selectedState = selected ? locationState(displayedSnapshot, selected.id) : null;
   const displayNow = mode === "demo" && displayedSnapshot ? new Date(displayedSnapshot.generatedAt) : new Date(clock);
@@ -231,7 +233,7 @@ export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 3, conditi
   const emptyNoticeKey = filterCounts && filterCounts[mapFilter] === 0 ? `${mapFilter}:${filterCounts.elevated}:${filterCounts.unavailable}` : null;
   const mobileNavigationCount = filterCounts?.[mapFilter] ?? null;
   const mobileNavigationCountLabel = mapFilter === "unavailable"
-    ? mobileNavigationCount === 1 ? "destination with updates unavailable" : "destinations with updates unavailable"
+    ? mobileNavigationCount === 1 ? "destination with delayed checks" : "destinations with delayed checks"
     : mobileNavigationCount === 1 ? "alert destination" : "alert destinations";
 
   return <main ref={setPortalContainer} className={styles.appShell} data-health-banner={healthBannerVisible || undefined} data-details-open={Boolean(selected && !isCompact) || undefined} data-selected-id={selectedId || undefined} data-mobile-view={appView}>
@@ -261,9 +263,9 @@ export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 3, conditi
       {tilesFailed && (!isMobile || appView === "map") && <MapFallback catalogAvailable={locationsLoaded && !catalogError} locations={locations} snapshot={displayedSnapshot} onSelect={selectLocation} />}
       <button type="button" className={styles.mobileAllCoverage} onClick={() => showOverview("all-coverage")}><UiIcon name="map" />All {locations.length || "—"}{outerAlertCount ? <b>{outerAlertCount} outer alerts</b> : null}</button>
       {isMobile && appView === "map" && filterCounts && emptyNoticeKey && dismissedMapNotice !== emptyNoticeKey && <aside className={styles.mobileEmptyNotice} role="status">
-        <div><strong>{mapFilter === "high" ? "No High or Severe alerts found in checked sources." : mapFilter === "all" ? "No alerts found in checked sources." : "No destinations have updates unavailable."}</strong><small>{mapFilter === "high" && filterCounts.elevated ? `${filterCounts.elevated} Be aware destinations are available.` : "Monitoring may still be incomplete."}</small></div>
+        <div><strong>{mapFilter === "high" ? "No High or Severe alerts found in checked sources." : mapFilter === "all" ? "No alerts found in checked sources." : "No destinations have delayed checks."}</strong><small>{mapFilter === "high" && filterCounts.elevated ? `${filterCounts.elevated} Be aware destinations are available.` : "Monitoring may still be incomplete."}</small></div>
         {mapFilter === "high" && filterCounts.elevated > 0 && <button type="button" onClick={() => setMapFilter("all")}>Show Be aware</button>}
-        {mapFilter !== "unavailable" && filterCounts.unavailable > 0 && <button type="button" onClick={() => setMapFilter("unavailable")}>Show unavailable</button>}
+        {mapFilter !== "unavailable" && filterCounts.unavailable > 0 && <button type="button" onClick={() => setMapFilter("unavailable")}>Show delayed checks</button>}
         <button type="button" className={styles.dismissNotice} aria-label="Dismiss map result" onClick={() => setDismissedMapNotice(emptyNoticeKey)}><UiIcon name="close" /></button>
       </aside>}
     </section>

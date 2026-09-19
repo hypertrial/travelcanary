@@ -105,7 +105,7 @@ export function LocationCoverageDetails({ location, state, snapshot, now }: Loca
     <h3 id="monitoring-details-heading" className="sr-only">Detailed monitoring information for {location.name}</h3>
 
     {presentation.delayed.length > 0 && <section className={styles.coverageSection} aria-labelledby="update-problems-heading">
-      <h4 id="update-problems-heading">Update problems</h4>
+      <h4 id="update-problems-heading">Checks delayed</h4>
       <div className={styles.coverageRows}>
         {presentation.delayed.map((category) => <CoverageRow key={category.key} category={category} />)}
       </div>

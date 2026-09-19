@@ -72,6 +72,8 @@ export function LocalConditions({ location, countryIds, snapshotUrl, now, catalo
   };
   const infrastructureHealth = Object.entries(result.data?.sourceHealth || {}).filter(([id]) => infrastructureSourceIds.has(id as ConditionSourceId));
   const infrastructureProblems = infrastructureHealth.filter(([, health]) => health?.status === "failed" || health?.status === "partial");
+  const collectionProblems = Object.values(result.data?.sourceHealth || {}).filter((health) => health?.status === "failed" || health?.status === "partial");
+  const collectionUnavailable = Boolean(data && !records.length && collectionProblems.length);
   const infrastructureHealthWithoutRecord = infrastructureHealth.filter(([id, health]) => health?.status !== "ok"
     || !data?.infrastructureIncidents.some((record) => record.sourceId === id));
   const incident = (record: InfrastructureIncident) => <div key={`${record.sourceId}:${record.id}`}>
@@ -81,12 +83,14 @@ export function LocalConditions({ location, countryIds, snapshotUrl, now, catalo
   return <section className={styles.section} aria-label="Local conditions">
     <h3 ref={headingRef} tabIndex={-1}>Local conditions</h3>
     <p className={styles.note}>Forecasts and nearby observations—not alerts, safety ratings, or complete monitoring.</p>
-    {!data && <p role="status">{result.failed ? "Local conditions are unavailable. Alert information is unaffected." : "Loading local conditions…"}</p>}
+    {!data && <p role="status">{result.failed ? "Local conditions unavailable. Alert information is unaffected." : "Loading local conditions…"}</p>}
     {(result.failed || result.retrying) && <button type="button" className={styles.retry} disabled={result.retrying} onClick={() => {
       retryFocus.current = true;
       result.retry();
     }}>Retry local conditions</button>}
-    {data && !records.length && <p>Fresh local conditions are not available for this destination. Alert information is unaffected.</p>}
+    {data && !records.length && <p role={collectionUnavailable ? "status" : undefined}>{collectionUnavailable
+      ? "Local conditions unavailable. Alert information is unaffected."
+      : "Fresh local conditions are not available for this destination. Alert information is unaffected."}</p>}
     {!!missingForecasts.length && <p className={styles.note}>Current {sentenceList(missingForecasts)} {missingForecasts.length === 1 ? "is" : "are"} unavailable. Other current local data is shown below.</p>}
     {data?.weather && <div><h4>Forecast</h4><p>Temperature {range(data.weather.temperature, "°C")} · Wind {range(data.weather.wind, "m/s")}</p>{source(data.weather)}
       <details><summary>Hourly forecast · {data.weather.temperature.length} available hours</summary><ol className={styles.hours}>{data.weather.temperature.map((value, index) => <li key={index}>

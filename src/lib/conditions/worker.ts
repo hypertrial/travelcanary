@@ -3,7 +3,7 @@ import { assertSupportedCollection, CollectionChangedError, type CollectionContr
 import { randomUUID } from "node:crypto";
 import { gunzipSync } from "node:zlib";
 import { catalogLocationsV3 } from "../catalog-data";
-import { emptyConditions, type ConditionSourceId, type LocationConditions } from "../domain/conditions";
+import { conditionSourceIds, emptyConditions, type ConditionSourceId, type LocationConditions } from "../domain/conditions";
 import { ConcurrencyError, type StateStore } from "../state-store";
 import { distanceKm } from "../geospatial";
 import { mapConcurrent, readBytesWithLimit } from "../ingestion/fetch";
@@ -11,7 +11,7 @@ import { airportMappings, parseMetars } from "./metar";
 import { parseDigitraffic } from "./digitraffic";
 import { forecastProducts, forecastUrl, parseMetNorway, parseOpenMeteo, type ForecastKind } from "./forecast";
 import { parseRwsWater, rwsWaterEndpoint, rwsWaterMappings, rwsWaterRequest } from "./rws-water";
-import { conditionSourceEnabled, conditionsDisabledSources } from "./sources";
+import { conditionSourceEnabled, conditionsDisabledSources, metNorwayAppliesToCatalog3Country } from "./sources";
 import { availableForecastWeight, fitConditionsState } from "./state";
 import { marineConditionEligible, catalog3MarineMappingByLocation } from "./marine";
 import { ipmaObservationEndpoint, ipmaStationMappings, parseIpmaEarthquakes, parseIpmaObservations } from "./ipma";
@@ -45,18 +45,22 @@ export function forecastSplitHasLocalHeadroom(input: { splitRetry: boolean; batc
 export function forecastBatches(state: IngestionState, now: Date, env: Record<string, string | undefined>) {
   const catalog = catalogLocationsV3;
   const available = availableForecastWeight(state, now);
-  const limits: Record<ForecastKind, number> = { weather: 200, airQuality: 120, marine: 80 };
+  const metNorwayDirect = !conditionSourceEnabled("open-meteo-weather", env) && conditionSourceEnabled("met-norway", env);
+  const limits: Record<ForecastKind, number> = { weather: metNorwayDirect ? 20 : 200, airQuality: 120, marine: 80 };
   const selected: Record<ForecastKind, string[]> = { weather: [], airQuality: [], marine: [] };
   const candidates: Array<{ kind: ForecastKind; id: string; urgency: number; attempt: number; sparse: number }> = [];
   for (const kind of ["weather", "airQuality", "marine"] as const) {
     const product = forecastProducts[kind];
-    if (!conditionSourceEnabled(product.sourceId, env)) continue;
-    for (const location of catalog.filter((item) => kind !== "marine" || marineConditionEligible(item.id, 3))) {
+    const directMetNorwayWeather = kind === "weather" && metNorwayDirect;
+    if (!conditionSourceEnabled(product.sourceId, env) && !directMetNorwayWeather) continue;
+    for (const location of catalog.filter((item) => (kind !== "marine" || marineConditionEligible(item.id, 3))
+      && (!directMetNorwayWeather || metNorwayAppliesToCatalog3Country(item.countryCode)))) {
       const last = state.conditions.attempts[`${kind}:${location.id}`];
       const record = state.conditions.locations[location.id]?.[kind];
       const expiry = Date.parse(record?.expiresAt || "1970-01-01T00:00:00Z");
-      const urgency = record?.sourceId !== product.sourceId || expiry <= now.getTime() ? 0 : expiry <= now.getTime() + NEXT_RUN_GRACE_MS ? 1 : 2;
-      if (urgency < 2 || sourceIsDue(last, product.hours, now)) candidates.push({ kind, id: location.id, urgency,
+      const expectedSource = directMetNorwayWeather ? "met-norway" : product.sourceId;
+      const urgency = record?.sourceId !== expectedSource || expiry <= now.getTime() ? 0 : expiry <= now.getTime() + NEXT_RUN_GRACE_MS ? 1 : 2;
+      if (urgency < 2 || sourceIsDue(last, directMetNorwayWeather ? 3 : product.hours, now)) candidates.push({ kind, id: location.id, urgency,
         attempt: Date.parse(last || "1970-01-01T00:00:00Z"),
         sparse: /^(pt-(?:horta|ponta-delgada|santa-cruz-das-flores)|es-(?:las-palmas-de-gran-canaria|santa-cruz-de-tenerife))$/.test(location.id) ? 0 : 1 });
     }
@@ -292,6 +296,10 @@ export async function runConditions(options: {
     if (forecastFailure) return;
     try {
     const product = forecastProducts[batch.kind]; const item = forecastDiagnostics[batch.kind]; item.attempted += batch.ids.length;
+    if (batch.kind === "weather" && !conditionSourceEnabled(product.sourceId, env) && conditionSourceEnabled("met-norway", env)) {
+      for (const id of batch.ids) failedWeather.add(id);
+      return;
+    }
     let outcome = await fetchForecast(batch.kind, batch.ids);
     if (outcome.batchFailure) {
       const code = outcome.batchFailure.code; item.failureCodes[code] = (item.failureCodes[code] || 0) + 1;
@@ -322,7 +330,10 @@ export async function runConditions(options: {
   });
   if (forecastFailure) throw forecastFailure;
   const fallbackDeadline = Math.min(deadline, Date.now() + 8000);
-  if (conditionSourceEnabled("met-norway", env)) await mapConcurrent([...failedWeather].filter((id) => catalogLocationsV3.some((location) => location.id === id)).slice(0, 20), 4, async (id) => {
+  if (conditionSourceEnabled("met-norway", env)) await mapConcurrent([...failedWeather].filter((id) => {
+    const location = byId.get(id);
+    return location && metNorwayAppliesToCatalog3Country(location.countryCode);
+  }).slice(0, 20), 4, async (id) => {
     try {
       const cached = state!.conditions.locations[id]?.weather;
       if (cached && Date.parse(cached.expiresAt) > now.getTime()) return;
@@ -334,7 +345,10 @@ export async function runConditions(options: {
       const until = Number.isFinite(expiry) ? expiry : Number.isFinite(maxAge) ? now.getTime() + maxAge * 1000 : now.getTime() + 3600000;
       cacheUpdates[`met-norway:${id}`] = new Date(Math.max(now.getTime(), until)).toISOString();
       changes.set(id, { ...changes.get(id), weather: parseMetNorway(body, now) }); updateHealth("met-norway", 1, false);
-    } catch { updateHealth("met-norway", 0, true); }
+    } catch {
+      updateHealth("met-norway", 0, true);
+      if (!conditionSourceEnabled("open-meteo-weather", env)) failedForecastAttempts.add(`weather:${id}`);
+    }
   });
   const metarDue = sourceIsDue(state.conditions.health["awc-metar"]?.checkedAt, 1, now);
   if (metarDue && conditionSourceEnabled("awc-metar", env)) {
@@ -561,10 +575,14 @@ export async function runConditions(options: {
       targetExamples: [...item.targetExamples].sort((a, b) => a.target.localeCompare(b.target) || a.code.localeCompare(b.code)).slice(0, MAX_PUBLICATION_FAILURES),
       omittedTargets: Math.max(0, item.failed - MAX_PUBLICATION_FAILURES),
     }])) };
+  const sourceOutcomes = { ...health };
+  for (const id of conditionSourceIds) if (!conditionSourceEnabled(id, env)) sourceOutcomes[id] = {
+    checkedAt: now.toISOString(), status: "disabled", matched: 0, code: "source_disabled",
+  };
   return { status: combinedFailures.length ? "partial" : env.LOCAL_CONDITIONS_ENABLED === "true" ? "ok" : "disabled",
     countries: expandedPublication.countries, locations: catalogLocationsV3.length,
     bytes: expandedPublication.conditionsBytes, privateStateBytes: Buffer.byteLength(JSON.stringify(committed)),
-    cacheBytes: Buffer.byteLength(JSON.stringify(committed.conditions.locations)), sources: health, sourceDurationMs, diagnostics: boundedDiagnostics,
+    cacheBytes: Buffer.byteLength(JSON.stringify(committed.conditions.locations)), sources: sourceOutcomes, sourceDurationMs, diagnostics: boundedDiagnostics,
     publication: { manifestSha256: expandedPublication.pointer.manifestSha256, published: publication.published.length, unchanged: publication.unchanged.length, failed: combinedFailures.length,
       failures, omittedFailures: Math.max(0, combinedFailures.length - failures.length) }, durationMs: Math.round(performance.now() - started) };
   } catch (error) {
