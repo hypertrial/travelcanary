@@ -9,10 +9,11 @@ import {
 import { eventAffectsLocation } from "./geospatial";
 import { comparePublicHazards, eventIsPublishable, hazardTiming } from "./hazard-lifecycle";
 import { providerRegistry, publicProviderPartitionState, publicProviderState } from "./provider-registry";
-import { nationalWarningManifest, type NationalWarningSystem } from "./national-warning-sources";
+import { nationalWarningManifest } from "./national-warning-sources";
 import {
   delayedHazardsRequireUnknown, enabledHazards, enabledSources, hazardAppliesToLocation, sourceCadenceMinutes, sourceHazards, weatherFamily,
 } from "./risk-policy";
+import { deriveTransportState } from "./transport-state";
 
 function compactCoverageGaps(gaps: HazardType[]) {
   const unique = [...new Set(gaps)];
@@ -353,24 +354,10 @@ export function projectCoreSnapshot(input: ProjectionState, now = new Date()): S
         ? state.partitionTransports.nationalCivilAlerts[countryCode]
         : providerId === "meteoalarm" ? state.partitionTransports.meteoalarm[countryCode] : {};
       const fallbackStatus = publicProviderPartitionState(effective).status;
-      const transportState = (system: NationalWarningSystem) => {
-        const current = transportHealth[system.id];
-        const authorized = system.status === "active" || system.status === "credential_gated" && Boolean(current && current.status !== "not_monitored");
-        const status = !authorized ? "disabled" as const
-          : system.role === "fallback" && effective.status === "ok" ? "ok" as const
-          : current?.status === "not_monitored" ? "disabled" as const
-            : current && system.role === "coverage" && transportIsDelayed(current, system.cadenceMinutes || 10, now) ? "delayed" as const
-            : current?.status === "ok" || current?.status === "partial" || current?.status === "delayed" ? current.status
-              : current?.status === "failed" ? "failed" as const : fallbackStatus;
-        return {
-          id: system.id, name: system.systemName, role: system.role, status,
-          sourceUpdatedAt: current?.sourceUpdatedAt || null,
-          limitationCode: status === "disabled" ? system.limitationCode : null,
-          officialUrl: system.officialUrl,
-        };
-      };
       const partition = publicProviderPartitionState(effective);
-      return [countryCode, systems.length ? { ...partition, transports: systems.map(transportState) } : partition];
+      return [countryCode, systems.length ? { ...partition, transports: systems.map((system) => deriveTransportState({
+        mode: "legacy", system, health: transportHealth[system.id], fallbackStatus, effectiveStatus: effective.status, now,
+      })) } : partition];
     }));
     return [id, { ...provider, partitions }];
   }));
