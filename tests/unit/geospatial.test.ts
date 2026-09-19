@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { distanceKm, distanceToLocationKm, eventAffectsLocation } from "@/lib/geospatial";
+import { bboxesOverlap, distanceKm, distanceToLocationKm, eventAffectsLocation, eventAffectsLocationExact, eventBbox, locationBbox } from "@/lib/geospatial";
 import { locations } from "@/lib/data";
 import type { NormalizedEvent } from "@/lib/domain/schemas";
 
@@ -37,6 +37,35 @@ describe("geospatial matching", () => {
   });
 });
 
+
+it("rejects non-overlapping polygon bboxes and fails open on wrapping boxes", () => {
+  const europe = {
+    ...locations[0],
+    geometry: { kind: "polygon" as const, coordinates: [[[0, 0], [2, 0], [2, 2], [0, 2], [0, 0]]] as [number, number][][] },
+  };
+  const far = event({ kind: "polygon", coordinates: [[[40, 40], [42, 40], [42, 42], [40, 42], [40, 40]]] });
+  expect(eventAffectsLocation(far, europe)).toBe(false);
+  expect(eventAffectsLocationExact(far, europe)).toBe(false);
+  expect(bboxesOverlap(eventBbox(far), locationBbox(europe))).toBe(false);
+
+  const wrapping = event({ kind: "polygon", coordinates: [[[170, -10], [-170, -10], [-170, 10], [170, 10], [170, -10]]] });
+  expect(bboxesOverlap(eventBbox(wrapping), locationBbox(europe))).toBeNull();
+  expect(eventAffectsLocation(wrapping, europe)).toBe(eventAffectsLocationExact(wrapping, europe));
+});
+
+it("matches the exact Turf path for catalog locations against nearby and distant polygons", () => {
+  const samples = locations.filter((_, index) => index % 17 === 0);
+  for (const location of samples) {
+    const nearby = event(location.geometry.kind === "polygon"
+      ? { kind: "polygon", coordinates: location.geometry.coordinates }
+      : { kind: "point", coordinates: location.geometry.center, radiusKm: location.geometry.radiusKm });
+    const distant = event({ kind: "polygon", coordinates: [[[-170, -70], [-169, -70], [-169, -69], [-170, -69], [-170, -70]]] });
+    expect(eventAffectsLocation(nearby, location)).toBe(eventAffectsLocationExact(nearby, location));
+    expect(eventAffectsLocation(distant, location)).toBe(eventAffectsLocationExact(distant, location));
+    const point = event({ kind: "point", coordinates: location.centroid, radiusKm: 5 });
+    expect(eventAffectsLocation(point, location)).toBe(eventAffectsLocationExact(point, location));
+  }
+});
 
 it("measures polygon proximity to edge interiors and clamps beyond the endpoints", () => {
   const region = { ...locations[0], geometry: { kind: "polygon" as const, coordinates: [[[0, 0], [2, 0], [2, 2], [0, 2], [0, 0]]] as [number, number][][] } };
