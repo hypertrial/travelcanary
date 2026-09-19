@@ -7,6 +7,7 @@ import { ConditionsV3Schema, SnapshotV11Schema } from "./domain/catalog-public";
 import { PublicationManifestV1Schema, PublicationPointerV1Schema, publicationManifestPath,
   publicationObjectPath, type PublicationManifestV1, type PublicationObject } from "./domain/publication";
 import { assertSupportedCollection, type CollectionControl } from "./domain/catalog-state";
+import { mapConcurrent } from "./ingestion/fetch";
 import { assertIngestionLease, type IngestionLease } from "./ingestion-lease";
 import { publicationSha256, readCurrentPublication, readPublishedObject, type PublicationStore } from "./publication-store";
 import { providerRegistry } from "./provider-registry";
@@ -14,6 +15,8 @@ import { PublicationRaceError } from "./operation-failure";
 import type { StateStore } from "./state-store";
 
 export { PublicationRaceError };
+
+const PUBLICATION_CONCURRENCY = 6;
 
 export type CatalogPublicationStores = { publicationStore: PublicationStore };
 
@@ -82,10 +85,10 @@ export async function publishCommittedCatalog(options: {
   })).sort((a, b) => a.countryCode.localeCompare(b.countryCode));
 
   await options.stores.publicationStore.putImmutable(snapshotObject.path, snapshotBody);
-  for (const { body, file } of conditionBodies) {
+  await mapConcurrent(conditionBodies, PUBLICATION_CONCURRENCY, async ({ body, file }) => {
     const reference = conditions.find(({ countryCode }) => countryCode === file.countryCode)!;
     await options.stores.publicationStore.putImmutable(reference.path, body);
-  }
+  });
 
   const codes = statusCodes(read.data);
   const manifest = PublicationManifestV1Schema.parse({
@@ -172,12 +175,18 @@ export async function prunePublications(store: PublicationStore, current: { mani
   }
   for (const item of manifests) if (item.uploadedAt.getTime() >= cutoff) keepPaths.add(item.pathname);
   const referenced = new Set<string>();
-  for (const pathname of keepPaths) {
-    let manifest = parsed.get(pathname);
-    if (!manifest) try {
+  const keepManifests = await mapConcurrent([...keepPaths], 8, async (pathname) => {
+    const existing = parsed.get(pathname);
+    if (existing) return existing;
+    try {
       const item = await store.read(pathname, 512_000);
-      if (item) manifest = PublicationManifestV1Schema.parse(JSON.parse(item.body));
-    } catch { /* invalid recent manifests retain no objects */ }
+      if (!item) return null;
+      return PublicationManifestV1Schema.parse(JSON.parse(item.body));
+    } catch { /* invalid recent manifests retain no objects */
+      return null;
+    }
+  });
+  for (const manifest of keepManifests) {
     if (!manifest) continue;
     referenced.add(manifest.snapshot.path);
     for (const item of manifest.conditions) referenced.add(item.path);
