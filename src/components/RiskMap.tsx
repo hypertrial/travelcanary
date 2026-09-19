@@ -89,8 +89,7 @@ async function verifyBasemap(map: MapLibreMap, signal: AbortSignal): Promise<voi
 
 const featureCollection = (features: GeoJSON.Feature<GeoJSON.Point>[]): GeoJSON.FeatureCollection<GeoJSON.Point> => ({ type: "FeatureCollection", features });
 
-export function RiskMap({ catalogVersion = 2, locations, snapshot, selectedId, filter, detailsOpen, compactMode, mobileMode, detailsOverlay, healthBannerVisible, viewActive, cameraCommand, onSelect, onFailure }: {
-  catalogVersion?: 2 | 3;
+export function RiskMap({ locations, snapshot, selectedId, filter, detailsOpen, compactMode, mobileMode, detailsOverlay, healthBannerVisible, viewActive, cameraCommand, onSelect, onFailure }: {
   locations: PublicLocation[];
   snapshot: Snapshot | null;
   selectedId: string | null;
@@ -252,11 +251,11 @@ export function RiskMap({ catalogVersion = 2, locations, snapshot, selectedId, f
     const map = mapRef.current;
     if (!map) return;
     const controller = new AbortController();
-    const load = () => { void loadCoveredCountriesLayer(map, controller.signal, fetch, catalogVersion); };
+    const load = () => { void loadCoveredCountriesLayer(map, controller.signal); };
     map.on("style.load", load);
     if (map.isStyleLoaded()) load();
     return () => { controller.abort(); map.off("style.load", load); };
-  }, [catalogVersion]);
+  }, []);
 
   useEffect(() => {
     const map = mapRef.current;

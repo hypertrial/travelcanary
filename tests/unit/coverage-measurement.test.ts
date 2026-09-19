@@ -4,7 +4,7 @@ import { buildSnapshot, createEmptyState } from "@/lib/risk";
 import { parseLatvianWarnings } from "@/lib/ingestion/adapters/national-civil-alerts-lv";
 import { providerRegistry } from "@/lib/provider-registry";
 import { describe, expect, it } from "vitest";
-import demo from "../../public/demo-snapshot.json";
+import demo from "../fixtures/legacy-catalog-2/demo-snapshot.json";
 import { locations } from "@/lib/data";
 import { SnapshotSchema } from "@/lib/domain/schemas";
 import { measureCapture, measureCoverage } from "../../scripts/coverage-measurement";

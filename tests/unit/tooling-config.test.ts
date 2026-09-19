@@ -92,7 +92,7 @@ describe("tooling configuration", () => {
   it("documents the current snapshot contract with valid location examples", async () => {
     const spec = await readFile("PRODUCT_SPEC.md", "utf8");
     const example = JSON.parse(spec.split("## Snapshot Contract")[1].split("```json")[1].split("```")[0]);
-    const demo = JSON.parse(await readFile("public/demo-snapshot.json", "utf8"));
+    const demo = JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8"));
     expect(example.schemaVersion).toBe(demo.schemaVersion);
     expect(example.catalogVersion).toBe(demo.catalogVersion);
     for (const state of Object.values(example.locations)) LocationStateSchema.parse(state);

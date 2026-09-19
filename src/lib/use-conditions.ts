@@ -1,25 +1,12 @@
 import { ConditionsV3Schema } from "./domain/catalog-public";
 import { useEffect, useState } from "react";
 import { CONDITIONS_COUNTRY_LIMIT, ConditionsSchema, type Conditions as ConditionsV2 } from "./domain/conditions";
-import { catalogV2Paths, catalogV2SnapshotUrl, catalogV3LocalSnapshotPath, catalogV3Paths, catalogV3SnapshotUrl } from "./catalog-paths";
+import { catalogV3Paths } from "./catalog-paths";
 import { publicationConditionsUrl } from "./publication-client";
 
 type Conditions = ConditionsV2 | import("zod").infer<typeof ConditionsV3Schema>;
 
 const cache = new Map<string, { promise: Promise<Conditions>; until: number }>();
-export function conditionsUrl(snapshotUrl: string | null, country: string, catalogVersion?: 2 | 3): string | null {
-  if (!/^[A-Z]{2}$/.test(country)) return null;
-  catalogVersion ??= snapshotUrl === catalogV3Paths.demoSnapshot || catalogV3SnapshotUrl(snapshotUrl) ? 3 : 2;
-  if (catalogVersion === 3) {
-    if (snapshotUrl === catalogV3Paths.demoSnapshot || snapshotUrl === catalogV2Paths.demoSnapshot) return `/${catalogV3Paths.conditions}${country}.json`;
-    if (snapshotUrl === catalogV3LocalSnapshotPath) return `/live/${catalogV3Paths.conditions}${country}.json`;
-    const source = catalogV3SnapshotUrl(snapshotUrl) || catalogV2SnapshotUrl(snapshotUrl);
-    return source ? new URL(`/${catalogV3Paths.conditions}${country}.json`, source).href : null;
-  }
-  if (snapshotUrl === catalogV2Paths.demoSnapshot) return `/${catalogV2Paths.conditions}${country}.json`;
-  const url = catalogV2SnapshotUrl(snapshotUrl);
-  return url ? new URL(`${catalogV2Paths.conditions}${country}.json`, url).href : null;
-}
 
 export async function loadConditions(url: string, country: string, ids: string[], fetchImpl = fetch, expectedCatalogVersion?: 2 | 3,
   reference?: { sha256: string; bytes: number }): Promise<Conditions> {

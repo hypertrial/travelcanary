@@ -23,4 +23,4 @@ const publicLocations = locations.map(({ id, name, aliases, country, countryCode
 }));
 
 await writeFile("data/locations.json", `${JSON.stringify(locations, null, 2)}\n`);
-await writeFile("public/locations.json", `${JSON.stringify(publicLocations)}\n`);
+await writeFile("tests/fixtures/legacy-catalog-2/locations.json", `${JSON.stringify(publicLocations)}\n`);

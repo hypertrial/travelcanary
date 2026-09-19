@@ -11,7 +11,7 @@ import dhmzMapping from "../data/dhmz-warning-mapping.json";
 import { catalogLocationsV3 } from "../src/lib/catalog-data";
 
 const locations = LocationSchema.array().parse(JSON.parse(await readFile("data/locations.json", "utf8")));
-const publicLocations = PublicLocationSchema.array().parse(JSON.parse(await readFile("public/locations.json", "utf8")));
+const publicLocations = PublicLocationSchema.array().parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/locations.json", "utf8")));
 const coverage = CoverageMatrixSchema.parse(JSON.parse(await readFile("data/coverage.json", "utf8")));
 const imgwMapping = JSON.parse(await readFile("data/imgw-hydrology-mapping.json", "utf8")) as { reviewedAt: string; mappings: Array<{ locationId: string; stationIds: string[]; bulletinTokens: string[] }> };
 const chmiMapping = JSON.parse(await readFile("data/chmi-hydrology-mapping.json", "utf8")) as {
@@ -207,7 +207,7 @@ const publicBytes = Buffer.byteLength(JSON.stringify(publicLocations));
 if (publicBytes > 150_000) throw new Error(`Public catalog exceeds 150 KB: ${publicBytes} bytes`);
 
 try {
-  const snapshotText = await readFile("public/demo-snapshot.json", "utf8");
+  const snapshotText = await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8");
   CompleteSnapshotSchema.parse(JSON.parse(snapshotText));
   const rawBytes = Buffer.byteLength(snapshotText);
   if (rawBytes > 500_000) throw new Error(`Snapshot exceeds 500 KB hard limit: ${rawBytes}`);

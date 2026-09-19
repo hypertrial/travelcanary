@@ -221,7 +221,7 @@ const publicLocations = locations.map(({ id, name, aliases, country, countryCode
 }));
 
 await mkdir(path.join(root, "data"), { recursive: true });
-await mkdir(path.join(root, "public"), { recursive: true });
+await mkdir(path.join(root, "tests/fixtures/legacy-catalog-2"), { recursive: true });
 await writeFile(path.join(root, "data/locations.json"), `${JSON.stringify(locations, null, 2)}\n`);
-await writeFile(path.join(root, "public/locations.json"), `${JSON.stringify(publicLocations)}\n`);
+await writeFile(path.join(root, "tests/fixtures/legacy-catalog-2/locations.json"), `${JSON.stringify(publicLocations)}\n`);
 console.log(`Generated ${locations.length} locations (${cityLocations.length + supplementalLocations.length} cities, ${regionLocations.length} regions).`);

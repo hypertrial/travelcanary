@@ -2,31 +2,19 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import { ConditionsV2Schema, emptyConditions } from "@/lib/domain/conditions";
 import { ConditionsV3Schema } from "@/lib/domain/catalog-public";
-import { conditionsUrl, loadConditions } from "@/lib/use-conditions";
+import { loadConditions } from "@/lib/use-conditions";
 import release3 from "../../data/catalog-releases/3.json";
 
 const origin = "https://contract-client.public.blob.vercel-storage.com";
-const legacy = ConditionsV2Schema.parse(JSON.parse(readFileSync("public/conditions/v2/AT.json", "utf8")));
+const legacy = ConditionsV2Schema.parse(JSON.parse(readFileSync("tests/fixtures/legacy-catalog-2/conditions/v2/AT.json", "utf8")));
 const current = ConditionsV3Schema.parse({ ...legacy, schemaVersion: 3, catalogVersion: 3 });
 const ids = Object.keys(legacy.locations);
 const legacyUrl = `${origin}/conditions/v2/AT.json`;
 const currentUrl = `${origin}/catalogs/3/conditions/v3/AT.json`;
 
 describe("catalog conditions reader isolation", () => {
-  it("derives versioned country files from the matching live and demo snapshot namespace", () => {
-    expect(conditionsUrl(`${origin}/catalogs/3/latest.json`, "GB")).toBe(`${origin}/catalogs/3/conditions/v3/GB.json`);
-    expect(conditionsUrl("/catalogs/3/demo-snapshot.json", "GB")).toBe("/catalogs/3/conditions/v3/GB.json");
-    expect(conditionsUrl(`${origin}/latest.json`, "AT")).toBe(legacyUrl);
-    expect(conditionsUrl("/demo-snapshot.json", "AT")).toBe("/conditions/v2/AT.json");
-  });
-
-  it("uses only catalog3 conditions when explicitly pairing its roster with a legacy snapshot", () => {
-    expect(conditionsUrl(`${origin}/tenant/latest.json`, "GB", 3)).toBe(`${origin}/catalogs/3/conditions/v3/GB.json`);
-    expect(conditionsUrl("/demo-snapshot.json", "GB", 3)).toBe("/catalogs/3/conditions/v3/GB.json");
-  });
-
   it("loads catalog3 conditions through the self-hosted live namespace", async () => {
-    const url = conditionsUrl("/live/catalogs/3/latest.json", "GB", 3)!;
+    const url = "/live/catalogs/3/conditions/v3/GB.json";
     const locationIds = release3.locationIds.filter((id) => id.startsWith("gb-"));
     const file = ConditionsV3Schema.parse({ ...current, countryCode: "GB", sources: {}, sourceHealth: {}, locations: Object.fromEntries(locationIds.map((id) => [id, emptyConditions()])) });
     const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(Response.json(file));

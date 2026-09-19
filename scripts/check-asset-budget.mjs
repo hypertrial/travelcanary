@@ -100,12 +100,12 @@ try {
     if (!assets.has(`${origin}${pathname}`)) throw new Error(`MapLibre did not request ${pathname}`);
   }
   const catalogVersion = await page.locator('meta[name="travelcanary-catalog-version"]').getAttribute("content");
-  if (!["2", "3"].includes(catalogVersion)) throw new Error("Missing or invalid catalog release metadata");
+  if (catalogVersion !== "3") throw new Error("Missing or invalid catalog release metadata");
   if (process.env.EXPECTED_CATALOG_VERSION && catalogVersion !== process.env.EXPECTED_CATALOG_VERSION) throw new Error("Built catalog release does not match requested budget check");
-  const catalogPath = catalogVersion === "3" ? "/catalogs/3/locations.json" : "/locations.json";
+  const catalogPath = "/catalogs/3/locations.json";
   catalogSequence = catalogRequests.get(catalogPath) ?? Number.POSITIVE_INFINITY;
   if (catalogRequests.size !== 1) throw new Error("Unexpected catalog requests");
-  const geographyPath = catalogVersion === "3" ? "/catalogs/3/covered-countries.geojson" : "/covered-countries.geojson";
+  const geographyPath = "/catalogs/3/covered-countries.geojson";
   const dataAssets = await Promise.all([catalogPath, geographyPath].map(async (pathname) => {
     const body = await readFile(localPath(`${origin}${pathname}`));
     return { path: pathname, bytes: body.byteLength, brotliBytes: brotliCompressSync(body).byteLength };

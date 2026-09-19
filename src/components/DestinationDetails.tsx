@@ -46,7 +46,7 @@ function HazardCard({ hazard, location, now }: { hazard: PublicHazard; location:
 }
 
 function DetailsContent({
-  countryIds, snapshotUrl, catalogVersion = 2,
+  countryIds, snapshotUrl, catalogVersion = 3,
   location,
   state,
   snapshot,
@@ -82,7 +82,7 @@ function DetailsContent({
 }
 
 export function DestinationDetails({
-  countryIds, snapshotUrl, catalogVersion = 2,
+  countryIds, snapshotUrl, catalogVersion = 3,
   location,
   state,
   snapshot,

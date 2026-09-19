@@ -19,11 +19,11 @@ describe("versioned map tint refresh", () => {
       getSource: vi.fn(() => ({ type: "geojson", setData }) as never), addSource: vi.fn(), addLayer: vi.fn(),
       jumpTo: vi.fn(), easeTo: vi.fn(), flyTo: vi.fn(), fitBounds: vi.fn() };
   }
-  it.each([2, 3] as const)("fetches version%s geography and replaces existing source data without changing camera", async (version) => {
+  it("fetches catalog 3 geography and replaces existing source data without changing camera", async () => {
     const target = map(); const data = { type: "FeatureCollection", features: [] };
     const fetch = vi.fn<typeof globalThis.fetch>().mockResolvedValue(Response.json(data)); const controller = new AbortController();
-    await loadCoveredCountriesLayer(target, controller.signal, fetch, version);
-    expect(fetch).toHaveBeenCalledWith(version === 3 ? "/catalogs/3/covered-countries.geojson" : "/covered-countries.geojson", { signal: controller.signal });
+    await loadCoveredCountriesLayer(target, controller.signal, fetch);
+    expect(fetch).toHaveBeenCalledWith("/catalogs/3/covered-countries.geojson", { signal: controller.signal });
     expect(target.setData).toHaveBeenCalledWith(data); expect(target.addSource).not.toHaveBeenCalled(); expect(target.addLayer).not.toHaveBeenCalled();
     for (const change of [target.jumpTo, target.easeTo, target.flyTo, target.fitBounds]) expect(change).not.toHaveBeenCalled();
   });
@@ -31,8 +31,8 @@ describe("versioned map tint refresh", () => {
     const target = map(); const old = new AbortController(); let release!: (response: Response) => void;
     const delayed = new Promise<Response>((resolve) => { release = resolve; });
     const data = { type: "FeatureCollection", features: [], release: 3 };
-    const pending = loadCoveredCountriesLayer(target, old.signal, vi.fn<typeof fetch>().mockReturnValue(delayed), 2);
-    old.abort(); await loadCoveredCountriesLayer(target, undefined, vi.fn<typeof fetch>().mockResolvedValue(Response.json(data)), 3);
+    const pending = loadCoveredCountriesLayer(target, old.signal, vi.fn<typeof fetch>().mockReturnValue(delayed));
+    old.abort(); await loadCoveredCountriesLayer(target, undefined, vi.fn<typeof fetch>().mockResolvedValue(Response.json(data)));
     release(Response.json({ type: "FeatureCollection", features: [], release: 2 })); await pending;
     expect(target.setData).toHaveBeenCalledOnce(); expect(target.setData).toHaveBeenCalledWith(data);
   });

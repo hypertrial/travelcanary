@@ -16,7 +16,9 @@ const scope = version === 3 ? JSON.parse(await readFile("data/catalog-releases/3
 const covered = new Set(countryCodes);
 const envelope = scope?.envelope || legacyGeography.envelope;
 const sourcePath = process.env.NATURAL_EARTH_PATH || scope?.input || "/tmp/travelcanary-ne-admin0.geojson";
-const outputPath = path.join(process.cwd(), "public", ...(version === 3 ? ["catalogs", "3"] : []), "covered-countries.geojson");
+const outputPath = path.join(process.cwd(), ...(version === 3
+  ? ["public", "catalogs", "3"]
+  : ["tests", "fixtures", "legacy-catalog-2"]), "covered-countries.geojson");
 
 function countryCode(properties) {
   for (const value of [properties.ISO_A2_EH, properties.ISO_A2, properties.WB_A2]) {

@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
-import catalog2Json from "../public/locations.json";
+import catalog2Json from "../tests/fixtures/legacy-catalog-2/locations.json";
 import catalog3Json from "../public/catalogs/3/locations.json";
 import release2 from "../data/catalog-releases/2.json";
 import { buildCatalog3Snapshot } from "../src/lib/catalog-projections";
