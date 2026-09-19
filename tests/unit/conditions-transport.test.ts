@@ -13,6 +13,8 @@ import ipmaObservationFixture from "../fixtures/conditions/ipma-observations.jso
 import ipmaSeismicFixture from "../fixtures/conditions/ipma-seismic.json";
 import { autobahnRoadIds } from "@/lib/conditions/infrastructure-mapping";
 import { parseOpenMeteo } from "@/lib/conditions/forecast";
+import { buildCatalog3Conditions } from "@/lib/catalog-projections";
+import { metNorwayAppliesToCatalog3Country } from "@/lib/conditions/sources";
 
 const now = new Date("2026-08-31T17:45:00Z");
 const xml = readFileSync("tests/fixtures/conditions/traffic-datex.xml", "utf8");
@@ -25,6 +27,27 @@ const successfulPublish = async (files: Conditions[]) => ({ published: files.map
 // Synthetic geometry only, to exercise intersection against a configured destination.
 const geo = { type: "FeatureCollection", features: [{ type: "Feature", geometry: { type: "Point", coordinates: helsinki.centroid }, properties: { situationId: "GUID50469906", version: 1 } }] };
 describe("bounded conditions transports", () => {
+  it("uses MET Norway directly when noncommercial Open-Meteo weather is disabled", async () => {
+    const env = { LOCAL_CONDITIONS_ENABLED: "true",
+      CONDITIONS_DISABLED_SOURCES: conditionSourceIds.filter((id) => id !== "met-norway").join(",") };
+    const initial = createEmptyState(now);
+    const selected = forecastBatches(initial, now, env).flatMap(({ kind, ids }) => kind === "weather" ? ids : []);
+    expect(selected).toHaveLength(20);
+    const store = new MemoryStateStore(initial);
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      expect(String(input)).toContain("api.met.no/weatherapi/locationforecast/2.0/compact");
+      return Response.json(metNorway, { headers: { "cache-control": "max-age=3600" } });
+    });
+    await runConditions({ now, stateStore: store, publish: successfulPublish, fetch: fetchMock, env });
+    const state = (await store.read()).data;
+    expect(fetchMock).toHaveBeenCalledTimes(20);
+    expect(state.conditions.health["met-norway"]).toMatchObject({ status: "ok", matched: 20 });
+    expect(selected.every((id) => state.conditions.locations[id]?.weather?.sourceId === "met-norway")).toBe(true);
+    expect(selected.every((id) => metNorwayAppliesToCatalog3Country(locations.find((location) => location.id === id)!.countryCode))).toBe(true);
+    const published = buildCatalog3Conditions(state, now, { ...env, VERCEL_GIT_COMMIT_SHA: "a".repeat(40) });
+    expect(selected.every((id) => published.some((file) => file.locations[id]?.weather?.sourceId === "met-norway"))).toBe(true);
+  });
+
   it.each([false, true])("aligns successful batches and invokes MET Norway only for a failed location (%s)", async (failOne) => {
     const env = { LOCAL_CONDITIONS_ENABLED: "true", NONCOMMERCIAL_DATA_ENABLED: "true",
       CONDITIONS_DISABLED_SOURCES: conditionSourceIds.filter((id) => !["open-meteo-weather", "met-norway"].includes(id)).join(",") };
@@ -55,6 +78,43 @@ describe("bounded conditions transports", () => {
     }
     expect(buildSnapshot(state, now)).toEqual(buildSnapshot(initial, now));
     expect(publish.mock.calls[0][0].flatMap((file: { locations: Record<string, unknown> }) => Object.keys(file.locations))).toHaveLength(679);
+  });
+
+  it("falls back to MET Norway only where the result can be published", async () => {
+    const env = { LOCAL_CONDITIONS_ENABLED: "true", NONCOMMERCIAL_DATA_ENABLED: "true",
+      CONDITIONS_DISABLED_SOURCES: conditionSourceIds.filter((id) => !["open-meteo-weather", "met-norway"].includes(id)).join(",") };
+    const initial = createEmptyState(now);
+    const attemptedIds = forecastBatches(initial, now, env).flatMap(({ kind, ids }) => kind === "weather" ? ids : []);
+    const publishableId = attemptedIds.find((id) => metNorwayAppliesToCatalog3Country(locations.find((location) => location.id === id)!.countryCode))!;
+    const expandedId = attemptedIds.find((id) => !metNorwayAppliesToCatalog3Country(locations.find((location) => location.id === id)!.countryCode))!;
+    expect(publishableId).toBeTruthy();
+    expect(expandedId).toBeTruthy();
+    const failedCoordinates = new Set([publishableId, expandedId].map((id) => {
+      const [longitude, latitude] = locations.find((location) => location.id === id)!.centroid;
+      return `${latitude.toFixed(4)},${longitude.toFixed(4)}`;
+    }));
+    const store = new MemoryStateStore(initial);
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      const url = new URL(String(input));
+      if (url.hostname === "api.met.no") return Response.json(metNorway, { headers: { "cache-control": "max-age=3600" } });
+      const latitude = url.searchParams.get("latitude")!.split(",").map(Number);
+      const longitude = url.searchParams.get("longitude")!.split(",").map(Number);
+      return Response.json(latitude.map((lat, index) => {
+        const row = structuredClone(forecast);
+        if (failedCoordinates.has(`${lat.toFixed(4)},${longitude[index].toFixed(4)}`)) delete row.hourly.temperature_2m;
+        return { ...row, latitude: lat, longitude: longitude[index] };
+      }));
+    });
+    await runConditions({ now, stateStore: store, publish: successfulPublish, fetch: fetchMock, env });
+    const state = (await store.read()).data;
+    const fallbackRequests = fetchMock.mock.calls.filter(([input]) => String(input).includes("api.met.no"));
+    expect(fallbackRequests).toHaveLength(1);
+    expect(fallbackRequests[0][0].toString()).toContain(`lat=${locations.find(({ id }) => id === publishableId)!.centroid[1].toFixed(4)}`);
+    expect(state.conditions.locations[publishableId]?.weather?.sourceId).toBe("met-norway");
+    expect(state.conditions.locations[expandedId]?.weather).toBeUndefined();
+    const published = buildCatalog3Conditions(state, now, { ...env, VERCEL_GIT_COMMIT_SHA: "a".repeat(40) });
+    expect(published.some((file) => file.locations[publishableId]?.weather?.sourceId === "met-norway")).toBe(true);
+    expect(published.some((file) => file.locations[expandedId]?.weather?.sourceId === "met-norway")).toBe(false);
   });
 
   it("recovers one transient whole-batch failure with one bounded transport retry", async () => {

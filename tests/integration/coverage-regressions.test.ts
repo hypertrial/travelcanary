@@ -35,7 +35,7 @@ describe("verified coverage and retention regressions", () => {
     expect(limitEvents([severe, { ...severe, level: "ELEVATED", sourceUpdatedAt: now.toISOString() }])).toMatchObject([{ level: "ELEVATED" }]);
   });
 
-  it.each([0, 20, 21, 60])("ages previously checked national scopes after grace (%i minutes)", (minutes) => {
+  it.each([0, 20, 21, 60])("ages national transports without delaying risk while an alternate path remains current (%i minutes)", (minutes) => {
     const state = healthy();
     const last = new Date(now.getTime() - minutes * 60_000);
     state.partitionTransports.nationalCivilAlerts.PL["imgw-hydrology"] = {
@@ -43,8 +43,8 @@ describe("verified coverage and retention regressions", () => {
       nextExpectedUpdate: new Date(last.getTime() + 10 * 60_000).toISOString(), checkedLocationIds: ["pl-bydgoszcz"], unavailableLocationIds: [],
     };
     const snapshot = buildSnapshot(state, now);
-    expect(snapshot.locations["pl-bydgoszcz"].delayedHazards).toEqual(minutes > 20 ? ["flood"] : []);
-    expect(snapshot.locations["pl-bydgoszcz"].level).toBe(minutes > 20 ? "UNKNOWN" : "NORMAL");
+    expect(snapshot.locations["pl-bydgoszcz"].delayedHazards).toEqual([]);
+    expect(snapshot.locations["pl-bydgoszcz"].level).toBe("NORMAL");
     expect(snapshot.providers["national-civil-alerts"].partitions!.PL.transports!.find(({ id }) => id === "imgw-hydrology")!.status).toBe(minutes > 20 ? "delayed" : "ok");
     state.events = [warning("pl:bulletin:current")];
     expect(buildSnapshot(state, now).locations["pl-bydgoszcz"].level).toBe("HIGH");
@@ -57,7 +57,7 @@ describe("verified coverage and retention regressions", () => {
     };
     const snapshot = buildSnapshot(state, now);
     expect(snapshot.locations["pl-bydgoszcz"].delayedHazards).toEqual([]);
-    expect(snapshot.locations["pl-warsaw"].delayedHazards).toEqual(["flood"]);
+    expect(snapshot.locations["pl-warsaw"].delayedHazards).toEqual([]);
   });
 
   it("keeps permanent air-quality counts stable across partial failure, delay and recovery", () => {
@@ -91,6 +91,7 @@ describe("verified coverage and retention regressions", () => {
       expect(presentation.categories.find(({ key }) => key === "air-quality")).toMatchObject({ coverageStatus: "not_monitored", freshnessStatus: "current" });
     }
     expect(snapshot.locations["pt-lisbon"].delayedHazards).toContain("air-quality");
+    expect(snapshot.locations["pt-lisbon"]).toMatchObject({ level: "NORMAL", coverage: "delayed" });
     expect(snapshot.locations["es-madrid"].delayedHazards).not.toContain("air-quality");
   });
 
@@ -190,6 +191,6 @@ describe("verified coverage and retention regressions", () => {
     expect(merged.partitionTransports.nationalCivilAlerts.PL["imgw-hydrology"].status).toBe("delayed");
     const snapshot = buildSnapshot(merged, now);
     expect(snapshot.locations["pl-bydgoszcz"].delayedHazards).toEqual([]);
-    expect(snapshot.locations["pl-bialystok"].delayedHazards).toEqual(["flood"]);
+    expect(snapshot.locations["pl-bialystok"].delayedHazards).toEqual([]);
   });
 });

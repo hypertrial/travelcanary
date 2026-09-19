@@ -18,20 +18,21 @@ export const COVERED_COUNTRIES_LAYER = "covered-countries-fill";
 export const COVERED_COUNTRIES_URL = catalogV2Paths.geography;
 export const COVERAGE_LAYER_BEFORE_CANDIDATES = ["park", "landuse_residential", "landcover_wood", "water"] as const;
 
-export function locationAppearsOnMap(level: LocationState["level"], selected: boolean, filter: MapFilter = "all"): boolean {
+export function locationAppearsOnMap(state: Pick<LocationState, "level" | "coverage">, selected: boolean, filter: MapFilter = "all"): boolean {
   if (selected) return true;
-  if (filter === "unavailable") return level === "UNKNOWN";
-  return level === "HIGH" || level === "SEVERE" || (filter === "all" && level === "ELEVATED");
+  if (filter === "unavailable") return state.coverage === "delayed";
+  return state.level === "HIGH" || state.level === "SEVERE" || (filter === "all" && state.level === "ELEVATED");
 }
 
 export function mapFilterCounts(locations: Pick<PublicLocation, "id">[], snapshot: Snapshot | null): MapFilterCounts | null {
   if (!snapshot || locations.length === 0) return null;
   const counts: MapFilterCounts = { all: 0, high: 0, unavailable: 0, elevated: 0 };
   for (const location of locations) {
-    const level = snapshot.locations[location.id]?.level || "UNKNOWN";
+    const state = snapshot.locations[location.id] || { level: "UNKNOWN", coverage: "delayed" };
+    const level = state.level;
     if (level === "ELEVATED") counts.elevated++;
     if (level === "HIGH" || level === "SEVERE") counts.high++;
-    if (level === "UNKNOWN") counts.unavailable++;
+    if (state.coverage === "delayed") counts.unavailable++;
   }
   counts.all = counts.high + counts.elevated;
   return counts;

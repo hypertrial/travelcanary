@@ -65,19 +65,39 @@ describe("client snapshot staleness", () => {
     expect(stale.locations[id]).toMatchObject({ level: state.level, timing: "ACTIVE", coverage: "delayed" });
   });
 
-  it("does not turn an expired alert normal when its coverage is already delayed", async () => {
+  it("returns an expired alert to normal when only non-life-safety checks are delayed", async () => {
     const snapshot = SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")));
     snapshot.generatedAt = "2026-08-25T12:00:00Z";
     snapshot.dataHealth = "delayed";
     const [id, state] = Object.entries(snapshot.locations).find(([, location]) => location.level !== "NORMAL" && location.level !== "UNKNOWN")!;
     if (state.level === "NORMAL" || state.level === "UNKNOWN") throw new Error("Expected an alert fixture");
     state.coverage = "delayed";
+    state.delayedHazards = ["air-quality"];
     for (const hazard of state.hazards) {
       hazard.endsAt = "2026-08-25T12:10:00Z";
       hazard.expiresAt = "2026-08-25T12:10:00Z";
     }
 
-    expect(applySnapshotStaleness(snapshot, new Date("2026-08-25T12:15:00Z")).locations[id]).toMatchObject({ level: "UNKNOWN", hazards: [] });
+    expect(applySnapshotStaleness(snapshot, new Date("2026-08-25T12:15:00Z")).locations[id]).toMatchObject({
+      level: "NORMAL", coverage: "delayed", delayedHazards: ["air-quality"], hazards: [],
+    });
+  });
+
+  it("returns an expired alert to unknown when a life-safety check is delayed", async () => {
+    const snapshot = SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")));
+    snapshot.generatedAt = "2026-08-25T12:00:00Z";
+    const [id, state] = Object.entries(snapshot.locations).find(([, location]) => location.level !== "NORMAL" && location.level !== "UNKNOWN")!;
+    if (state.level === "NORMAL" || state.level === "UNKNOWN") throw new Error("Expected an alert fixture");
+    state.coverage = "delayed";
+    state.delayedHazards = ["flood"];
+    for (const hazard of state.hazards) {
+      hazard.endsAt = "2026-08-25T12:10:00Z";
+      hazard.expiresAt = "2026-08-25T12:10:00Z";
+    }
+
+    expect(applySnapshotStaleness(snapshot, new Date("2026-08-25T12:15:00Z")).locations[id]).toMatchObject({
+      level: "UNKNOWN", coverage: "delayed", delayedHazards: ["flood"], hazards: [],
+    });
   });
 
   it("omits non-applicable hazards from stale city delays", () => {

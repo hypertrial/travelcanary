@@ -191,32 +191,57 @@ describe("risk publication", () => {
     expect(delayedProviders.locations["hu-budapest"].level).toBe("NORMAL");
   });
 
-  it("scopes two authoritative provider failures to matrix entries containing that provider", () => {
+  it("keeps flood monitoring current when MeteoAlarm remains fresh after Vigicrues fails", () => {
     let state = healthyState();
     const failed = { sourceId: "vigicrues" as const, checkedAt: now.toISOString(), sourceUpdatedAt: null, events: [], status: "failed" as const, error: "timeout" };
     state = mergeSourceResults(state, [failed], now);
     state = mergeSourceResults(state, [failed], now);
     const snapshot = buildSnapshot(state, now);
     expect(snapshot.dataHealth).toBe("complete");
-    expect(snapshot.locations["fr-paris"]).toMatchObject({ level: "UNKNOWN", coverage: "delayed" });
+    expect(snapshot.locations["fr-paris"]).toMatchObject({ level: "NORMAL" });
+    expect(snapshot.locations["fr-paris"].coverage).not.toBe("delayed");
     expect(snapshot.locations["fr-reims"].level).toBe("NORMAL");
     expect(snapshot.locations["fr-reims"].coverage).not.toBe("delayed");
     expect(snapshot.locations["hu-budapest"].level).toBe("NORMAL");
   });
 
-  it("scopes an eHYD failure to mapped Austrian flood coverage", () => {
+  it("does not use a fresh partial MeteoAlarm partition for a destination its receipt marks unavailable", () => {
+    let state = healthyState();
+    const failed = { sourceId: "vigicrues" as const, checkedAt: now.toISOString(), sourceUpdatedAt: null, events: [], status: "failed" as const, error: "timeout" };
+    state = mergeSourceResults(state, [failed], now);
+    state = mergeSourceResults(state, [failed], now);
+    Object.assign(state.sourcePartitions.meteoalarm.FR, { status: "partial", lastAttempt: now.toISOString(), lastSuccess: now.toISOString() });
+    state.providerCoverage.meteoalarm = { checkedAt: now.toISOString(), checkedLocationIds: ["fr-lyon"], unavailableLocationIds: ["fr-paris"] };
+    expect(buildSnapshot(state, now).locations["fr-paris"]).toMatchObject({
+      level: "UNKNOWN", coverage: "delayed", delayedHazards: expect.arrayContaining(["flood"]),
+    });
+  });
+
+  it("keeps flood monitoring current when MeteoAlarm remains fresh after eHYD fails", () => {
     let state = healthyState();
     const failed = { sourceId: "ehyd-flood" as const, checkedAt: now.toISOString(), sourceUpdatedAt: null, events: [], status: "failed" as const, error: "timeout" };
     state = mergeSourceResults(state, [failed], now);
     state = mergeSourceResults(state, [failed], now);
     const snapshot = buildSnapshot(state, now);
     expect(snapshot.dataHealth).toBe("complete");
-    expect(snapshot.locations["at-vienna"]).toMatchObject({ level: "UNKNOWN", coverage: "delayed" });
+    expect(snapshot.locations["at-vienna"]).toMatchObject({ level: "NORMAL" });
+    expect(snapshot.locations["at-vienna"].coverage).not.toBe("delayed");
     expect(snapshot.locations["hu-budapest"].level).toBe("NORMAL");
     expect(snapshot.locations["hu-budapest"].coverage).not.toBe("delayed");
   });
 
-  it("keeps checked destinations current across repeated mixed-validity refreshes", () => {
+  it("keeps a national flood transport delay from overriding fresh MeteoAlarm coverage", () => {
+    const state = healthyState();
+    const transport = state.partitionTransports.nationalCivilAlerts.CZ["chmi-hydrology"];
+    Object.assign(transport, { status: "delayed", lastAttempt: now.toISOString(), lastSuccess: now.toISOString(),
+      nextExpectedUpdate: new Date(now.getTime() + 10 * 60_000).toISOString(), consecutiveFailures: 2,
+      checkedLocationIds: [], unavailableLocationIds: ["cz-prague"] });
+    const snapshot = buildSnapshot(state, now);
+    expect(snapshot.locations["cz-prague"]).toMatchObject({ level: "NORMAL" });
+    expect(snapshot.locations["cz-prague"].delayedHazards).not.toContain("flood");
+  });
+
+  it("keeps destinations current when another contributing provider covers an aggregate-source gap", () => {
     let state = healthyState();
     const partial = {
       sourceId: "vigicrues" as const, checkedAt: now.toISOString(), sourceUpdatedAt: now.toISOString(), events: [],
@@ -228,10 +253,10 @@ describe("risk publication", () => {
     const snapshot = buildSnapshot(state, now);
     expect(snapshot.locations["fr-paris"].level).toBe("NORMAL");
     expect(snapshot.locations["fr-paris"].coverage).not.toBe("delayed");
-    expect(snapshot.locations["fr-lyon"]).toMatchObject({ level: "UNKNOWN", coverage: "delayed" });
+    expect(snapshot.locations["fr-lyon"]).toMatchObject({ level: "NORMAL", coverage: "partial", delayedHazards: [] });
   });
 
-  it("ages repeated partial country refreshes and delays only unavailable destinations", () => {
+  it("ages repeated partial EEA refreshes without turning non-life-safety delay into unknown risk", () => {
     let state = healthyState();
     const partial: PartitionedSourceResult = {
       sourceId: "eea", checkedAt: now.toISOString(),
@@ -246,7 +271,7 @@ describe("risk publication", () => {
     expect(state.sourcePartitions.eea.HU).toMatchObject({ status: "delayed", consecutiveFailures: 2 });
     expect(snapshot.locations["hu-budapest"].level).toBe("NORMAL");
     expect(snapshot.locations["hu-budapest"].coverage).not.toBe("delayed");
-    expect(snapshot.locations["hu-debrecen"]).toMatchObject({ level: "UNKNOWN", coverage: "delayed" });
+    expect(snapshot.locations["hu-debrecen"]).toMatchObject({ level: "NORMAL", coverage: "delayed", delayedHazards: ["air-quality"] });
   });
 
   it("keeps an unavailable EEA country from delaying other countries", () => {
@@ -262,7 +287,7 @@ describe("risk publication", () => {
     state = mergeSourceResults(state, [failed], now);
     state = mergeSourceResults(state, [failed], now);
     const snapshot = buildSnapshot(state, now);
-    expect(snapshot.locations["hu-budapest"]).toMatchObject({ level: "UNKNOWN", coverage: "delayed" });
+    expect(snapshot.locations["hu-budapest"]).toMatchObject({ level: "NORMAL", coverage: "delayed", delayedHazards: ["air-quality"] });
     expect(snapshot.locations["at-vienna"].level).toBe("NORMAL");
     expect(snapshot.locations["at-vienna"].coverage).not.toBe("delayed");
   });
@@ -407,16 +432,17 @@ describe("risk publication", () => {
     const vigicruesFailed = { sourceId: "vigicrues" as const, checkedAt: now.toISOString(), sourceUpdatedAt: null, events: [], status: "failed" as const, error: "timeout" };
     state = mergeSourceResults(state, [cemsPartial, vigicruesFailed], now);
     state = mergeSourceResults(state, [cemsPartial, vigicruesFailed], now);
+    Object.assign(state.sourcePartitions.meteoalarm.FR, { status: "delayed", consecutiveFailures: 2 });
     const snapshot = buildSnapshot(state, now);
     expect(state.sources.cems).toMatchObject({ status: "delayed", consecutiveFailures: 2 });
-    expect(snapshot.dataHealth).toBe("complete");
+    expect(snapshot.dataHealth).toBe("delayed");
     expect(snapshot.locations["fr-paris"]).toMatchObject({ level: "UNKNOWN", coverage: "delayed" });
     expect(snapshot.locations["fr-paris"].delayedHazards).toContain("flood");
     expect(snapshot.locations["hu-budapest"].level).toBe("NORMAL");
     expect(snapshot.locations["hu-budapest"].delayedHazards).toEqual([]);
   });
 
-  it("does not publish normal before EEA air quality has succeeded", () => {
+  it("keeps risk normal while EEA air-quality checks are delayed", () => {
     const state = healthyState();
     state.sources.eea = {
       status: "failed", lastAttempt: null, lastSuccess: null, sourceUpdatedAt: null, nextExpectedUpdate: null,
@@ -425,7 +451,9 @@ describe("risk publication", () => {
     for (const countryCode of countryCodes) state.sourcePartitions.eea[countryCode] = structuredClone(state.sources.eea);
     const snapshot = buildSnapshot(state, now);
     expect(snapshot.providers["eea-aqi"].status).toBe("delayed");
-    expect(snapshot.locations["hu-budapest"].level).toBe("UNKNOWN");
+    expect(snapshot.locations["hu-budapest"]).toMatchObject({
+      level: "NORMAL", coverage: "delayed", delayedHazards: ["air-quality"],
+    });
   });
 
   it("marks otherwise-normal locations unknown after two failures", () => {

@@ -10,6 +10,24 @@ type ActivationDetail = {
 };
 
 const supportedCountries = new Set(["Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czechia", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Slovakia", "Slovenia", "Spain", "Sweden", "Switzerland"]);
+const listPath = "/backend/dashboard-api/public-activations-info/";
+const listOrigin = "https://rapidmapping.emergency.copernicus.eu";
+const pageSize = 100;
+const maxPages = 5;
+const maxDetails = 100;
+
+function reviewedNext(value: unknown, offset: number): string | null {
+  if (value === null || value === undefined) return null;
+  if (typeof value !== "string") throw new Error("CEMS next-page URL is invalid");
+  const url = new URL(value, listOrigin);
+  const keys = [...url.searchParams.keys()];
+  if (url.origin !== listOrigin || url.username || url.password || url.hash || url.pathname !== listPath
+    || keys.length !== 2 || new Set(keys).size !== 2
+    || url.searchParams.get("limit") !== String(pageSize) || url.searchParams.get("offset") !== String(offset)) {
+    throw new Error("CEMS next-page URL is invalid");
+  }
+  return url.href;
+}
 
 function iso(value: string) { return new Date(/[zZ]|[+-]\d\d:\d\d$/.test(value) ? value : `${value}Z`).toISOString(); }
 function activationRecord(value: unknown, now: Date): Activation | null {
@@ -46,20 +64,54 @@ export class CemsAdapter implements SourceAdapter {
     const checkedAt = context.now.toISOString();
     const schedulingDeadline = Math.min(Date.now() + 45_000, context.deadlineAt ?? Number.POSITIVE_INFINITY);
     try {
-      const list = await (await fetchWithRetry(context.fetch, "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations-info/?limit=100&offset=0")).json() as { results?: unknown[]; count?: unknown; next?: unknown };
-      if (!Array.isArray(list.results)) throw new Error("CEMS response has no results array");
-      const incompleteList = list.results.length >= 100 || list.next != null
-        || (list.count !== undefined && list.count !== list.results.length);
-      const parsed = list.results.slice(0, 100).map((item) => activationRecord(item, context.now));
+      const byteBudget = { remaining: 16 * 1024 * 1024 };
+      const rows: unknown[] = [];
+      let nextUrl: string | null = `${listOrigin}${listPath}?limit=${pageSize}&offset=0`;
+      let advertisedCount: number | null = null;
+      let incompleteList = false;
+      for (let page = 0; page < maxPages && nextUrl; page += 1) {
+        const listResponse = await fetchWithRetry(context.fetch, nextUrl, { redirect: "manual" }, 3, 512 * 1024, byteBudget);
+        if (listResponse.status >= 300 && listResponse.status < 400) throw new Error("CEMS list redirect is not permitted");
+        const list = await listResponse.json() as { results?: unknown[]; count?: unknown; next?: unknown };
+        if (!Array.isArray(list.results)) throw new Error("CEMS response has no results array");
+        if (list.results.length > pageSize) incompleteList = true;
+        rows.push(...list.results.slice(0, pageSize));
+        if (list.count !== undefined) {
+          if (typeof list.count !== "number" || !Number.isInteger(list.count) || list.count < 0
+            || advertisedCount !== null && advertisedCount !== list.count) incompleteList = true;
+          else advertisedCount = list.count;
+        }
+        try { nextUrl = reviewedNext(list.next, (page + 1) * pageSize); }
+        catch { incompleteList = true; nextUrl = null; }
+        if (list.results.length < pageSize && nextUrl) incompleteList = true;
+        if (!list.results.length && nextUrl) { incompleteList = true; nextUrl = null; }
+        if (!nextUrl && advertisedCount !== null && rows.length !== advertisedCount) incompleteList = true;
+        if (page === maxPages - 1 && nextUrl) { incompleteList = true; nextUrl = null; }
+      }
+      if (advertisedCount === null && rows.length >= pageSize) incompleteList = true;
+      if (advertisedCount !== null && advertisedCount > maxPages * pageSize) incompleteList = true;
+      const parsed = rows.map((item) => activationRecord(item, context.now));
       const invalid = parsed.filter((item) => item === null).length;
-      const valid = parsed.filter((item): item is Activation => item !== null);
-      if (list.results.length > 0 && valid.length === 0) throw new Error("CEMS response contains no parseable activation records");
+      const latest = new Map<string, Activation>();
+      for (const item of parsed) if (item) {
+        const prior = latest.get(item.code);
+        if (!prior || Date.parse(iso(item.lastUpdate)) >= Date.parse(iso(prior.lastUpdate))) latest.set(item.code, item);
+      }
+      const valid = [...latest.values()].sort((left, right) => left.code.localeCompare(right.code));
+      if (rows.length > 0 && valid.length === 0) throw new Error("CEMS response contains no parseable activation records");
       const removedEventPrefixes = valid.filter((item) => item.closed).map((item) => `cems:${item.code}`);
-      const recent = valid.filter((item) => !item.closed && item.countries.some((country) => supportedCountries.has(country)) && categoryType(item.category) && context.now.getTime() - Date.parse(iso(item.lastUpdate)) < 24 * 60 * 60 * 1000);
+      const recentCandidates = valid.filter((item) => !item.closed && item.countries.some((country) => supportedCountries.has(country))
+        && categoryType(item.category) && context.now.getTime() - Date.parse(iso(item.lastUpdate)) < 24 * 60 * 60 * 1000)
+        .sort((left, right) => Date.parse(iso(right.lastUpdate)) - Date.parse(iso(left.lastUpdate)) || left.code.localeCompare(right.code));
+      const detailsCapped = recentCandidates.length > maxDetails;
+      const recent = recentCandidates.slice(0, maxDetails);
       const eventGroups = await mapConcurrent(recent, 5, async (activation): Promise<{ events: NormalizedEvent[]; failed: boolean; partial?: boolean; removedEventPrefixes?: string[] }> => {
         if (Date.now() >= schedulingDeadline) return { events: [], failed: true };
         try {
-          const detailPayload = await (await fetchWithRetry(context.fetch, `https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations/?code=${encodeURIComponent(activation.code)}`, {}, 2)).json() as { results?: ActivationDetail[] };
+          const detailResponse = await fetchWithRetry(context.fetch, `${listOrigin}/backend/dashboard-api/public-activations/?code=${encodeURIComponent(activation.code)}`,
+            { redirect: "manual" }, 2, 1024 * 1024, byteBudget);
+          if (detailResponse.status >= 300 && detailResponse.status < 400) throw new Error("CEMS detail redirect is not permitted");
+          const detailPayload = await detailResponse.json() as { results?: ActivationDetail[] };
           if (!Array.isArray(detailPayload.results) || detailPayload.results.length === 0) return { events: [], failed: true };
           const detail = detailPayload.results?.[0];
           if (detail?.sensitive === true) return { events: [], failed: false, removedEventPrefixes: [`cems:${activation.code}`] };
@@ -103,17 +155,20 @@ export class CemsAdapter implements SourceAdapter {
       });
       const failures = eventGroups.filter((group) => group.failed).length;
       const incomplete = eventGroups.filter((group) => group.partial).length;
-      const status = invalid === 0 && failures === 0 && incomplete === 0 && !incompleteList ? "ok" : recent.length > 0 && failures === recent.length ? "failed" : "partial";
+      const status = invalid === 0 && failures === 0 && incomplete === 0 && !incompleteList && !detailsCapped
+        ? "ok" : recent.length > 0 && failures === recent.length && !incompleteList && !detailsCapped ? "failed" : "partial";
       const events = eventGroups.flatMap((group) => group.events);
       recordSourceDiagnostics(context, {
-        recordsExamined: list.results.length, targetsScheduled: recent.length, targetsCompleted: eventGroups.length,
+        recordsExamined: rows.length, targetsScheduled: recent.length, targetsCompleted: eventGroups.length,
         matchedLocations: context.locations.filter((location) => events.some((event) => eventAffectsLocation(event, location))).length,
       });
       return AggregateSourceResultSchema.parse({
-        sourceId: this.id, checkedAt, sourceUpdatedAt: recent.map((item) => iso(item.lastUpdate)).sort().at(-1) || checkedAt,
+        sourceId: this.id, checkedAt, sourceUpdatedAt: valid.map((item) => iso(item.lastUpdate)).sort().at(-1) || checkedAt,
         events, status,
         removedEventPrefixes: [...removedEventPrefixes, ...eventGroups.flatMap((group) => group.removedEventPrefixes || [])],
-        error: [incompleteList ? "CEMS activation list is incomplete" : null, invalid ? `${invalid} activation list records invalid` : null, failures ? `${failures} of ${recent.length} activation details unavailable` : null, incomplete ? `${incomplete} activation geometries incomplete` : null].filter(Boolean).join("; ") || null,
+        error: [incompleteList ? "CEMS activation list is incomplete" : null, detailsCapped ? "CEMS activation detail limit reached" : null,
+          invalid ? `${invalid} activation list records invalid` : null, failures ? `${failures} of ${recent.length} activation details unavailable` : null,
+          incomplete ? `${incomplete} activation geometries incomplete` : null].filter(Boolean).join("; ") || null,
       });
     } catch (error) {
       return AggregateSourceResultSchema.parse({ sourceId: this.id, checkedAt, sourceUpdatedAt: null, events: [], status: "failed", error: (error instanceof Error ? error.message : "CEMS failed").slice(0, 300) });

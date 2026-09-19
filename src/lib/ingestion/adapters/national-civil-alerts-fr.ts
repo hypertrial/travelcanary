@@ -78,16 +78,41 @@ function first(value: unknown): unknown {
   return Array.isArray(value) ? value[0] : value;
 }
 
-function frDate(value: unknown, timezone: unknown): number {
+const frenchMonths: Record<string, number> = {
+  jan: 1, janv: 1, janvier: 1, feb: 2, fev: 2, fevr: 2, fevrier: 2, mar: 3, mars: 3,
+  apr: 4, avr: 4, avril: 4, mai: 5, may: 5, jun: 6, juin: 6, juil: 7, jul: 7, juillet: 7,
+  aug: 8, aou: 8, aout: 8, sep: 9, sept: 9, septembre: 9,
+  oct: 10, octobre: 10, nov: 11, novembre: 11, dec: 12, decembre: 12,
+};
+
+export function frDate(value: unknown, timezone: unknown): number {
   const raw = cleanText(value);
-  const direct = Date.parse(raw);
-  if (/^\d{4}-\d\d-\d\dT/.test(raw) && Number.isFinite(direct)) return direct;
-  const match = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})[ T](\d{1,2}):(\d{2})(?::(\d{2}))?/);
-  if (!match) return Number.NaN;
+  const direct = /^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d)(?::(\d\d)(?:\.\d{1,9})?)?(?:Z|[+-]\d\d:\d\d)$/i.exec(raw);
+  if (direct) {
+    const [year, month, day, hour, minute, second] = direct.slice(1, 7).map((part) => Number(part || 0));
+    const calendar = new Date(Date.UTC(year, month - 1, day, hour, minute, second));
+    const parsed = Date.parse(raw);
+    return Number.isFinite(parsed) && calendar.getUTCFullYear() === year && calendar.getUTCMonth() === month - 1
+      && calendar.getUTCDate() === day && calendar.getUTCHours() === hour && calendar.getUTCMinutes() === minute
+      && calendar.getUTCSeconds() === second ? parsed : Number.NaN;
+  }
+  const numeric = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})[ T](\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+  const french = raw.match(/^(\d{1,2})\s+([A-Za-zÀ-ÿ.]+)\s+(\d{4})\s*-\s*(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+  const monthName = french?.[2].normalize("NFKD").replace(/[\u0300-\u036f.]/g, "").toLowerCase();
+  const parts = numeric ? [numeric[3], numeric[2], numeric[1], numeric[4], numeric[5], numeric[6] || "0"].map(Number)
+    : french && monthName && frenchMonths[monthName]
+      ? [french[3], frenchMonths[monthName], french[1], french[4], french[5], french[6] || "0"].map(Number)
+      : null;
+  if (!parts) return Number.NaN;
   const utc = cleanText(typeof timezone === "object" && timezone ? (timezone as Record<string, unknown>).utc : timezone);
-  const offset = utc.match(/UTC\s*([+-])\s*(\d{1,2})(?::?(\d{2}))?/i);
-  const offsetMinutes = offset ? (offset[1] === "+" ? 1 : -1) * (Number(offset[2]) * 60 + Number(offset[3] || 0)) : 0;
-  return Date.UTC(Number(match[3]), Number(match[2]) - 1, Number(match[1]), Number(match[4]), Number(match[5]), Number(match[6] || 0)) - offsetMinutes * 60_000;
+  const offset = utc.match(/^UTC\s*([+-])\s*(\d{1,2})(?::?(\d{2}))?$/i);
+  if (!offset || Number(offset[2]) > 14 || Number(offset[3] || 0) > 59) return Number.NaN;
+  const [year, month, day, hour, minute, second] = parts;
+  const calendar = new Date(Date.UTC(year, month - 1, day, hour, minute, second));
+  if (calendar.getUTCFullYear() !== year || calendar.getUTCMonth() !== month - 1 || calendar.getUTCDate() !== day
+    || calendar.getUTCHours() !== hour || calendar.getUTCMinutes() !== minute || calendar.getUTCSeconds() !== second) return Number.NaN;
+  const offsetMinutes = (offset[1] === "+" ? 1 : -1) * (Number(offset[2]) * 60 + Number(offset[3] || 0));
+  return calendar.getTime() - offsetMinutes * 60_000;
 }
 
 function frPolygons(info: FrExportInfo) {
@@ -140,14 +165,16 @@ export function parseFrExports(value: unknown, context: IngestionContext): { eve
         const starts = frDate(info.dateEffective || info.effective || info.dateDébut, timezone);
         const ends = frDate(info["dateExpiré"] || info.dateExpire || info.expires, timezone);
         const updated = frDate(raw.dateEmission || raw.sent || info.dateEffective, timezone);
-        if (Number.isFinite(starts) && Number.isFinite(ends) && Math.max(starts, ends) <= context.now.getTime()) {
+        if (!Number.isFinite(starts) || !Number.isFinite(ends) || starts >= ends || !Number.isFinite(updated)
+          || updated > context.now.getTime() + 300_000) throw new Error("Incomplete FR-Alert record");
+        if (ends <= context.now.getTime()) {
           recordParsed = true;
           continue;
         }
         const areas = frPolygons(info);
         if (areas.length) affectedIds = matchingLocations(areas, locations).map(({ id }) => id);
         const headline = cleanText(info.titre || info.headline);
-        if (!severity || !Number.isFinite(starts) || !Number.isFinite(ends) || starts >= ends || !Number.isFinite(updated) || !areas.length || headline.length < 3) throw new Error("Incomplete FR-Alert record");
+        if (!severity || !areas.length || headline.length < 3) throw new Error("Incomplete FR-Alert record");
         recordParsed = true;
         if (!overlapsNextDay(starts, ends, context.now) || isDuplicativeCategory(info)) continue;
         const affected = locations.filter(({ id }) => affectedIds!.includes(id));

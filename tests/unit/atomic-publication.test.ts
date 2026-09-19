@@ -45,6 +45,7 @@ describe("atomic public generations", () => {
     const current = await readCurrentPublication(store);
     expect(current?.pointer.manifestSha256).toBe(result.pointer.manifestSha256);
     expect(current?.manifest.conditions).toHaveLength(45);
+    expect(current?.manifest.status.codes).not.toContain("source/cems/failed");
     expect(await store.list("catalogs/3/objects/sha256/", 100)).toHaveLength(46);
   });
 

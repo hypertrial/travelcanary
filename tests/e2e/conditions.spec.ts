@@ -46,9 +46,26 @@ test("offline conditions leave the map and risk result working", async ({ page }
   await page.goto("/");
   await page.getByRole("combobox", { name: "Where are you going?" }).fill("Vienna");
   await page.getByRole("option", { name: /Vienna/ }).click();
-  await expect(page.getByText("Local conditions are unavailable. Alert information is unaffected.")).toBeVisible();
+  await expect(page.getByText("Local conditions unavailable. Alert information is unaffected.")).toBeVisible();
   await expect(page.getByText("No major alert found in checked sources", { exact: true })).toBeVisible();
   await expect(page.getByText("Current · updated just now")).toBeVisible();
+});
+
+test("a completed empty conditions publication distinguishes a failed source from unsupported data", async ({ page }) => {
+  await mutateDemoConditions(page, "AT", (conditions) => {
+    const vienna = conditions.locations["at-vienna"];
+    delete vienna.weather; delete vienna.airQuality; delete vienna.marine;
+    vienna.observations = []; vienna.rivers = []; vienna.earthquakes = [];
+    vienna.infrastructureIncidents = []; vienna.systemConditions = [];
+    vienna.limitations = ["update-pending"];
+    conditions.sourceHealth["awc-metar"] = { status: "failed", checkedAt: conditions.generatedAt, limitationCode: "source_unavailable" };
+  });
+  await page.goto("/");
+  await page.getByRole("combobox", { name: "Where are you going?" }).fill("Vienna");
+  await page.getByRole("option", { name: /Vienna/ }).click();
+  const section = page.getByRole("region", { name: "Local conditions", exact: true });
+  await expect(section.getByRole("status")).toHaveText("Local conditions unavailable. Alert information is unaffected.");
+  await expect(page.getByText("No major alert found in checked sources", { exact: true })).toBeVisible();
 });
 
 test("infrastructure context stays in destination details and separates active, planned, and national advisories", async ({ page }) => {

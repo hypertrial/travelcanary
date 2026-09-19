@@ -1,13 +1,9 @@
 import { locationCoveragePresentation } from "./coverage-presentation";
 import { isExpandedDestination } from "./expanded-coverage";
 import type { CatalogSnapshot, PublicCatalogLocation } from "./domain/catalog-public";
-import type { HazardType } from "./domain/schemas";
-import { hazardAppliesToLocation } from "./risk-policy";
+import { hazardAppliesToLocation, lifeSafetyHazards } from "./risk-policy";
 
-export const lifeSafetyHazards = new Set<HazardType>([
-  "severe-weather", "extreme-heat", "extreme-cold", "snow-ice", "flood", "coastal",
-  "wildfire", "fire-danger", "earthquake", "industrial", "nuclear", "civil-emergency",
-]);
+export { lifeSafetyHazards } from "./risk-policy";
 
 export const catalog3CoverageTarget = {
   allHazards: { applicable: 11_799, fullyChecked: 2_867, partlyChecked: 2_877, notChecked: 6_055, coveredOrPartial: 5_744 },

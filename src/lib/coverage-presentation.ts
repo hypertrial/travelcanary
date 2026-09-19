@@ -145,18 +145,20 @@ function providerStateForLocation(snapshot: Snapshot | null, providerId: Provide
   if (!provider) return null;
   if (isExpandedDestination(location)) {
     if (!expandedProviderApplies(providerId, location)) return { ...provider, status: "disabled", lastSuccess: null, sourceUpdatedAt: null, nextExpectedUpdate: null, partitions: undefined };
+    const receipt = "expandedCoverage" in provider ? provider.expandedCoverage : undefined;
+    if (receipt) {
+      const checked = receipt.checkedLocationIds.includes(location.id) && !receipt.unavailableLocationIds.includes(location.id);
+      const current = expandedCheckIsCurrent(receipt, location.id, providerRegistry[providerId].cadenceMinutes, now);
+      return { ...provider, status: receipt.status === "disabled" ? "disabled" : current ? "ok" : checked ? "delayed" : "failed",
+        lastSuccess: checked ? receipt.checkedAt : null, sourceUpdatedAt: null,
+        nextExpectedUpdate: null, partitions: undefined,
+      };
+    }
     if (provider.partitions) {
       const partition = Object.entries(provider.partitions).find(([code]) => code === location.countryCode)?.[1];
       return partition ? { ...provider, ...partition, partitions: undefined } : null;
     }
-    const receipt = "expandedCoverage" in provider ? provider.expandedCoverage : undefined;
-    if (!receipt) return provider;
-    const checked = receipt.checkedLocationIds.includes(location.id) && !receipt.unavailableLocationIds.includes(location.id);
-    const current = expandedCheckIsCurrent(receipt, location.id, providerRegistry[providerId].cadenceMinutes, now);
-    return { ...provider, status: receipt.status === "disabled" ? "disabled" : current ? "ok" : checked ? "delayed" : "failed",
-      lastSuccess: checked ? receipt.checkedAt : null, sourceUpdatedAt: null,
-      nextExpectedUpdate: null, partitions: undefined,
-    };
+    return provider;
   }
   if (!provider.partitions) return provider;
   const partition = Object.entries(provider.partitions).find(([code]) => code === location.countryCode)?.[1];
@@ -164,7 +166,10 @@ function providerStateForLocation(snapshot: Snapshot | null, providerId: Provide
 }
 
 function providerSatisfiesCoverage(providerId: ProviderId, location: PublicLocation, hazard?: HazardType): boolean {
-  if (providerId !== "national-civil-alerts") return providerRegistry[providerId].satisfiesCoverage !== false;
+  if (providerId !== "national-civil-alerts") {
+    const provider = providerRegistry[providerId];
+    return provider.satisfiesCoverage !== false && provider.healthScope !== "non_blocking";
+  }
   const source = nationalSourcesByCountry.get(location.countryCode);
   return Boolean(source?.enabled && source.satisfiesCoverage && (!hazard || source.hazards.includes(hazard))
     && (!source.coverageLocationIds || source.coverageLocationIds.includes(location.id)));
@@ -377,13 +382,13 @@ function freshnessPresentation(
   const relative = relativeUpdatePhrase(snapshot?.generatedAt || null, now);
   if (!snapshot) return {
     status: "unavailable",
-    visibleLabel: "Updates unavailable",
-    accessibleLabel: "Source updates unavailable. Last update time unavailable.",
+    visibleLabel: "Live updates unavailable",
+    accessibleLabel: "Live updates unavailable. Last check time unavailable.",
   };
   if (hasDelayedCoverage) return {
     status: "delayed",
-    visibleLabel: relative ? `Some updates delayed · last updated ${relative}` : "Some updates delayed · last update time unavailable",
-    accessibleLabel: relative ? `Some source updates are delayed. Last updated ${relative}.` : "Some source updates are delayed. Last update time unavailable.",
+    visibleLabel: relative ? `Some checks delayed · last updated ${relative}` : "Some checks delayed · last update time unavailable",
+    accessibleLabel: relative ? `Some source checks are delayed. Last updated ${relative}.` : "Some source checks are delayed. Last update time unavailable.",
   };
   return {
     status: "current",
@@ -420,14 +425,12 @@ export function locationCoveragePresentation({
       let primaryStatuses: Array<Exclude<CoveragePresentationStatus, "not_applicable">> = [];
       if (entry.status !== "not_monitored") {
         const primaryProviders = entry.providerIds.filter((providerId) => providerDeterminesCoverage(providerId, location, hazard));
-        if (primaryProviders.length > 0) {
-          const locationHasGap = state.coverageGaps.includes(hazard)
-            || (weatherFamily.includes(hazard) && state.coverageGaps.includes("severe-weather"));
-          primaryStatuses = primaryProviders.map((providerId) => providerStatus(providerId, snapshot, location, now));
-          coverageStatus = entry.status === "partial" || locationHasGap
-            ? "limited"
-            : "available";
-        }
+        const locationHasGap = state.coverageGaps.includes(hazard)
+          || (weatherFamily.includes(hazard) && state.coverageGaps.includes("severe-weather"));
+        primaryStatuses = primaryProviders.map((providerId) => providerStatus(providerId, snapshot, location, now));
+        coverageStatus = entry.status === "partial" || locationHasGap
+          ? "limited"
+          : "available";
       }
       const freshnessStatus: FreshnessStatus = hazardWasDelayed(state, hazard)
         || primaryStatuses.length > 0 && primaryStatuses.every((candidate) => candidate === "delayed" || candidate === "not_monitored")
@@ -491,7 +494,8 @@ export function locationCoveragePresentation({
     if (expanded && !expandedProviderApplies(providerId, location)) return false;
     const provider = providerRegistry[providerId];
     if (provider.hazards.length === 0 || !provider.hazards.some((hazard) => applicableHazards.has(hazard))) return false;
-    return provider.satisfiesCoverage === false || provider.mode === "discovery" || provider.mode === "fallback" || provider.mode === "disabled"
+    return provider.satisfiesCoverage === false || provider.healthScope === "non_blocking"
+      || provider.mode === "discovery" || provider.mode === "fallback" || provider.mode === "disabled"
       || (matrixProviderIds.has(providerId) && !providerSatisfiesCoverage(providerId, location));
   });
   const delayed = categories.filter(({ freshnessStatus }) => freshnessStatus === "delayed").map((category) => {

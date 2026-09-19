@@ -18,11 +18,12 @@ export function expandedDelayedHazards(location: { id: string; countryCode: stri
     && !coverage[hazard].providerIds.some((providerId) => {
       if (providerRegistry[providerId].satisfiesCoverage === false) return false;
       const provider = providers[providerId];
+      const receipt = "expandedCoverage" in provider ? provider.expandedCoverage : undefined;
+      if (receipt) return expandedCheckIsCurrent(receipt, location.id, providerRegistry[providerId].cadenceMinutes, now);
       if (provider.partitions) {
         const partition = Object.entries(provider.partitions).find(([country]) => country === location.countryCode)?.[1];
         return Boolean(partition && ["ok", "partial"].includes(partition.status));
       }
-      return expandedCheckIsCurrent("expandedCoverage" in provider ? provider.expandedCoverage : undefined,
-        location.id, providerRegistry[providerId].cadenceMinutes, now);
+      return false;
     }));
 }

@@ -68,16 +68,19 @@ describe("map presentation", () => {
   });
 
   it("shows all alert levels by default, without quiet or unavailable markers", () => {
-    for (const level of ["ELEVATED", "HIGH", "SEVERE"] as const) expect(locationAppearsOnMap(level, false)).toBe(true);
-    for (const level of ["UNKNOWN", "NORMAL"] as const) expect(locationAppearsOnMap(level, false)).toBe(false);
+    for (const level of ["ELEVATED", "HIGH", "SEVERE"] as const) expect(locationAppearsOnMap({ level, coverage: "complete" }, false)).toBe(true);
+    for (const level of ["UNKNOWN", "NORMAL"] as const) expect(locationAppearsOnMap({ level, coverage: "complete" }, false)).toBe(false);
   });
 
   it("keeps filters exclusive and searched destinations visible under every filter", () => {
     for (const level of ["NORMAL", "UNKNOWN", "ELEVATED", "HIGH", "SEVERE"] as const) {
-      expect(locationAppearsOnMap(level, false, "high")).toBe(level === "HIGH" || level === "SEVERE");
-      expect(locationAppearsOnMap(level, false, "unavailable")).toBe(level === "UNKNOWN");
-      for (const filter of ["all", "high", "unavailable"] as const) expect(locationAppearsOnMap(level, true, filter)).toBe(true);
+      const state = { level, coverage: level === "UNKNOWN" ? "delayed" as const : "complete" as const };
+      expect(locationAppearsOnMap(state, false, "high")).toBe(level === "HIGH" || level === "SEVERE");
+      expect(locationAppearsOnMap(state, false, "unavailable")).toBe(level === "UNKNOWN");
+      for (const filter of ["all", "high", "unavailable"] as const) expect(locationAppearsOnMap(state, true, filter)).toBe(true);
     }
+    expect(locationAppearsOnMap({ level: "NORMAL", coverage: "delayed" }, false, "unavailable")).toBe(true);
+    expect(locationAppearsOnMap({ level: "UNKNOWN", coverage: "partial" }, false, "unavailable")).toBe(false);
   });
 
   it("counts destinations once, not hazards or evidence links, with production-like elevated-only data", () => {

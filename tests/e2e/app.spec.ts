@@ -279,7 +279,7 @@ test("shows issue-first coverage for Budapest and reveals successful checks", as
   await expect(panel.getByText("Weather", { exact: true }).first()).toBeHidden();
   await expect(panel.getByText("Air quality", { exact: true }).first()).toBeVisible();
   await expect(panel.getByText("Earthquakes", { exact: true })).toBeHidden();
-  await expect(panel.getByText("Additional context sources (7)")).toBeVisible();
+  await expect(panel.getByText("Additional context sources (8)")).toBeVisible();
   await expect(panel.getByText("Copernicus Global Flood Monitoring", { exact: true })).toBeHidden();
   const issueCopySize = await panel.getByText(/Official flood warnings and Copernicus-mapped emergencies/)
     .evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize));
@@ -294,6 +294,7 @@ test("shows issue-first coverage for Budapest and reveals successful checks", as
   await expect(panel.getByText("European Environment Agency", { exact: true })).toBeVisible();
   await expect(panel.getByRole("link", { name: /Official provider site/ }).first()).toBeVisible();
   await panel.getByText(/Additional context sources/).click();
+  await expect(panel.getByText("Copernicus EMS Rapid Mapping", { exact: true })).toBeVisible();
   await expect(panel.getByText("These sources may add useful evidence, but they cannot make monitoring complete.")).toBeVisible();
   await expect(panel.getByText("Copernicus Global Flood Monitoring", { exact: true })).toBeVisible();
   await expect(panel.getByRole("link", { name: /Official provider site/ }).last()).toHaveAttribute("target", "_blank");
@@ -309,7 +310,7 @@ test("partial weather delivery preserves monitoring counts and exposes the provi
   await selectDestination(page, "Budapest", /Budapest/);
   const panel = destinationDetails(page);
   await expect(panel.getByText("Monitoring coverage:", { exact: true }).locator("..")).toContainText("2 monitored · 4 partly monitored · 2 unavailable");
-  await expect(panel.getByRole("heading", { name: "Update problems" })).toHaveCount(0);
+  await expect(panel.getByRole("heading", { name: "Checks delayed" })).toHaveCount(0);
   await panel.getByText("Monitored (2)").click();
   await panel.getByText("Weather", { exact: true }).click();
   const weather = panel.locator('details[data-status="available"]').filter({ has: page.getByText("Weather", { exact: true }) });
@@ -325,16 +326,16 @@ test("scopes delayed MeteoAlarm coverage to the affected destination country", a
   await selectDestination(page, "Budapest", /Budapest/);
   const budapest = destinationDetails(page);
   await expect(budapest.getByText("Weather", { exact: true })).toBeVisible();
-  await expect(budapest.getByRole("heading", { name: "Update problems" })).toBeVisible();
+  await expect(budapest.getByRole("heading", { name: "Checks delayed" })).toBeVisible();
   await expect(budapest.getByText("Partly monitored — update delayed", { exact: true }).first()).toBeVisible();
-  await expect(budapest.getByText(/Some updates delayed/)).toBeVisible();
+  await expect(budapest.getByText(/Some checks delayed/)).toBeVisible();
   await expect(budapest.getByText("This source is normally checked, but its latest Budapest update is late.").first()).toBeVisible();
   await page.getByRole("button", { name: "Close destination details" }).click();
 
   await selectDestination(page, "Vienna", /Vienna/);
   const vienna = destinationDetails(page);
   await expect(vienna.getByText("This source is normally checked, but its latest Vienna update is late.")).toHaveCount(0);
-  await expect(vienna.getByRole("heading", { name: "Update problems" })).toHaveCount(0);
+  await expect(vienna.getByRole("heading", { name: "Checks delayed" })).toHaveCount(0);
 });
 
 test("uses the dedicated desktop briefing column for normal and active-alert destinations", async ({ page }, testInfo) => {
@@ -373,7 +374,7 @@ test("explains unavailable data once without a duplicate empty-state card", asyn
   await page.goto("/");
   await selectDestination(page, "Linz", /Linz/);
   const panel = destinationDetails(page);
-  await expect(panel.getByText(/Updates unavailable$/)).toHaveCount(1);
+  await expect(panel.getByText(/Checks delayed$/)).toHaveCount(1);
   await expect(panel.getByText("Check official local sources before relying on this result.")).toHaveCount(1);
   await expect(panel.getByText(/Current information could not be confirmed/i)).toHaveCount(0);
   await expect(panel.getByText("This can happen when a monitored source is delayed, incomplete, or unavailable.")).toHaveCount(0);

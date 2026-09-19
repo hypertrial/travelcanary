@@ -5,7 +5,7 @@ import { catalog3CoverageTarget, coverageMeetsCatalog3Target } from "../src/lib/
 import { ConditionsV3Schema, SnapshotV11Schema } from "../src/lib/domain/catalog-public";
 import { mapConcurrent } from "../src/lib/ingestion/fetch";
 import { nationalWarningManifest } from "../src/lib/national-warning-sources";
-import { HttpPublicationStore, requiredTransportFailures } from "../src/lib/public-health";
+import { HttpPublicationStore, requiredLifeSafetyTransportFailures, requiredTransportFailures } from "../src/lib/public-health";
 import { publicationSha256, readCurrentPublication, readPublishedObject } from "../src/lib/publication-store";
 import { measureCoverage } from "./coverage-measurement";
 
@@ -140,12 +140,20 @@ export async function verifyProduction(options: VerifyProductionOptions = {}): P
     });
     metrics.conditionsCountries = conditions.length;
     if (conditions.length !== 45) blockers.push({ code: "conditions_incomplete", message: `Manifest contains ${conditions.length}/45 country payloads` });
+    const degradedConditionSources = [...new Set(conditions.flatMap((file) => Object.entries(file.sourceHealth)
+      .filter(([, health]) => health?.status === "partial" || health?.status === "failed")
+      .map(([sourceId]) => sourceId)))].sort();
+    if (degradedConditionSources.length) warnings.push({ code: "conditions_source_degradation",
+      message: `${degradedConditionSources.length} reviewed conditions sources report incomplete updates: ${degradedConditionSources.slice(0, 8).join(", ")}${degradedConditionSources.length > 8 ? ", …" : ""}` });
     const age = now.getTime() - Date.parse(snapshot.generatedAt);
     if (age > 120 * 60_000 || age < -5 * 60_000) blockers.push({ code: "snapshot_stale", message: "Snapshot freshness is outside the release contract" });
     metrics.coverageMeasurement = measureCoverage(snapshot, catalogLocationsV3, now);
     if (!coverageMeetsCatalog3Target(metrics.coverageMeasurement)) blockers.push({ code: "coverage_capability_regression", message: "Catalog 3 coverage is below the release floors" });
     const transports = requiredTransportFailures(snapshot, catalogLocationsV3, now);
-    if (transports.length) warnings.push({ code: "source_degradation", message: `${transports.length} reviewed coverage paths are currently degraded` });
+    const lifeSafetyTransports = requiredLifeSafetyTransportFailures(snapshot, catalogLocationsV3, now);
+    if (lifeSafetyTransports.length) blockers.push({ code: "life_safety_monitoring_delayed", message: `${lifeSafetyTransports.length} required life-safety monitoring paths are delayed` });
+    const otherTransports = transports.filter((failure) => !lifeSafetyTransports.includes(failure));
+    if (otherTransports.length) warnings.push({ code: "source_degradation", message: `${otherTransports.length} reviewed non-life-safety coverage paths are currently degraded` });
     const unauthorized = activeUnauthorizedTransports(snapshot);
     if (unauthorized.length) blockers.push({ code: "unauthorized_transport_active", message: `Unauthorized runtime transports: ${unauthorized.slice(0, 8).join(", ")}` });
   } catch (error) {

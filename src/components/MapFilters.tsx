@@ -7,7 +7,7 @@ import styles from "./MapFilters.module.css";
 const filters: { id: MapFilter; label: string }[] = [
   { id: "all", label: "All alerts" },
   { id: "high", label: "High & Severe" },
-  { id: "unavailable", label: "Updates unavailable" },
+  { id: "unavailable", label: "Checks delayed" },
 ];
 
 export function MapFilters({ filter, counts, onChange, compact = false }: {
@@ -28,7 +28,7 @@ export function MapFilters({ filter, counts, onChange, compact = false }: {
       <Button className={styles.compactTrigger} onPress={() => setOpen(true)} aria-label={`Map filter: ${active.label}, ${counts ? counts[filter] : "count unavailable"}. Change filter.`}><UiIcon name="attention" /><span>{active.label} · {counts ? counts[filter] : "—"}</span><UiIcon name="chevron" /></Button>
       <ModalOverlay isOpen={open} onOpenChange={setOpen} isDismissable className={styles.overlay}><Modal className={styles.modal}><Dialog className={styles.dialog} aria-label="Choose map filter">{({ close }) => <>
         <div className={styles.modalHeading}><div><Heading slot="title">Choose what the map shows</Heading><p>Counts are destinations, not incidents.</p></div><Button slot="close" className={styles.close} aria-label="Close map filters"><UiIcon name="close" /></Button></div>
-        <div className={styles.mobileOptions}>{filters.map(({ id, label }) => <button key={id} type="button" aria-pressed={filter === id} onClick={() => { onChange(id); close(); }}><span><strong>{label}</strong><small>{id === "all" ? "Be aware, High, and Severe" : id === "high" ? "The strongest current alerts" : "Places without confirmed updates"}</small></span><b>{counts ? counts[id] : "—"}</b></button>)}</div>
+        <div className={styles.mobileOptions}>{filters.map(({ id, label }) => <button key={id} type="button" aria-pressed={filter === id} onClick={() => { onChange(id); close(); }}><span><strong>{label}</strong><small>{id === "all" ? "Be aware, High, and Severe" : id === "high" ? "The strongest current alerts" : "Places with one or more delayed checks"}</small></span><b>{counts ? counts[id] : "—"}</b></button>)}</div>
       </>}</Dialog></Modal></ModalOverlay>
     </div>;
   }
@@ -53,12 +53,12 @@ export function MapFilters({ filter, counts, onChange, compact = false }: {
       {counts && counts[filter] === 0 && <p>
         {filter === "high" ? "No High or Severe alerts found in checked sources."
           : filter === "all" ? "No alerts found in checked sources. Monitoring may be incomplete."
-            : "No destinations have updates unavailable."}
+            : "No destinations have delayed checks."}
         {filter === "high" && counts.elevated > 0 && <button type="button" onClick={() => recover("all")}>
           Show {counts.elevated} Be aware destinations
         </button>}
         {filter !== "unavailable" && counts.unavailable > 0 && <button type="button" onClick={() => recover("unavailable")}>
-          Show {counts.unavailable} destinations with updates unavailable
+          Show {counts.unavailable} destinations with delayed checks
         </button>}
       </p>}
     </div>

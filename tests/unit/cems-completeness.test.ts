@@ -17,48 +17,120 @@ function polygon(offset = 0) {
 }
 const detail = (overrides: Record<string, unknown> = {}) => ({ extent: polygon(), category: "Wildfire", lastUpdate: "2026-09-08T11:00:00Z", eventTime: "2026-09-08T09:00:00Z", countries: [{ name: "Austria" }], ...overrides });
 
-async function run(results: unknown[], metadata: Record<string, unknown> = {}, details: Record<string, unknown[]> = {}, checkedAt = now) {
+async function run(results: unknown[] | unknown[][], metadata: Record<string, unknown> = {}, details: Record<string, unknown[]> = {}, checkedAt = now) {
+  const pages = Array.isArray(results[0]) ? results as unknown[][] : [results as unknown[]];
+  const total = pages.reduce((sum, page) => sum + page.length, 0);
   const requested: URL[] = [];
   const fetchMock = vi.fn<typeof fetch>().mockImplementation(async (input) => {
     const url = new URL(String(input)); requested.push(url);
-    if (url.pathname.endsWith("/public-activations-info/")) return Response.json({ results, ...metadata });
+    if (url.pathname.endsWith("/public-activations-info/")) {
+      const page = Number(url.searchParams.get("offset")) / 100;
+      const rows = pages[page] || [];
+      const generatedNext = page < pages.length - 1
+        ? `https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations-info/?limit=100&offset=${(page + 1) * 100}` : null;
+      return Response.json({ results: rows, ...(pages.length > 1 ? { count: total } : {}), ...(page === 0 ? metadata : {}),
+        next: generatedNext ?? (page === 0 ? metadata.next : null) });
+    }
     return Response.json({ results: details[url.searchParams.get("code")!] || [] });
   });
   const result = await new CemsAdapter().fetch({ now: checkedAt, locations: [destination], fetch: fetchMock });
   const lists = requested.filter(({ pathname }) => pathname.endsWith("/public-activations-info/"));
-  expect(lists).toHaveLength(1);
   expect(lists[0].searchParams.get("limit")).toBe("100");
   expect(lists[0].searchParams.get("offset")).toBe("0");
-  expect(requested.some((url) => url.href === next)).toBe(false);
   return { result, requested };
 }
 
 describe("CEMS bounded list completeness", () => {
-  it.each([99, 100])("classifies %i valid first-page rows conservatively", async (count) => {
+  it.each([99, 100])("accepts %i rows when the advertised list is complete", async (count) => {
     const { result, requested } = await run(unrelated(count), { count, next: null });
-    expect(result.status).toBe(count === 99 ? "ok" : "partial");
+    expect(result.status).toBe("ok");
     expect(result.events).toEqual([]);
     expect(requested).toHaveLength(1);
-    if (count === 100) expect(result.error).toBeTruthy();
   });
 
-  it("does not parse or apply a closure beyond the first100 rows", async () => {
-    const { result, requested } = await run([...unrelated(100), activation("BEYOND", { closed: true })]);
-    expect(result.removedEventPrefixes).not.toContain("cems:BEYOND");
+  it("paginates and applies a closure beyond the first 100 rows", async () => {
+    const { result, requested } = await run([unrelated(100), [activation("BEYOND", { closed: true })]]);
+    expect(result.removedEventPrefixes).toContain("cems:BEYOND");
+    expect(result.status).toBe("ok");
+    expect(requested.filter(({ pathname }) => pathname.endsWith("/public-activations-info/"))).toHaveLength(2);
+    expect(requested.some((url) => url.href === next)).toBe(true);
+  });
+
+  it("stops after five pages and reports a larger provider list as partial", async () => {
+    const pages = Array.from({ length: 6 }, (_, page) => unrelated(100).map((item, index) => ({
+      ...item, code: `OTHER-${page}-${index}`,
+    })));
+    const { result, requested } = await run(pages);
+    expect(result).toMatchObject({ status: "partial", events: [] });
+    expect(requested.filter(({ pathname }) => pathname.endsWith("/public-activations-info/"))).toHaveLength(5);
+  });
+
+  it("deduplicates activation codes by newest update before fetching one detail", async () => {
+    const older = activation("DUPLICATE", { lastUpdate: "2026-09-08T10:00:00Z" });
+    const newer = activation("DUPLICATE", { lastUpdate: "2026-09-08T11:30:00Z" });
+    const { result, requested } = await run([[older, ...unrelated(99)], [newer]], {}, { DUPLICATE: [detail({ lastUpdate: newer.lastUpdate })] });
+    expect(result.events).toHaveLength(1);
+    expect(result.events[0]).toMatchObject({ id: "cems:DUPLICATE", sourceUpdatedAt: "2026-09-08T11:30:00.000Z" });
+    expect(requested.filter((url) => url.pathname.endsWith("/public-activations/")
+      && url.searchParams.get("code") === "DUPLICATE")).toHaveLength(1);
+  });
+
+  it("caps detail work at the newest 100 supported activations", async () => {
+    const rows = Array.from({ length: 101 }, (_, index) => activation(`SUPPORTED-${String(index).padStart(3, "0")}`, {
+      lastUpdate: new Date(now.getTime() - index * 1000).toISOString(),
+    }));
+    const details = Object.fromEntries(rows.map(({ code, lastUpdate }) => [code, [detail({ lastUpdate })]]));
+    const { result, requested } = await run([rows.slice(0, 100), rows.slice(100)], {}, details);
     expect(result.status).toBe("partial");
-    expect(requested).toHaveLength(1);
+    expect(result.error).toMatch(/detail limit/);
+    expect(requested.filter(({ pathname }) => pathname.endsWith("/public-activations/"))).toHaveLength(100);
+    expect(result.events).toHaveLength(100);
   });
 
   it.each([{ next }, { count: 2, next: null }, { next: "https://untrusted.example/next" }])("does not grant completeness to a short page with %j", async (metadata) => {
     const { result, requested } = await run(unrelated(1), metadata);
     expect(result.status).toBe("partial");
     expect(result.error).toBeTruthy();
+    expect(requested).toHaveLength(metadata.next === next ? 2 : 1);
+  });
+
+  it.each([
+    "https://user:password@rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations-info/?limit=100&offset=100",
+    "https://rapidmapping.emergency.copernicus.eu/backend/dashboard-api/public-activations-info/?limit=100&offset=100#page",
+  ])("rejects credentials and fragments in a pagination link", async (nextUrl) => {
+    const { result, requested } = await run(unrelated(1), { count: 2, next: nextUrl });
+    expect(result).toMatchObject({ status: "partial", error: expect.stringContaining("incomplete") });
     expect(requested).toHaveLength(1);
+  });
+
+  it("does not follow list redirects outside the reviewed endpoint", async () => {
+    const fetchMock = vi.fn<typeof fetch>(async (input, init) => {
+      expect(new URL(String(input)).origin).toBe("https://rapidmapping.emergency.copernicus.eu");
+      expect(init?.redirect).toBe("manual");
+      return new Response(null, { status: 302, headers: { location: "http://169.254.169.254/latest/meta-data" } });
+    });
+    const result = await new CemsAdapter().fetch({ now, locations: [destination], fetch: fetchMock });
+    expect(result).toMatchObject({ status: "failed", events: [], error: expect.stringContaining("redirect") });
+  });
+
+  it("does not follow detail redirects outside the reviewed endpoint", async () => {
+    const fetchMock = vi.fn<typeof fetch>(async (input, init) => {
+      const url = new URL(String(input));
+      expect(url.origin).toBe("https://rapidmapping.emergency.copernicus.eu");
+      expect(init?.redirect).toBe("manual");
+      if (url.pathname.endsWith("/public-activations-info/")) {
+        return Response.json({ count: 1, next: null, results: [activation("REDIRECT")] });
+      }
+      return new Response(null, { status: 302, headers: { location: "http://169.254.169.254/latest/meta-data" } });
+    });
+    const result = await new CemsAdapter().fetch({ now, locations: [destination], fetch: fetchMock });
+    expect(result).toMatchObject({ status: "failed", events: [] });
   });
 
   it("preserves metadata-free under-cap response compatibility", async () => {
     expect((await run(unrelated(99))).result.status).toBe("ok");
     expect((await run([])).result.status).toBe("ok");
+    expect((await run(unrelated(100))).result.status).toBe("partial");
   });
 
   it.each([{ count: "1" }, { count: -1 }, { count: 1.5 }, { count: 0 }, { next: 42 }, { next: false }])("treats invalid completeness metadata conservatively: %j", async (metadata) => {
@@ -136,9 +208,9 @@ describe("CEMS bounded list completeness", () => {
     expect(mergeSourceResults(state, [omitted], at(3)).events).toEqual([unrelatedEvent]);
   });
 
-  it("keeps all relevant detail failures failed even when the list is incomplete", async () => {
+  it("reports incomplete-list detail failures as partial rather than clearing evidence", async () => {
     const { result, requested } = await run([activation("MISSING")], { next, count: 2 });
-    expect(result).toMatchObject({ status: "failed", events: [] });
-    expect(requested).toHaveLength(2);
+    expect(result).toMatchObject({ status: "partial", events: [] });
+    expect(requested).toHaveLength(3);
   });
 });

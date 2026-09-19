@@ -20,7 +20,7 @@ function AttentionList({
       <span className={styles.overlayIcon}><UiIcon name="attention" /></span>
       <div><Heading slot="title">Destinations needing attention</Heading><p>Prioritized by the action a traveler may need to take.</p></div>
     </div>
-    {presentation.globalUnavailable ? <div className={styles.attentionEmpty} data-tone="unavailable"><span aria-hidden="true">?</span><h3>{presentation.total ? "Updates unavailable" : "Destinations unavailable"}</h3><p>{presentation.total ? `Current alerts could not be confirmed for ${presentation.total} destinations. Search a place to open its briefing, or check official local sources.` : "The destination list could not be loaded. Retry or check official local sources."}</p></div> : presentation.total > 0 ? <div className={styles.attentionGroups}>{presentation.groups.map((group) => <section key={group.key} aria-labelledby={`attention-${group.key}`}>
+    {presentation.globalUnavailable ? <div className={styles.attentionEmpty} data-tone="unavailable"><span aria-hidden="true">?</span><h3>{presentation.total ? "Live updates unavailable" : "Destinations unavailable"}</h3><p>{presentation.total ? `Current alerts could not be confirmed for ${presentation.total} destinations. Search a place to open its briefing, or check official local sources.` : "The destination list could not be loaded. Retry or check official local sources."}</p></div> : presentation.total > 0 ? <div className={styles.attentionGroups}>{presentation.groups.map((group) => <section key={group.key} aria-labelledby={`attention-${group.key}`}>
       <h3 id={`attention-${group.key}`}><span>{group.label}</span><span>{group.items.length}</span></h3>
       <ul className={styles.attentionList}>{group.items.map(({ location, state }) => <li key={location.id}>
         <button type="button" onClick={() => {
@@ -91,7 +91,7 @@ export function AttentionTray({
 function MapKeyBody() {
   return <>
     <Heading slot="title">Map key</Heading>
-    <p className={styles.legendIntro}>All alerts shows Be aware, Consider changing plans, and Emergency conditions destinations. Use High &amp; Severe to focus on the strongest alerts, or Updates unavailable for places without confirmed updates. Counts are destinations, not incidents. Search and the attention list still reach every place; a searched place appears regardless of the filter.</p>
+    <p className={styles.legendIntro}>All alerts shows Be aware, Consider changing plans, and Emergency conditions destinations. Use High &amp; Severe to focus on the strongest alerts, or Checks delayed for places with late source checks. Counts are destinations, not incidents. Search and the attention list still reach every place; a searched place appears regardless of the filter.</p>
     <ul>
       <li>
         <span className={styles.legendLand} data-coverage="covered" aria-hidden="true" />

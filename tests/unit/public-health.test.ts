@@ -34,6 +34,7 @@ describe("atomic publication health", () => {
         conditions: { status: "ok", expected: 45, present: 45 }, coverage: { status: "ok" } },
       coverage: { applicable: 11_799, fullyChecked: 2_867, partlyChecked: 2_877, notChecked: 6_055,
         tiers: { lifeSafety: { applicable: 7_237, fullyChecked: 2_853, partlyChecked: 2_226, notChecked: 2_158 } } } });
+    expect(result.checks.transports.failed.every((failure) => !failure.includes("cems"))).toBe(true);
   });
 
   it("returns unavailable for a missing pointer, manifest, object, or producer mismatch", async () => {

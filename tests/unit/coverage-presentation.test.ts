@@ -99,6 +99,17 @@ describe("location coverage presentation", () => {
     expect(result.contextProviders.find(({ id }) => id === "effis-active-fire")).toMatchObject({ name: "EFFIS / NASA FIRMS active fire" });
   });
 
+  it("reserves live-update unavailability for a missing publication", () => {
+    const snapshot = buildSnapshot(healthyState(), now);
+    const location = locations.find(({ id }) => id === "hu-budapest")!;
+    const result = locationCoveragePresentation({ location, state: snapshot.locations[location.id], snapshot: null, now });
+    expect(result.freshness).toEqual({
+      status: "unavailable",
+      visibleLabel: "Live updates unavailable",
+      accessibleLabel: "Live updates unavailable. Last check time unavailable.",
+    });
+  });
+
   it("does not label inland destinations as coastal", () => {
     const landlocked = new Set(["AT", "CZ", "HU", "LU", "SK", "CH"]);
     expect(locations.filter((location) => location.type === "coastal" && !location.isCoastal)).toEqual([]);
@@ -125,30 +136,26 @@ describe("location coverage presentation", () => {
     expect(presentation(snapshot, "at-vienna").categories.find(({ key }) => key === "weather")?.status).toBe("available");
   });
 
-  it("shows Bydgoszcz's late IMGW partition only under flooding while permanent gaps remain gaps", () => {
+  it("does not show Bydgoszcz delayed while MeteoAlarm still covers IMGW's late flood path", () => {
     const state = healthyState();
     state.sourcePartitions.nationalCivilAlerts.PL = {
       ...healthySource("national-civil-alerts"), status: "delayed", consecutiveFailures: 2, error: "IMGW delayed",
     };
     const snapshot = buildSnapshot(state, now);
     expect(snapshot.locations["pl-bydgoszcz"]).toMatchObject({
-      coverage: "delayed",
+      coverage: "partial",
       coverageGaps: expect.arrayContaining(["flood", "wildfire", "civil-emergency"]),
-      delayedHazards: ["flood"],
+      delayedHazards: [],
     });
     const result = presentation(snapshot, "pl-bydgoszcz");
-    expect(result.delayed.map(({ key }) => key)).toEqual(["flood-coastal"]);
-    expect(result.delayed[0].subchecks.map(({ hazard }) => hazard)).toEqual(["flood"]);
-    expect(result.delayed[0].providers.map(({ id }) => id)).toEqual(["national-civil-alerts"]);
+    expect(result.delayed).toEqual([]);
     expect(result.gaps.map(({ key }) => key)).toEqual(expect.arrayContaining(["fire", "major-emergencies"]));
     expect(result.categories.find(({ key }) => key === "fire")).toMatchObject({ freshnessStatus: "current" });
     expect(result.categories.find(({ key }) => key === "major-emergencies")).toMatchObject({ freshnessStatus: "current" });
 
-    snapshot.providers["national-civil-alerts"].partitions!.PL.status = "partial";
-    const partialResult = presentation(snapshot, "pl-bydgoszcz");
-    expect(partialResult.delayed[0].providers).toEqual([
-      expect.objectContaining({ id: "national-civil-alerts", status: "delayed", statusLabel: "Partly monitored — update delayed" }),
-    ]);
+    expect(result.categories.find(({ key }) => key === "flood-coastal")).toMatchObject({
+      status: "limited", providers: expect.arrayContaining([expect.objectContaining({ id: "meteoalarm", status: "available" })]),
+    });
   });
 
   it("keeps a checked destination current after a sibling makes its partition delayed", () => {
@@ -185,9 +192,10 @@ describe("location coverage presentation", () => {
     expect(flood("fr-paris")).toMatchObject({
       status: "limited", providers: expect.arrayContaining([expect.objectContaining({ id: "vigicrues", status: "available" })]),
     });
-    expect(flood("fr-lyon")).toMatchObject({
-      status: "delayed", providers: expect.arrayContaining([expect.objectContaining({ id: "vigicrues", status: "delayed" })]),
-    });
+    expect(flood("fr-lyon")).toMatchObject({ status: "limited", providers: expect.arrayContaining([
+      expect.objectContaining({ id: "meteoalarm", status: "available" }),
+      expect.objectContaining({ id: "vigicrues", status: "available" }),
+    ]) });
   });
 
   it("preserves aggregate delivery limitations on older snapshots without changing permanent coverage", () => {
@@ -264,7 +272,7 @@ describe("location coverage presentation", () => {
     expect(result.categories.find(({ key }) => key === "security-conflict")?.status).toBe("not_monitored");
     expect(result.delayed.map(({ key }) => key)).toContain("earthquake");
     expect(result.freshness.status).toBe("delayed");
-    expect(result.freshness.visibleLabel).toBe("Some updates delayed · last updated 31 min ago");
+    expect(result.freshness.visibleLabel).toBe("Some checks delayed · last updated 31 min ago");
   });
 
   it("includes fire danger only for applicable outdoor locations", () => {
@@ -348,7 +356,7 @@ describe("location coverage presentation", () => {
     expect(result.categories.find(({ key }) => key === "security-conflict")?.status).toBe("not_monitored");
   });
 
-  it("does not treat a newly enabled Austrian source as unmonitored before its first live check", () => {
+  it("treats an active Austrian life-safety source as delayed before its first live check", () => {
     const state = healthyState();
     const empty = createEmptyState(now);
     state.sourcePartitions.nationalCivilAlerts.AT = empty.sourcePartitions.nationalCivilAlerts.AT;
@@ -357,10 +365,9 @@ describe("location coverage presentation", () => {
     const snapshot = buildSnapshot(state, now);
     const result = presentation(snapshot, "at-vienna");
     expect(result.categories.find(({ key }) => key === "major-emergencies")).toMatchObject({
-      status: "limited", coverageStatus: "limited", freshnessStatus: "current",
+      status: "delayed", coverageStatus: "limited", freshnessStatus: "delayed",
     });
-    expect(result.delayed.map(({ key }) => key)).not.toContain("major-emergencies");
-    expect(result.gaps.map(({ key }) => key)).toContain("major-emergencies");
+    expect(result.delayed.map(({ key }) => key)).toContain("major-emergencies");
     expect(result.categories.find(({ key }) => key === "major-emergencies")?.providers.find(({ id }) => id === "national-civil-alerts")).toMatchObject({
       name: "AT-Alert", status: "delayed",
     });

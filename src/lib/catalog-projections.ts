@@ -2,15 +2,15 @@ import { catalog3ConditionsCountryLimit } from "./conditions/publication-budget"
 import { serializeCatalog3Conditions } from "./conditions/serialization";
 import { catalogLocationsV3 } from "./catalog-data";
 import { expandedDelayedHazards } from "./expanded-source-health";
-import { expandedHazardCoverage, expandedProviderApplies, expandedProviderIds, type ExpandedProviderId } from "./expanded-coverage";
-import { sourceHazards } from "./risk-policy";
+import { expandedCoverageProviderIds, expandedHazardCoverage, expandedProviderApplies, expandedProviderIds, type ExpandedProviderId } from "./expanded-coverage";
+import { delayedHazardsRequireUnknown, sourceHazards } from "./risk-policy";
 import { eventIsPublishable } from "./hazard-lifecycle";
 import { clusterPublicHazards, projectCoreSnapshot } from "./risk-snapshot";
 import { HazardTypeSchema, countryCodes, providerIdForSourceId, type SourceHealth } from "./domain/schemas";
 import { catalogV3CountryCodes } from "./domain/contract-identities";
 import type { IngestionStateV15, IngestionStateV16 } from "./domain/catalog-state";
 import { SnapshotV11Schema, ConditionsV3Schema } from "./domain/catalog-public";
-import { conditionAttribution, conditionSourceEnabled } from "./conditions/sources";
+import { conditionAttribution, conditionSourceEnabled, metNorwayAppliesToCatalog3Country } from "./conditions/sources";
 import { marineConditionEligible } from "./conditions/marine";
 import { currentConditions } from "./conditions/presentation";
 import { conditionRecords, conditionSourceAppliesToCountry, CONDITIONS_TOTAL_LIMIT, emptyConditions } from "./domain/conditions";
@@ -19,7 +19,7 @@ import { nationalWarningManifest, type NationalWarningSystem } from "./national-
 import { providerRegistry, publicProviderPartitionState } from "./provider-registry";
 
 const legacyCountries = new Set<string>(countryCodes);
-const forecastHealthSources = new Set(["open-meteo-weather", "open-meteo-air", "open-meteo-marine", "met-norway"]);
+const forecastHealthSources = new Set(["open-meteo-weather", "open-meteo-air", "open-meteo-marine"]);
 const addedCountries = catalogV3CountryCodes.filter((code) => !legacyCountries.has(code));
 const addedLocations = catalogLocationsV3.filter(({ countryCode }) => !legacyCountries.has(countryCode));
 type ProjectionState = IngestionStateV15 | IngestionStateV16;
@@ -57,6 +57,25 @@ export function buildCatalog3Snapshot(state: ProjectionState, now = new Date()) 
       checkedLocationIds: receipt.checkedLocationIds.slice(),
       unavailableLocationIds: receipt.unavailableLocationIds.slice(),
     };
+  }
+  for (const [sourceId, receipt] of Object.entries(state.collectionReceipts[3])) {
+    if (!receipt) continue;
+    const providerId = providerIdForSourceId(sourceId as Parameters<typeof providerIdForSourceId>[0]);
+    if (!(expandedCoverageProviderIds as readonly string[]).includes(providerId) || (expandedProviderIds as readonly string[]).includes(providerId)) continue;
+    const scope = addedLocations.filter((location) => expandedProviderApplies(providerId, location)).map(({ id }) => id);
+    if (!scope.length) continue;
+    const expected = new Set(scope);
+    const checkedLocationIds = receipt.status === "disabled"
+      ? []
+      : receipt.checkedLocationIds.filter((id) => expected.has(id)).sort();
+    const checked = new Set(checkedLocationIds);
+    // A partial receipt must fail closed for every reviewed destination that it
+    // did not positively classify. Publishing only the receipt's explicit
+    // unavailable list would leave the rest of the reviewed scope ambiguous.
+    const unavailableLocationIds = scope.filter((id) => !checked.has(id)).sort();
+    const status = checkedLocationIds.length === scope.length ? "ok" as const
+      : checkedLocationIds.length ? "partial" as const : receipt.status === "disabled" ? "disabled" as const : "failed" as const;
+    snapshot.providers[providerId].expandedCoverage = { status, checkedAt: receipt.checkedAt, checkedLocationIds, unavailableLocationIds };
   }
   const transportState = (health: SourceHealth | undefined, system: NationalWarningSystem, fallback: ReturnType<typeof publicProviderPartitionState>["status"]) => {
     const authorized = system.status === "active" || system.status === "credential_gated" && Boolean(health && health.status !== "not_monitored");
@@ -110,7 +129,7 @@ export function buildCatalog3Snapshot(state: ProjectionState, now = new Date()) 
     const delayedHazards = expandedDelayedHazards(location, snapshot.providers, now);
     const common = { coverage: delayedHazards.length ? "delayed" as const : "partial" as const, coverageGaps, delayedHazards, hazards };
     snapshot.locations[location.id] = hazards.length ? { ...common, level: hazards[0].level, timing: hazards[0].timing }
-      : delayedHazards.length ? { ...common, level: "UNKNOWN", hazards: [] } : { ...common, level: "NORMAL", hazards: [] };
+      : delayedHazardsRequireUnknown(delayedHazards) ? { ...common, level: "UNKNOWN", hazards: [] } : { ...common, level: "NORMAL", hazards: [] };
   }
   if (snapshot.dataHealth === "complete" && addedLocations.some(({ id }) => snapshot.locations[id].coverage === "delayed"
     || ("updatePending" in snapshot.locations[id] && snapshot.locations[id].updatePending))) snapshot.dataHealth = "delayed";
@@ -132,10 +151,11 @@ export function buildCatalog3Conditions(state: ProjectionState, now: Date, env: 
       const marineEligible = marineConditionEligible(location.id, 3);
       if (added && marineEligible && raw.marine?.sourceId === "open-meteo-marine") allowed.marine = raw.marine;
       const data = currentConditions(allowed, now, enabled);
-      const anyEnabled = enabled("open-meteo-weather") || enabled("open-meteo-air") || (marineEligible && enabled("open-meteo-marine"));
+      const weatherEnabled = enabled("open-meteo-weather") || enabled("met-norway") && metNorwayAppliesToCatalog3Country(location.countryCode);
+      const anyEnabled = weatherEnabled || enabled("open-meteo-air") || (marineEligible && enabled("open-meteo-marine"));
       data.limitations = conditionRecords(data).length ? [] : [anyEnabled ? "update-pending" : "disabled"];
       if (location.isCoastal && enabled("open-meteo-marine") && !marineEligible) data.limitations.push("outside-product");
-      if (conditionRecords(data).length && ((enabled("open-meteo-weather") && !data.weather)
+      if (conditionRecords(data).length && ((weatherEnabled && !data.weather)
         || (enabled("open-meteo-air") && !data.airQuality)
         || (marineEligible && enabled("open-meteo-marine") && !data.marine))) data.limitations.push("partial-data");
       return [location.id, data];

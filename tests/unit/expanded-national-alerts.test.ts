@@ -69,6 +69,8 @@ describe("expanded direct warning transports", () => {
     const active = parseNveWarnings([warning(3, 2, "09/09/2026 09:20:00"), warning(2, 1, "09/09/2026 09:30:00")], context);
     expect(active).toMatchObject({ status: "ok", events: [{ id: "national:nve:NVE-1", level: "HIGH",
       startsAt: "2026-09-09T07:00:00.000Z", geometry: { kind: "locations", ids: ["no-oslo"] } }] });
+    expect(parseNveWarnings([warning(3, 2, "2026-09-09T09:20:54.7741575")], context).events[0].sourceUpdatedAt)
+      .toBe("2026-09-09T07:20:54.774Z");
 
     const zero = parseNveWarnings([warning(0, 1, "09/09/2026 09:20:00")], context);
     expect(zero).toMatchObject({ status: "partial", events: [], unavailableLocationIds: ["no-oslo"], limitationCode: "unassessed_activity_level" });
@@ -91,12 +93,43 @@ describe("expanded direct warning transports", () => {
     expect(String(fetchMock.mock.calls[0]?.[0])).toBe("https://api01.nve.no/hydrology/forecast/flood/v1.0.10/api/Warning/2/2026-09-09/2026-09-10");
   });
 
+  it.each([
+    ["1", "100"], ["12", "120"], ["123", "123"], ["1234", "123"],
+    ["12345", "123"], ["123456", "123"], ["1234567", "123"],
+  ])("normalizes NVE fractions with %s digits to millisecond precision", (fraction, milliseconds) => {
+    const warning = {
+      Id: `NVE-fraction-${fraction}`, MasterId: `NVE-fraction-${fraction}`, Version: 1, CapStatus: "actual", ActivityLevel: 3,
+      MunicipalityList: [{ Name: "Oslo" }], PublishTime: "09/09/2026 09:00:00",
+      LastUpdated: `2026-09-09T09:20:54.${fraction}`, ValidFrom: "09/09/2026 09:00:00",
+      ValidTo: "09/09/2026 18:00:00", MainText: "Flood warning",
+    };
+    expect(parseNveWarnings([warning], context).events[0].sourceUpdatedAt)
+      .toBe(`2026-09-09T07:20:54.${milliseconds}Z`);
+  });
+
+  it("preserves explicit NVE timestamp offsets", () => {
+    const warning = {
+      Id: "NVE-offset", MasterId: "NVE-offset", Version: 1, CapStatus: "actual", ActivityLevel: 3,
+      MunicipalityList: [{ Name: "Oslo" }], PublishTime: "2026-09-09T09:00:00+02:00",
+      LastUpdated: "2026-09-09T09:20:54.1234567+02:00", ValidFrom: "2026-09-09T09:00:00+02:00",
+      ValidTo: "2026-09-09T18:00:00+02:00", MainText: "Flood warning",
+    };
+    expect(parseNveWarnings([warning], context).events[0].sourceUpdatedAt).toBe("2026-09-09T07:20:54.123Z");
+  });
+
   it("rejects impossible NVE civil timestamps instead of normalizing them into another date", () => {
     expect(() => parseNveWarnings([{
       Id: "NVE-invalid-date", MasterId: "NVE-invalid-date", Version: 1, CapStatus: "actual", ActivityLevel: 3,
       MunicipalityList: [{ Name: "Oslo" }], PublishTime: "31/02/2026 09:00:00", LastUpdated: "31/02/2026 09:20:00",
       ValidFrom: "31/02/2026 09:00:00", ValidTo: "31/02/2026 18:00:00", MainText: "Flood warning",
     }], context)).toThrow(/timestamp is invalid/);
+    for (const value of ["2026-03-29T02:30:00.1", "2026-10-25T02:30:00.1234567"]) {
+      expect(() => parseNveWarnings([{
+        Id: "NVE-dst", MasterId: "NVE-dst", Version: 1, CapStatus: "actual", ActivityLevel: 3,
+        MunicipalityList: [{ Name: "Oslo" }], PublishTime: value, LastUpdated: value,
+        ValidFrom: value, ValidTo: "2026-10-26T12:00:00+01:00", MainText: "Flood warning",
+      }], { ...context, now: new Date("2026-11-01T12:00:00Z") })).toThrow(/timestamp is invalid/);
+    }
   });
 
   it("applies Environment Agency withdrawal and reused-ID semantics without broad-clearing retained evidence on a partial geometry refresh", () => {

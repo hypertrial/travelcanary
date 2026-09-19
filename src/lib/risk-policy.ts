@@ -20,8 +20,16 @@ export const sourceHazards = Object.fromEntries(
 ) as Partial<Record<SourceId, HazardType[]>>;
 
 export const enabledHazards = [...new Set(Object.values(sourceHazards).flat())];
+export const lifeSafetyHazards = new Set<HazardType>([
+  "severe-weather", "extreme-heat", "extreme-cold", "snow-ice", "flood", "coastal",
+  "wildfire", "fire-danger", "earthquake", "industrial", "nuclear", "civil-emergency",
+]);
 export const weatherFamily: HazardType[] = ["severe-weather", "flood", "extreme-heat", "extreme-cold", "snow-ice", "avalanche", "coastal"];
 export const outdoorLocationTypes = new Set(["resort", "island", "park", "mountain", "coastal"]);
+
+export function delayedHazardsRequireUnknown(hazards: readonly HazardType[]) {
+  return hazards.some((hazard) => lifeSafetyHazards.has(hazard));
+}
 
 export function hazardAppliesToLocation(type: HazardType, location: Pick<PublicLocation, "id" | "type" | "isCoastal">) {
   if (type === "coastal") return location.isCoastal;

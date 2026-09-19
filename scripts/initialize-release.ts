@@ -5,6 +5,7 @@ export const releaseRoutes = ["fast", "slow", "daily", "satellite", "conditions"
 const completeStatuses = new Set(["ok", "partial", "disabled"]);
 const counterKeys = ["locations", "countries", "bytes", "privateStateBytes", "cacheBytes", "durationMs", "sourceDurationMs"] as const;
 const publicationCounterKeys = ["published", "unchanged", "failed", "omittedFailures"] as const;
+const sourceCounterKeys = ["successful", "partial", "failed", "disabled"] as const;
 
 type ReleaseRoute = typeof releaseRoutes[number];
 type ReleaseResult = { route: ReleaseRoute; headStatus: number; getStatus: number; status: string; counters: Record<string, number> };
@@ -36,6 +37,12 @@ function normalizedBody(value: unknown) {
     const publication = body.publication as Record<string, unknown>;
     for (const key of publicationCounterKeys) {
       if (typeof publication[key] === "number" && Number.isFinite(publication[key]) && publication[key] >= 0) counters[`publication.${key}`] = publication[key];
+    }
+  }
+  if (body.sourceSummary && typeof body.sourceSummary === "object" && !Array.isArray(body.sourceSummary)) {
+    const summary = body.sourceSummary as Record<string, unknown>;
+    for (const key of sourceCounterKeys) {
+      if (typeof summary[key] === "number" && Number.isInteger(summary[key]) && summary[key] >= 0) counters[`sources.${key}`] = summary[key];
     }
   }
   return { status: body.status, counters };

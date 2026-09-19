@@ -80,8 +80,10 @@ describe("ingestion fencing and sanitized operation results", () => {
     expect(result.sources.usgs.error).toBe("source_failed");
     expect((await stateStore.read()).data.sources.usgs.error).toBe("transport_failed");
     const outward = publicOperationSummary({ ...result, internal: sentinel,
+      sources: { ...result.sources, "awc-metar": { status: "disabled" }, "unreviewed-source": { status: "failed" } },
       publication: { ...result.publication, error: sentinel, published: 45 } });
-    expect(outward).toMatchObject({ status: "ok", locations: 679, publication: { published: 45 } });
+    expect(outward).toMatchObject({ status: "ok", locations: 679, publication: { published: 45 },
+      sourceSummary: { successful: 0, partial: 0, failed: 1, disabled: 1 }, degradedSourceIds: ["usgs"] });
     expect(JSON.stringify(outward)).not.toMatch(/provider-secret-sentinel|provider\.example/);
   });
 });

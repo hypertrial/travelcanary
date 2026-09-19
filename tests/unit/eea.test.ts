@@ -16,16 +16,18 @@ const stations = [
   { code: "AT90TAB", operational: 1, lon: 16.380918, lat: 48.216739 },
 ];
 
-function stationFetch(options: { category?: number; modelled?: boolean; omitMap?: boolean; detailFailure?: boolean } = {}): typeof fetch {
+function stationFetch(options: { category?: number; detailCategory?: number; modelled?: boolean; omitMap?: boolean; detailFailure?: boolean } = {}): typeof fetch {
   return vi.fn(async (input) => {
     const url = String(input);
     if (url.endsWith("/content/index.json")) return Response.json({ contents: [revision] });
     if (url.endsWith(`/content/${revision}`)) return Response.json(stations);
-    if (url.includes("/map/")) return Response.json(options.omitMap ? {} : { AT9STEF: options.category ?? 4, AT9STEF_cp: 1 });
+    if (url.includes("/map/")) return Response.json(options.omitMap ? {} : {
+      AT9STEF: options.category ?? 4, AT9STEF_cp: 1, AT90TAB: 2, AT90TAB_cp: 1,
+    });
     if (url.endsWith("/current/AT9STEF.json")) {
       if (options.detailFailure) throw new Error("station detail offline");
       return Response.json({ [sourceTime.toISOString()]: {
-      aqi: options.category ?? 4, culprit: "PM10", val_PM10: 55, modelled_PM10: options.modelled ? 1 : 0,
+      aqi: options.detailCategory ?? options.category ?? 4, culprit: "PM10", val_PM10: 55, modelled_PM10: options.modelled ? 1 : 0,
       } });
     }
     throw new Error(`Unexpected URL: ${url}`);
@@ -41,6 +43,7 @@ describe("EEA observation-backed air-quality adapter", () => {
   it("validates station metadata, hourly maps, and observation provenance", () => {
     expect(parseEeaStationIndex([...stations, { code: "ATBAD", operational: 0, lon: 16, lat: 48 }]).size).toBe(2);
     expect([...parseEeaHourlyMap({ AT9STEF: 4.2, AT9STEF_cp: 1, bad: 6 }).entries()]).toEqual([["AT9STEF", 4.2]]);
+    expect([...parseEeaHourlyMap({ AT9STEF: 0, AT9STEF_cp: 1, AT90TAB: null, AT90TAB_cp: 1 }).entries()]).toEqual([]);
     const observed = { [sourceTime.toISOString()]: { aqi: 4.2, culprit: "PM10", val_PM10: 55, modelled_PM10: 0 } };
     expect(observationBackedEeaDetail(observed, sourceTime)).toEqual({ category: 4.2, pollutant: "PM10" });
     expect(observationBackedEeaDetail({ [sourceTime.toISOString()]: { ...observed[sourceTime.toISOString()], modelled_PM10: 1 } }, sourceTime)).toBeNull();
@@ -63,21 +66,34 @@ describe("EEA observation-backed air-quality adapter", () => {
     expect(result.partitions.AT).toMatchObject({ status: "partial", checkedLocationIds: [], unavailableLocationIds: ["at-vienna"], events: [] });
   });
 
-  it("does not fetch station detail for fair values and cannot infer all-clear", async () => {
-    const fetchMock = stationFetch({ category: 2 });
+  it("retains poor-air evidence when the next map is missing or its detail contradicts the poor category", async () => {
+    const adapter = new EeaAdapter();
+    const initial = await adapter.fetch({ now, locations: [vienna], fetch: stationFetch({ category: 5 }) });
+    const state = mergeSourceResults(createEmptyState(now), [initial], now);
+    for (const next of [stationFetch({ category: 0 }), stationFetch({ category: 5, detailCategory: 2 })]) {
+      const later = new Date(now.getTime() + 60 * 60_000);
+      const result = await adapter.fetch({ now: later, locations: [vienna], fetch: next });
+      expect(result.partitions.AT).toMatchObject({ checkedLocationIds: [], unavailableLocationIds: ["at-vienna"], events: [] });
+      expect(mergeSourceResults(state, [result], later).events).toEqual(state.events);
+    }
+  });
+
+  it.each([1, 2, 3])("refreshes partial coverage for normal or low category %i without inferring a destination-wide all-clear", async (category) => {
+    const fetchMock = stationFetch({ category });
     const result = await new EeaAdapter().fetch({ now, locations: [vienna], fetch: fetchMock });
-    expect(result.partitions.AT).toMatchObject({ status: "partial", checkedLocationIds: [], unavailableLocationIds: ["at-vienna"], events: [] });
+    expect(result.partitions.AT).toMatchObject({ status: "partial", checkedLocationIds: ["at-vienna"], unavailableLocationIds: [], events: [],
+      limitationCode: "observation_only_partial_coverage" });
     expect(vi.mocked(fetchMock).mock.calls.some(([input]) => String(input).includes("/current/"))).toBe(false);
   });
 
-  it("retains a fresh observation-backed alert when a later partial map is only fair context", async () => {
+  it("clears an earlier poor-air event after a current fair observation", async () => {
     const adapter = new EeaAdapter();
     const initial = await adapter.fetch({ now, locations: [vienna], fetch: stationFetch({ category: 5 }) });
     const state = mergeSourceResults(createEmptyState(now), [initial], now);
     const later = new Date(now.getTime() + 60 * 60_000);
     const fair = await adapter.fetch({ now: later, locations: [vienna], fetch: stationFetch({ category: 2 }) });
 
-    expect(mergeSourceResults(state, [fair], later).events).toEqual(state.events);
+    expect(mergeSourceResults(state, [fair], later).events).toEqual([]);
   });
 
   it("keeps expected station partial coverage current across consecutive healthy polls", async () => {

@@ -51,7 +51,7 @@ test("exposes unavailable destinations through the attention experience when the
   await expect(page.getByText("Live updates unavailable.")).toBeVisible();
   if (testInfo.project.name === "mobile-webkit") {
     await page.getByRole("button", { name: /Alerts/ }).click();
-    await expect(page.getByRole("heading", { name: "Updates unavailable" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Live updates unavailable" })).toBeVisible();
     await expect(page.getByText(/Current alerts could not be confirmed/)).toBeVisible();
     await page.getByRole("button", { name: "Map", exact: true }).click();
   } else {
@@ -59,14 +59,14 @@ test("exposes unavailable destinations through the attention experience when the
     await expect(trigger).toContainText("679 updates unavailable");
     await trigger.click();
     const dialog = page.getByRole("dialog");
-    await expect(dialog.getByRole("heading", { name: "Updates unavailable" })).toBeVisible();
+    await expect(dialog.getByRole("heading", { name: "Live updates unavailable" })).toBeVisible();
     await expect(dialog.getByText(/could not be confirmed for 679 destinations/)).toBeVisible();
     await expect(dialog.getByRole("button", { name: /Vienna/ })).toHaveCount(0);
     await page.keyboard.press("Escape");
   }
   await selectDestination(page, "Vienna", /Vienna/);
   await expect(destinationDetails(page).getByRole("heading", { name: "Vienna", exact: true })).toBeVisible();
-  await expect(destinationDetails(page).locator('span[data-level="UNKNOWN"]')).toContainText("Updates unavailable");
+  await expect(destinationDetails(page).locator('span[data-level="UNKNOWN"]')).toContainText("Checks delayed");
 });
 
 test("keeps updates unavailable visible while a retry is pending", async ({ page }) => {
@@ -112,7 +112,7 @@ for (const [name, newerResponse] of [
     await pending[1 - newerResponse].fulfill({ json: older.pointer });
 
     await selectDestination(page, "Vienna", /Vienna/);
-    await expect(destinationDetails(page).getByText("Updates unavailable")).toBeVisible();
+    await expect(destinationDetails(page).getByText("Checks delayed")).toBeVisible();
   });
 }
 
@@ -122,7 +122,7 @@ test("disables the attention summary when the destination catalog fails", async 
   await expect(page.getByText("Destinations unavailable.")).toBeVisible();
   if (testInfo.project.name === "mobile-webkit") {
     await page.getByRole("button", { name: /Alerts/ }).click();
-    await expect(page.getByRole("heading", { name: "Updates unavailable" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Live updates unavailable" })).toBeVisible();
   } else {
     const attention = page.getByRole("button", { name: /Destination alerts are unavailable/ });
     await expect(attention).toBeDisabled();

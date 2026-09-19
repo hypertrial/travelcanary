@@ -12,7 +12,7 @@ import ipmaSeismicFixture from "../fixtures/conditions/ipma-seismic.json";
 import { parseMetNorway, parseOpenMeteo, forecastUrl } from "@/lib/conditions/forecast";
 import { parseMetars, airportMappings } from "@/lib/conditions/metar";
 import { availableForecastWeight, buildConditionsFiles, currentConditions, fitConditionsState } from "@/lib/conditions/state";
-import { conditionAttribution, conditionSourceEnabled, conditionsDisabledSources } from "@/lib/conditions/sources";
+import { conditionAttribution, conditionSourceEnabled, conditionSources, conditionsDisabledSources } from "@/lib/conditions/sources";
 import { forecastBatches, forecastSplitHasLocalHeadroom } from "@/lib/conditions/worker";
 import { runTestConditions as runConditions } from "../helpers/publication";
 import { ConditionsSchema, emptyConditions, conditionRecords, conditionSourceIds, CONDITIONS_CACHE_LIMIT, type Conditions } from "@/lib/domain/conditions";
@@ -168,6 +168,17 @@ describe("isolated local conditions", () => {
     expect(() => conditionsDisabledSources("unknown")).toThrow();
     expect(() => conditionsDisabledSources("awc-metar,awc-metar")).toThrow();
   });
+  it("enables exactly the nine commercially safe sources in production", () => {
+    const production = { LOCAL_CONDITIONS_ENABLED: "true" };
+    expect((Object.keys(conditionSources) as Array<keyof typeof conditionSources>)
+      .filter((id) => conditionSourceEnabled(id, production)).sort()).toEqual([
+      "arso-hydro", "awc-metar", "digitraffic", "krisinformation-infrastructure", "met-norway",
+      "ndw-traffic", "opw-hydro", "pse-energy-compass", "rws-water",
+    ]);
+    expect((Object.keys(conditionSources) as Array<keyof typeof conditionSources>)
+      .filter((id) => conditionSources[id].noncommercial)
+      .every((id) => !conditionSourceEnabled(id, production))).toBe(true);
+  });
   it("accounts for location-weighted rolling quotas and failed-attempt reservations", () => {
     const state = createEmptyState(now);
     expect(availableForecastWeight(state, now)).toBe(400);
@@ -245,8 +256,11 @@ describe("isolated local conditions", () => {
   });
   it("makes no upstream requests when conditions are disabled", async () => {
     const fetchMock = vi.fn(); const publish = vi.fn(successfulPublish);
-    await runConditions({ stateStore: new MemoryStateStore(createEmptyState(now)), fetch: fetchMock, publish, now, env: {} });
+    const result = await runConditions({ stateStore: new MemoryStateStore(createEmptyState(now)), fetch: fetchMock, publish, now, env: {} });
     expect(fetchMock).not.toHaveBeenCalled(); expect(publish).toHaveBeenCalledOnce();
+    if (!("sources" in result) || !result.sources) throw new Error("Expected completed conditions source outcomes");
+    expect(Object.keys(result.sources)).toHaveLength(conditionSourceIds.length);
+    expect(conditionSourceIds.every((id) => result.sources[id]?.status === "disabled")).toBe(true);
     const austria = publish.mock.calls[0][0].find(({ countryCode }) => countryCode === "AT")!;
     expect(austria.locations["at-vienna"].limitations).toEqual(["disabled"]);
   });

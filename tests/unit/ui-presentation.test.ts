@@ -68,7 +68,7 @@ describe("UI presentation", () => {
       "at-innsbruck",
       "at-linz",
     ]);
-    const presentation = attentionPresentation(attention, { catalogCount: locations.length });
+    const presentation = attentionPresentation(attention, { catalogCount: locations.length, snapshotAvailable: true });
     expect(presentation.globalUnavailable).toBe(false);
     expect(presentation.label).toBe("1 emergency · 7 need attention");
     expect(presentation.compactLabel).toBe("7 need attention");
@@ -80,7 +80,7 @@ describe("UI presentation", () => {
       ["be-aware", 4],
       ["unavailable", 1],
     ]);
-    expect(presentation.accessibleLabel).toBe("1 emergency condition, 1 destination where plans may need changing, 4 destinations to be aware of, 1 destination with updates unavailable.");
+    expect(presentation.accessibleLabel).toBe("1 emergency condition, 1 destination where plans may need changing, 4 destinations to be aware of, 1 destination with delayed checks.");
   });
 
   it("treats every destination as unavailable before a snapshot loads", () => {
@@ -88,7 +88,7 @@ describe("UI presentation", () => {
     expect(attention).toHaveLength(503);
     expect(attention.every(({ state }) => state.level === "UNKNOWN")).toBe(true);
     expect(attention.every(({ location }, index) => index === 0 || attention[index - 1].location.name.localeCompare(location.name) <= 0)).toBe(true);
-    const presentation = attentionPresentation(attention, { catalogCount: locations.length });
+    const presentation = attentionPresentation(attention, { catalogCount: locations.length, snapshotAvailable: false });
     expect(presentation.globalUnavailable).toBe(true);
     expect(presentation.groups).toEqual([]);
     expect(presentation.label).toBe("503 updates unavailable");
@@ -104,7 +104,22 @@ describe("UI presentation", () => {
     expect(presentation.globalUnavailable).toBe(false);
     expect(presentation.groups).toHaveLength(1);
     expect(presentation.groups[0].items).toHaveLength(1);
-    expect(presentation.label).toBe("1 update unavailable");
+    expect(presentation.label).toBe("1 destination with delayed checks");
+    expect(presentation.delayedItems).toHaveLength(1);
+  });
+
+  it("keeps a valid all-unknown snapshot in delayed-check groups instead of calling publication unavailable", () => {
+    const delayed = attentionLocationSummaries(locations, {
+      ...snapshot,
+      locations: Object.fromEntries(locations.map(({ id }) => [id, {
+        level: "UNKNOWN" as const, coverage: "delayed" as const, coverageGaps: [], delayedHazards: ["flood" as const], hazards: [],
+      }])),
+    });
+    const presentation = attentionPresentation(delayed, { catalogCount: locations.length, snapshotAvailable: true });
+    expect(presentation.globalUnavailable).toBe(false);
+    expect(presentation.groups).toHaveLength(1);
+    expect(presentation.groups[0]).toMatchObject({ key: "unavailable", items: { length: locations.length } });
+    expect(presentation.label).toBe(`${locations.length} destinations with delayed checks`);
   });
 
   it("does not flag normal destinations when current source health is known", () => {
@@ -131,13 +146,24 @@ describe("UI presentation", () => {
     expect(attentionPresentation([]).compactLabel).toBe("None flagged");
     expect(attentionPresentation([])).toMatchObject({ railTitle: "No destinations flagged", railDetail: "Monitoring limits still apply" });
     expect(attentionPresentation(attention.filter(({ state }) => state.level !== "UNKNOWN")).label).toBe("1 emergency · 6 need attention");
-    expect(attentionPresentation(attention.filter(({ state }) => state.level === "UNKNOWN")).label).toBe("1 update unavailable");
-    expect(attentionPresentation(attention.filter(({ state }) => state.level === "UNKNOWN")).compactLabel).toBe("1 unavailable");
-    expect(attentionPresentation(attention.filter(({ state }) => state.level === "UNKNOWN"))).toMatchObject({ railTitle: "1 update unavailable", railDetail: "Open affected destinations" });
+    expect(attentionPresentation(attention.filter(({ state }) => state.level === "UNKNOWN")).label).toBe("1 destination with delayed checks");
+    expect(attentionPresentation(attention.filter(({ state }) => state.level === "UNKNOWN")).compactLabel).toBe("1 delayed");
+    expect(attentionPresentation(attention.filter(({ state }) => state.level === "UNKNOWN"))).toMatchObject({ railTitle: "1 destination with delayed checks", railDetail: "Open destinations with delayed checks" });
     expect(attentionPresentation(attention.filter(({ state }) => state.level === "HIGH")).label).toBe("1 change plan · 1 need attention");
     expect(attentionPresentation(attention.filter(({ state }) => state.level === "HIGH")).compactLabel).toBe("1 needs attention");
     expect(attentionPresentation(attention.filter(({ state }) => state.level === "HIGH"))).toMatchObject({ railTitle: "1 needs attention", railDetail: "1 may need plan changes" });
     expect(attentionPresentation(Array.from({ length: 125 }, () => attention[2]))).toMatchObject({ railTitle: "125 need attention", railDetail: "125 marked Be aware" });
+  });
+
+  it("surfaces a normal-risk destination whose non-life-safety checks are delayed", () => {
+    const delayedSnapshot = structuredClone(snapshot);
+    delayedSnapshot.locations["at-vienna"] = {
+      level: "NORMAL", coverage: "delayed", coverageGaps: [], delayedHazards: ["air-quality"], hazards: [],
+    };
+    const attention = attentionLocationSummaries(locations, delayedSnapshot);
+    const vienna = attention.find(({ location }) => location.id === "at-vienna");
+    expect(vienna?.state).toMatchObject({ level: "NORMAL", coverage: "delayed" });
+    expect(attentionPresentation(attention).delayedItems).toContainEqual(vienna);
   });
 
   it("does not describe a failed destination catalog as a healthy empty result", () => {

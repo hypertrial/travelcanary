@@ -73,8 +73,10 @@ export function parseEeaHourlyMap(value: unknown) {
   const categories = new Map<string, number>();
   for (const [code, raw] of Object.entries(value as Record<string, unknown>)) {
     if (code.endsWith("_cp") || !/^[A-Z]{2}[A-Z0-9]{3,10}$/.test(code)) continue;
-    const category = Number(raw); const culprit = Number((value as Record<string, unknown>)[`${code}_cp`]);
-    if (Number.isFinite(category) && category >= 0 && category <= 6 && Number.isInteger(culprit) && culprit >= 0 && culprit <= 8) categories.set(code, category);
+    const culpritRaw = (value as Record<string, unknown>)[`${code}_cp`];
+    const category = typeof raw === "number" || typeof raw === "string" && raw.trim() ? Number(raw) : Number.NaN;
+    const culprit = typeof culpritRaw === "number" || typeof culpritRaw === "string" && culpritRaw.trim() ? Number(culpritRaw) : Number.NaN;
+    if (Number.isFinite(category) && category >= 1 && category <= 6 && Number.isInteger(culprit) && culprit >= 0 && culprit <= 8) categories.set(code, category);
   }
   return categories;
 }
@@ -87,7 +89,7 @@ export function observationBackedEeaDetail(value: unknown, sourceTime: Date): { 
     if (!Number.isFinite(time) || Math.abs(time - sourceTime.getTime()) > 90 * 60_000 || !row || typeof row !== "object") return [];
     const pollutant = typeof row.culprit === "string" ? row.culprit.replace(/[^A-Za-z0-9.]/g, "") : "";
     const category = numberField(row.aqi); const observed = numberField(row[`val_${pollutant}`]); const modelled = numberField(row[`modelled_${pollutant}`]);
-    if (!pollutant || !Number.isFinite(category) || category < 0 || category > 6 || !Number.isFinite(observed) || modelled !== 0) return [];
+    if (!pollutant || !Number.isFinite(category) || category < 1 || category > 6 || !Number.isFinite(observed) || modelled !== 0) return [];
     return [{ time, category, pollutant }];
   }).sort((left, right) => Math.abs(left.time - sourceTime.getTime()) - Math.abs(right.time - sourceTime.getTime()));
   return candidates[0] ? { category: candidates[0].category, pollutant: candidates[0].pollutant } : null;
@@ -154,7 +156,7 @@ export class EeaAdapter implements SourceAdapter {
           const response = await fetchAllowlisted(context.fetch, `${baseUrl}/current/${code}.json`, [host], 2,
             { maxBytes: 2_500_000, byteBudget, diagnosticsCategory: "station_detail" });
           const observation = observationBackedEeaDetail(await readJsonWithLimit(response, 2_500_000), sourceTime);
-          if (observation) observations.set(code, observation);
+          if (observation && eeaLevel(observation.category) === eeaLevel(categories.get(code)!)) observations.set(code, observation);
           else {
             unavailableDetailCodes.add(code);
             recordSourceDiagnostics(context, { outcomeCode: "eea_modeled_context_only" });
@@ -168,8 +170,9 @@ export class EeaAdapter implements SourceAdapter {
         const observation = observations.get(station.code); const alert = observation && eventFor(location, station, observation.category, observation.pollutant, sourceTime, checkedAt);
         return alert ? [alert] : [];
       }));
-      const eventLocationIds = new Set(events.flatMap(({ geometry }) => geometry.kind === "locations" ? geometry.ids : []));
-      const checked = new Set(locations.filter(({ id }) => eventLocationIds.has(id)
+      const checked = new Set(locations.filter(({ id }) => mapping.locations[id].length > 0
+        && mapping.locations[id].every(({ code }) => reviewedStations.has(code) && categories.has(code)
+          && (!eeaLevel(categories.get(code)!) || observations.has(code)))
         && !mapping.locations[id].some(({ code }) => unavailableDetailCodes.has(code))).map(({ id }) => id));
       recordSourceDiagnostics(context, { recordsExamined: categories.size, targetsCompleted: checked.size, matchedLocations: new Set(events.flatMap(({ geometry }) => geometry.kind === "locations" ? geometry.ids : [])).size });
       const partitions = Object.fromEntries(codes.map((countryCode) => {

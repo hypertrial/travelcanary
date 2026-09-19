@@ -8,6 +8,7 @@ const addedCountries = new Set<string>(catalogV3CountryCodes.filter((code) => !(
 const eeaStationCountryCodes = new Set<string>(eeaStationCoverage.fullCountryCodes);
 const eeaStationLocationIds = new Set<string>(eeaStationCoverage.locationIds);
 export const expandedProviderIds = ["usgs", "emsc", "slf-avalanche", "fcdo-travel-advice"] as const;
+export const expandedCoverageProviderIds = [...expandedProviderIds, "meteoalarm", "eea-aqi", "national-civil-alerts"] as const;
 export type ExpandedProviderId = (typeof expandedProviderIds)[number];
 type Destination = { id: string; countryCode: string; isCoastal?: boolean };
 type CoverageSystem = { hazards: HazardType[]; coverageContribution: "partial" | "complete"; coverageLocationIds?: string[] };
