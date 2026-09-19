@@ -13,10 +13,12 @@ import {
   parseNveWarnings,
 } from "@/lib/ingestion/adapters/national-civil-alerts-expanded";
 import { createEmptyState } from "@/lib/risk-state";
-import { NationalCivilAlertsAdapter } from "@/lib/ingestion/adapters/national-civil-alerts";
+import { NationalCivilAlertsAdapter, orderedNationalRuntimeTasks } from "@/lib/ingestion/adapters/national-civil-alerts";
 import { MeteoAlarmAdapter } from "@/lib/ingestion/adapters/meteoalarm";
 import { nationalWarningManifest } from "@/lib/national-warning-sources";
 import { CatalogPartitionedSourceResultSchema } from "@/lib/domain/catalog-state";
+import { catalogV3CountryCodes } from "@/lib/domain/contract-identities";
+import { lifeSafetyHazards } from "@/lib/risk-policy";
 
 const now = new Date("2026-09-09T10:00:00Z");
 const context = { now, locations: catalogLocationsV3, fetch };
@@ -30,6 +32,16 @@ const metOfficeFeed = (related: string, updated = "2026-09-09T09:55:00Z") => `<f
 afterEach(() => vi.unstubAllEnvs());
 
 describe("expanded direct warning transports", () => {
+  it("starts active life-safety coverage before optional national transports", () => {
+    const tasks = orderedNationalRuntimeTasks(catalogV3CountryCodes);
+    const required = ({ system }: (typeof tasks)[number]) => system.status === "active" && system.role === "coverage"
+      && system.hazards.some((hazard) => lifeSafetyHazards.has(hazard));
+    const firstOptional = tasks.findIndex((task) => !required(task));
+    expect(firstOptional).toBeGreaterThan(0);
+    expect(tasks.slice(0, firstOptional).every(required)).toBe(true);
+    expect(tasks.findIndex(({ system }) => system.id === "nve-flood")).toBeLessThan(firstOptional);
+  });
+
   it("normalizes MET Norway land warnings, excludes marine-only geometry, and retains explicit CAP supersession", () => {
     const result = parseMetNorway({ type: "FeatureCollection", features: [
       { id: "new", geometry: square(10.75, 59.91), properties: { status: "Actual", geographicDomain: "land",

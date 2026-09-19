@@ -192,7 +192,10 @@ describe("national civil alert country partitions", () => {
     const invertedExpiredInfo = (invertedExpired.infos as Array<Record<string, unknown>>)[0];
     invertedExpiredInfo.dateEffective = "29/07/2026 19:11:40";
     invertedExpiredInfo["dateExpiré"] = "29/07/2026 08:54:14";
-    expect(() => parseFrExports([invertedExpired], context)).toThrow(/no parseable records/);
+    expect(parseFrExports([invertedExpired], context)).toMatchObject({ events: [], invalid: 1, unavailableLocationIds: [] });
+    const referencedCurrent = structuredClone(invertedExpired);
+    referencedCurrent.references = `sender,${String(alert.identifiant)},2026-07-29T17:11:40Z`;
+    expect(parseFrExports([alert, referencedCurrent], context).events.length).toBeGreaterThan(0);
     const invertedCurrent = structuredClone(alert);
     const invertedCurrentInfo = (invertedCurrent.infos as Array<Record<string, unknown>>)[0];
     invertedCurrentInfo.dateEffective = "28/08/2026 08:00:00";
@@ -254,6 +257,21 @@ describe("national civil alert country partitions", () => {
     const result = await fetchFrPartition({ ...context, fetch: fetchMock as typeof fetch });
     expect(result.status).toBe("ok");
     expect(fetchMock).toHaveBeenCalledTimes(3);
+    const historical = structuredClone(frExport) as Array<Record<string, unknown>>;
+    const invertedExpired = structuredClone(historical[0]);
+    const invertedExpiredInfo = (invertedExpired.infos as Array<Record<string, unknown>>)[0];
+    invertedExpired.identifiant = "FR-ALERT.historical-inverted";
+    invertedExpiredInfo.dateEffective = "29/07/2026 19:11:40";
+    invertedExpiredInfo["dateExpiré"] = "29/07/2026 08:54:14";
+    historical.push(invertedExpired);
+    const historicalFetch = vi.fn(async (url: string | URL | Request, init?: RequestInit) => {
+      if (init?.method === "HEAD") return new Response(null, { headers: { "Last-Modified": "Fri, 28 Aug 2026 04:00:00 GMT" } });
+      if (String(url).endsWith("/export-alert")) return Response.json(historical);
+      return new Response(archive);
+    });
+    expect(await fetchFrPartition({ ...context, fetch: historicalFetch as typeof fetch })).toMatchObject({
+      status: "ok", unavailableLocationIds: [], error: null,
+    });
     expect(() => parseFrExports([{ identifiant: "broken", status: "Réel", infos: [{}] }], context)).toThrow(/no parseable records/);
     const mixed = structuredClone(frExport) as Array<Record<string, unknown>>;
     const invalidInfo = structuredClone((mixed[0].infos as Array<Record<string, unknown>>)[0]);
