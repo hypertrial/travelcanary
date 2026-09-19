@@ -1,7 +1,8 @@
 import { type Page } from "@playwright/test";
 import { expect, test } from "../playwright-fixtures";
-import { abortDemoSnapshot, mutateDemoSnapshot } from "./helpers";
+import { abortDemoSnapshot, DARWIN_VISUAL_SNAPSHOTS, mutateDemoSnapshot } from "./helpers";
 
+test.skip(!DARWIN_VISUAL_SNAPSHOTS, "Darwin snapshots are authoritative; Linux CI skips pixel compare");
 test.describe.configure({ mode: "serial" });
 
 async function hideDevelopmentChrome(page: Page) {

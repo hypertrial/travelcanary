@@ -68,6 +68,104 @@ function projectBrowserName(project: { use?: { browserName?: string; defaultBrow
   return project.use?.browserName ?? project.use?.defaultBrowserType;
 }
 
+const VISUAL_GOLDEN_RATIOS = {
+  "desktop-brand-lockup.png": 0.02,
+  "desktop-control-rail.png": 0.02,
+  "desktop-control-rail-high.png": 0.02,
+  "desktop-control-rail-short.png": 0.02,
+  "desktop-control-rail-unavailable.png": 0.02,
+  "desktop-search-results.png": 0.02,
+  "desktop-attention-popover.png": 0.02,
+  "desktop-app-menu.png": 0.02,
+  "mobile-brand-lockup.png": 0.02,
+  "desktop-map-first.png": 0.03,
+  "desktop-severe-drawer.png": 0.03,
+  "desktop-normal-card.png": 0.03,
+  "desktop-coverage-expanded.png": 0.03,
+  "desktop-coverage-delayed.png": 0.03,
+  "mobile-map-first.png": 0.03,
+  "mobile-updates-unavailable.png": 0.03,
+  "mobile-attention-sheet.png": 0.03,
+  "mobile-severe-sheet.png": 0.03,
+  "desktop-map-fallback.png": 0.03,
+} as const;
+
+function screenshotComparisons(source: string) {
+  return [...source.matchAll(/toHaveScreenshot\(\s*"([^"]+)"\s*(?:,\s*\{([\s\S]*?)\})?\s*\)/g)].map((match) => {
+    const ratioMatch = match[2]?.match(/maxDiffPixelRatio:\s*([0-9.]+)/);
+    return { name: match[1]!, ratio: ratioMatch ? Number(ratioMatch[1]) : Number.NaN, options: match[2] ?? "" };
+  });
+}
+
+function darwinVisualFlagExpression(helpersSource: string) {
+  return helpersSource.match(/export const DARWIN_VISUAL_SNAPSHOTS = ([^;]+);/)?.[1]?.trim() ?? "";
+}
+
+function evaluateDarwinVisualFlag(expression: string, platform: string) {
+  return Boolean(Function("process", `"use strict"; return (${expression});`)({ platform }));
+}
+
+function fileLevelDarwinVisualSkip(source: string) {
+  const firstTest = source.search(/^test\(/m);
+  if (firstTest < 0) return false;
+  return /test\.skip\(\s*!DARWIN_VISUAL_SNAPSHOTS\b/.test(source.slice(0, firstTest));
+}
+
+function sliceBalancedBraceBody(source: string, openIndex: number) {
+  let depth = 0;
+  for (let index = openIndex; index < source.length; index += 1) {
+    if (source[index] === "{") depth += 1;
+    else if (source[index] === "}") {
+      depth -= 1;
+      if (depth === 0) return source.slice(openIndex + 1, index);
+    }
+  }
+  return "";
+}
+
+function darwinVisualGateRanges(source: string) {
+  const ranges: Array<{ start: number; end: number; body: string }> = [];
+  const needle = "if (DARWIN_VISUAL_SNAPSHOTS)";
+  let searchFrom = 0;
+  while (searchFrom < source.length) {
+    const start = source.indexOf(needle, searchFrom);
+    if (start < 0) break;
+    const open = source.indexOf("{", start + needle.length);
+    if (open < 0 || open > start + needle.length + 8) break;
+    const body = sliceBalancedBraceBody(source, open);
+    const end = open + body.length + 1;
+    ranges.push({ start, end, body });
+    searchFrom = end + 1;
+  }
+  return ranges;
+}
+
+function darwinGatedScreenshotBodies(source: string) {
+  return darwinVisualGateRanges(source).map((range) => range.body);
+}
+
+function withoutDarwinVisualGates(source: string) {
+  let result = source;
+  for (const range of darwinVisualGateRanges(source).reverse()) {
+    result = `${result.slice(0, range.start)}${result.slice(range.end + 1)}`;
+  }
+  return result;
+}
+
+function ungatedScreenshotPaths(files: Array<{ path: string; source: string }>) {
+  return files.flatMap(({ path, source }) => {
+    const compares = screenshotComparisons(source);
+    if (compares.length === 0) return [];
+    if (path.endsWith("visual.spec.ts") && fileLevelDarwinVisualSkip(source)) return [];
+    const gated = screenshotComparisons(darwinGatedScreenshotBodies(source).join("\n"));
+    return compares.length === gated.length ? [] : [path];
+  });
+}
+
+function platformSuffixedSnapshotEntries(entries: string[]) {
+  return entries.filter((entry) => /\.png$/i.test(entry) && /(^|[^A-Za-z0-9])(linux|darwin)([^A-Za-z0-9]|$)/i.test(entry));
+}
+
 describe("tooling configuration", () => {
   it("does not reuse an arbitrary server for browser tests", () => {
     const webServer = Array.isArray(playwrightConfig.webServer) ? playwrightConfig.webServer[0] : playwrightConfig.webServer;
@@ -237,6 +335,125 @@ jobs:
       const entries = await readdir(root, { recursive: true });
       expect(entries.filter((entry) => entry.endsWith("-linux.png") || entry.endsWith("-darwin.png"))).toEqual([]);
     }
+    const helpers = await readFile("tests/e2e/helpers.ts", "utf8");
+    const visual = await readFile("tests/e2e/visual.spec.ts", "utf8");
+    const mapFilters = await readFile("tests/e2e/map-filters.spec.ts", "utf8");
+    expect(helpers).toContain('export const DARWIN_VISUAL_SNAPSHOTS = process.platform === "darwin"');
+    expect(visual).toContain("test.skip(!DARWIN_VISUAL_SNAPSHOTS");
+    expect(mapFilters).toContain("if (DARWIN_VISUAL_SNAPSHOTS)");
+  });
+
+  it("enables pixel compare only on Darwin and never on Linux CI hosts", async () => {
+    const helpers = await readFile("tests/e2e/helpers.ts", "utf8");
+    const expression = darwinVisualFlagExpression(helpers);
+    expect(expression).toBe('process.platform === "darwin"');
+    expect(expression).not.toMatch(/!==\s*"linux"/);
+    expect(evaluateDarwinVisualFlag(expression, "darwin")).toBe(true);
+    expect(evaluateDarwinVisualFlag(expression, "linux")).toBe(false);
+    expect(evaluateDarwinVisualFlag(expression, "win32")).toBe(false);
+    expect(evaluateDarwinVisualFlag(expression, "android")).toBe(false);
+    expect(evaluateDarwinVisualFlag(expression, "")).toBe(false);
+    expect(evaluateDarwinVisualFlag(expression, "Darwin")).toBe(false);
+    expect(evaluateDarwinVisualFlag(expression, "linux-gnu")).toBe(false);
+  });
+
+  it("skips the visual spec on non-Darwin before any compare runs", async () => {
+    const visual = await readFile("tests/e2e/visual.spec.ts", "utf8");
+    expect(fileLevelDarwinVisualSkip(visual)).toBe(true);
+    expect(visual).toMatch(/^test\.skip\(!DARWIN_VISUAL_SNAPSHOTS, "Darwin snapshots are authoritative; Linux CI skips pixel compare"\);$/m);
+    expect(visual.indexOf("test.skip(!DARWIN_VISUAL_SNAPSHOTS")).toBeLessThan(visual.search(/^test\(/m));
+    expect(visual).not.toMatch(/test\.skip\(\s*DARWIN_VISUAL_SNAPSHOTS\s*,/);
+    expect(screenshotComparisons(visual).map((compare) => compare.name)).toEqual(Object.keys(VISUAL_GOLDEN_RATIOS));
+  });
+
+  it("does not loosen Darwin screenshot thresholds to absorb Linux font drift", async () => {
+    const visual = await readFile("tests/e2e/visual.spec.ts", "utf8");
+    const mapFilters = await readFile("tests/e2e/map-filters.spec.ts", "utf8");
+    const visualCompares = screenshotComparisons(visual);
+    expect(Object.fromEntries(visualCompares.map((compare) => [compare.name, compare.ratio]))).toEqual(VISUAL_GOLDEN_RATIOS);
+    expect(visualCompares.every((compare) => Number.isFinite(compare.ratio))).toBe(true);
+    expect(Math.max(...visualCompares.map((compare) => compare.ratio))).toBe(0.03);
+    expect(visualCompares.filter((compare) => /brand-lockup/.test(compare.name)).map((compare) => compare.ratio)).toEqual([0.02, 0.02]);
+    expect(visualCompares.some((compare) => /maxDiffPixels/.test(compare.options))).toBe(false);
+
+    const cameraCompares = screenshotComparisons(mapFilters);
+    expect(cameraCompares).toEqual([
+      { name: "landscape-camera.png", ratio: 0.001, options: " maxDiffPixelRatio: 0.001 " },
+      { name: "landscape-camera.png", ratio: 0.001, options: " maxDiffPixelRatio: 0.001 " },
+    ]);
+    expect(cameraCompares.every((compare) => compare.ratio === 0.001)).toBe(true);
+    expect(cameraCompares.every((compare) => compare.ratio < 0.01)).toBe(true);
+  });
+
+  it("keeps map-filter camera and CSS assertions running when Linux skips pixel compare", async () => {
+    const mapFilters = await readFile("tests/e2e/map-filters.spec.ts", "utf8");
+    expect(fileLevelDarwinVisualSkip(mapFilters)).toBe(false);
+    expect(mapFilters).not.toMatch(/test\.skip\(\s*!DARWIN_VISUAL_SNAPSHOTS/);
+    const rotation = mapFilters.split('test("an untouched map restores its core-Europe framing after rotation"')[1] ?? "";
+    const gatedBodies = darwinGatedScreenshotBodies(rotation);
+    expect(gatedBodies).toHaveLength(2);
+    for (const body of gatedBodies) {
+      expect(screenshotComparisons(body)).toEqual([
+        { name: "landscape-camera.png", ratio: 0.001, options: " maxDiffPixelRatio: 0.001 " },
+      ]);
+      expect(body).not.toMatch(/toHaveCSS|data-camera|expect\.poll\(camera\)/);
+    }
+    const withoutVisual = withoutDarwinVisualGates(rotation);
+    expect(withoutVisual).toContain('toHaveCSS("width", "768px")');
+    expect(withoutVisual).toContain('toHaveCSS("width", "667px")');
+    expect(withoutVisual).toContain("expect.poll(camera)");
+    expect(withoutVisual).toContain("data-camera-lng");
+    expect(withoutVisual).toContain("data-camera-lat");
+    expect(withoutVisual).toContain("data-camera-zoom");
+    expect(withoutVisual).toContain("data-camera-padding");
+    expect(withoutVisual).not.toContain("toHaveScreenshot");
+  });
+
+  it("does not leave any Playwright golden compare reachable on Linux CI", async () => {
+    const { readdir } = await import("node:fs/promises");
+    const files: Array<{ path: string; source: string }> = [];
+    for (const root of ["tests/e2e", "tests/catalog3-e2e"]) {
+      for (const entry of await readdir(root, { recursive: true })) {
+        if (!String(entry).endsWith(".spec.ts")) continue;
+        const filePath = `${root}/${entry}`;
+        files.push({ path: filePath, source: await readFile(filePath, "utf8") });
+      }
+    }
+    expect(files.filter((file) => file.source.includes("toHaveScreenshot")).map((file) => file.path).sort()).toEqual([
+      "tests/e2e/map-filters.spec.ts",
+      "tests/e2e/visual.spec.ts",
+    ]);
+    expect(ungatedScreenshotPaths(files)).toEqual([]);
+    for (const root of ["tests/e2e", "tests/catalog3-e2e"]) {
+      expect(platformSuffixedSnapshotEntries((await readdir(root, { recursive: true })).map(String))).toEqual([]);
+    }
+    expect(playwrightConfig.snapshotPathTemplate).not.toMatch(/\{platform\}/i);
+    expect(await readFile("scripts/check.ts", "utf8")).not.toMatch(/update-snapshots/);
+    expect(uncommentedYaml(await readFile(".github/workflows/ci-full.yml", "utf8"))).not.toMatch(/update-snapshots/);
+    expect(await readFile(".github/workflows/ci-full.yml", "utf8")).toMatch(/^\s+runs-on:\s*ubuntu-latest$/m);
+  });
+
+  it("treats an inverted skip, raised camera threshold, or platform-suffixed golden as a regression", () => {
+    expect(fileLevelDarwinVisualSkip(`test.skip(DARWIN_VISUAL_SNAPSHOTS, "oops");\ntest("lockup", async () => {});\n`)).toBe(false);
+    expect(fileLevelDarwinVisualSkip(`test("lockup", async () => {});\ntest.skip(!DARWIN_VISUAL_SNAPSHOTS, "too late");\n`)).toBe(false);
+    expect(evaluateDarwinVisualFlag('process.platform !== "linux"', "win32")).toBe(true);
+    expect(evaluateDarwinVisualFlag('process.platform === "darwin"', "win32")).toBe(false);
+    expect(screenshotComparisons(`await expect(canvas).toHaveScreenshot("landscape-camera.png", { maxDiffPixelRatio: 0.01 });`).map((compare) => compare.ratio)).toEqual([0.01]);
+    expect(screenshotComparisons(`await expect(canvas).toHaveScreenshot("landscape-camera.png", { maxDiffPixelRatio: 0.01 });`)[0]?.ratio).toBeGreaterThan(0.001);
+    expect(ungatedScreenshotPaths([
+      { path: "tests/e2e/app.spec.ts", source: `await expect(page).toHaveScreenshot("desktop-brand-lockup.png", { maxDiffPixelRatio: 0.02 });` },
+    ])).toEqual(["tests/e2e/app.spec.ts"]);
+    expect(ungatedScreenshotPaths([
+      { path: "tests/e2e/visual.spec.ts", source: `test.skip(!DARWIN_VISUAL_SNAPSHOTS, "Darwin snapshots are authoritative; Linux CI skips pixel compare");\ntest("lockup", async () => {\n  await expect(page).toHaveScreenshot("desktop-brand-lockup.png", { maxDiffPixelRatio: 0.02 });\n});\n` },
+    ])).toEqual([]);
+    expect(ungatedScreenshotPaths([
+      { path: "tests/e2e/map-filters.spec.ts", source: `if (DARWIN_VISUAL_SNAPSHOTS) {\n  await expect(canvas).toHaveScreenshot("landscape-camera.png", { maxDiffPixelRatio: 0.001 });\n}\n` },
+    ])).toEqual([]);
+    expect(platformSuffixedSnapshotEntries(["visual.spec.ts-snapshots/desktop-brand-lockup-linux.png", "map-filters.spec.ts-snapshots/landscape-camera-linux-desktop-chromium.png"])).toEqual([
+      "visual.spec.ts-snapshots/desktop-brand-lockup-linux.png",
+      "map-filters.spec.ts-snapshots/landscape-camera-linux-desktop-chromium.png",
+    ]);
+    expect(platformSuffixedSnapshotEntries(["visual.spec.ts-snapshots/desktop-brand-lockup-desktop-chromium.png"])).toEqual([]);
   });
 
   it("keeps reliability-gated GDELT disabled in the production environment example", async () => {

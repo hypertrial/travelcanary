@@ -8,6 +8,9 @@ import { expect } from "../playwright-fixtures";
 export const destinationSearch = (page: Page) => page.getByRole("combobox", { name: "Where are you going?" });
 export const destinationDetails = (page: Page) => page.getByRole("complementary").or(page.getByRole("dialog", { name: /risk details/ }));
 
+/** Pixel snapshots are Darwin-authoritative. Linux CI keeps functional e2e and skips screenshot compare. */
+export const DARWIN_VISUAL_SNAPSHOTS = process.platform === "darwin";
+
 export type MutableDemoSnapshot = {
   schemaVersion: number;
   generatedAt: string;
