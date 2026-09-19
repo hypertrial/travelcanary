@@ -59,11 +59,34 @@ describe("tooling configuration", () => {
     expect(workflow).not.toMatch(/check:release/);
     expect(workflow).not.toMatch(/check:catalog3/);
     expect(workflow).not.toContain("mcr.microsoft.com/playwright");
+    expect(workflow).not.toContain("check:full");
     expect(ignore).toContain(".next-c2/");
     expect(ignore).toContain(".next-c3/");
     expect(ignore).toContain(".cursor/");
     expect(await readFile("eslint.config.mjs", "utf8")).toContain(".next-c2/**");
     expect(await readFile("eslint.config.mjs", "utf8")).toContain(".next-c3/**");
+  });
+
+  it("runs the full check gate on main and manual dispatch only", async () => {
+    const workflow = await readFile(".github/workflows/ci-full.yml", "utf8");
+    expect(workflow).toContain("workflow_dispatch:");
+    expect(workflow).toMatch(/^\s+push:/m);
+    expect(workflow).toContain("branches: [main]");
+    expect(workflow).not.toMatch(/pull_request/);
+    expect(workflow).toContain("contents: read");
+    expect(workflow).toContain("timeout-minutes: 45");
+    expect(workflow).toContain("ci-full-${{ github.ref }}");
+    expect(workflow).toContain("actions/checkout@11d5960a326750d5838078e36cf38b85af677262");
+    expect(workflow).toContain("actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020");
+    expect(workflow).toContain("node-version: 24.19.0");
+    expect(workflow).toContain("npm@11.6.2");
+    expect(workflow).toContain("npm ci --no-audit --no-fund");
+    expect(workflow).toContain("~/.cache/ms-playwright");
+    expect(workflow).toContain("npx --no-install playwright install --with-deps chromium");
+    expect(workflow).toContain("npm run check:full");
+    expect(workflow).toContain("playwright-report");
+    expect(workflow).toContain("test-results");
+    expect(workflow).toMatch(/if:\s*failure\(\)/);
   });
 
   it("keeps direct Playwright invocations isolated and treats Darwin snapshots as authoritative", async () => {
