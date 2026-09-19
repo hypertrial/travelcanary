@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { buildCatalog3Snapshot } from "@/lib/catalog-projections";
-import { catalogV2CountryCodes } from "@/lib/domain/contract-identities";
 import type { SourceHealth } from "@/lib/domain/schemas";
 import { nationalWarningManifest } from "@/lib/national-warning-sources";
 import { projectCoreSnapshot } from "@/lib/risk-snapshot";
@@ -31,101 +30,82 @@ function overdue(minutes: number) {
   });
 }
 
+const freshness = {
+  lastSuccess: now.toISOString(), sourceUpdatedAt: "2026-09-08T11:50:00.000Z",
+  nextExpectedUpdate: "2026-09-08T12:10:00.000Z",
+} as const;
+
 const cases: Array<{ name: string; input: DeriveTransportStateInput; expected: object }> = [
   {
-    name: "legacy coverage ok omits freshness keys",
-    input: { mode: "legacy", system: atAlert, health: health(), fallbackStatus: "failed", effectiveStatus: "ok", now },
+    name: "coverage ok always emits freshness keys",
+    input: { system: atAlert, health: health(), fallbackStatus: "failed", effectiveStatus: "ok", now },
     expected: {
-      id: "at-alert", name: "AT-Alert", role: "coverage", status: "ok",
-      sourceUpdatedAt: "2026-09-08T11:50:00.000Z", limitationCode: null, officialUrl: "https://warnung.at-alert.at/",
+      id: "at-alert", name: "AT-Alert", role: "coverage", status: "ok", ...freshness,
+      limitationCode: null, officialUrl: "https://warnung.at-alert.at/",
     },
   },
   {
-    name: "expanded coverage ok always emits freshness keys",
-    input: { mode: "expanded", system: atAlert, health: health(), fallbackStatus: "failed" },
-    expected: {
-      id: "at-alert", name: "AT-Alert", role: "coverage", status: "ok",
-      lastSuccess: now.toISOString(), sourceUpdatedAt: "2026-09-08T11:50:00.000Z",
-      nextExpectedUpdate: "2026-09-08T12:10:00.000Z", limitationCode: null, officialUrl: "https://warnung.at-alert.at/",
-    },
-  },
-  {
-    name: "legacy fallback override uses delayed-adjusted effective.status before not_monitored",
-    input: { mode: "legacy", system: dhmz, health: health({ status: "not_monitored", lastSuccess: null, nextExpectedUpdate: null }),
+    name: "fallback override uses delayed-adjusted effective.status before not_monitored",
+    input: { system: dhmz, health: health({ status: "not_monitored", lastSuccess: null, nextExpectedUpdate: null }),
       fallbackStatus: "failed", effectiveStatus: "ok", now },
     expected: {
       id: "dhmz-cap", name: "DHMZ direct CAP warnings", role: "fallback", status: "ok",
-      sourceUpdatedAt: "2026-09-08T11:50:00.000Z", limitationCode: null,
-      officialUrl: "https://meteo.hr/proizvodi.php?section=podaci&param=xml_korisnici",
-    },
-  },
-  {
-    name: "expanded folds not_monitored into the first disabled check with no fallback override",
-    input: { mode: "expanded", system: dhmz, health: health({ status: "not_monitored", lastSuccess: null, nextExpectedUpdate: null }),
-      fallbackStatus: "ok" },
-    expected: {
-      id: "dhmz-cap", name: "DHMZ direct CAP warnings", role: "fallback", status: "disabled",
       lastSuccess: null, sourceUpdatedAt: "2026-09-08T11:50:00.000Z", nextExpectedUpdate: null,
-      limitationCode: "credential_not_configured",
+      limitationCode: null,
       officialUrl: "https://meteo.hr/proizvodi.php?section=podaci&param=xml_korisnici",
     },
   },
   {
-    name: "legacy not_monitored disables after a failed fallback override and keeps a null limitation",
-    input: { mode: "legacy", system: dhmz, health: health({ status: "not_monitored" }),
+    name: "fallback plus ok plus not_monitored stays ok via the fallback override",
+    input: { system: dhmz, health: health({ status: "not_monitored", lastSuccess: null, nextExpectedUpdate: null }),
+      fallbackStatus: "ok", effectiveStatus: "ok", now },
+    expected: {
+      id: "dhmz-cap", name: "DHMZ direct CAP warnings", role: "fallback", status: "ok",
+      lastSuccess: null, sourceUpdatedAt: "2026-09-08T11:50:00.000Z", nextExpectedUpdate: null,
+      limitationCode: null,
+      officialUrl: "https://meteo.hr/proizvodi.php?section=podaci&param=xml_korisnici",
+    },
+  },
+  {
+    name: "not_monitored disables after a failed fallback override and defaults limitationCode",
+    input: { system: dhmz, health: health({ status: "not_monitored" }),
       fallbackStatus: "delayed", effectiveStatus: "delayed", now },
     expected: {
       id: "dhmz-cap", name: "DHMZ direct CAP warnings", role: "fallback", status: "disabled",
-      sourceUpdatedAt: "2026-09-08T11:50:00.000Z", limitationCode: null,
+      ...freshness, limitationCode: "credential_not_configured",
       officialUrl: "https://meteo.hr/proizvodi.php?section=podaci&param=xml_korisnici",
     },
   },
   {
-    name: "legacy coverage overdue after two cadences is delayed",
-    input: { mode: "legacy", system: imgw, health: overdue(21), fallbackStatus: "ok", effectiveStatus: "ok", now },
+    name: "coverage overdue after two cadences is delayed",
+    input: { system: imgw, health: overdue(21), fallbackStatus: "ok", effectiveStatus: "ok", now },
     expected: {
       id: "imgw-hydrology", name: "IMGW hydrology warnings", role: "coverage", status: "delayed",
-      sourceUpdatedAt: overdue(21).sourceUpdatedAt, limitationCode: null, officialUrl: "https://hydro.imgw.pl/",
-    },
-  },
-  {
-    name: "legacy coverage at the overdue boundary stays current",
-    input: { mode: "legacy", system: imgw, health: overdue(20), fallbackStatus: "ok", effectiveStatus: "ok", now },
-    expected: {
-      id: "imgw-hydrology", name: "IMGW hydrology warnings", role: "coverage", status: "ok",
-      sourceUpdatedAt: overdue(20).sourceUpdatedAt, limitationCode: null, officialUrl: "https://hydro.imgw.pl/",
-    },
-  },
-  {
-    name: "expanded ignores cadence delay and keeps the raw health status",
-    input: { mode: "expanded", system: imgw, health: overdue(21), fallbackStatus: "ok" },
-    expected: {
-      id: "imgw-hydrology", name: "IMGW hydrology warnings", role: "coverage", status: "ok",
       lastSuccess: overdue(21).lastSuccess, sourceUpdatedAt: overdue(21).sourceUpdatedAt,
       nextExpectedUpdate: overdue(21).nextExpectedUpdate, limitationCode: null, officialUrl: "https://hydro.imgw.pl/",
     },
   },
   {
-    name: "legacy coverage delayed status and consecutive failures force delayed",
-    input: { mode: "legacy", system: imgw, health: health({ status: "ok", consecutiveFailures: 2 }),
+    name: "coverage at the overdue boundary stays current",
+    input: { system: imgw, health: overdue(20), fallbackStatus: "ok", effectiveStatus: "ok", now },
+    expected: {
+      id: "imgw-hydrology", name: "IMGW hydrology warnings", role: "coverage", status: "ok",
+      lastSuccess: overdue(20).lastSuccess, sourceUpdatedAt: overdue(20).sourceUpdatedAt,
+      nextExpectedUpdate: overdue(20).nextExpectedUpdate, limitationCode: null, officialUrl: "https://hydro.imgw.pl/",
+    },
+  },
+  {
+    name: "coverage delayed status and consecutive failures force delayed",
+    input: { system: imgw, health: health({ status: "ok", consecutiveFailures: 2 }),
       fallbackStatus: "ok", effectiveStatus: "ok", now },
     expected: {
       id: "imgw-hydrology", name: "IMGW hydrology warnings", role: "coverage", status: "delayed",
-      sourceUpdatedAt: "2026-09-08T11:50:00.000Z", limitationCode: null, officialUrl: "https://hydro.imgw.pl/",
+      ...freshness, limitationCode: null, officialUrl: "https://hydro.imgw.pl/",
     },
   },
   {
-    name: "legacy unauthorized credential-gated omits freshness and keeps the system limitation",
-    input: { mode: "legacy", system: vigilance, fallbackStatus: "failed", effectiveStatus: "failed", now },
-    expected: {
-      id: "meteofrance-vigilance", name: "Météo-France Vigilance API", role: "fallback", status: "disabled",
-      sourceUpdatedAt: null, limitationCode: "source_contract_incomplete",
-      officialUrl: "https://www.data.gouv.fr/dataservices/api-bulletin-vigilance",
-    },
-  },
-  {
-    name: "expanded unauthorized credential-gated still emits null freshness keys",
-    input: { mode: "expanded", system: vigilance, fallbackStatus: "failed" },
+    name: "unauthorized credential-gated emits null freshness and keeps the system limitation",
+    input: { system: vigilance, fallbackStatus: "failed", effectiveStatus: "failed", now },
     expected: {
       id: "meteofrance-vigilance", name: "Météo-France Vigilance API", role: "fallback", status: "disabled",
       lastSuccess: null, sourceUpdatedAt: null, nextExpectedUpdate: null,
@@ -134,9 +114,9 @@ const cases: Array<{ name: string; input: DeriveTransportStateInput; expected: o
     },
   },
   {
-    name: "expanded disabled active coverage with a null limitation uses credential_not_configured",
-    input: { mode: "expanded", system: atAlert, health: health({ status: "not_monitored", lastSuccess: null, nextExpectedUpdate: null }),
-      fallbackStatus: "failed" },
+    name: "disabled active coverage with a null limitation uses credential_not_configured",
+    input: { system: atAlert, health: health({ status: "not_monitored", lastSuccess: null, nextExpectedUpdate: null }),
+      fallbackStatus: "failed", effectiveStatus: "failed", now },
     expected: {
       id: "at-alert", name: "AT-Alert", role: "coverage", status: "disabled",
       lastSuccess: null, sourceUpdatedAt: "2026-09-08T11:50:00.000Z", nextExpectedUpdate: null,
@@ -144,16 +124,17 @@ const cases: Array<{ name: string; input: DeriveTransportStateInput; expected: o
     },
   },
   {
-    name: "legacy missing health on coverage uses the delayed-adjusted fallback status",
-    input: { mode: "legacy", system: atAlert, fallbackStatus: "delayed", effectiveStatus: "delayed", now },
+    name: "missing health on coverage uses the delayed-adjusted fallback status",
+    input: { system: atAlert, fallbackStatus: "delayed", effectiveStatus: "delayed", now },
     expected: {
       id: "at-alert", name: "AT-Alert", role: "coverage", status: "delayed",
-      sourceUpdatedAt: null, limitationCode: null, officialUrl: "https://warnung.at-alert.at/",
+      lastSuccess: null, sourceUpdatedAt: null, nextExpectedUpdate: null,
+      limitationCode: null, officialUrl: "https://warnung.at-alert.at/",
     },
   },
   {
-    name: "expanded missing health uses publicProviderPartitionState as fallback only",
-    input: { mode: "expanded", system: atAlert, fallbackStatus: "failed" },
+    name: "missing health uses publicProviderPartitionState as fallback only",
+    input: { system: atAlert, fallbackStatus: "failed", effectiveStatus: "failed", now },
     expected: {
       id: "at-alert", name: "AT-Alert", role: "coverage", status: "failed",
       lastSuccess: null, sourceUpdatedAt: null, nextExpectedUpdate: null,
@@ -162,29 +143,27 @@ const cases: Array<{ name: string; input: DeriveTransportStateInput; expected: o
   },
   {
     name: "credential-gated coverage becomes authorized only when health is present and monitored",
-    input: { mode: "expanded", system: skCrisis, health: health({ status: "partial" }), fallbackStatus: "failed" },
+    input: { system: skCrisis, health: health({ status: "partial" }), fallbackStatus: "failed", effectiveStatus: "failed", now },
     expected: {
       id: "sk-crisis-rest", name: "Crisis-management REST service", role: "coverage", status: "partial",
-      lastSuccess: now.toISOString(), sourceUpdatedAt: "2026-09-08T11:50:00.000Z",
-      nextExpectedUpdate: "2026-09-08T12:10:00.000Z", limitationCode: null,
+      ...freshness, limitationCode: null,
       officialUrl: "https://portal.minv.sk/wps/esispz-api/docs/index.html",
     },
   },
   {
-    name: "legacy fallback failed transport stays ok only while effective.status is ok",
-    input: { mode: "legacy", system: edr, health: health({ status: "failed" }), fallbackStatus: "failed", effectiveStatus: "ok", now },
+    name: "fallback failed transport stays ok only while effective.status is ok",
+    input: { system: edr, health: health({ status: "failed" }), fallbackStatus: "failed", effectiveStatus: "ok", now },
     expected: {
       id: "meteoalarm-edr", name: "MeteoAlarm authenticated EDR recovery", role: "fallback", status: "ok",
-      sourceUpdatedAt: "2026-09-08T11:50:00.000Z", limitationCode: null, officialUrl: "https://www.meteoalarm.org/",
+      ...freshness, limitationCode: null, officialUrl: "https://www.meteoalarm.org/",
     },
   },
   {
-    name: "expanded failed transport uses the raw failed status",
-    input: { mode: "expanded", system: edr, health: health({ status: "failed" }), fallbackStatus: "ok" },
+    name: "fallback failed transport stays failed when effective.status is not ok",
+    input: { system: edr, health: health({ status: "failed" }), fallbackStatus: "ok", effectiveStatus: "failed", now },
     expected: {
       id: "meteoalarm-edr", name: "MeteoAlarm authenticated EDR recovery", role: "fallback", status: "failed",
-      lastSuccess: now.toISOString(), sourceUpdatedAt: "2026-09-08T11:50:00.000Z",
-      nextExpectedUpdate: "2026-09-08T12:10:00.000Z", limitationCode: null, officialUrl: "https://www.meteoalarm.org/",
+      ...freshness, limitationCode: null, officialUrl: "https://www.meteoalarm.org/",
     },
   },
 ];
@@ -205,71 +184,62 @@ describe("deriveTransportState", () => {
     expect(JSON.stringify(deriveTransportState(input))).toBe(JSON.stringify(expected));
   });
 
-  it("keeps lastSuccess and nextExpectedUpdate absent from legacy JSON even when health has values", () => {
+  it("always emits lastSuccess and nextExpectedUpdate, including null when unknown", () => {
     const result = deriveTransportState({
-      mode: "legacy", system: imgw, health: health(), fallbackStatus: "ok", effectiveStatus: "ok", now,
+      system: imgw, health: health(), fallbackStatus: "ok", effectiveStatus: "ok", now,
     });
     const parsed = JSON.parse(JSON.stringify(result)) as Record<string, unknown>;
-    expect(Object.hasOwn(parsed, "lastSuccess")).toBe(false);
-    expect(Object.hasOwn(parsed, "nextExpectedUpdate")).toBe(false);
-    expect(Object.keys(parsed)).toEqual(["id", "name", "role", "status", "sourceUpdatedAt", "limitationCode", "officialUrl"]);
-  });
-
-  it("keeps lastSuccess and nextExpectedUpdate present on expanded JSON when values are null", () => {
-    const result = deriveTransportState({ mode: "expanded", system: atAlert, fallbackStatus: "failed" });
-    const parsed = JSON.parse(JSON.stringify(result)) as Record<string, unknown>;
-    expect(Object.hasOwn(parsed, "lastSuccess")).toBe(true);
-    expect(Object.hasOwn(parsed, "nextExpectedUpdate")).toBe(true);
-    expect(parsed.lastSuccess).toBeNull();
-    expect(parsed.nextExpectedUpdate).toBeNull();
     expect(Object.keys(parsed)).toEqual([
       "id", "name", "role", "status", "lastSuccess", "sourceUpdatedAt", "nextExpectedUpdate", "limitationCode", "officialUrl",
     ]);
+    expect(parsed.lastSuccess).toBe(now.toISOString());
+    expect(parsed.nextExpectedUpdate).toBe("2026-09-08T12:10:00.000Z");
+
+    const unknown = JSON.parse(JSON.stringify(deriveTransportState({
+      system: atAlert, fallbackStatus: "failed", effectiveStatus: "failed", now,
+    }))) as Record<string, unknown>;
+    expect(Object.hasOwn(unknown, "lastSuccess")).toBe(true);
+    expect(Object.hasOwn(unknown, "nextExpectedUpdate")).toBe(true);
+    expect(unknown.lastSuccess).toBeNull();
+    expect(unknown.nextExpectedUpdate).toBeNull();
   });
 });
 
-describe("core snapshot transport JSON", () => {
-  it("omits lastSuccess and nextExpectedUpdate on every legacy transport after stringify", () => {
+describe("published transport JSON", () => {
+  it("emits freshness keys and limitation defaults on every core transport after stringify", () => {
     const snapshot = projectCoreSnapshot(createEmptyState(now), now);
     const frozen = JSON.stringify(snapshot);
     const transports = snapshotTransports(JSON.parse(frozen));
     expect(transports.length).toBeGreaterThan(0);
     for (const { transport } of transports) {
-      expect(Object.hasOwn(transport, "lastSuccess")).toBe(false);
-      expect(Object.hasOwn(transport, "nextExpectedUpdate")).toBe(false);
+      expect(Object.hasOwn(transport, "lastSuccess")).toBe(true);
+      expect(Object.hasOwn(transport, "nextExpectedUpdate")).toBe(true);
       expect(Object.hasOwn(transport, "sourceUpdatedAt")).toBe(true);
     }
     const imgwJson = transports.find(({ country, transport }) => country === "PL" && transport.id === "imgw-hydrology")!.transport;
     expect(JSON.stringify(imgwJson)).toBe(JSON.stringify({
       id: "imgw-hydrology", name: "IMGW hydrology warnings", role: "coverage", status: "failed",
-      sourceUpdatedAt: null, limitationCode: null, officialUrl: "https://hydro.imgw.pl/",
+      lastSuccess: null, sourceUpdatedAt: null, nextExpectedUpdate: null,
+      limitationCode: null, officialUrl: "https://hydro.imgw.pl/",
     }));
+    expect(frozen.includes('"id":"imgw-hydrology","name":"IMGW hydrology warnings","role":"coverage","status":"failed","lastSuccess":null')).toBe(true);
   });
 
-  it("emits freshness keys only on expanded catalog-3 country transports", () => {
+  it("emits freshness keys on every catalog-3 country transport", () => {
     const snapshot = buildCatalog3Snapshot(createEmptyState(now), now);
     const frozen = JSON.stringify(snapshot);
     const transports = snapshotTransports(JSON.parse(frozen));
-    const legacyCountries = new Set<string>(catalogV2CountryCodes);
-    const legacy = transports.filter(({ country }) => legacyCountries.has(country));
-    const expanded = transports.filter(({ country }) => !legacyCountries.has(country));
-    expect(legacy.length).toBeGreaterThan(0);
-    expect(expanded.length).toBeGreaterThan(0);
-    for (const { transport } of legacy) {
-      expect(Object.hasOwn(transport, "lastSuccess")).toBe(false);
-      expect(Object.hasOwn(transport, "nextExpectedUpdate")).toBe(false);
-    }
-    for (const { transport } of expanded) {
+    expect(transports.length).toBeGreaterThan(0);
+    for (const { transport } of transports) {
       expect(Object.hasOwn(transport, "lastSuccess")).toBe(true);
       expect(Object.hasOwn(transport, "nextExpectedUpdate")).toBe(true);
     }
-    const edrJson = expanded.find(({ country, transport }) => country === "AD" && transport.id === "meteoalarm-edr")!.transport;
+    const edrJson = transports.find(({ country, transport }) => country === "AD" && transport.id === "meteoalarm-edr")!.transport;
     expect(JSON.stringify(edrJson)).toBe(JSON.stringify({
       id: "meteoalarm-edr", name: "MeteoAlarm authenticated EDR recovery", role: "fallback", status: "disabled",
       lastSuccess: null, sourceUpdatedAt: null, nextExpectedUpdate: null,
       limitationCode: "credential_not_configured", officialUrl: "https://www.meteoalarm.org/",
     }));
-    expect(frozen.includes('"id":"imgw-hydrology","name":"IMGW hydrology warnings","role":"coverage","status":"failed","sourceUpdatedAt":null')).toBe(true);
-    expect(frozen.includes('"id":"imgw-hydrology","name":"IMGW hydrology warnings","role":"coverage","status":"failed","lastSuccess"')).toBe(false);
+    expect(frozen.includes('"id":"imgw-hydrology","name":"IMGW hydrology warnings","role":"coverage","status":"failed","lastSuccess":null')).toBe(true);
   });
 });

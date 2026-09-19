@@ -356,7 +356,7 @@ export function projectCoreSnapshot(input: ProjectionState, now = new Date()): S
       const fallbackStatus = publicProviderPartitionState(effective).status;
       const partition = publicProviderPartitionState(effective);
       return [countryCode, systems.length ? { ...partition, transports: systems.map((system) => deriveTransportState({
-        mode: "legacy", system, health: transportHealth[system.id], fallbackStatus, effectiveStatus: effective.status, now,
+        system, health: transportHealth[system.id], fallbackStatus, effectiveStatus: effective.status, now,
       })) } : partition];
     }));
     return [id, { ...provider, partitions }];
