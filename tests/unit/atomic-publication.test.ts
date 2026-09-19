@@ -23,6 +23,24 @@ class FailingPublicationStore implements PublicationStore {
   deleteMany(...args: Parameters<PublicationStore["deleteMany"]>) { return this.target.deleteMany(...args); }
 }
 
+class RecordingPublicationStore implements PublicationStore {
+  writes: string[] = [];
+  constructor(private readonly target: MemoryPublicationStore) {}
+  read(...args: Parameters<PublicationStore["read"]>) { return this.target.read(...args); }
+  async putImmutable(...args: Parameters<PublicationStore["putImmutable"]>) {
+    const result = await this.target.putImmutable(...args);
+    this.writes.push(args[0]);
+    return result;
+  }
+  async replacePointer(...args: Parameters<PublicationStore["replacePointer"]>) {
+    const result = await this.target.replacePointer(...args);
+    this.writes.push(publicationPointerPath);
+    return result;
+  }
+  list(...args: Parameters<PublicationStore["list"]>) { return this.target.list(...args); }
+  deleteMany(...args: Parameters<PublicationStore["deleteMany"]>) { return this.target.deleteMany(...args); }
+}
+
 async function writer(store: PublicationStore) {
   const stateStore = new MemoryStateStore(createEmptyState(now));
   const lease = await acquireIngestionLease(stateStore, "atomic-publication-test", now, 330_000);
@@ -47,6 +65,28 @@ describe("atomic public generations", () => {
     expect(current?.manifest.conditions).toHaveLength(45);
     expect(current?.manifest.status.codes).not.toContain("source/cems/failed");
     expect(await store.list("catalogs/3/objects/sha256/", 100)).toHaveLength(46);
+  });
+
+  it("does not write the manifest or pointer before the last condition PUT settles", async () => {
+    const store = new RecordingPublicationStore(new MemoryPublicationStore());
+    const run = await writer(store);
+    await run.publish();
+    const objectWrites = store.writes.filter((pathname) => pathname.startsWith("catalogs/3/objects/sha256/"));
+    const lastObjectIndex = store.writes.lastIndexOf(objectWrites[objectWrites.length - 1] || "");
+    const manifestIndex = store.writes.findIndex((pathname) => pathname.endsWith("/manifest.json"));
+    const pointerIndex = store.writes.findIndex((pathname) => pathname === publicationPointerPath);
+    expect(objectWrites).toHaveLength(46);
+    expect(manifestIndex).toBeGreaterThan(lastObjectIndex);
+    expect(pointerIndex).toBeGreaterThan(manifestIndex);
+  });
+
+  it("aborts a failed condition PUT before writing the manifest or pointer", async () => {
+    const target = new MemoryPublicationStore();
+    const failing = new FailingPublicationStore(target, 10);
+    const run = await writer(failing);
+    await expect(run.publish()).rejects.toThrow("injected publication failure");
+    expect(await target.list("catalogs/3/generations/", 100)).toEqual([]);
+    expect(await target.read(publicationPointerPath, 64_000)).toBeNull();
   });
 
   it("uses an explicit wrapper release identity ahead of Vercel's public-submodule identity", async () => {
