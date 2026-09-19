@@ -88,7 +88,7 @@ export function buildCatalog3Snapshot(state: ProjectionState, now = new Date()) 
       : providerId === "national-civil-alerts" ? state.partitionTransports.nationalCivilAlerts[country] : {};
     snapshot.providers[providerId].partitions![country] = systems.length
       ? { ...partition, transports: systems.map((system) => deriveTransportState({
-        mode: "expanded", system, health: transports[system.id], fallbackStatus: partition.status,
+        system, health: transports[system.id], fallbackStatus: partition.status, effectiveStatus: health.status, now,
       })) }
       : partition;
   }
