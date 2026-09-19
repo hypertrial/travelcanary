@@ -5,7 +5,7 @@ import { catalog3CoverageTarget, coverageMeetsCatalog3Target } from "../src/lib/
 import { ConditionsV3Schema, SnapshotV11Schema } from "../src/lib/domain/catalog-public";
 import { mapConcurrent } from "../src/lib/ingestion/fetch";
 import { nationalWarningManifest } from "../src/lib/national-warning-sources";
-import { HttpPublicationStore, requiredLifeSafetyTransportFailures, requiredTransportFailures } from "../src/lib/public-health";
+import { HttpPublicationStore, PublicationTransportError, requiredLifeSafetyTransportFailures, requiredTransportFailures } from "../src/lib/public-health";
 import { publicationSha256, readCurrentPublication, readPublishedObject } from "../src/lib/publication-store";
 import { measureCoverage } from "./coverage-measurement";
 
@@ -157,7 +157,10 @@ export async function verifyProduction(options: VerifyProductionOptions = {}): P
     const unauthorized = activeUnauthorizedTransports(snapshot);
     if (unauthorized.length) blockers.push({ code: "unauthorized_transport_active", message: `Unauthorized runtime transports: ${unauthorized.slice(0, 8).join(", ")}` });
   } catch (error) {
-    blockers.push({ code: "publication_invalid", message: error instanceof Error ? error.message.slice(0, 240) : "Publication validation failed" });
+    blockers.push({
+      code: error instanceof PublicationTransportError ? "publication_unreachable" : "publication_invalid",
+      message: error instanceof Error ? error.message.slice(0, 240) : "Publication validation failed",
+    });
   }
 
   for (const [path, code] of [["/api/healthz", "liveness_failed"], ["/api/v1/health", "health_failed"]] as const) {

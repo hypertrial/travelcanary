@@ -126,6 +126,8 @@ export function coverageCounts(snapshot: CatalogSnapshot, catalog: PublicCatalog
   return { ...measurement.totals, tiers: measurement.tiers };
 }
 
+export class PublicationTransportError extends Error {}
+
 export class HttpPublicationStore implements PublicationStore {
   private readonly root: URL;
   constructor(pointerUrl: string, private readonly fetchImpl: typeof fetch = fetch) {
@@ -140,9 +142,14 @@ export class HttpPublicationStore implements PublicationStore {
       throw new Error("Publication object path is invalid");
     }
     const url = new URL(pathname, this.root);
-    const response = await this.fetchImpl(url, { cache: "no-store", redirect: "error", signal: AbortSignal.timeout(4_000) });
+    let response: Response;
+    try {
+      response = await this.fetchImpl(url, { cache: "no-store", redirect: "error", signal: AbortSignal.timeout(4_000) });
+    } catch {
+      throw new PublicationTransportError("Publication object is unreachable");
+    }
     if (response.status === 404) return null;
-    if (!response.ok) throw new Error("Publication object is unavailable");
+    if (!response.ok) throw new PublicationTransportError("Publication object is unavailable");
     const body = new TextDecoder().decode(await readBytesWithLimit(response, maxBytes));
     return { body, etag: response.headers.get("etag")?.replace(/^W\//, "") || "", url: url.href };
   }
@@ -218,7 +225,9 @@ export async function checkPublicationHealth(store: PublicationStore, options: {
       },
       coverage: { ...measurement.totals, tiers: measurement.tiers },
     };
-  } catch { return unavailable("publication_invalid"); }
+  } catch (error) {
+    return unavailable(error instanceof PublicationTransportError ? "publication_unreachable" : "publication_invalid");
+  }
 }
 
 export async function checkPublicHealth(options: { env?: Record<string, string | undefined>; fetch?: typeof fetch; now?: Date } = {}) {

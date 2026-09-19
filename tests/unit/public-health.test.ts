@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { publishCommittedCatalog } from "@/lib/catalog-publication";
 import { publicationPointerPath } from "@/lib/domain/publication";
 import { acquireIngestionLease, releaseIngestionLease } from "@/lib/ingestion-lease";
-import { checkPublicHealth, checkPublicationHealth } from "@/lib/public-health";
+import { checkPublicHealth, checkPublicationHealth, HttpPublicationStore } from "@/lib/public-health";
 import { readCurrentPublication } from "@/lib/publication-store";
 import { createEmptyState } from "@/lib/risk-state";
 import { MemoryStateStore } from "@/lib/state-store";
@@ -98,5 +98,20 @@ describe("atomic publication health", () => {
       TRAVELCANARY_PUBLICATION_URL: "https://production.example/catalogs/3/publication/latest.json",
       VERCEL_GIT_COMMIT_SHA: "b".repeat(40), TRAVELCANARY_RELEASE_SHA: sha }, fetch, now }))
       .resolves.toMatchObject({ available: true, publication: { producerCommitSha: sha } });
+  });
+
+  it("maps fetch rejection to publication_unreachable and invalid JSON to publication_invalid", async () => {
+    await expect(checkPublicHealth({
+      env: { VERCEL_ENV: "production", TRAVELCANARY_PUBLICATION_URL: "https://production.example/catalogs/3/publication/latest.json" },
+      fetch: vi.fn(async () => { throw new Error("secret-sentinel"); }),
+      now,
+    })).resolves.toMatchObject({ available: false, publication: { code: "publication_unreachable" } });
+
+    const fetch = vi.fn<typeof globalThis.fetch>(async () => new Response("{", { status: 200 }));
+    await expect(checkPublicationHealth(
+      new HttpPublicationStore("https://production.example/catalogs/3/publication/latest.json", fetch),
+      { now },
+    )).resolves.toMatchObject({ available: false, publication: { code: "publication_invalid" } });
+    expect(JSON.stringify(fetch.mock.calls)).not.toContain("secret-sentinel");
   });
 });

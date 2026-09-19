@@ -4,6 +4,7 @@ import { checkPublicationHealth, checkPublicHealth, unavailablePublicationHealth
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const HEALTH_CACHE_MS = 60_000;
+const HEALTH_UNAVAILABLE_CACHE_MS = 5_000;
 type ProductionHealth = Awaited<ReturnType<typeof checkPublicHealth>>;
 let cachedHealth: { key: string; expiresAt: number; value: ProductionHealth } | null = null;
 let pendingHealth: { key: string; value: Promise<ProductionHealth> } | null = null;
@@ -18,7 +19,7 @@ async function productionHealth() {
   if (cachedHealth?.key === key && cachedHealth.expiresAt > now) return cachedHealth.value;
   if (pendingHealth?.key === key) return pendingHealth.value;
   const value = checkPublicHealth({}).then((result) => {
-    cachedHealth = { key, expiresAt: Date.now() + HEALTH_CACHE_MS, value: result };
+    cachedHealth = { key, expiresAt: Date.now() + (result.available ? HEALTH_CACHE_MS : HEALTH_UNAVAILABLE_CACHE_MS), value: result };
     return result;
   }).finally(() => { if (pendingHealth?.key === key) pendingHealth = null; });
   pendingHealth = { key, value };
@@ -32,7 +33,7 @@ export async function GET(request?: Request) {
   if (process.env.TRAVELCANARY_RUNTIME !== "local") {
     const result = await productionHealth();
     return Response.json(result, { status: result.available ? 200 : 503,
-      headers: { "Cache-Control": "public, max-age=0, s-maxage=60, must-revalidate" } });
+      headers: { "Cache-Control": result.available ? "public, max-age=0, s-maxage=60, must-revalidate" : "no-store" } });
   }
   try {
     const result = await checkPublicationHealth(getLocalPublicationStore(), { runtime: "filesystem",
