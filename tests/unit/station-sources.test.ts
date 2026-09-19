@@ -150,9 +150,12 @@ describe("catalog-2 conditions fixture path resolution", () => {
   it("does not substitute another country's file when both candidate paths are missing on disk", () => {
     const country = "ZZ";
     const [publicPath, fixturePath] = catalog2ConditionsCandidates(country);
+    const atFixturePath = "tests/fixtures/legacy-catalog-2/conditions/v2/AT.json";
     expect(existsSync(publicPath)).toBe(false);
     expect(existsSync(fixturePath)).toBe(false);
-    expect(existsSync("public/conditions/v2/AT.json")).toBe(true);
+    expect(existsSync("public/conditions/v2/AT.json")).toBe(false);
+    expect(existsSync(atFixturePath)).toBe(true);
+    expect(resolveCatalog2ConditionsPath("AT")).toBe(atFixturePath);
     expect(() => resolveCatalog2ConditionsPath(country)).toThrow(`missing catalog-2 conditions fixture for ${country}`);
   });
 
