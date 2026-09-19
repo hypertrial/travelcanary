@@ -6,7 +6,7 @@ import type { CatalogPublicationStores } from "./catalog-publication";
 import { captureStateControl, assertStateControlChange } from "./publication-control";
 import { createEmptyState } from "./risk";
 import { IngestionStateV15Schema, IngestionStateV16Schema, parseCatalogState, type IngestionState } from "./domain/catalog-state";
-import { PRIVATE_STATE_HARD_LIMIT_BYTES } from "./ingestion/limits";
+import { PRIVATE_STATE_HARD_LIMIT_BYTES, StateLimitError } from "./ingestion/limits";
 import { ConcurrencyError, type StateStore, type Versioned } from "./state-store";
 import { disabledLocalPolicy, LocalRuntimePolicySchema, type LocalRuntimePolicy } from "./local-policy";
 import type { PublicationStore } from "./publication-store";
@@ -157,7 +157,7 @@ export class LocalStateStore implements StateStore {
   async read() {
     const row = this.database.read("private", STATE_KEY);
     if (!row) throw new Error("Local ingestion state is not initialized");
-    if (Buffer.byteLength(row.value) > PRIVATE_STATE_HARD_LIMIT_BYTES) throw new Error("Private ingestion state exceeds 5 MB hard limit");
+    if (Buffer.byteLength(row.value) > PRIVATE_STATE_HARD_LIMIT_BYTES) throw new StateLimitError("Private ingestion state exceeds 5 MB hard limit");
     const raw = JSON.parse(row.value) as { schemaVersion?: unknown };
     const data = parseCatalogState(raw);
     const legacy = raw.schemaVersion === 15 ? { schemaVersion: 15, raw: row.value } : undefined;

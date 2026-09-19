@@ -2,7 +2,7 @@ import { assertCatalog2Collection, type IngestionStateV15, type IngestionStateV1
 import { countryCodes, } from "../domain/schemas";
 import { locations } from "../data";
 import { CONDITIONS_CACHE_LIMIT, CONDITIONS_COUNTRY_LIMIT, CONDITIONS_TOTAL_LIMIT, ConditionsSchema, conditionRecords, conditionSourceAppliesToCountry, emptyConditions, type Conditions, type LocationConditions } from "../domain/conditions";
-import { PRIVATE_STATE_HARD_LIMIT_BYTES } from "../ingestion/limits";
+import { PRIVATE_STATE_HARD_LIMIT_BYTES, StateLimitError } from "../ingestion/limits";
 import { conditionAttribution, conditionSourceEnabled } from "./sources";
 import { marineConditionEligible } from "./marine";
 
@@ -34,7 +34,7 @@ export function fitConditionsState<T extends ConditionsState>(state: T, now: Dat
     delete state.conditions.locations[id]; remaining -= 1;
     cacheBytes -= removedBytes; stateBytes -= removedBytes;
   }
-  if (stateBytes > PRIVATE_STATE_HARD_LIMIT_BYTES) throw new Error("Private ingestion state exceeds 5 MB hard limit");
+  if (stateBytes > PRIVATE_STATE_HARD_LIMIT_BYTES) throw new StateLimitError("Private ingestion state exceeds 5 MB hard limit");
   return state;
 }
 

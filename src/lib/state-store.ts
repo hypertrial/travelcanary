@@ -1,6 +1,6 @@
 import { BlobNotFoundError, BlobPreconditionFailedError, get, put } from "@vercel/blob";
 import { IngestionStateV15Schema, IngestionStateV16Schema, parseCatalogState, parseCatalogStateV15, type IngestionState } from "./domain/catalog-state";
-import { PRIVATE_STATE_HARD_LIMIT_BYTES } from "./ingestion/limits";
+import { PRIVATE_STATE_HARD_LIMIT_BYTES, StateLimitError } from "./ingestion/limits";
 import { assertStateControlChange, captureStateControl, type CapturedStateControl } from "./publication-control";
 import { resolveBlobAuth, type BlobAuth, type BlobAuthInput } from "./blob-auth";
 
@@ -21,7 +21,7 @@ function etag(value: string) {
 function stateForWrite(state: IngestionState, before: CapturedStateControl) {
   const next = IngestionStateV16Schema.parse({ ...state, stateRevision: state.stateRevision + 1 });
   assertStateControlChange(next, before);
-  if (Buffer.byteLength(JSON.stringify(next)) > PRIVATE_STATE_HARD_LIMIT_BYTES) throw new Error("Private ingestion state exceeds 5 MB hard limit");
+  if (Buffer.byteLength(JSON.stringify(next)) > PRIVATE_STATE_HARD_LIMIT_BYTES) throw new StateLimitError("Private ingestion state exceeds 5 MB hard limit");
   return next;
 }
 
