@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { parseSnapshot } from "@/lib/domain/schemas";
 import { initialSafetyDataState, safetyDataReducer } from "@/lib/safety-data-state";
-import demo from "../../public/demo-snapshot.json";
+import demo from "../fixtures/legacy-catalog-2/demo-snapshot.json";
 
 function snapshot(generatedAt: string) {
   return parseSnapshot({ ...structuredClone(demo), generatedAt });

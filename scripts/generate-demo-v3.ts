@@ -15,7 +15,7 @@ const snapshot = SnapshotV11Schema.parse(JSON.parse(await readFile(resolve(sourc
 const now = new Date(snapshot.generatedAt);
 const state = createEmptyState(now);
 const conditions = await Promise.all(buildCatalog3Conditions(state, now, {}).map(async (empty) => {
-  const legacyPath = resolve(sourceRoot, `public/conditions/v2/${empty.countryCode}.json`);
+  const legacyPath = resolve(sourceRoot, `tests/fixtures/legacy-catalog-2/conditions/v2/${empty.countryCode}.json`);
   try {
     const legacy = JSON.parse(await readFile(legacyPath, "utf8"));
     return ConditionsV3Schema.parse({ ...legacy, schemaVersion: 3, catalogVersion: 3 });

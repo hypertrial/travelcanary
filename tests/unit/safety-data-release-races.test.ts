@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { initialSafetyDataState, safetyDataReducer, type SafetyDataAction } from "@/lib/safety-data-state";
 import { parseCatalogSnapshot, PublicCatalogV3Schema } from "@/lib/domain/catalog-public";
-import demo from "../../public/demo-snapshot.json";
-import legacyLocations from "../../public/locations.json";
+import demo from "../fixtures/legacy-catalog-2/demo-snapshot.json";
+import legacyLocations from "../fixtures/legacy-catalog-2/locations.json";
 import candidates from "../../data/review-inputs/europe-expansion-catalog.json";
 import release3 from "../../data/catalog-releases/3.json";
 

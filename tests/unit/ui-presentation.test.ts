@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import demoSnapshot from "../../public/demo-snapshot.json";
+import demoSnapshot from "../fixtures/legacy-catalog-2/demo-snapshot.json";
 import { locations } from "@/lib/data";
 import { SnapshotSchema } from "@/lib/domain/schemas";
 import { buildSnapshot, createEmptyState } from "@/lib/risk";

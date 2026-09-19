@@ -1,4 +1,4 @@
-import { catalogV2Paths, catalogV3Paths } from "./catalog-paths";
+import { catalogV3Paths } from "./catalog-paths";
 import type { PublicCatalogLocation as PublicLocation, CatalogSnapshot as Snapshot } from "./domain/catalog-public";
 import type { Map as MapLibreMap, PaddingOptions, GeoJSONSource } from "maplibre-gl";
 import type { LocationState} from "./domain/schemas";
@@ -15,7 +15,7 @@ export const UNCOVERED_LAND_COLOR = "#C6C2B8";
 export const COVERED_LAND_COLOR = "#F1EEE5";
 export const COVERED_COUNTRIES_SOURCE = "covered-countries";
 export const COVERED_COUNTRIES_LAYER = "covered-countries-fill";
-export const COVERED_COUNTRIES_URL = catalogV2Paths.geography;
+export const COVERED_COUNTRIES_URL = catalogV3Paths.geography;
 export const COVERAGE_LAYER_BEFORE_CANDIDATES = ["park", "landuse_residential", "landcover_wood", "water"] as const;
 
 export function locationAppearsOnMap(state: Pick<LocationState, "level" | "coverage">, selected: boolean, filter: MapFilter = "all"): boolean {
@@ -139,10 +139,9 @@ export async function loadCoveredCountriesLayer(
   map: Pick<MapLibreMap, "getLayer" | "getSource" | "addSource" | "addLayer">,
   signal?: AbortSignal,
   fetchImpl: typeof fetch = fetch,
-  catalogVersion: 2 | 3 = 2,
 ): Promise<void> {
   try {
-    const response = await fetchImpl((catalogVersion === 3 ? catalogV3Paths : catalogV2Paths).geography, { signal });
+    const response = await fetchImpl(catalogV3Paths.geography, { signal });
     if (!response.ok) return;
     const data = await response.json() as GeoJSON.GeoJSON;
     if (signal?.aborted) return;

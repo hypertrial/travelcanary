@@ -1,6 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 
-const locations = JSON.parse(await readFile("public/locations.json", "utf8")).filter(({ isCoastal }) => isCoastal);
+const locations = JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/locations.json", "utf8")).filter(({ isCoastal }) => isCoastal);
 const radians = (value) => value * Math.PI / 180;
 const distanceKm = (a, b) => {
   const latitude1 = radians(a[1]); const latitude2 = radians(b[1]);

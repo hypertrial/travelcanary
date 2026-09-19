@@ -4,11 +4,11 @@ import { createLegacyState as createEmptyState } from "../fixtures/legacy-state"
 import { downgradeIngestionStateV12, NormalizedEventV12Schema, parseIngestionState, parseSnapshot } from "@/lib/domain/schemas";
 import { ConditionsV2Schema } from "@/lib/domain/conditions";
 
-const snapshot = JSON.parse(readFileSync("public/demo-snapshot.json", "utf8"));
+const snapshot = JSON.parse(readFileSync("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8"));
 const state = createEmptyState(new Date("2026-09-08T12:00:00Z"));
 const parsedSnapshot = parseSnapshot(snapshot);
 const parsedState = parseIngestionState(state);
-const conditions = ConditionsV2Schema.parse(JSON.parse(readFileSync("public/conditions/v2/AT.json", "utf8")));
+const conditions = ConditionsV2Schema.parse(JSON.parse(readFileSync("tests/fixtures/legacy-catalog-2/conditions/v2/AT.json", "utf8")));
 const event = NormalizedEventV12Schema.parse({
   id: "legacy-weather", sourceId: "meteoalarm", providerId: "meteoalarm", type: "severe-weather", level: "HIGH", timing: "ACTIVE",
   headline: "Severe weather", explanation: "Official warning retained", action: "Check official updates", affectedArea: "Austria",

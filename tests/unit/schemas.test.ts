@@ -65,7 +65,7 @@ describe("published contracts", () => {
   });
 
   it("validates the demo snapshot", async () => {
-    const snapshot = CompleteSnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")));
+    const snapshot = CompleteSnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8")));
     expect(Object.keys(snapshot.locations)).toHaveLength(503);
     expect(snapshot.providers.meteoalarm.partitions && Object.keys(snapshot.providers.meteoalarm.partitions)).toHaveLength(28);
     expect(snapshot.providers["national-civil-alerts"].status).toBe("ok");
@@ -74,7 +74,7 @@ describe("published contracts", () => {
   });
 
   it("upgrades Snapshot V9 and state V9 to V10 without inventing live Azores results", async () => {
-    const current = structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8"))));
+    const current = structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8"))));
     const legacySnapshot = { ...current, schemaVersion: 9 as const } as Record<string, unknown>;
     delete legacySnapshot.catalogVersion;
     const legacyLocations = legacySnapshot.locations as Record<string, unknown>;
@@ -96,13 +96,13 @@ describe("published contracts", () => {
   });
 
   it("requires all partitioned providers in the current snapshot", async () => {
-    const snapshot = structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8"))));
+    const snapshot = structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8"))));
     Reflect.deleteProperty(snapshot.providers.meteoalarm, "partitions");
     expect(() => SnapshotSchema.parse(snapshot)).toThrow(/must publish all covered countries/);
   });
 
   it("upgrades an existing Snapshot V2 to the current snapshot", async () => {
-    const current = addRemovedSnapshotProviders(structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")))) as unknown as {
+    const current = addRemovedSnapshotProviders(structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8")))) as unknown as {
       schemaVersion: number;
       providers: Record<string, { partitions?: Record<string, Record<string, unknown>> }>;
     });
@@ -122,7 +122,7 @@ describe("published contracts", () => {
   });
 
   it("keeps old Snapshot V3 clients readable across the V4 provider cutover", async () => {
-    const legacy = addRemovedSnapshotProviders(structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")))) as unknown as {
+    const legacy = addRemovedSnapshotProviders(structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8")))) as unknown as {
       schemaVersion: number; providers: Record<string, unknown>;
     });
     legacy.schemaVersion = 3;
@@ -137,7 +137,7 @@ describe("published contracts", () => {
   });
 
   it("adds eHYD conservatively while migrating Snapshot V4 to V5", async () => {
-    const legacy = addRemovedSnapshotProviders(structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")))) as unknown as {
+    const legacy = addRemovedSnapshotProviders(structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8")))) as unknown as {
       schemaVersion: number; providers: Record<string, unknown>;
     });
     legacy.schemaVersion = 4;
@@ -148,7 +148,7 @@ describe("published contracts", () => {
   });
 
   it("migrates Snapshot V6 to V7 with disabled context providers", async () => {
-    const legacy = removeContextHazards(structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8"))))) as unknown as {
+    const legacy = removeContextHazards(structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8"))))) as unknown as {
       schemaVersion: number; providers: Record<string, unknown>; locations: Record<string, { level: string; coverage: unknown; coverageGaps: unknown; hazards: Array<{ providerId?: string }> }>;
     };
     legacy.schemaVersion = 6;
@@ -163,7 +163,7 @@ describe("published contracts", () => {
   });
 
   it("rejects invalid or misplaced public provider partitions", async () => {
-    const snapshot = structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8"))));
+    const snapshot = structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8"))));
     const partitions = snapshot.providers.meteoalarm.partitions!;
     const invalidCountry = structuredClone(snapshot) as unknown as { providers: { meteoalarm: { partitions: Record<string, unknown> } } };
     invalidCountry.providers.meteoalarm.partitions.NO = structuredClone(partitions.AT);
@@ -192,7 +192,7 @@ describe("published contracts", () => {
   });
 
   it("upgrades Snapshot V1 alerts without requiring the V2 provider field", async () => {
-    const current = removeContextHazards(structuredClone(SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")))));
+    const current = removeContextHazards(structuredClone(SnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8")))));
     const sources = Object.fromEntries(Object.entries(createEmptyState(new Date(current.generatedAt)).sources)
       .filter(([id]) => ["meteoalarm", "usgs", "effis", "cems", "eea", "gdelt", "eurdep"].includes(id)));
     sources.eurdep = structuredClone(legacyHealth);
@@ -210,7 +210,7 @@ describe("published contracts", () => {
   });
 
   it("upgrades Snapshot V8 delays conservatively without deleting permanent gaps", async () => {
-    const current = structuredClone(SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8"))));
+    const current = structuredClone(SnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8"))));
     const legacy = {
       ...current,
       schemaVersion: 8,
@@ -228,7 +228,7 @@ describe("published contracts", () => {
   });
 
   it("uses V8 partition health and the coverage matrix to narrow delayed hazards", async () => {
-    const current = structuredClone(SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8"))));
+    const current = structuredClone(SnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8"))));
     current.providers["national-civil-alerts"].partitions!.PL.status = "partial";
     current.locations["pl-bydgoszcz"] = {
       level: "UNKNOWN", coverage: "delayed", coverageGaps: ["flood", "wildfire", "civil-emergency"], delayedHazards: ["flood"], hazards: [],
@@ -249,7 +249,7 @@ describe("published contracts", () => {
   });
 
   it("rejects malformed Snapshot V9 delayed-hazard arrays", async () => {
-    const current = structuredClone(SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8"))));
+    const current = structuredClone(SnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8"))));
     const locationId = Object.keys(current.locations)[0];
     const malformed = structuredClone(current) as unknown as { locations: Record<string, { delayedHazards: unknown }> };
     malformed.locations[locationId].delayedHazards = "flood";
@@ -257,14 +257,14 @@ describe("published contracts", () => {
   });
 
   it("rejects catalog V2 locations mislabeled as a legacy snapshot", async () => {
-    const current = structuredClone(SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")))) as unknown as Record<string, unknown>;
+    const current = structuredClone(SnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8")))) as unknown as Record<string, unknown>;
     current.schemaVersion = 9;
     delete current.catalogVersion;
     expect(() => parseSnapshot(current)).toThrow(/500 locations/);
   });
 
   it("rejects an unrecognized legacy hazard source instead of misattributing it", async () => {
-    const current = removeContextHazards(structuredClone(SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")))));
+    const current = removeContextHazards(structuredClone(SnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8")))));
     const sources = Object.fromEntries(Object.entries(createEmptyState(new Date(current.generatedAt)).sources)
       .filter(([id]) => ["meteoalarm", "usgs", "effis", "cems", "eea", "gdelt", "eurdep"].includes(id)));
     sources.eurdep = structuredClone(legacyHealth);
@@ -279,13 +279,13 @@ describe("published contracts", () => {
   });
 
   it("rejects an incomplete snapshot", async () => {
-    const snapshot = structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8"))));
+    const snapshot = structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8"))));
     Reflect.deleteProperty(snapshot.locations, Object.keys(snapshot.locations)[0]);
     expect(() => CompleteSnapshotSchema.parse(snapshot)).toThrow(/exactly the configured locations/);
   });
 
   it("rejects a snapshot with the right count but the wrong location ids", async () => {
-    const snapshot = structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8"))));
+    const snapshot = structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8"))));
     const replaced = Object.keys(snapshot.locations)[0];
     snapshot.locations["not-in-the-catalog"] = snapshot.locations[replaced];
     Reflect.deleteProperty(snapshot.locations, replaced);
@@ -293,14 +293,14 @@ describe("published contracts", () => {
   });
 
   it("rejects an alert summary that disagrees with its leading hazard", async () => {
-    const snapshot = structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8"))));
+    const snapshot = structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8"))));
     const alert = Object.values(snapshot.locations).find((value) => value.hazards.length)!;
     alert.level = alert.level === "SEVERE" ? "ELEVATED" : "SEVERE";
     expect(() => SnapshotSchema.parse(snapshot)).toThrow(/leading hazard/);
   });
 
   it("rejects alert timing that disagrees with its leading hazard", async () => {
-    const snapshot = structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8"))));
+    const snapshot = structuredClone(CompleteSnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8"))));
     const alert = Object.values(snapshot.locations).find((value) => value.hazards.length)!;
     if (!("timing" in alert)) throw new Error("Demo snapshot has no alert");
     alert.timing = alert.timing === "ACTIVE" ? "UPCOMING" : "ACTIVE";
@@ -308,7 +308,7 @@ describe("published contracts", () => {
   });
 
   it("rejects a normal location that leaks hazards", async () => {
-    const valid = SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")));
+    const valid = SnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8")));
     const snapshot = structuredClone(valid) as unknown as { locations: Record<string, { level: string; hazards: unknown[] }> };
     const normal = Object.values(snapshot.locations).find((value) => value.level === "NORMAL")!;
     const hazard = Object.values(snapshot.locations).find((value) => value.hazards.length)!.hazards[0];
@@ -317,14 +317,14 @@ describe("published contracts", () => {
   });
 
   it("rejects executable source-link schemes", async () => {
-    const snapshot = structuredClone(SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8"))));
+    const snapshot = structuredClone(SnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8"))));
     const hazard = Object.values(snapshot.locations).find((value) => value.hazards.length)!.hazards[0];
     hazard.sourceUrl = "javascript:alert(1)";
     expect(() => SnapshotSchema.parse(snapshot)).toThrow();
   });
 
   it("rejects normalized events that end before they start", async () => {
-    const snapshot = SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")));
+    const snapshot = SnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8")));
     const hazard = Object.values(snapshot.locations).find((value) => value.hazards.length)!.hazards[0];
     const event = {
       ...hazard, sourceId: "usgs", providerId: "usgs", affectedArea: hazard.affectedArea.label,
@@ -343,7 +343,7 @@ describe("published contracts", () => {
   });
 
   it("validates transport-owned events even when aggregate events are empty", async () => {
-    const snapshot = SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")));
+    const snapshot = SnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8")));
     const hazard = Object.values(snapshot.locations).find((value) => value.hazards.length)!.hazards[0];
     const event = NormalizedEventSchema.parse({ ...hazard, sourceId: "meteoalarm", providerId: "meteoalarm",
       transportId: "meteoalarm-primary", affectedArea: hazard.affectedArea.label, geometry: { kind: "locations", ids: ["at-vienna"] } });

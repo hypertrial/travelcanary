@@ -36,7 +36,7 @@ describe("client snapshot staleness", () => {
   });
 
   it("removes expired alert evidence before applying stale coverage", async () => {
-    const snapshot = SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")));
+    const snapshot = SnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8")));
     snapshot.generatedAt = "2026-08-25T12:00:00Z";
     const [id, state] = Object.entries(snapshot.locations).find(([, location]) => location.level !== "NORMAL" && location.level !== "UNKNOWN")!;
     if (state.level === "NORMAL" || state.level === "UNKNOWN") throw new Error("Expected an alert fixture");
@@ -51,7 +51,7 @@ describe("client snapshot staleness", () => {
   });
 
   it("retains unexpired known alerts while marking their coverage delayed", async () => {
-    const snapshot = SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")));
+    const snapshot = SnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8")));
     snapshot.generatedAt = "2026-08-25T12:00:00Z";
     const [id, state] = Object.entries(snapshot.locations).find(([, location]) => location.level !== "NORMAL" && location.level !== "UNKNOWN")!;
     if (state.level === "NORMAL" || state.level === "UNKNOWN") throw new Error("Expected an alert fixture");
@@ -66,7 +66,7 @@ describe("client snapshot staleness", () => {
   });
 
   it("returns an expired alert to normal when only non-life-safety checks are delayed", async () => {
-    const snapshot = SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")));
+    const snapshot = SnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8")));
     snapshot.generatedAt = "2026-08-25T12:00:00Z";
     snapshot.dataHealth = "delayed";
     const [id, state] = Object.entries(snapshot.locations).find(([, location]) => location.level !== "NORMAL" && location.level !== "UNKNOWN")!;
@@ -84,7 +84,7 @@ describe("client snapshot staleness", () => {
   });
 
   it("returns an expired alert to unknown when a life-safety check is delayed", async () => {
-    const snapshot = SnapshotSchema.parse(JSON.parse(await readFile("public/demo-snapshot.json", "utf8")));
+    const snapshot = SnapshotSchema.parse(JSON.parse(await readFile("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8")));
     snapshot.generatedAt = "2026-08-25T12:00:00Z";
     const [id, state] = Object.entries(snapshot.locations).find(([, location]) => location.level !== "NORMAL" && location.level !== "UNKNOWN")!;
     if (state.level === "NORMAL" || state.level === "UNKNOWN") throw new Error("Expected an alert fixture");

@@ -12,7 +12,7 @@ import { parseIpmaObservations } from "@/lib/conditions/ipma";
 import { conditionAttribution } from "@/lib/conditions/sources";
 import { ConditionsV2Schema, emptyConditions } from "@/lib/domain/conditions";
 
-const legacy = SnapshotV10Schema.parse(JSON.parse(readFileSync("public/demo-snapshot.json", "utf8")));
+const legacy = SnapshotV10Schema.parse(JSON.parse(readFileSync("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8")));
 const countries = [...new Set(release3.locationIds.map((id) => id.slice(0, 2).toUpperCase()))].sort();
 const addedIds = release3.locationIds.filter((id) => !release2.locationIds.includes(id));
 const partitioned = ["meteoalarm", "eea-aqi", "national-civil-alerts"] as const;
@@ -25,12 +25,12 @@ function snapshot3() {
 }
 function conditions3(countryCode = "AT") {
   const legacyCountry = release2.locationIds.some((id) => id.startsWith(`${countryCode.toLowerCase()}-`));
-  const file = ConditionsV2Schema.parse(JSON.parse(readFileSync(`public/conditions/v2/${legacyCountry ? countryCode : "AT"}.json`, "utf8")));
+  const file = ConditionsV2Schema.parse(JSON.parse(readFileSync(`tests/fixtures/legacy-catalog-2/conditions/v2/${legacyCountry ? countryCode : "AT"}.json`, "utf8")));
   return { ...file, schemaVersion: 3, catalogVersion: 3, countryCode,
     locations: Object.fromEntries(release3.locationIds.filter((id) => id.startsWith(`${countryCode.toLowerCase()}-`)).map((id) => [id, legacyCountry ? file.locations[id] : emptyConditions()])) };
 }
 function catalog3() {
-  return [...JSON.parse(readFileSync("public/locations.json", "utf8")), ...candidates.locations];
+  return [...JSON.parse(readFileSync("tests/fixtures/legacy-catalog-2/locations.json", "utf8")), ...candidates.locations];
 }
 
 describe("catalog3 public snapshot contract", () => {

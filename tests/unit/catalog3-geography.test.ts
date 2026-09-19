@@ -12,7 +12,7 @@ import release from "../../data/catalog-releases/3.json";
 async function geometry() { return JSON.parse(await readFile("public/catalogs/3/covered-countries.geojson", "utf8")) as FeatureCollection<Polygon | MultiPolygon, { countryCode: string }>; }
 describe("reviewed offline catalog3 display geography", () => {
   it("replays the pinned input through the real --catalog3 --check generator with exact45 countries and untouched legacy bytes", async () => {
-    const before = await readFile("public/covered-countries.geojson"); const input = await readFile(scope.input);
+    const before = await readFile("tests/fixtures/legacy-catalog-2/covered-countries.geojson"); const input = await readFile(scope.input);
     expect(createHash("sha256").update(input).digest("hex")).toBe(scope.inputSha256);
     const output = execFileSync(process.execPath, [resolve("scripts/generate-covered-countries.mjs"), "--catalog", "3", "--check"], {
       cwd: process.cwd(), env: { ...process.env, NATURAL_EARTH_PATH: resolve(scope.input) }, stdio: "pipe", timeout: 15000,
@@ -20,7 +20,7 @@ describe("reviewed offline catalog3 display geography", () => {
     expect(output).toContain("45 countries");
     const collection = await geometry(); const countries = [...new Set(release.locationIds.map((id) => id.slice(0, 2).toUpperCase()))].sort();
     expect(collection.features.map(({ properties }) => properties.countryCode).sort()).toEqual(countries);
-    expect(collection.features).toHaveLength(45); expect((await readFile("public/covered-countries.geojson")).equals(before)).toBe(true);
+    expect(collection.features).toHaveLength(45); expect((await readFile("tests/fixtures/legacy-catalog-2/covered-countries.geojson")).equals(before)).toBe(true);
   }, 20_000);
 
   it("retains nondegenerate microstates, separate Kosovo and Serbia, Norwegian mainland, and the Azores", async () => {
@@ -46,14 +46,14 @@ describe("reviewed offline catalog3 display geography", () => {
 
   it("rejects an unreviewed input before altering either geography artifact", async () => {
     const directory = await mkdtemp(join(tmpdir(), "travelcanary-unreviewed-geometry-"));
-    const expanded = await readFile("public/catalogs/3/covered-countries.geojson"); const legacy = await readFile("public/covered-countries.geojson");
+    const expanded = await readFile("public/catalogs/3/covered-countries.geojson"); const legacy = await readFile("tests/fixtures/legacy-catalog-2/covered-countries.geojson");
     try {
       const unreviewed = join(directory, "boundaries.json"); await writeFile(unreviewed, `${await readFile(scope.input, "utf8")} `);
       let error: unknown;
       try { execFileSync(process.execPath, [resolve("scripts/generate-covered-countries.mjs"), "--catalog", "3", "--check"], { env: { ...process.env, NATURAL_EARTH_PATH: unreviewed }, stdio: "pipe", timeout: 15000 }); }
       catch (failure) { error = failure; }
       expect(String(error)).toContain("Unreviewed country geometry input");
-      expect((await readFile("public/catalogs/3/covered-countries.geojson")).equals(expanded)).toBe(true); expect((await readFile("public/covered-countries.geojson")).equals(legacy)).toBe(true);
+      expect((await readFile("public/catalogs/3/covered-countries.geojson")).equals(expanded)).toBe(true); expect((await readFile("tests/fixtures/legacy-catalog-2/covered-countries.geojson")).equals(legacy)).toBe(true);
     } finally { await rm(directory, { recursive: true, force: true }); }
   }, 20_000);
 });

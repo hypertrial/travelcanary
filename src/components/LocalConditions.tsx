@@ -35,7 +35,7 @@ function range(values: Array<number | null>, unit: string) {
   const present = values.filter((value): value is number => value != null);
   return present.length ? `${number(Math.min(...present), unit)}–${number(Math.max(...present), unit)}` : "Not available";
 }
-export function LocalConditions({ location, countryIds, snapshotUrl, now, catalogVersion = 2 }: { location: PublicLocation; countryIds: string[]; snapshotUrl: string | null; now: Date; catalogVersion?: 2 | 3 }) {
+export function LocalConditions({ location, countryIds, snapshotUrl, now, catalogVersion = 3 }: { location: PublicLocation; countryIds: string[]; snapshotUrl: string | null; now: Date; catalogVersion?: 2 | 3 }) {
   const result = useConditions(snapshotUrl, location.countryCode, countryIds, catalogVersion);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const retryFocus = useRef(false);

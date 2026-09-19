@@ -3,7 +3,7 @@ import type { LocationState} from "@/lib/domain/schemas";
 import { LocationCoverageDetails, LocationCoverageSummary } from "./LocationCoveragePanel";
 import { LocalConditions } from "./LocalConditions";
 
-export function DestinationContext({ location, state, snapshot, now, countryIds, snapshotUrl, catalogVersion = 2 }: {
+export function DestinationContext({ location, state, snapshot, now, countryIds, snapshotUrl, catalogVersion = 3 }: {
   location: PublicLocation;
   state: LocationState;
   snapshot: Snapshot | null;

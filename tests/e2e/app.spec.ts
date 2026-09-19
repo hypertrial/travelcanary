@@ -164,7 +164,7 @@ test("starts safety-data requests before initializing MapLibre", async ({ page }
   page.on("request", (request) => requests.push(request.url()));
   await page.goto("/");
   await expect(page.locator('[data-locations-ready="true"]')).toBeVisible({ timeout: 15_000 });
-  const catalog = requests.findIndex((url) => url.endsWith("/locations.json"));
+  const catalog = requests.findIndex((url) => url.endsWith("/catalogs/3/locations.json"));
   const snapshot = requests.findIndex((url) => url.includes("/catalogs/3/publication/latest.json"));
   const map = requests.findIndex((url) => url.includes("openfreemap.org") || url.includes("maplibre-gl-worker.mjs"));
   expect(catalog).toBeGreaterThan(-1);

@@ -146,7 +146,7 @@ describe("map presentation", () => {
   });
 
   it("tints exactly the 28 covered countries", () => {
-    const collection = JSON.parse(readFileSync(path.join(process.cwd(), "public/covered-countries.geojson"), "utf8")) as {
+    const collection = JSON.parse(readFileSync(path.join(process.cwd(), "tests/fixtures/legacy-catalog-2/covered-countries.geojson"), "utf8")) as {
       features: Array<{ properties: { countryCode: string } }>;
     };
     expect(collection.features.map((feature) => feature.properties.countryCode)).toEqual([...countryCodes]);
@@ -206,7 +206,7 @@ describe("map presentation", () => {
       type: "fill",
       paint: { "fill-color": COVERED_LAND_COLOR },
     }), "water");
-    expect(COVERED_COUNTRIES_URL).toBe("/covered-countries.geojson");
+    expect(COVERED_COUNTRIES_URL).toBe("/catalogs/3/covered-countries.geojson");
 
     const skippedAddSource = vi.fn();
     applyCoveredCountriesLayer({ ...map, getLayer: () => undefined, addSource: skippedAddSource, addLayer: vi.fn() }, { type: "FeatureCollection", features: [] });

@@ -117,7 +117,7 @@ for (const [name, newerResponse] of [
 }
 
 test("disables the attention summary when the destination catalog fails", async ({ page }, testInfo) => {
-  await page.route("**/locations.json", (route) => route.abort());
+  await page.route("**/catalogs/3/locations.json", (route) => route.abort());
   await page.goto("/");
   await expect(page.getByText("Destinations unavailable.")).toBeVisible();
   if (testInfo.project.name === "mobile-webkit") {
@@ -133,7 +133,7 @@ test("disables the attention summary when the destination catalog fails", async 
 });
 
 test("does not promise search or a directory when both map and catalog fail", { tag: "@map-failure" }, async ({ page }) => {
-  await page.route("**/locations.json", (route) => route.abort());
+  await page.route("**/catalogs/3/locations.json", (route) => route.abort());
   await page.route(/openfreemap/, (route) => route.abort());
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "The map could not load." })).toBeVisible({ timeout: 15_000 });

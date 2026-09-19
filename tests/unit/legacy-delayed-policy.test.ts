@@ -6,7 +6,7 @@ import policy from "../../data/catalog-releases/2-delayed-providers.json";
 import { HazardTypeSchema, parseSnapshot } from "@/lib/domain/schemas";
 
 function historicalSnapshot(test: typeof baseline.scenarios[number]) {
-  const input = JSON.parse(readFileSync("public/demo-snapshot.json", "utf8"));
+  const input = JSON.parse(readFileSync("tests/fixtures/legacy-catalog-2/demo-snapshot.json", "utf8"));
   input.schemaVersion = 8; delete input.catalogVersion;
   for (const id of ["pt-horta", "pt-ponta-delgada", "pt-santa-cruz-das-flores"]) delete input.locations[id];
   for (const item of Object.values(input.locations)) {

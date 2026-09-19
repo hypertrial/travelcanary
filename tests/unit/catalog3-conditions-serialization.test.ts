@@ -8,7 +8,7 @@ import release2 from "../../data/catalog-releases/2.json";
 
 const countries = [...new Set(release2.locationIds.map((id) => id.slice(0, 2).toUpperCase()))];
 const emptyArrays = ["observations", "rivers", "earthquakes", "infrastructureIncidents", "systemConditions", "limitations"];
-function legacy(country: string) { return ConditionsV2Schema.parse(JSON.parse(readFileSync(`public/conditions/v2/${country}.json`, "utf8"))); }
+function legacy(country: string) { return ConditionsV2Schema.parse(JSON.parse(readFileSync(`tests/fixtures/legacy-catalog-2/conditions/v2/${country}.json`, "utf8"))); }
 
 describe("catalog3 lossless compact conditions wire", () => {
   it("omits only default-empty arrays and roundtrips every populated legacy country without mutation", () => {
