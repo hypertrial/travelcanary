@@ -7,7 +7,9 @@ import { catalogLocationsV3 } from "@/lib/catalog-data";
 import { expandedHazardCoverage, expandedProviderApplies } from "@/lib/expanded-coverage";
 import { nationalWarningManifest } from "@/lib/national-warning-sources";
 import { locationCoveragePresentation } from "@/lib/coverage-presentation";
+import { mapFilterCounts } from "@/lib/map-presentation";
 import { SnapshotV11Schema, catalogLocationState } from "@/lib/domain/catalog-public";
+import { attentionLocationSummaries, attentionPresentation, deriveUiDataState, liveStatusPresentation } from "@/lib/ui-presentation";
 import { HazardTypeSchema, type NormalizedEvent } from "@/lib/domain/schemas";
 import type { IngestionState } from "@/lib/domain/catalog-state";
 import release2 from "../../data/catalog-releases/2.json";
@@ -19,6 +21,16 @@ const added = release3.locationIds.filter((id) => !release2.locationIds.includes
 const englandFloodIds = new Set(nationalWarningManifest.countries.GB.systems.find(({ id }) => id === "ea-flood")!.coverageLocationIds);
 const scopes = { usgs: added, emsc: added, "slf-avalanche": ["li-malbun"], "fcdo-travel-advice": added.filter((id) => !id.startsWith("gb-") && !id.startsWith("va-")) };
 function state() { const value = createEmptyState(now); value.collection = { catalogVersion: 3, revision: 1 }; return value; }
+function healthyCore(value: IngestionState) {
+  const health = { status: "ok" as const, lastAttempt: now.toISOString(), lastSuccess: now.toISOString(), sourceUpdatedAt: now.toISOString(),
+    nextExpectedUpdate: "2026-09-08T12:10:00Z", itemCount: 0, consecutiveFailures: 0, error: null };
+  for (const source of Object.values(value.sources)) Object.assign(source, health);
+  for (const country of Object.keys(value.sourcePartitions.meteoalarm) as Array<keyof typeof value.sourcePartitions.meteoalarm>) {
+    value.sourcePartitions.meteoalarm[country] = structuredClone(health);
+    value.sourcePartitions.eea[country] = structuredClone(health);
+  }
+  return value;
+}
 function receipt(value: IngestionState, source: keyof typeof scopes, checked = scopes[source]) {
   value.expandedSourceHealth[source] = { health: { ...value.sources[source], status: checked.length === scopes[source].length ? "ok" : checked.length ? "partial" : "failed",
     lastAttempt: now.toISOString(), lastSuccess: checked.length ? now.toISOString() : null, sourceUpdatedAt: checked.length ? now.toISOString() : null,
@@ -107,6 +119,75 @@ describe("reviewed expanded monitoring coverage", () => {
     const checkedId = scopes.usgs.find((id) => id !== "gb-london" && id !== "li-malbun")!;
     expect(view(snapshot, checkedId).categories.flatMap(({ subchecks }) => subchecks)
       .find(({ hazard }) => hazard === "earthquake")!.freshnessStatus).toBe("current");
+  });
+
+  it("keeps global dataHealth complete when expanded destinations are pending or only air-quality delayed", () => {
+    const pendingState = healthyCore(state());
+    const pending = buildCatalog3Snapshot(pendingState, now);
+    expect(pending.dataHealth).toBe("complete");
+    expect(catalogLocationState(pending, "tr-istanbul").updatePending).toBe(true);
+    expect(mapFilterCounts(catalogLocationsV3, pending)?.unavailable).toBe(0);
+    expect(deriveUiDataState({ locationsLoaded: true, catalogError: false, snapshot: pending, snapshotError: false, tilesFailed: false })).toBe("ready");
+
+    const value = healthyCore(state()); receipt(value, "usgs");
+    const eeaScope = catalogLocationsV3.filter((location) => added.includes(location.id) && expandedProviderApplies("eea-aqi", location)).map(({ id }) => id);
+    const unavailable = eeaScope.filter((id) => id.startsWith("tr-"));
+    value.collectionReceipts[3].eea = { catalogVersion: 3, collectionRevision: 1, checkedAt: now.toISOString(), status: "partial",
+      checkedLocationIds: eeaScope.filter((id) => !id.startsWith("tr-")), unavailableLocationIds: unavailable };
+    const snapshot = buildCatalog3Snapshot(value, now);
+    expect(snapshot.dataHealth).toBe("complete");
+    expect(snapshot.locations["tr-istanbul"]).toMatchObject({ level: "NORMAL", coverage: "delayed", delayedHazards: ["air-quality"] });
+    expect(unavailable.every((id) => snapshot.locations[id].coverage === "delayed")).toBe(true);
+    expect(mapFilterCounts(catalogLocationsV3, snapshot)?.unavailable).toBeGreaterThanOrEqual(unavailable.length);
+    expect(deriveUiDataState({ locationsLoaded: true, catalogError: false, snapshot, snapshotError: false, tilesFailed: false })).toBe("ready");
+  });
+
+  it("still delays global dataHealth from blocking-source failure while expanded destinations are monitored", () => {
+    const value = healthyCore(state());
+    receipt(value, "usgs");
+    receipt(value, "emsc");
+    value.sources.usgs = { ...value.sources.usgs, status: "failed", lastSuccess: null, consecutiveFailures: 2, error: "timeout" };
+    const snapshot = buildCatalog3Snapshot(value, now);
+    expect(snapshot.dataHealth).toBe("delayed");
+    expect(snapshot.locations["hu-budapest"].delayedHazards).toContain("earthquake");
+    const ui = { locationsLoaded: true, catalogError: false, snapshot, snapshotError: false, tilesFailed: false };
+    expect(deriveUiDataState(ui)).toBe("refresh-delayed");
+    expect(liveStatusPresentation({ mode: "live", uiState: deriveUiDataState(ui), generatedAt: snapshot.generatedAt, now })).toMatchObject({
+      label: "Delayed", desktopLabel: expect.stringContaining("Delayed"),
+    });
+  });
+
+  it("still applies client staleness to Catalog 3 snapshots independently of expanded destination state", () => {
+    const value = healthyCore(state());
+    const fresh = buildCatalog3Snapshot(value, now);
+    expect(fresh.dataHealth).toBe("complete");
+    expect(catalogLocationState(fresh, "tr-istanbul").updatePending).toBe(true);
+
+    const aged = applySnapshotStaleness(fresh, new Date(now.getTime() + 30 * 60_000 + 1), catalogLocationsV3);
+    expect(aged.dataHealth).toBe("delayed");
+    expect(catalogLocationState(aged, "tr-istanbul").updatePending).toBe(true);
+    const ui = { locationsLoaded: true, catalogError: false, snapshot: aged, snapshotError: false, tilesFailed: false };
+    expect(deriveUiDataState(ui)).toBe("refresh-delayed");
+    expect(liveStatusPresentation({ mode: "live", uiState: deriveUiDataState(ui), generatedAt: aged.generatedAt, now: new Date(now.getTime() + 30 * 60_000 + 1) }))
+      .toMatchObject({ label: "Delayed" });
+  });
+
+  it("keeps live chrome ready when only expanded destinations have delayed checks", () => {
+    const value = healthyCore(state());
+    receipt(value, "usgs");
+    const eeaScope = catalogLocationsV3.filter((location) => added.includes(location.id) && expandedProviderApplies("eea-aqi", location)).map(({ id }) => id);
+    value.collectionReceipts[3].eea = { catalogVersion: 3, collectionRevision: 1, checkedAt: now.toISOString(), status: "partial",
+      checkedLocationIds: eeaScope.filter((id) => !id.startsWith("tr-")), unavailableLocationIds: eeaScope.filter((id) => id.startsWith("tr-")) };
+    const snapshot = buildCatalog3Snapshot(value, now);
+    const ui = { locationsLoaded: true, catalogError: false, snapshot, snapshotError: false, tilesFailed: false };
+    expect(deriveUiDataState(ui)).toBe("ready");
+    expect(liveStatusPresentation({ mode: "live", uiState: "ready", generatedAt: snapshot.generatedAt, now })).toMatchObject({
+      label: "Live", desktopLabel: expect.stringContaining("Live"),
+    });
+    const attention = attentionLocationSummaries(catalogLocationsV3, snapshot);
+    const presentation = attentionPresentation(attention, { catalogCount: catalogLocationsV3.length, snapshotAvailable: true });
+    expect(presentation.globalUnavailable).toBe(false);
+    expect(presentation.delayedItems.some(({ location }) => location.id === "tr-istanbul")).toBe(true);
   });
 
   it("uses Catalog 3 partition receipts for each expanded MeteoAlarm destination and blocks unavailable life-safety scope", () => {

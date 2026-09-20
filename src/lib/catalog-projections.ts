@@ -134,8 +134,9 @@ export function buildCatalog3Snapshot(state: ProjectionState, now = new Date()) 
     snapshot.locations[location.id] = hazards.length ? { ...common, level: hazards[0].level, timing: hazards[0].timing }
       : delayedHazardsRequireUnknown(delayedHazards) ? { ...common, level: "UNKNOWN", hazards: [] } : { ...common, level: "NORMAL", hazards: [] };
   }
-  if (snapshot.dataHealth === "complete" && addedLocations.some(({ id }) => snapshot.locations[id].coverage === "delayed"
-    || ("updatePending" in snapshot.locations[id] && snapshot.locations[id].updatePending))) snapshot.dataHealth = "delayed";
+  // Global dataHealth stays the core blocking-source aggregate. Expanded
+  // pending or coverage-scoped delays (including air-quality) stay on those
+  // destinations and the Checks delayed filter.
   return SnapshotV11Schema.parse(snapshot);
 }
 

@@ -177,6 +177,8 @@ describe("UI presentation", () => {
     expect(deriveUiDataState({ ...base, locationsLoaded: false })).toBe("initial-loading");
     expect(deriveUiDataState({ ...base, catalogError: true, locationsLoaded: false })).toBe("catalog-unavailable");
     expect(deriveUiDataState({ ...base, snapshot: null, snapshotError: true })).toBe("snapshot-unavailable");
+    expect(deriveUiDataState(base)).toBe("ready");
+    expect(deriveUiDataState({ ...base, snapshot: { ...snapshot, dataHealth: "delayed" } })).toBe("refresh-delayed");
     expect(deriveUiDataState({ ...base, snapshotError: true })).toBe("refresh-delayed");
     expect(deriveUiDataState({ ...base, tilesFailed: true })).toBe("tiles-unavailable");
   });

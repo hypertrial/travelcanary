@@ -803,7 +803,7 @@ Allowed contract values are:
 - Hazard `level`: `ELEVATED`, `HIGH`, or `SEVERE`
 - Hazard and `ELEVATED`, `HIGH`, or `SEVERE` location `timing`: `ACTIVE` or `UPCOMING`
 - Location `coverage`: `complete`, `partial`, or `delayed`
-- Global `dataHealth`: `complete`, `delayed`, or `stale`
+- Global `dataHealth`: `complete`, `delayed`, or `stale`. This is the blocking-source aggregate and publication freshness, not a rollup of destination `coverage`, `delayedHazards`, or `updatePending`.
 - Provider `status`: `ok`, `partial`, `delayed`, `failed`, or `disabled`
 - Partition `status`: `ok`, `partial`, `delayed`, `failed`, or `disabled`; all 28 country keys are required for MeteoAlarm, EEA, and national-alert partitions
 
