@@ -30,7 +30,7 @@ Implement the smallest coherent change. Do not silently expand scope. Put unrela
 
 Development feedback: `scripts/verify-fast`
 
-Pull requests run the GitHub `check-fast` job (`npm run check:fast`). Pushes to `main` run the full GitHub gate (`npm run check:full`).
+Pull requests and `main` run the GitHub `check-fast` job (`npm run check:fast`). Playwright (`check:full`) and the Docker/systemd self-host job run weekly, or on a manual dispatch of `ci-full.yml`.
 
 Completion gate: `scripts/verify`
 

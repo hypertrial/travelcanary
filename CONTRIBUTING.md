@@ -23,4 +23,4 @@ Do not submit credentials, private ingestion state, production snapshots, raw up
 
 Keep changes reviewable and include the commands actually run. Do not silently change the public wire contracts, safety semantics, or source licensing behavior.
 
-GitHub pull requests run `check-fast`. The full `check:full` gate runs on `main` and can be started manually with `workflow_dispatch`.
+GitHub pull requests and `main` run `check-fast`. The full `check:full` gate and the Docker/systemd self-host job run weekly, and can be started manually with `workflow_dispatch` on `ci-full.yml`.

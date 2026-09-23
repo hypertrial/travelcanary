@@ -219,6 +219,8 @@ describe("tooling configuration", () => {
     expect(workflow).toMatch(/^\s+pull_request:/m);
     expect(workflow).toMatch(/^  check-fast:/m);
     expect(workflow).toContain("npm run check:fast");
+    expect(workflow).not.toMatch(/^  self-host:/m);
+    expect(workflow).not.toContain("docker build");
     expect(workflow).not.toMatch(/check:release/);
     expect(workflow).not.toMatch(/check:catalog3/);
     expect(workflow).not.toContain("mcr.microsoft.com/playwright");
@@ -230,11 +232,15 @@ describe("tooling configuration", () => {
     expect(await readFile("eslint.config.mjs", "utf8")).toContain(".next-c3/**");
   });
 
-  it("runs the full check gate on main and manual dispatch only", async () => {
+  it("runs the full check and self-host gates weekly and on manual dispatch only", async () => {
     const workflow = await readFile(".github/workflows/ci-full.yml", "utf8");
     expect(workflow).toContain("workflow_dispatch:");
-    expect(workflow).toMatch(/^\s+push:/m);
-    expect(workflow).toContain("branches: [main]");
+    expect(workflow).toContain('cron: "0 6 * * 1"');
+    expect(workflow).not.toMatch(/^\s+push:/m);
+    expect(workflow).not.toContain("branches: [main]");
+    expect(workflow).toMatch(/^  self-host:/m);
+    expect(workflow).toContain("docker build --tag travelcanary:ci .");
+    expect(workflow).toContain("systemd-analyze verify");
     expect(workflow).not.toMatch(/pull_request/);
     expect(workflow).toContain("contents: read");
     expect(workflow).toContain("timeout-minutes: 45");
@@ -279,7 +285,7 @@ describe("tooling configuration", () => {
   it("keeps pull_request off the full-check trigger list", async () => {
     const workflow = await readFile(".github/workflows/ci-full.yml", "utf8");
     const lightweight = await readFile(".github/workflows/ci.yml", "utf8");
-    expect(workflowOnTriggers(workflow)).toEqual(["workflow_dispatch", "push"]);
+    expect(workflowOnTriggers(workflow)).toEqual(["workflow_dispatch", "schedule"]);
     expect(workflowOnTriggers(workflow)).not.toContain("pull_request");
     expect(workflowOnTriggers(workflow)).not.toContain("pull_request_target");
     expect(workflow).not.toMatch(/pull_request/);
