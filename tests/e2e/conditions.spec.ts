@@ -1,6 +1,96 @@
 import { expect, test } from "../playwright-fixtures";
 import AxeBuilder from "@axe-core/playwright";
-import { isDemoConditionsRequest, mutateDemoConditions, routeAllDemoConditions, routeDemoConditions } from "./helpers";
+import { demoPublication, demoPublicationWithConditions, installDemoPublicationObjects, isDemoConditionsRequest, mutateDemoConditions, routeAllDemoConditions, routeDemoConditions } from "./helpers";
+
+function viennaPublication(temperature: number) {
+  return demoPublicationWithConditions("AT", (conditions) => {
+    const weather = conditions.locations["at-vienna"].weather!;
+    weather.temperature = weather.temperature.map(() => temperature);
+  });
+}
+
+test("an open destination uses the accepted publication and switches conditions on refresh", async ({ page }) => {
+  const first = viennaPublication(11); const second = viennaPublication(22);
+  await installDemoPublicationObjects(page, first);
+  await installDemoPublicationObjects(page, second);
+  let current = first; let failRefresh = false;
+  const requests: string[] = [];
+  page.on("request", (request) => {
+    if (/\/api\/v1\/data(?:\?|$)|\/catalogs\/3\/generations\/.*\/manifest\.json$/.test(request.url())) requests.push(request.url());
+  });
+  await page.route(/\/api\/v1\/data(?:\?.*)?$/, (route) => failRefresh ? route.abort() : route.fulfill({ json: current.pointer }));
+  await page.goto("/");
+  await page.getByRole("combobox", { name: "Where are you going?" }).fill("Vienna");
+  await page.getByRole("option", { name: /Vienna/ }).click();
+  const section = page.getByRole("region", { name: "Local conditions", exact: true });
+  await expect(section.getByText(/Temperature 11 °C–11 °C/)).toBeVisible();
+  expect(requests.filter((url) => url.includes("/api/v1/data"))).toHaveLength(1);
+  expect(requests.filter((url) => url.includes("/manifest.json"))).toHaveLength(1);
+
+  current = second;
+  await page.locator('[data-ui="data-health-banner"]').getByRole("button", { name: "Retry" }).click();
+  await expect(section.getByText(/Temperature 22 °C–22 °C/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Vienna", exact: true })).toBeVisible();
+  expect(requests.filter((url) => url.includes("/api/v1/data"))).toHaveLength(2);
+  expect(requests.filter((url) => url.includes("/manifest.json"))).toHaveLength(2);
+
+  failRefresh = true;
+  await page.locator('[data-ui="data-health-banner"]').getByRole("button", { name: "Retry" }).click();
+  await expect(section.getByText(/Temperature 22 °C–22 °C/)).toBeVisible();
+  await expect(page.getByText("Previously loaded alerts remain visible while the latest update is retried.")).toBeVisible();
+});
+
+test("a late condition response from the previous generation cannot replace the new one", async ({ page }) => {
+  const first = viennaPublication(11); const second = viennaPublication(22);
+  await installDemoPublicationObjects(page, first);
+  await installDemoPublicationObjects(page, second);
+  let current = first;
+  let release!: () => void; let started!: () => void;
+  const pending = new Promise<void>((resolve) => { release = resolve; });
+  const firstRequest = new Promise<void>((resolve) => { started = resolve; });
+  const oldObject = first.conditionObjects![0];
+  await page.route(`**/${oldObject.path}`, async (route) => {
+    started(); await pending;
+    await route.fulfill({ body: oldObject.body, contentType: "application/json" });
+  });
+  await page.route(/\/api\/v1\/data(?:\?.*)?$/, (route) => route.fulfill({ json: current.pointer }));
+  await page.goto("/");
+  await page.getByRole("combobox", { name: "Where are you going?" }).fill("Vienna");
+  await page.getByRole("option", { name: /Vienna/ }).click();
+  await firstRequest;
+  const section = page.getByRole("region", { name: "Local conditions", exact: true });
+  await expect(section.getByText("Loading local conditions…")).toBeVisible();
+  current = second;
+  await page.locator('[data-ui="data-health-banner"]').getByRole("button", { name: "Retry" }).click();
+  await expect(section.getByText(/Temperature 22 °C–22 °C/)).toBeVisible();
+  const oldResponse = page.waitForResponse((response) => response.url().endsWith(oldObject.path));
+  release();
+  const response = await oldResponse;
+  await response.finished();
+  await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+  await expect(section.getByText(/Temperature 11 °C–11 °C/)).toHaveCount(0);
+  await expect(section.getByText(/Temperature 22 °C–22 °C/)).toBeVisible();
+});
+
+test("local retry restores a missing shared publication", async ({ page }) => {
+  const fixture = demoPublication();
+  await installDemoPublicationObjects(page, fixture);
+  let unavailable = true; let pointerRequests = 0;
+  await page.route(/\/api\/v1\/data(?:\?.*)?$/, (route) => {
+    pointerRequests += 1;
+    return unavailable ? route.abort() : route.fulfill({ json: fixture.pointer });
+  });
+  await page.goto("/");
+  await page.getByRole("combobox", { name: "Where are you going?" }).fill("Vienna");
+  await page.getByRole("option", { name: /Vienna/ }).click();
+  const section = page.getByRole("region", { name: "Local conditions", exact: true });
+  await expect(section.getByText("Local conditions unavailable. Alert information is unaffected.")).toBeVisible();
+  expect(pointerRequests).toBe(1);
+  unavailable = false;
+  await section.getByRole("button", { name: "Retry local conditions" }).click();
+  await expect(section.getByRole("heading", { name: "Forecast", exact: true })).toBeVisible();
+  expect(pointerRequests).toBe(2);
+});
 
 test("conditions are lazy, isolated, and available for all five island destinations", { tag: "@smoke" }, async ({ page }) => {
   const requests: string[] = [];

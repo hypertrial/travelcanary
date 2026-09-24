@@ -1,4 +1,5 @@
-import type { PublicCatalogLocation as PublicLocation, CatalogSnapshot as Snapshot } from "./domain/catalog-public";
+import type { PublicCatalogLocation as PublicLocation } from "./domain/catalog-public";
+import type { VerifiedPublicationSnapshot } from "./publication-client";
 
 
 export type SafetyDataState = {
@@ -8,9 +9,10 @@ export type SafetyDataState = {
   locationsLoaded: boolean;
   catalogError: string | null;
   catalogRequest: number;
-  snapshot: Snapshot | null;
+  publication: VerifiedPublicationSnapshot | null;
   snapshotError: string | null;
   request: number;
+  acceptedRequest: number;
   started: boolean;
 };
 
@@ -21,7 +23,7 @@ type DataAction =
   | { type: "catalog-failed"; request: number }
   | { type: "snapshot-loading"; request: number }
   | { type: "snapshot-unconfigured"; request: number }
-  | { type: "snapshot-ready"; request: number; snapshot: Snapshot; receivedAt: number }
+  | { type: "publication-ready"; request: number; publication: VerifiedPublicationSnapshot; receivedAt: number }
   | { type: "snapshot-failed"; request: number };
 
 export type SafetyDataAction = (DataAction & { epoch?: number })
@@ -29,8 +31,8 @@ export type SafetyDataAction = (DataAction & { epoch?: number })
 
 export const initialSafetyDataState: SafetyDataState = {
   epoch: 0, resourceKey: null,
-  locations: [], locationsLoaded: false, catalogError: null, catalogRequest: 0, snapshot: null,
-  snapshotError: null, request: 0, started: false,
+  locations: [], locationsLoaded: false, catalogError: null, catalogRequest: 0, publication: null,
+  snapshotError: null, request: 0, acceptedRequest: 0, started: false,
 };
 
 export function safetyDataReducer(state: SafetyDataState, action: SafetyDataAction): SafetyDataState {
@@ -49,13 +51,17 @@ export function safetyDataReducer(state: SafetyDataState, action: SafetyDataActi
     };
     case "snapshot-failed": return action.request !== state.request ? state : {
       ...state,
-      snapshotError: state.snapshot
+      snapshotError: state.publication
         ? "Previously loaded alerts remain visible while the latest update is retried."
         : "The latest alerts could not be confirmed. Check official local sources before relying on this map.",
     };
-    case "snapshot-ready": return state.snapshot
-      && Date.parse(state.snapshot.generatedAt) <= action.receivedAt + 5 * 60_000
-      && Date.parse(action.snapshot.generatedAt) < Date.parse(state.snapshot.generatedAt)
-      ? state : { ...state, snapshot: action.snapshot, snapshotError: null };
+    case "publication-ready": {
+      const current = state.publication;
+      const currentTime = current ? Date.parse(current.snapshot.generatedAt) : NaN;
+      const nextTime = Date.parse(action.publication.snapshot.generatedAt);
+      if (current && (nextTime === currentTime && action.request < state.acceptedRequest
+        || currentTime <= action.receivedAt + 5 * 60_000 && nextTime < currentTime)) return state;
+      return { ...state, publication: action.publication, acceptedRequest: action.request, snapshotError: null };
+    }
   }
 }

@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import type { DataMode } from "@/lib/config";
 import { applySnapshotStaleness } from "@/lib/snapshot-health";
 import { useSafetyData } from "@/lib/use-safety-data";
+import type { ConditionsSource } from "@/lib/use-conditions";
 import { locationInCoreOverview, mapFilterCounts, type MapFilter } from "@/lib/map-presentation";
 import { navigationUrl, parseAppNavigation, type AppView } from "@/lib/app-navigation";
 import { INSTALL_HINT_STORAGE_KEY, installPlatform, isStandaloneDisplay, type InstallPlatform } from "@/lib/install-presentation";
@@ -71,7 +72,7 @@ export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 3, conditi
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
   const [instance, setInstance] = useState<SelfHostedInstanceStatus | null>(null);
   const { isCompact, isMobile, detailsOverlay } = useResponsiveLayout();
-  const { locations, locationsLoaded, snapshot, catalogError, snapshotError, started, loadCatalog, loadSnapshot } = useSafetyData({ mode, snapshotUrl, catalogVersion });
+  const { locations, locationsLoaded, snapshot, publication, catalogError, snapshotError, started, loadCatalog, loadSnapshot } = useSafetyData({ mode, snapshotUrl, catalogVersion });
 
   useEffect(() => () => { closeCompletionRef.current = null; }, []);
 
@@ -143,6 +144,12 @@ export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 3, conditi
   [attention, catalogError, displayedSnapshot, locations.length, locationsLoaded]);
   const selected = locations.find((location) => location.id === selectedId) || null;
   const selectedState = selected ? locationState(displayedSnapshot, selected.id) : null;
+  const conditionReference = selected && publication?.conditionsByCountry[selected.countryCode];
+  const conditionsSource: ConditionsSource | null = !conditionsEnabled || !snapshotUrl ? null
+    : publication ? conditionReference
+      ? { status: "ready", generation: publication.generation, ...conditionReference }
+      : { status: "unavailable" }
+      : { status: snapshotError ? "unavailable" : "loading" };
   const displayNow = mode === "demo" && displayedSnapshot ? new Date(displayedSnapshot.generatedAt) : new Date(clock);
   const outerDestinations = useMemo(() => locations.filter((location) => !locationInCoreOverview(location)), [locations]);
   const outerAlertCount = useMemo(() => outerDestinations.filter(({ id }) => {
@@ -273,7 +280,7 @@ export function TravelCanaryApp({ mode, snapshotUrl, catalogVersion = 3, conditi
     {isMobile && appView === "alerts" && (tilesFailed
       ? <section className={styles.mobileMapFallback} aria-label="Map fallback directory"><MapFallback catalogAvailable={locationsLoaded && !catalogError} locations={locations} snapshot={displayedSnapshot} onSelect={selectLocation} /></section>
       : <AlertsView presentation={attentionState} filter={mapFilter} onSelect={selectLocation} onShowMap={() => setAppView("map")} />)}
-    {selected && selectedState && <DestinationDetails catalogVersion={catalogVersion} key={selected.id} location={selected} countryIds={locations.filter((location) => location.countryCode === selected.countryCode).map(({ id }) => id)} snapshotUrl={conditionsEnabled ? snapshotUrl : null} state={selectedState} snapshot={displayedSnapshot} now={displayNow} isCompact={isCompact} onClose={closeDetails} />}
+    {selected && selectedState && <DestinationDetails catalogVersion={catalogVersion} key={selected.id} location={selected} countryIds={locations.filter((location) => location.countryCode === selected.countryCode).map(({ id }) => id)} conditionsSource={conditionsSource} onRetryPublication={loadSnapshot} state={selectedState} snapshot={displayedSnapshot} now={displayNow} isCompact={isCompact} onClose={closeDetails} />}
     {isMobile && <MobileNavigation view={appView} itemCount={mobileNavigationCount} itemCountLabel={mobileNavigationCountLabel} onChange={setAppView} />}
     {installHintVisible && <aside className={styles.installHint} role="status"><UiIcon name="install" /><span><strong>Add TravelCanary to your home screen</strong><small>{platform === "ios" ? "Open Share, then Add to Home Screen." : platform === "android" ? "Use your browser menu and choose Install app." : "Use your browser's install command."}</small></span><button type="button" aria-label="Dismiss installation hint" onClick={() => { try { window.localStorage.setItem(INSTALL_HINT_STORAGE_KEY, "true"); } catch {} setInstallHintVisible(false); }}><UiIcon name="close" /></button></aside>}
     <span className="sr-only" role="status" aria-live="polite">{isMobile ? `${appView === "map" ? "Map" : "Alerts"} view selected.` : ""}</span>
