@@ -18,7 +18,7 @@ export async function loadConditions(url: string, country: string, ids: string[]
   const catalogVersion = publicPath.startsWith("/catalogs/") || immutableV3 ? 3 : 2;
   if ((catalogVersion === 3 && !immutableV3 && publicPath !== `/${catalogV3Paths.conditions}${country}.json`)
     || (expectedCatalogVersion && expectedCatalogVersion !== catalogVersion)) throw new Error("Conditions catalog namespace mismatch");
-  const key = `${catalogVersion}:${url}:${ids.join(",")}`;
+  const key = `${catalogVersion}:${url}:${reference?.sha256 ?? ""}:${reference?.bytes ?? ""}:${ids.join(",")}`;
   const existing = cache.get(key);
   if (existing && existing.until > Date.now()) { cache.delete(key); cache.set(key, existing); return existing.promise; }
   const promise = (async () => {

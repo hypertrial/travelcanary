@@ -59,4 +59,17 @@ describe("verified publication client", () => {
     const altered = fixtureFetch([], (path, body) => path === austria.reference.path ? ` ${body.slice(1)}` : body);
     await expect(loadConditions(`${austria.url}?tampered=1`, "AT", ids, altered, 3, austria.reference)).rejects.toThrow(/digest mismatch/);
   });
+
+  it("rechecks a changed digest reference even when the immutable URL was cached", async () => {
+    vi.stubGlobal("window", { location: { href: "http://localhost/", origin: "http://localhost" } });
+    const loaded = await loadPublicationSnapshot(pointerUrl, fixtureFetch([]));
+    const austria = loaded.conditionsByCountry.AT;
+    const ids = Object.keys(JSON.parse(readFileSync(resolve("public", austria.reference.path), "utf8")).locations);
+    const requests: string[] = [];
+    const fetchFixture = fixtureFetch(requests);
+    const url = `${austria.url}?reference-check=1`;
+    await loadConditions(url, "AT", ids, fetchFixture, 3, austria.reference);
+    await expect(loadConditions(url, "AT", ids, fetchFixture, 3, { ...austria.reference, sha256: "0".repeat(64) })).rejects.toThrow(/digest mismatch/);
+    expect(requests).toEqual([austria.reference.path, austria.reference.path]);
+  });
 });
