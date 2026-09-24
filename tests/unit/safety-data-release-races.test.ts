@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { initialSafetyDataState, safetyDataReducer, type SafetyDataAction } from "@/lib/safety-data-state";
+import type { VerifiedPublicationSnapshot } from "@/lib/publication-client";
 import { parseCatalogSnapshot, PublicCatalogV3Schema } from "@/lib/domain/catalog-public";
 import demo from "../fixtures/legacy-catalog-2/demo-snapshot.json";
 import legacyLocations from "../fixtures/legacy-catalog-2/locations.json";
@@ -19,6 +20,9 @@ function snapshot(catalog: 2 | 3, generatedAt = demo.generatedAt) {
     locations: Object.fromEntries(release3.locationIds.map((id) => [id, Reflect.get(value.locations, id)
       || { level: "UNKNOWN", coverage: "partial", coverageGaps: [], delayedHazards: [], hazards: [] }])) });
 }
+function publication(catalog: 2 | 3, generatedAt = demo.generatedAt): VerifiedPublicationSnapshot {
+  return { snapshot: snapshot(catalog, generatedAt), generation: "a".repeat(64), publishedAt: generatedAt, conditionsByCountry: {} };
+}
 const key2 = "2:live:https://unit.public.blob.vercel-storage.com/latest.json";
 const key3 = "3:live:https://unit.public.blob.vercel-storage.com/catalogs/3/latest.json";
 const reset = (epoch: number, resourceKey: string): SafetyDataAction => ({ type: "reset", epoch, resourceKey });
@@ -29,7 +33,7 @@ function populated(epoch: number, catalog: 2 | 3) {
   state = safetyDataReducer(state, { type: "catalog-loading", epoch, request: 4 });
   state = safetyDataReducer(state, { type: "catalog-ready", epoch, request: 4, locations: catalog === 3 ? roster3 : roster3.filter(({ id }) => Reflect.has(demo.locations, id)) });
   state = safetyDataReducer(state, { type: "snapshot-loading", epoch, request: 9 });
-  return safetyDataReducer(state, { type: "snapshot-ready", epoch, request: 9, snapshot: snapshot(catalog), receivedAt });
+  return safetyDataReducer(state, { type: "publication-ready", epoch, request: 9, publication: publication(catalog), receivedAt });
 }
 
 describe("safety reader release epochs", () => {
@@ -37,7 +41,7 @@ describe("safety reader release epochs", () => {
     let before = populated(1, 3);
     before = safetyDataReducer(before, { type: "snapshot-failed", epoch: 1, request: 9 });
     before = safetyDataReducer(before, { type: "catalog-failed", epoch: 1, request: 4 });
-    expect(before.snapshot).not.toBeNull(); expect(before.locations).toHaveLength(679);
+    expect(before.publication).not.toBeNull(); expect(before.locations).toHaveLength(679);
     expect(before.snapshotError).not.toBeNull(); expect(before.catalogError).not.toBeNull();
     expect(safetyDataReducer(before, reset(2, key2))).toEqual({ ...initialSafetyDataState, epoch: 2, resourceKey: key2 });
   });
@@ -48,7 +52,7 @@ describe("safety reader release epochs", () => {
       { type: "start", epoch: 1 }, { type: "catalog-loading", epoch: 1, request: 99 },
       { type: "catalog-ready", epoch: 1, request: 4, locations: roster3 }, { type: "catalog-failed", epoch: 1, request: 4 },
       { type: "snapshot-loading", epoch: 1, request: 99 }, { type: "snapshot-unconfigured", epoch: 1, request: 99 },
-      { type: "snapshot-ready", epoch: 1, request: 9, snapshot: snapshot(3, "2026-08-25T12:05:00.000Z"), receivedAt },
+      { type: "publication-ready", epoch: 1, request: 9, publication: publication(3, "2026-08-25T12:05:00.000Z"), receivedAt },
       { type: "snapshot-failed", epoch: 1, request: 9 },
       // Untagged historical actions belong to epoch0 and cannot alter a live epoch.
       { type: "snapshot-failed", request: 9 },
@@ -61,22 +65,22 @@ describe("safety reader release epochs", () => {
     const first = populated(1, 3);
     const second = safetyDataReducer(first, reset(2, key2));
     const third = safetyDataReducer(second, reset(3, key3));
-    expect(third.resourceKey).toBe(first.resourceKey); expect(third.snapshot).toBeNull();
+    expect(third.resourceKey).toBe(first.resourceKey); expect(third.publication).toBeNull();
     for (const action of [reset(1, key3), reset(2, key2), reset(3, key2),
-      { type: "snapshot-ready" as const, epoch: 1, request: 9, snapshot: snapshot(3), receivedAt },
+      { type: "publication-ready" as const, epoch: 1, request: 9, publication: publication(3), receivedAt },
       { type: "catalog-ready" as const, epoch: 1, request: 0, locations: roster3 }]) {
       expect(safetyDataReducer(third, action)).toBe(third);
     }
-    expect(safetyDataReducer(third, { type: "snapshot-ready", epoch: 3, request: 1, snapshot: snapshot(3), receivedAt }).snapshot?.catalogVersion).toBe(3);
+    expect(safetyDataReducer(third, { type: "publication-ready", epoch: 3, request: 1, publication: publication(3), receivedAt }).publication?.snapshot.catalogVersion).toBe(3);
   });
 
   it("preserves timestamp ordering across out-of-order successes within the same epoch", () => {
     const current = populated(4, 3);
     const pending = safetyDataReducer(current, { type: "snapshot-loading", epoch: 4, request: 11 });
-    const newest = safetyDataReducer(pending, { type: "snapshot-ready", epoch: 4, request: 10, snapshot: snapshot(3, "2026-08-25T12:04:00.000Z"), receivedAt });
-    const lateOlder = safetyDataReducer(newest, { type: "snapshot-ready", epoch: 4, request: 11, snapshot: snapshot(3, "2026-08-25T12:02:00.000Z"), receivedAt });
+    const newest = safetyDataReducer(pending, { type: "publication-ready", epoch: 4, request: 10, publication: publication(3, "2026-08-25T12:04:00.000Z"), receivedAt });
+    const lateOlder = safetyDataReducer(newest, { type: "publication-ready", epoch: 4, request: 11, publication: publication(3, "2026-08-25T12:02:00.000Z"), receivedAt });
     expect(lateOlder).toBe(newest);
-    expect(lateOlder.snapshot?.generatedAt).toBe("2026-08-25T12:04:00.000Z");
+    expect(lateOlder.publication?.snapshot.generatedAt).toBe("2026-08-25T12:04:00.000Z");
     expect(safetyDataReducer(lateOlder, { type: "snapshot-failed", epoch: 4, request: 10 })).toBe(lateOlder);
   });
 });

@@ -1,9 +1,9 @@
 import type { PublicCatalogLocation as PublicLocation } from "@/lib/domain/catalog-public";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { conditionRecords, type ConditionRecord, type ConditionSourceId, type InfrastructureIncident } from "@/lib/domain/conditions";
 import { currentConditions, infrastructureTiming } from "@/lib/conditions/presentation";
-import { useConditions } from "@/lib/use-conditions";
+import { useConditions, type ConditionsSource } from "@/lib/use-conditions";
 import { destinationTime } from "@/lib/time";
 import styles from "./LocalConditions.module.css";
 
@@ -35,8 +35,9 @@ function range(values: Array<number | null>, unit: string) {
   const present = values.filter((value): value is number => value != null);
   return present.length ? `${number(Math.min(...present), unit)}–${number(Math.max(...present), unit)}` : "Not available";
 }
-export function LocalConditions({ location, countryIds, snapshotUrl, now, catalogVersion = 3 }: { location: PublicLocation; countryIds: string[]; snapshotUrl: string | null; now: Date; catalogVersion?: 2 | 3 }) {
-  const result = useConditions(snapshotUrl, location.countryCode, countryIds, catalogVersion);
+export function LocalConditions({ location, countryIds, conditionsSource, onRetryPublication, now, catalogVersion = 3 }: { location: PublicLocation; countryIds: string[]; conditionsSource: ConditionsSource; onRetryPublication: () => Promise<void>; now: Date; catalogVersion?: 2 | 3 }) {
+  const result = useConditions(conditionsSource, location.countryCode, countryIds, catalogVersion);
+  const [retryingPublication, setRetryingPublication] = useState(false);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const retryFocus = useRef(false);
   useEffect(() => {
@@ -83,10 +84,13 @@ export function LocalConditions({ location, countryIds, snapshotUrl, now, catalo
   return <section className={styles.section} aria-label="Local conditions">
     <h3 ref={headingRef} tabIndex={-1}>Local conditions</h3>
     <p className={styles.note}>Forecasts and nearby observations—not alerts, safety ratings, or complete monitoring.</p>
-    {!data && <p role="status">{result.failed ? "Local conditions unavailable. Alert information is unaffected." : "Loading local conditions…"}</p>}
-    {(result.failed || result.retrying) && <button type="button" className={styles.retry} disabled={result.retrying} onClick={() => {
+    {!data && <p role="status">{result.failed && !retryingPublication ? "Local conditions unavailable. Alert information is unaffected." : "Loading local conditions…"}</p>}
+    {(result.failed || result.retrying || retryingPublication) && <button type="button" className={styles.retry} disabled={result.retrying || retryingPublication} onClick={() => {
       retryFocus.current = true;
-      result.retry();
+      if (conditionsSource.status === "unavailable") {
+        setRetryingPublication(true);
+        void onRetryPublication().finally(() => setRetryingPublication(false));
+      } else result.retry();
     }}>Retry local conditions</button>}
     {data && !records.length && <p role={collectionUnavailable ? "status" : undefined}>{collectionUnavailable
       ? "Local conditions unavailable. Alert information is unaffected."

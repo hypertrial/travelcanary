@@ -13,6 +13,7 @@ import {
   publicSymbols,
 } from "@/lib/ui-presentation";
 import { DestinationContextLoader } from "./DestinationContextLoader";
+import type { ConditionsSource } from "@/lib/use-conditions";
 import { UiIcon } from "./UiIcon";
 import styles from "./DestinationDetails.module.css";
 
@@ -46,14 +47,14 @@ function HazardCard({ hazard, location, now }: { hazard: PublicHazard; location:
 }
 
 function DetailsContent({
-  countryIds, snapshotUrl, catalogVersion = 3,
+  countryIds, conditionsSource, onRetryPublication, catalogVersion = 3,
   location,
   state,
   snapshot,
   now,
   onClose,
 }: {
-  countryIds: string[]; snapshotUrl: string | null; catalogVersion?: 2 | 3;
+  countryIds: string[]; conditionsSource: ConditionsSource | null; onRetryPublication: () => Promise<void>; catalogVersion?: 2 | 3;
   location: PublicLocation;
   state: LocationState;
   snapshot: Snapshot | null;
@@ -75,14 +76,14 @@ function DetailsContent({
     </header>
     <div className={styles.detailsBody}>
       {state.hazards.length > 0 && <div className={styles.hazardList}>{state.hazards.map((hazard) => <HazardCard key={hazard.id} hazard={hazard} location={location} now={now} />)}</div>}
-      <DestinationContextLoader catalogVersion={catalogVersion} location={location} state={state} snapshot={snapshot} now={now} countryIds={countryIds} snapshotUrl={snapshotUrl} />
+      <DestinationContextLoader catalogVersion={catalogVersion} location={location} state={state} snapshot={snapshot} now={now} countryIds={countryIds} conditionsSource={conditionsSource} onRetryPublication={onRetryPublication} />
       <p className={styles.safetyNote}>TravelCanary is an information aid, not an emergency service. Official local instructions always take precedence.</p>
     </div>
   </>;
 }
 
 export function DestinationDetails({
-  countryIds, snapshotUrl, catalogVersion = 3,
+  countryIds, conditionsSource, onRetryPublication, catalogVersion = 3,
   location,
   state,
   snapshot,
@@ -90,7 +91,7 @@ export function DestinationDetails({
   isCompact,
   onClose,
 }: {
-  countryIds: string[]; snapshotUrl: string | null; catalogVersion?: 2 | 3;
+  countryIds: string[]; conditionsSource: ConditionsSource | null; onRetryPublication: () => Promise<void>; catalogVersion?: 2 | 3;
   location: PublicLocation;
   state: LocationState;
   snapshot: Snapshot | null;
@@ -162,13 +163,13 @@ export function DestinationDetails({
             <UiIcon name="chevron" />{sheetState === "peek" ? "Expand" : "Collapse"}
           </Button>
         </div>
-        <DetailsContent catalogVersion={catalogVersion} location={location} countryIds={countryIds} snapshotUrl={snapshotUrl} state={state} snapshot={snapshot} now={now} onClose={onClose} />
+        <DetailsContent catalogVersion={catalogVersion} location={location} countryIds={countryIds} conditionsSource={conditionsSource} onRetryPublication={onRetryPublication} state={state} snapshot={snapshot} now={now} onClose={onClose} />
       </Dialog>
     </Modal>
   </ModalOverlay>;
 
   const detailVariant = state.hazards.length > 0 ? "alert" : "compact";
   return <aside ref={detailsRef} tabIndex={-1} className={styles.detailsDrawer} data-variant={detailVariant} aria-label={`${location.name} risk details`}>
-    <DetailsContent catalogVersion={catalogVersion} location={location} countryIds={countryIds} snapshotUrl={snapshotUrl} state={state} snapshot={snapshot} now={now} onClose={onClose} />
+    <DetailsContent catalogVersion={catalogVersion} location={location} countryIds={countryIds} conditionsSource={conditionsSource} onRetryPublication={onRetryPublication} state={state} snapshot={snapshot} now={now} onClose={onClose} />
   </aside>;
 }

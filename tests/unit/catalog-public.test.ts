@@ -85,14 +85,15 @@ describe("catalog3 public snapshot contract", () => {
   });
 
   it("keeps missing new destinations pending through refresh loading and failure while retaining old evidence", () => {
-    const loaded = safetyDataReducer(initialSafetyDataState, { type: "snapshot-ready", request: 1,
-      snapshot: parseCatalogSnapshot(legacy), receivedAt: Date.parse(legacy.generatedAt) });
+    const loaded = safetyDataReducer(initialSafetyDataState, { type: "publication-ready", request: 1,
+      publication: { snapshot: parseCatalogSnapshot(legacy), generation: "a".repeat(64), publishedAt: legacy.generatedAt, conditionsByCountry: {} },
+      receivedAt: Date.parse(legacy.generatedAt) });
     const loading = safetyDataReducer(loaded, { type: "snapshot-loading", request: 2 });
     const failed = safetyDataReducer(loading, { type: "snapshot-failed", request: 2 });
     for (const value of [loaded, loading, failed]) {
-      expect(value.snapshot).toEqual(legacy);
+      expect(value.publication?.snapshot).toEqual(legacy);
       for (const id of addedIds) {
-        const result = catalogLocationState(value.snapshot, id);
+        const result = catalogLocationState(value.publication?.snapshot || null, id);
         expect(result.updatePending).toBe(true); expect(result.state.level).toBe("UNKNOWN"); expect(result.state.hazards).toEqual([]);
       }
     }

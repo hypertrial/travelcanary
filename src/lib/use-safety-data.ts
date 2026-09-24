@@ -30,9 +30,9 @@ export function useSafetyData({ mode, snapshotUrl, catalogVersion = 3 }: { mode:
     try {
       const separator = snapshotUrl.includes("?") ? "&" : "?";
       const pointerUrl = mode === "live" ? `${snapshotUrl}${separator}v=${Math.floor(Date.now() / 600_000)}` : snapshotUrl;
-      const snapshot = await loadPublicationSnapshot(pointerUrl);
-      if (snapshot.catalogVersion !== 3) throw new Error("Snapshot catalog does not match Catalog 3");
-      dispatch({ epoch, type: "snapshot-ready", request, snapshot, receivedAt: Date.now() });
+      const publication = await loadPublicationSnapshot(pointerUrl);
+      if (publication.snapshot.catalogVersion !== 3) throw new Error("Snapshot catalog does not match Catalog 3");
+      dispatch({ epoch, type: "publication-ready", request, publication, receivedAt: Date.now() });
     } catch { dispatch({ epoch, type: "snapshot-failed", request }); }
   }, [mode, snapshotUrl]);
   const loadCatalog = useCallback(async () => {
@@ -60,5 +60,6 @@ export function useSafetyData({ mode, snapshotUrl, catalogVersion = 3 }: { mode:
     };
   }, [resourceKey, fetchCatalog, fetchSnapshot, mode]);
   // A changed release/origin must not render the prior resource before its effect resets it.
-  return { ...(state.resourceKey === resourceKey ? state : initialSafetyDataState), loadCatalog, loadSnapshot };
+  const current = state.resourceKey === resourceKey ? state : initialSafetyDataState;
+  return { ...current, snapshot: current.publication?.snapshot || null, loadCatalog, loadSnapshot };
 }

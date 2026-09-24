@@ -2,9 +2,11 @@ import { ConditionsV3Schema } from "./domain/catalog-public";
 import { useEffect, useState } from "react";
 import { CONDITIONS_COUNTRY_LIMIT, ConditionsSchema, type Conditions as ConditionsV2 } from "./domain/conditions";
 import { catalogV3Paths } from "./catalog-paths";
-import { publicationConditionsUrl } from "./publication-client";
+import type { CountryConditionsReference } from "./publication-client";
 
 type Conditions = ConditionsV2 | import("zod").infer<typeof ConditionsV3Schema>;
+export type ConditionsSource = { status: "loading" | "unavailable" }
+  | ({ status: "ready"; generation: string } & CountryConditionsReference);
 
 const cache = new Map<string, { promise: Promise<Conditions>; until: number }>();
 
@@ -16,7 +18,7 @@ export async function loadConditions(url: string, country: string, ids: string[]
   const catalogVersion = publicPath.startsWith("/catalogs/") || immutableV3 ? 3 : 2;
   if ((catalogVersion === 3 && !immutableV3 && publicPath !== `/${catalogV3Paths.conditions}${country}.json`)
     || (expectedCatalogVersion && expectedCatalogVersion !== catalogVersion)) throw new Error("Conditions catalog namespace mismatch");
-  const key = `${catalogVersion}:${url}:${ids.join(",")}`;
+  const key = `${catalogVersion}:${url}:${reference?.sha256 ?? ""}:${reference?.bytes ?? ""}:${ids.join(",")}`;
   const existing = cache.get(key);
   if (existing && existing.until > Date.now()) { cache.delete(key); cache.set(key, existing); return existing.promise; }
   const promise = (async () => {
@@ -50,30 +52,28 @@ export async function loadConditions(url: string, country: string, ids: string[]
   try { return await promise; } catch (error) { if (cache.get(key) === entry) cache.delete(key); throw error; }
 }
 
-export function useConditions(snapshotUrl: string | null, country: string, ids: string[], catalogVersion: 2 | 3 = 3) {
-  const [url, setUrl] = useState<string | null>(null);
+export function useConditions(source: ConditionsSource, country: string, ids: string[], catalogVersion: 2 | 3 = 3) {
   const [result, setResult] = useState<{ key: string; url: string | null; data: Conditions | null; failed: boolean; retrying: boolean } | null>(null);
   const [attempt, setAttempt] = useState(0);
   const catalogKey = ids.join(",");
-  const key = JSON.stringify([snapshotUrl, country, catalogVersion, catalogKey]);
+  const ready = source.status === "ready" ? source : null;
+  const url = ready?.url || null;
+  const reference = ready?.reference;
+  const generation = ready?.generation || null;
+  const key = JSON.stringify([generation, url, reference?.sha256, reference?.bytes, country, catalogVersion, catalogKey]);
   useEffect(() => {
-    if (!snapshotUrl || catalogVersion !== 3) return;
+    if (!url || !reference || catalogVersion !== 3) return;
     let active = true;
     void (async () => {
-      let resolvedUrl: string | null = null;
       try {
-        const resolved = await publicationConditionsUrl(snapshotUrl, country);
-        if (!resolved) throw new Error("Conditions country is absent from publication");
-        resolvedUrl = resolved.url;
-        if (active) setUrl(resolved.url);
-        const data = await loadConditions(resolved.url, country, catalogKey.split(","), fetch, 3, resolved.reference);
-        if (active) setResult({ key, url: resolved.url, data, failed: false, retrying: false });
-      } catch { if (active) setResult({ key, url: resolvedUrl, data: null, failed: true, retrying: false }); }
+        const data = await loadConditions(url, country, catalogKey.split(","), fetch, 3, reference);
+        if (active) setResult({ key, url, data, failed: false, retrying: false });
+      } catch { if (active) setResult({ key, url, data: null, failed: true, retrying: false }); }
     })();
     return () => { active = false; };
-  }, [snapshotUrl, country, catalogKey, attempt, catalogVersion, key]);
+  }, [url, reference, country, catalogKey, attempt, catalogVersion, key]);
   return {
-    ...(result?.key === key ? result : { url, data: null, failed: !url, retrying: false }),
+    ...(result?.key === key ? result : { url, data: null, failed: source.status === "unavailable" || catalogVersion !== 3, retrying: false }),
     retry: () => {
       setResult({ key, url, data: null, failed: false, retrying: true });
       setAttempt((value) => value + 1);

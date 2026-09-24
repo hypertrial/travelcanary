@@ -27,7 +27,8 @@ export type MutableDemoSnapshot = {
 
 type DemoPointer = { manifestPath: string; manifestSha256: string } & Record<string, unknown>;
 type DemoManifest = { snapshot: { path: string; sha256: string; bytes: number }; conditions: Array<{ countryCode: string; path: string }> } & Record<string, unknown>;
-export type DemoPublication = { pointer: DemoPointer; manifest: DemoManifest; snapshot: MutableDemoSnapshot };
+export type DemoPublication = { pointer: DemoPointer; manifest: DemoManifest; snapshot: MutableDemoSnapshot;
+  conditionObjects?: Array<{ path: string; body: string }> };
 type DemoConditions = z.infer<typeof import("../../src/lib/domain/catalog-public").ConditionsV3Schema>;
 
 const publicRoot = resolve(process.cwd(), "public");
@@ -47,9 +48,23 @@ export function demoPublication(mutate: (snapshot: MutableDemoSnapshot) => void 
   return { pointer, manifest, snapshot };
 }
 
+export function demoPublicationWithConditions(countryCode: string, mutate: (conditions: DemoConditions) => void): DemoPublication {
+  const fixture = demoPublication();
+  const manifest = structuredClone(fixture.manifest);
+  const reference = manifest.conditions.find((item) => item.countryCode === countryCode)!;
+  const conditions = JSON.parse(readFileSync(resolve(publicRoot, reference.path), "utf8")) as DemoConditions;
+  mutate(conditions);
+  const body = JSON.stringify(conditions); const sha = digest(body);
+  Object.assign(reference, { path: `catalogs/3/objects/sha256/${sha}.json`, sha256: sha, bytes: Buffer.byteLength(body) });
+  const manifestBody = JSON.stringify(manifest); const manifestSha = digest(manifestBody);
+  const pointer = { ...fixture.pointer, manifestPath: `catalogs/3/generations/${manifestSha}/manifest.json`, manifestSha256: manifestSha };
+  return { ...fixture, pointer, manifest, conditionObjects: [{ path: reference.path, body }] };
+}
+
 export async function installDemoPublicationObjects(page: Page, fixture: DemoPublication) {
   await page.route(`**/${fixture.pointer.manifestPath}`, (route) => route.fulfill({ json: fixture.manifest }));
   await page.route(`**/${fixture.manifest.snapshot.path}`, (route) => route.fulfill({ json: fixture.snapshot }));
+  for (const object of fixture.conditionObjects || []) await page.route(`**/${object.path}`, (route) => route.fulfill({ body: object.body, contentType: "application/json" }));
 }
 
 export const demoSnapshotPath = () => baseManifest.snapshot.path;
@@ -92,16 +107,7 @@ export async function mutateDemoSnapshot(page: Page, mutate: (snapshot: MutableD
 }
 
 export async function mutateDemoConditions(page: Page, countryCode: string, mutate: (conditions: DemoConditions) => void) {
-  const manifest = structuredClone(baseManifest);
-  const reference = manifest.conditions.find((item) => item.countryCode === countryCode)!;
-  const conditions = JSON.parse(readFileSync(resolve(publicRoot, reference.path), "utf8")) as DemoConditions;
-  mutate(conditions);
-  const body = JSON.stringify(conditions); const sha = digest(body);
-  reference.path = `catalogs/3/objects/sha256/${sha}.json`;
-  Object.assign(reference, { sha256: sha, bytes: Buffer.byteLength(body) });
-  const manifestBody = JSON.stringify(manifest); const manifestSha = digest(manifestBody);
-  const pointer = { ...structuredClone(basePointer), manifestPath: `catalogs/3/generations/${manifestSha}/manifest.json`, manifestSha256: manifestSha };
-  await page.route(`**/${pointer.manifestPath}`, (route) => route.fulfill({ json: manifest }));
-  await page.route(`**/${reference.path}`, (route) => route.fulfill({ json: conditions }));
-  await page.route(/\/api\/v1\/data(?:\?.*)?$/, (route) => route.fulfill({ json: pointer }));
+  const fixture = demoPublicationWithConditions(countryCode, mutate);
+  await installDemoPublicationObjects(page, fixture);
+  await page.route(/\/api\/v1\/data(?:\?.*)?$/, (route) => route.fulfill({ json: fixture.pointer }));
 }

@@ -1,7 +1,17 @@
 import { PublicationManifestV1Schema, PublicationPointerV1Schema, type PublicationManifestV1 } from "./domain/publication";
-import { parseCatalogSnapshot } from "./domain/catalog-public";
+import { parseCatalogSnapshot, type CatalogSnapshot } from "./domain/catalog-public";
 
-const cache = new Map<string, { manifest: PublicationManifestV1; root: string; until: number }>();
+export type CountryConditionsReference = {
+  url: string;
+  reference: PublicationManifestV1["conditions"][number];
+};
+
+export type VerifiedPublicationSnapshot = {
+  snapshot: CatalogSnapshot;
+  generation: string;
+  publishedAt: string;
+  conditionsByCountry: Record<string, CountryConditionsReference>;
+};
 
 function publicationRoot(pointerUrl: string) {
   const url = new URL(pointerUrl, window.location.href);
@@ -60,7 +70,6 @@ export async function loadPublication(pointerUrl: string, fetchImpl: typeof fetc
     || manifest.collectionRevision !== pointer.collectionRevision || manifest.ingestionFence !== pointer.ingestionFence) {
     throw new Error("Publication pointer and manifest disagree");
   }
-  cache.set(pointerUrl, { manifest, root, until: Date.now() + 5 * 60_000 });
   return { pointer, manifest, root };
 }
 
@@ -71,16 +80,15 @@ export async function loadPublicationSnapshot(pointerUrl: string, fetchImpl: typ
   if (new TextEncoder().encode(body).byteLength !== publication.manifest.snapshot.bytes || await sha256(body) !== publication.manifest.snapshot.sha256) {
     throw new Error("Publication snapshot digest mismatch");
   }
-  return parseCatalogSnapshot(JSON.parse(body));
-}
-
-export async function publicationConditionsUrl(pointerUrl: string, countryCode: string, fetchImpl: typeof fetch = fetch) {
-  if (!/^[A-Z]{2}$/.test(countryCode)) return null;
-  let current = cache.get(pointerUrl);
-  if (!current || current.until <= Date.now()) {
-    const loaded = await loadPublication(pointerUrl, fetchImpl);
-    current = { manifest: loaded.manifest, root: loaded.root, until: Date.now() + 5 * 60_000 };
-  }
-  const reference = current.manifest.conditions.find(({ countryCode: code }) => code === countryCode);
-  return reference ? { url: objectUrl(current.root, reference.path), reference } : null;
+  const snapshot = parseCatalogSnapshot(JSON.parse(body));
+  const conditionsByCountry = Object.fromEntries(publication.manifest.conditions.map((reference) => [
+    reference.countryCode,
+    { url: objectUrl(publication.root, reference.path), reference },
+  ]));
+  return {
+    snapshot,
+    generation: publication.pointer.manifestSha256,
+    publishedAt: publication.pointer.publishedAt,
+    conditionsByCountry,
+  } satisfies VerifiedPublicationSnapshot;
 }
