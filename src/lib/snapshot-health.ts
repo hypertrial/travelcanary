@@ -38,7 +38,7 @@ export function applySnapshotStaleness(
 ): Snapshot {
   const current = withoutExpiredHazards(snapshot, now);
   const age = now.getTime() - Date.parse(current.generatedAt);
-  if (age >= -5 * 60_000 && age <= 30 * 60_000) return current;
+  if (age >= -5 * 60_000 && age <= 60 * 60_000) return current;
   if (age >= 0 && age <= 2 * 60 * 60_000) return parseCatalogSnapshot({ ...current, dataHealth: "delayed" });
   const catalogById = new Map(catalog.map((location) => [location.id, location]));
 

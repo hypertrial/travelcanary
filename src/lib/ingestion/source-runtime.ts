@@ -2,7 +2,7 @@ import { providerRegistry } from "../provider-registry";
 import { sourceAdapters } from "./adapters";
 import type { Cadence, SourceAdapter } from "./types";
 
-const cadenceMinutes: Record<Cadence, number> = { fast: 10, slow: 60, satellite: 120, daily: 1440 };
+const cadenceMinutes: Record<Cadence, number> = { fast: 30, slow: 60, satellite: 120, daily: 1440 };
 
 export function sourceRuntimeProblems(): string[] {
   const problems: string[] = [];

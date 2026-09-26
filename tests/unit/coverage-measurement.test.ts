@@ -15,7 +15,7 @@ describe("effective coverage measurements", () => {
   it("counts applicable destination-hazard pairs and separates freshness from completeness", () => {
     const value = snapshot(); const now = new Date(value.generatedAt);
     const current = measureCoverage(value, locations, now);
-    const expired = measureCoverage(value, locations, new Date(now.getTime() + 31 * 60_000));
+    const expired = measureCoverage(value, locations, new Date(now.getTime() + 61 * 60_000));
     expect(current.byHazard.coastal.applicable).toBe(152);
     expect(current.byHazard.volcano.applicable).toBe(118);
     expect(current.byHazard.avalanche.applicable).toBe(18);
@@ -59,7 +59,7 @@ describe("effective coverage measurements", () => {
   it("reports sample trends without mixing contracts or duplicating samples", () => {
     const value = snapshot(); const now = new Date(value.generatedAt);
     const first = { metrics: { coverageMeasurement: measureCoverage(value, locations, now) } };
-    const second = { metrics: { coverageMeasurement: measureCoverage(value, locations, new Date(now.getTime() + 31 * 60_000)) } };
+    const second = { metrics: { coverageMeasurement: measureCoverage(value, locations, new Date(now.getTime() + 61 * 60_000)) } };
     const report = summarizeCoverageHistory([second, first]);
     expect(report.samples).toBe(2);
     expect(report.last.freshFullyChecked).toBe(0);

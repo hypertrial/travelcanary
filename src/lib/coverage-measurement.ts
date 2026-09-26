@@ -20,7 +20,7 @@ export function coveragePairStates(snapshot: CatalogSnapshot, catalog: PublicCat
   if (new Set(ids).size !== ids.length || ids.join(",") !== Object.keys(snapshot.locations).sort().join(",")) {
     throw new Error("Coverage measurement catalog mismatch");
   }
-  const snapshotFresh = now.getTime() - Date.parse(snapshot.generatedAt) <= 30 * 60_000
+  const snapshotFresh = now.getTime() - Date.parse(snapshot.generatedAt) <= 60 * 60_000
     && Date.parse(snapshot.generatedAt) <= now.getTime() + 5 * 60_000;
   return catalog.flatMap((location) => {
     const presentation = locationCoveragePresentation({ location, state: snapshot.locations[location.id], snapshot, now });

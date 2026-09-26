@@ -163,12 +163,12 @@ describe("reviewed expanded monitoring coverage", () => {
     expect(fresh.dataHealth).toBe("complete");
     expect(catalogLocationState(fresh, "tr-istanbul").updatePending).toBe(true);
 
-    const aged = applySnapshotStaleness(fresh, new Date(now.getTime() + 30 * 60_000 + 1), catalogLocationsV3);
+    const aged = applySnapshotStaleness(fresh, new Date(now.getTime() + 60 * 60_000 + 1), catalogLocationsV3);
     expect(aged.dataHealth).toBe("delayed");
     expect(catalogLocationState(aged, "tr-istanbul").updatePending).toBe(true);
     const ui = { locationsLoaded: true, catalogError: false, snapshot: aged, snapshotError: false, tilesFailed: false };
     expect(deriveUiDataState(ui)).toBe("refresh-delayed");
-    expect(liveStatusPresentation({ mode: "live", uiState: deriveUiDataState(ui), generatedAt: aged.generatedAt, now: new Date(now.getTime() + 30 * 60_000 + 1) }))
+    expect(liveStatusPresentation({ mode: "live", uiState: deriveUiDataState(ui), generatedAt: aged.generatedAt, now: new Date(now.getTime() + 60 * 60_000 + 1) }))
       .toMatchObject({ label: "Delayed" });
   });
 
@@ -205,16 +205,16 @@ describe("reviewed expanded monitoring coverage", () => {
       .toContain("coverage/IS/severe-weather/meteoalarm");
   });
 
-  it("expires the same public USGS receipt immediately after its twenty-minute cadence window", () => {
+  it("expires the same public USGS receipt immediately after its sixty-minute cadence window", () => {
     const value = state(); receipt(value, "usgs"); const snapshot = buildCatalog3Snapshot(value, now);
-    for (const [offset, expected] of [[20 * 60_000, "current"], [20 * 60_000 + 1, "delayed"]] as const) {
+    for (const [offset, expected] of [[60 * 60_000, "current"], [60 * 60_000 + 1, "delayed"]] as const) {
       const presentation = view(snapshot, "gb-london", new Date(now.getTime() + offset));
       expect(presentation.categories.flatMap(({ subchecks }) => subchecks).find(({ hazard }) => hazard === "earthquake")!.freshnessStatus).toBe(expected);
       expect(presentation.freshness.status).toBe("delayed");
     }
   });
 
-  it.each([20 * 60_000, 20 * 60_000 + 1, 2 * 3600_000 + 1])("reassesses scoped monitoring without inventing unsupported delayed hazards at age %s", (age) => {
+  it.each([20 * 60_000, 60 * 60_000 + 1, 2 * 3600_000 + 1])("reassesses scoped monitoring without inventing unsupported delayed hazards at age %s", (age) => {
     const value = state(); receipt(value, "usgs"); const snapshot = buildCatalog3Snapshot(value, now); const before = structuredClone(snapshot);
     const aged = applySnapshotStaleness(snapshot, new Date(now.getTime() + age), catalogLocationsV3);
     expect(aged.locations["gb-london"]).toMatchObject({ level: "UNKNOWN", hazards: [] });

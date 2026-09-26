@@ -48,7 +48,7 @@ export async function publishedPluginSummary(store: PublicationStore, now = new 
   })).filter(({ level, updatePending }) => level !== "NORMAL" || updatePending)
     .sort((a, b) => levelRank[b.level] - levelRank[a.level] || Number(b.updatePending) - Number(a.updatePending) || a.name.localeCompare(b.name))
     .slice(0, 10);
-  const delayed = now.getTime() - Date.parse(snapshot.generatedAt) > 30 * 60_000 || current.manifest.status.state === "degraded";
+  const delayed = now.getTime() - Date.parse(snapshot.generatedAt) > 60 * 60_000 || current.manifest.status.state === "degraded";
   return {
     schemaVersion: 1 as const, appVersion: packageJson.version, catalogVersion: 3 as const,
     health: delayed ? "degraded" as const : "ok" as const, freshness: delayed ? "delayed" as const : "fresh" as const,

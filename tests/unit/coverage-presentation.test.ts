@@ -265,14 +265,14 @@ describe("location coverage presentation", () => {
       location: locations.find(({ id }) => id === "hu-budapest")!,
       state: snapshot.locations["hu-budapest"],
       snapshot,
-      now: new Date(now.getTime() + 31 * 60_000),
+      now: new Date(now.getTime() + 61 * 60_000),
     });
     expect(result.categories.find(({ key }) => key === "earthquake")?.status).toBe("delayed");
     expect(result.categories.find(({ key }) => key === "weather")?.status).toBe("delayed");
     expect(result.categories.find(({ key }) => key === "security-conflict")?.status).toBe("not_monitored");
     expect(result.delayed.map(({ key }) => key)).toContain("earthquake");
     expect(result.freshness.status).toBe("delayed");
-    expect(result.freshness.visibleLabel).toBe("Some checks delayed · last updated 31 min ago");
+    expect(result.freshness.visibleLabel).toBe("Some checks delayed · last updated 1 hour ago");
   });
 
   it("includes fire danger only for applicable outdoor locations", () => {

@@ -21,7 +21,7 @@
           "status": "active",
           "endpoint": "https://warnung.at-alert.at/api/rpc/alert/list",
           "format": "json",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 1048576,
           "hazards": [
             "civil-emergency"
@@ -182,7 +182,7 @@
           "status": "active",
           "endpoint": "https://meteo.hr/upozorenja/cap_hr_today.xml",
           "format": "cap",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 1048576,
           "hazards": [
             "severe-weather",
@@ -274,7 +274,7 @@
           "status": "active",
           "endpoint": "https://opendata.chmi.cz/hydrology/now/data/",
           "format": "json",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 1048576,
           "hazards": [
             "flood"
@@ -459,7 +459,7 @@
           "status": "active",
           "endpoint": "https://alerts.fmi.fi/cap/feed/rss_en-GB.rss",
           "format": "rss",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "hazards": [
             "severe-weather",
             "flood",
@@ -498,7 +498,7 @@
           "status": "active",
           "endpoint": "https://fr-alert.gouv.fr/les-alertes",
           "format": "json",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 1048576,
           "hazards": [
             "civil-emergency",
@@ -582,7 +582,7 @@
           "status": "active",
           "endpoint": "https://api.hochwasserzentralen.de/public/v1/data/alerts?format=geojson&lang=en",
           "format": "json",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 1048576,
           "hazards": [
             "flood"
@@ -660,7 +660,7 @@
           "status": "active",
           "endpoint": "https://opendata.dwd.de/weather/alerts/cap/COMMUNEUNION_EVENT_STAT/Z_CAP_C_EDZW_LATEST_PVW_STATUS_PREMIUMEVENT_COMMUNEUNION_EN.zip",
           "format": "cap",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 1048576,
           "hazards": [
             "severe-weather",
@@ -833,7 +833,7 @@
           "status": "active",
           "endpoint": "https://www.met.ie/Open_Data/json/warning_IRELAND.json",
           "format": "json",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "hazards": [
             "severe-weather",
             "flood",
@@ -1051,7 +1051,7 @@
           "status": "active",
           "endpoint": "https://data.gov.lv/dati/api/3/action/package_show?id=hidrometeorologiskie-bridinajumi",
           "format": "json",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 4194304,
           "hazards": [
             "flood"
@@ -1134,7 +1134,7 @@
           "status": "active",
           "endpoint": "https://data.public.lu/api/1/datasets/alertes-du-systeme-lu-alert/",
           "format": "cap",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 1048576,
           "hazards": [
             "civil-emergency",
@@ -1259,7 +1259,7 @@
           "status": "active",
           "endpoint": "https://danepubliczne.imgw.pl/api/data/hydro/",
           "format": "json",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 1048576,
           "hazards": [
             "flood"
@@ -1335,7 +1335,7 @@
           "status": "active",
           "endpoint": "https://api.ipma.pt/open-data/forecast/warnings/warnings_www.json",
           "format": "json",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 524288,
           "hazards": [
             "severe-weather",
@@ -1420,7 +1420,7 @@
           "status": "evidence_gated",
           "endpoint": "https://prociv.azores.gov.pt/alertas/api?lang=en&limit_last_alerts=20",
           "format": "json",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "hazards": [
             "severe-weather",
             "flood",
@@ -1569,7 +1569,7 @@
           "status": "credential_gated",
           "endpoint": "https://portal.minv.sk/wps/esispz-api/",
           "format": "json",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "hazards": [
             "civil-emergency",
             "security",
@@ -1647,7 +1647,7 @@
           "status": "active",
           "endpoint": "https://analisi.transparenciacatalunya.cat/resource/wj9c-j6vf.json",
           "format": "json",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 1048576,
           "hazards": [
             "civil-emergency"
@@ -1692,7 +1692,7 @@
           "status": "active",
           "endpoint": "https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/rss/CAP_AFAE_ATOM.xml",
           "format": "atom",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 1572864,
           "hazards": [
             "severe-weather",
@@ -1739,7 +1739,7 @@
           "status": "active",
           "endpoint": "https://api.krisinformation.se/v3/vmas?allCounties=true&language=en",
           "format": "json",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 1048576,
           "hazards": [
             "civil-emergency"
@@ -1853,7 +1853,7 @@
           "status": "active",
           "endpoint": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-andorra",
           "format": "atom",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 4194304,
           "hazards": [
             "severe-weather",
@@ -2319,7 +2319,7 @@
           "status": "credential_gated",
           "endpoint": "https://warnings.api.metoffice.gov.uk/",
           "format": "atom",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 2097152,
           "hazards": [
             "severe-weather",
@@ -2401,7 +2401,7 @@
           "status": "active",
           "endpoint": "https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-iceland",
           "format": "atom",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 4194304,
           "hazards": [
             "severe-weather"
@@ -2925,7 +2925,7 @@
           "status": "active",
           "endpoint": "https://api.met.no/weatherapi/metalerts/2.0/current.json",
           "format": "json",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "maxBytes": 2097152,
           "hazards": [
             "severe-weather",

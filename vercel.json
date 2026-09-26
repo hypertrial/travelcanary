@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run check:deploy",
   "crons": [
-    { "path": "/api/cron/fast", "schedule": "*/10 * * * *" },
+    { "path": "/api/cron/fast", "schedule": "*/30 * * * *" },
     { "path": "/api/cron/slow", "schedule": "7 * * * *" },
     { "path": "/api/cron/conditions", "schedule": "27 * * * *" },
     { "path": "/api/cron/satellite", "schedule": "37 */2 * * *" },
