@@ -9,9 +9,9 @@ import { hazardAppliesToLocation } from "@/lib/risk-policy";
 const generatedAt = new Date("2026-08-25T12:00:00Z");
 
 describe("client snapshot staleness", () => {
-  it("marks a live snapshot delayed after 30 minutes", () => {
+  it("marks a live snapshot delayed after 60 minutes", () => {
     const snapshot = buildSnapshot(createEmptyState(generatedAt), generatedAt);
-    expect(applySnapshotStaleness(snapshot, new Date("2026-08-25T12:30:01Z")).dataHealth).toBe("delayed");
+    expect(applySnapshotStaleness(snapshot, new Date("2026-08-25T13:00:01Z")).dataHealth).toBe("delayed");
   });
 
   it("fails closed when a snapshot timestamp is implausibly far in the future", () => {

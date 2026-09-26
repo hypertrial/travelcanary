@@ -3,7 +3,7 @@ export type CollectorOperation = typeof collectorOperations[number];
 export type CollectorCompletedAt = Partial<Record<CollectorOperation, string>>;
 
 export const collectorCadenceMs: Record<CollectorOperation, number> = {
-  fast: 10 * 60_000,
+  fast: 30 * 60_000,
   slow: 60 * 60_000,
   conditions: 60 * 60_000,
   satellite: 2 * 60 * 60_000,

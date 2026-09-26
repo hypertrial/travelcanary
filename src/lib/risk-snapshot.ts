@@ -255,7 +255,7 @@ export function projectCoreSnapshot(input: ProjectionState, now = new Date()): S
     .filter(Boolean);
   const newestSuccess = lastSuccesses.length ? Math.max(...lastSuccesses) : 0;
   const stale = newestSuccess === 0 || now.getTime() - newestSuccess > 2 * 60 * 60_000;
-  const delayedByAge = newestSuccess > 0 && now.getTime() - newestSuccess > 30 * 60_000;
+  const delayedByAge = newestSuccess > 0 && now.getTime() - newestSuccess > 60 * 60_000;
   const delayed = delayedByAge || (Object.keys(sources) as SourceId[]).some((id) => sourceDelaysGlobalHealth(id, sources, now));
   const dataHealth = stale ? "stale" : delayed ? "delayed" : "complete";
   const globallyDelayed = delayedHazards(sources, "meteoalarm");

@@ -195,7 +195,7 @@ function providerStatus(
     if (nationalSource?.enabled || provider.limitationCode === "not_yet_checked") return "delayed";
     return "not_monitored";
   }
-  if (now.getTime() - Date.parse(snapshot!.generatedAt) > 30 * 60_000) return "delayed";
+  if (now.getTime() - Date.parse(snapshot!.generatedAt) > 60 * 60_000) return "delayed";
   if (!isExpandedDestination(location) && provider.status === "delayed"
     && definition.healthScope === "coverage"
     && !definition.hazards.some((hazard) => hazardWasDelayed(snapshot!.locations[location.id], hazard))) return "available";

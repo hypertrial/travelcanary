@@ -35,17 +35,17 @@ describe("verified coverage and retention regressions", () => {
     expect(limitEvents([severe, { ...severe, level: "ELEVATED", sourceUpdatedAt: now.toISOString() }])).toMatchObject([{ level: "ELEVATED" }]);
   });
 
-  it.each([0, 20, 21, 60])("ages national transports without delaying risk while an alternate path remains current (%i minutes)", (minutes) => {
+  it.each([0, 60, 61, 120])("ages national transports without delaying risk while an alternate path remains current (%i minutes)", (minutes) => {
     const state = healthy();
     const last = new Date(now.getTime() - minutes * 60_000);
     state.partitionTransports.nationalCivilAlerts.PL["imgw-hydrology"] = {
       ...health, lastAttempt: last.toISOString(), lastSuccess: last.toISOString(), sourceUpdatedAt: last.toISOString(),
-      nextExpectedUpdate: new Date(last.getTime() + 10 * 60_000).toISOString(), checkedLocationIds: ["pl-bydgoszcz"], unavailableLocationIds: [],
+      nextExpectedUpdate: new Date(last.getTime() + 30 * 60_000).toISOString(), checkedLocationIds: ["pl-bydgoszcz"], unavailableLocationIds: [],
     };
     const snapshot = buildSnapshot(state, now);
     expect(snapshot.locations["pl-bydgoszcz"].delayedHazards).toEqual([]);
     expect(snapshot.locations["pl-bydgoszcz"].level).toBe("NORMAL");
-    expect(snapshot.providers["national-civil-alerts"].partitions!.PL.transports!.find(({ id }) => id === "imgw-hydrology")!.status).toBe(minutes > 20 ? "delayed" : "ok");
+    expect(snapshot.providers["national-civil-alerts"].partitions!.PL.transports!.find(({ id }) => id === "imgw-hydrology")!.status).toBe(minutes > 60 ? "delayed" : "ok");
     state.events = [warning("pl:bulletin:current")];
     expect(buildSnapshot(state, now).locations["pl-bydgoszcz"].level).toBe("HIGH");
   });

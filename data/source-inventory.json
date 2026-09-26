@@ -521,7 +521,7 @@
       "sourceId": "meteoalarm",
       "displayName": "MeteoAlarm",
       "mode": "authoritative",
-      "cadenceMinutes": 10,
+      "cadenceMinutes": 30,
       "hazards": [
         "severe-weather",
         "flood",
@@ -543,7 +543,7 @@
       "sourceId": "usgs",
       "displayName": "USGS",
       "mode": "authoritative",
-      "cadenceMinutes": 10,
+      "cadenceMinutes": 30,
       "hazards": [
         "earthquake"
       ],
@@ -573,7 +573,7 @@
       "sourceId": "cems",
       "displayName": "Copernicus EMS Rapid Mapping",
       "mode": "complementary",
-      "cadenceMinutes": 10,
+      "cadenceMinutes": 30,
       "hazards": [
         "wildfire",
         "industrial",
@@ -619,7 +619,7 @@
       "sourceId": "emsc",
       "displayName": "EMSC",
       "mode": "fallback",
-      "cadenceMinutes": 10,
+      "cadenceMinutes": 30,
       "hazards": [
         "earthquake"
       ],
@@ -712,7 +712,7 @@
       "sourceId": "national-civil-alerts",
       "displayName": "National public warning systems",
       "mode": "authoritative",
-      "cadenceMinutes": 10,
+      "cadenceMinutes": 30,
       "hazards": [
         "flood",
         "civil-unrest",
@@ -734,7 +734,7 @@
       "sourceId": "vigicrues",
       "displayName": "Vigicrues",
       "mode": "authoritative",
-      "cadenceMinutes": 10,
+      "cadenceMinutes": 30,
       "hazards": [
         "flood"
       ],
@@ -847,7 +847,7 @@
           "runtimeTarget": "meteoalarm-primary",
           "role": "coverage",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "atom",
           "hazards": [
             "severe-weather",
@@ -1009,7 +1009,7 @@
           "runtimeTarget": "national-civil-alerts",
           "role": "coverage",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "json",
           "hazards": [
             "civil-emergency"
@@ -1430,7 +1430,7 @@
           "runtimeTarget": "national-civil-alerts",
           "role": "coverage",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "json",
           "hazards": [
             "flood"
@@ -1483,7 +1483,7 @@
           "runtimeTarget": "national-civil-alerts",
           "role": "coverage",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "json",
           "hazards": [
             "flood"
@@ -1545,7 +1545,7 @@
           "runtimeTarget": "meteoalarm-fallback",
           "role": "fallback",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "cap",
           "hazards": [
             "severe-weather",
@@ -1696,7 +1696,7 @@
           "runtimeTarget": "national-civil-alerts",
           "role": "context",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "json",
           "hazards": [
             "civil-emergency"
@@ -1725,7 +1725,7 @@
           "runtimeTarget": "meteoalarm-fallback",
           "role": "fallback",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "atom",
           "hazards": [
             "severe-weather",
@@ -1804,7 +1804,7 @@
           "runtimeTarget": "meteoalarm-fallback",
           "role": "fallback",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "rss",
           "hazards": [
             "severe-weather",
@@ -1867,7 +1867,7 @@
           "runtimeTarget": "national-civil-alerts",
           "role": "coverage",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "json",
           "hazards": [
             "civil-emergency",
@@ -2085,7 +2085,7 @@
           "runtimeTarget": "national-civil-alerts",
           "role": "fallback",
           "status": "credential_gated",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "atom",
           "hazards": [
             "severe-weather",
@@ -2248,7 +2248,7 @@
           "runtimeTarget": "meteoalarm-fallback",
           "role": "fallback",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "cap",
           "hazards": [
             "severe-weather",
@@ -2374,7 +2374,7 @@
           "runtimeTarget": "meteoalarm-fallback",
           "role": "fallback",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "json",
           "hazards": [
             "severe-weather",
@@ -2430,7 +2430,7 @@
           "runtimeTarget": "meteoalarm-primary",
           "role": "coverage",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "atom",
           "hazards": [
             "severe-weather"
@@ -2781,7 +2781,7 @@
           "runtimeTarget": "national-civil-alerts",
           "role": "coverage",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "cap",
           "hazards": [
             "civil-emergency",
@@ -2868,7 +2868,7 @@
           "runtimeTarget": "national-civil-alerts",
           "role": "coverage",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "json",
           "hazards": [
             "flood"
@@ -3382,7 +3382,7 @@
           "runtimeTarget": "national-civil-alerts",
           "role": "coverage",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "json",
           "hazards": [
             "severe-weather",
@@ -3579,7 +3579,7 @@
           "runtimeTarget": "national-civil-alerts",
           "role": "coverage",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "json",
           "hazards": [
             "flood"
@@ -3627,7 +3627,7 @@
           "runtimeTarget": "meteoalarm-fallback",
           "role": "fallback",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "json",
           "hazards": [
             "severe-weather",
@@ -3687,7 +3687,7 @@
           "runtimeTarget": "national-civil-alerts",
           "role": "coverage",
           "status": "evidence_gated",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "json",
           "hazards": [
             "severe-weather",
@@ -3920,7 +3920,7 @@
           "runtimeTarget": "national-civil-alerts",
           "role": "coverage",
           "status": "active",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "json",
           "hazards": [
             "civil-emergency"
@@ -4073,7 +4073,7 @@
           "runtimeTarget": "national-civil-alerts",
           "role": "coverage",
           "status": "credential_gated",
-          "cadenceMinutes": 10,
+          "cadenceMinutes": 30,
           "format": "json",
           "hazards": [
             "civil-emergency",

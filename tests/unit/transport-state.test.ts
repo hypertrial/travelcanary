@@ -26,7 +26,7 @@ function overdue(minutes: number) {
   const last = new Date(now.getTime() - minutes * 60_000);
   return health({
     lastAttempt: last.toISOString(), lastSuccess: last.toISOString(), sourceUpdatedAt: last.toISOString(),
-    nextExpectedUpdate: new Date(last.getTime() + 10 * 60_000).toISOString(),
+    nextExpectedUpdate: new Date(last.getTime() + (imgw.cadenceMinutes || 30) * 60_000).toISOString(),
   });
 }
 
@@ -78,20 +78,20 @@ const cases: Array<{ name: string; input: DeriveTransportStateInput; expected: o
   },
   {
     name: "coverage overdue after two cadences is delayed",
-    input: { system: imgw, health: overdue(21), fallbackStatus: "ok", effectiveStatus: "ok", now },
+    input: { system: imgw, health: overdue((imgw.cadenceMinutes || 30) * 2 + 1), fallbackStatus: "ok", effectiveStatus: "ok", now },
     expected: {
       id: "imgw-hydrology", name: "IMGW hydrology warnings", role: "coverage", status: "delayed",
-      lastSuccess: overdue(21).lastSuccess, sourceUpdatedAt: overdue(21).sourceUpdatedAt,
-      nextExpectedUpdate: overdue(21).nextExpectedUpdate, limitationCode: null, officialUrl: "https://hydro.imgw.pl/",
+      lastSuccess: overdue((imgw.cadenceMinutes || 30) * 2 + 1).lastSuccess, sourceUpdatedAt: overdue((imgw.cadenceMinutes || 30) * 2 + 1).sourceUpdatedAt,
+      nextExpectedUpdate: overdue((imgw.cadenceMinutes || 30) * 2 + 1).nextExpectedUpdate, limitationCode: null, officialUrl: "https://hydro.imgw.pl/",
     },
   },
   {
     name: "coverage at the overdue boundary stays current",
-    input: { system: imgw, health: overdue(20), fallbackStatus: "ok", effectiveStatus: "ok", now },
+    input: { system: imgw, health: overdue((imgw.cadenceMinutes || 30) * 2), fallbackStatus: "ok", effectiveStatus: "ok", now },
     expected: {
       id: "imgw-hydrology", name: "IMGW hydrology warnings", role: "coverage", status: "ok",
-      lastSuccess: overdue(20).lastSuccess, sourceUpdatedAt: overdue(20).sourceUpdatedAt,
-      nextExpectedUpdate: overdue(20).nextExpectedUpdate, limitationCode: null, officialUrl: "https://hydro.imgw.pl/",
+      lastSuccess: overdue((imgw.cadenceMinutes || 30) * 2).lastSuccess, sourceUpdatedAt: overdue((imgw.cadenceMinutes || 30) * 2).sourceUpdatedAt,
+      nextExpectedUpdate: overdue((imgw.cadenceMinutes || 30) * 2).nextExpectedUpdate, limitationCode: null, officialUrl: "https://hydro.imgw.pl/",
     },
   },
   {
