@@ -6,6 +6,8 @@ import { catalogLocationsV3 } from "@/lib/catalog-data";
 import { buildCatalog3Snapshot } from "@/lib/catalog-projections";
 import { createSourceDiagnostics } from "@/lib/ingestion/types";
 import { createEmptyState, mergeSourceResults } from "@/lib/risk";
+import reviewedRegions from "../../data/review-inputs/meteoalarm-warning-regions.json";
+import type { CountryCode } from "@/lib/domain/schemas";
 
 const feed = `<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom" xmlns:cap="urn:oasis:names:tc:emergency:cap:1.2">
 <updated>2026-08-25T08:00:00Z</updated><entry><cap:geocode><valueName>NUTS2</valueName><value>HU33</value></cap:geocode>
@@ -149,6 +151,46 @@ describe("MeteoAlarm adapter", () => {
     }
     const refreshed = greekFeed.replaceAll("2026-08-25T08:00:00Z", "2026-08-25T18:00:00Z");
     expect(parseMeteoAlarmFeed(refreshed, "GR", new Date("2026-08-25T18:00:00Z")).events).toHaveLength(0);
+  });
+
+  it.each(reviewedRegions.mappings)("matches exactly the reviewed $countryCode / $name footprint", (region) => {
+    const names = [region.name, ...(region.aliases || [])];
+    const cases = [
+      ...names.map((name) => ["unrecognized-code", name]),
+      ...region.providerCodes.map((code) => [code, "Unrecognized area"]),
+    ];
+    for (const [code, name] of cases) {
+      const regionalFeed = feed.replace("HU33", code).replace("Southern Great Plain", name.replaceAll("&", "&amp;"));
+      const event = parseMeteoAlarmFeed(regionalFeed, region.countryCode as CountryCode, new Date("2026-08-25T09:00:00Z")).events[0];
+      expect(event).toMatchObject({ level: "HIGH", timing: "UPCOMING", type: "severe-weather" });
+      expect(catalogLocationsV3.filter((location) => eventAffectsLocation(event, location)).map(({ id }) => id).sort(), `${code} / ${name}`)
+        .toEqual([...region.locationIds].sort());
+      if (region.kind === "sea") {
+        expect(catalogLocationsV3.filter((location) => eventAffectsLocation(event, location)).every(({ isCoastal }) => isCoastal)).toBe(true);
+      }
+    }
+  });
+
+  it.each(reviewedRegions.mappings.filter(({ name }) => [
+    "Pazardzhik", "Metropolitana y Henares", "Haute-Garonne", "Attiki",
+    "Velebit channel region", "Utena county", "Açores - Grupo Oriental",
+  ].includes(name)))("publishes $countryCode / $name warnings with their validity window", (region) => {
+    const regionalFeed = feed.replace("HU33", region.providerCodes[0]).replace("Southern Great Plain", region.name);
+    for (const [checkedAt, timing] of [["2026-08-25T09:00:00Z", "UPCOMING"], ["2026-08-25T10:00:00Z", "ACTIVE"]]) {
+      const now = new Date(checkedAt);
+      const event = parseMeteoAlarmFeed(regionalFeed, region.countryCode as CountryCode, now).events[0];
+      const state = { ...createEmptyState(now), events: [event] };
+      const snapshot = buildCatalog3Snapshot(state, now);
+      expect(Object.entries(snapshot.locations).filter(([, value]) => value.hazards.length).map(([id]) => id).sort())
+        .toEqual([...region.locationIds].sort());
+      for (const id of region.locationIds) {
+        expect(snapshot.locations[id]).toMatchObject({ level: "HIGH", timing, hazards: [{ id: event.id }] });
+      }
+      expect(Object.values(buildCatalog3Snapshot(state, new Date("2026-08-25T18:00:00Z")).locations)
+        .every(({ hazards }) => hazards.length === 0)).toBe(true);
+    }
+    const refreshed = regionalFeed.replaceAll("2026-08-25T08:00:00Z", "2026-08-25T18:00:00Z");
+    expect(parseMeteoAlarmFeed(refreshed, region.countryCode as CountryCode, new Date("2026-08-25T18:00:00Z")).events).toHaveLength(0);
   });
 
   it("bounds unusually long provider area descriptions without failing the country feed", async () => {
