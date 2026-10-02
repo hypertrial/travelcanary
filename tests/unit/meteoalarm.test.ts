@@ -2,6 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 import { MeteoAlarmAdapter, fetchMeteoAlarmCap, meteoAlarmFeedSlugs, meteoAlarmSupplementUrls, parseMeteoAlarmCapSupplement, parseMeteoAlarmFeed } from "@/lib/ingestion/adapters/meteoalarm";
 import { eventAffectsLocation } from "@/lib/geospatial";
 import { locations } from "@/lib/data";
+import { catalogLocationsV3 } from "@/lib/catalog-data";
+import { buildCatalog3Snapshot } from "@/lib/catalog-projections";
 import { createSourceDiagnostics } from "@/lib/ingestion/types";
 import { createEmptyState, mergeSourceResults } from "@/lib/risk";
 
@@ -125,6 +127,28 @@ describe("MeteoAlarm adapter", () => {
     const event = parseMeteoAlarmFeed(budapestFeed, "HU", new Date("2026-08-25T09:00:00Z")).events[0];
     expect(eventAffectsLocation(event, locations.find((location) => location.id === "hu-budapest")!)).toBe(true);
     expect(eventAffectsLocation(event, locations.find((location) => location.id === "hu-debrecen")!)).toBe(false);
+  });
+
+  it.each([
+    ["EL016", "Kriti"],
+    ["GR016", "Kriti"],
+    ["EL016", "Unrecognized area"],
+    ["EL999", "Kriti"],
+  ])("matches Crete warnings using reviewed provider codes and aliases (%s / %s)", (code, area) => {
+    const greekFeed = feed.replace("HU33", code).replace("Southern Great Plain", area)
+      .replace("<cap:severity>Severe</cap:severity>", "<cap:severity>Extreme</cap:severity>");
+    for (const [checkedAt, timing] of [["2026-08-25T09:00:00Z", "UPCOMING"], ["2026-08-25T10:00:00Z", "ACTIVE"]]) {
+      const event = parseMeteoAlarmFeed(greekFeed, "GR", new Date(checkedAt)).events[0];
+      expect(event).toMatchObject({ level: "SEVERE", timing, type: "severe-weather" });
+      expect(catalogLocationsV3.filter((location) => eventAffectsLocation(event, location)).map(({ id }) => id).sort())
+        .toEqual(["gr-crete", "gr-irakleion"]);
+      const snapshot = buildCatalog3Snapshot({ ...createEmptyState(new Date(checkedAt)), events: [event] }, new Date(checkedAt));
+      for (const id of ["gr-crete", "gr-irakleion"]) {
+        expect(snapshot.locations[id]).toMatchObject({ level: "SEVERE", timing, hazards: [{ id: event.id }] });
+      }
+    }
+    const refreshed = greekFeed.replaceAll("2026-08-25T08:00:00Z", "2026-08-25T18:00:00Z");
+    expect(parseMeteoAlarmFeed(refreshed, "GR", new Date("2026-08-25T18:00:00Z")).events).toHaveLength(0);
   });
 
   it("bounds unusually long provider area descriptions without failing the country feed", async () => {

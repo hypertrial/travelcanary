@@ -3,7 +3,8 @@
     "coastalClassification": "Curated against Eurostat coastal-area definitions and destination geography; reviewed 2026-08-26.",
     "airQualitySampling": "Destination centroids with reviewed on-land replacements for coastal or island centroids; reviewed 2026-08-28.",
     "airQualityCoverage": "EEA AQMobile 2025 GLOBAL_AQI raster coverage verified by official ImageServer sampling; reviewed 2026-08-28.",
-    "meteoalarmRegions": "Eurostat GISCO NUTS 2024 level-2 geometry, https://gisco-services.ec.europa.eu/distribution/v2/nuts/nuts-2024-files.html"
+    "meteoalarmRegions": "Eurostat GISCO NUTS 2024 level-2 geometry, https://gisco-services.ec.europa.eu/distribution/v2/nuts/nuts-2024-files.html",
+    "meteoalarmCrete": "EL016 / Kriti reviewed against the official Greece MeteoAlarm Atom feed, https://feeds.meteoalarm.org/feeds/meteoalarm-legacy-atom-greece, 2026-10-02; applies to Crete and Heraklion."
   },
   "coastalLocationIds": [
     "be-belgian-coast", "be-ostend",
@@ -50,7 +51,9 @@
     "ee-narva": { "meteoalarm": ["EE00"] },
     "es-a-coruna": { "meteoalarm": ["ES11"] },
     "es-las-palmas-de-gran-canaria": { "meteoalarm": ["ES70"] },
+    "gr-crete": { "meteoalarm": ["EL016", "area:kriti"] },
     "gr-cyclades": { "meteoalarm": ["EL42"] },
+    "gr-irakleion": { "meteoalarm": ["EL016", "area:kriti"] },
     "gr-kalamaria": { "meteoalarm": ["EL52"] },
     "gr-patra": { "meteoalarm": ["EL63"] },
     "hr-dalmatian-coast": { "meteoalarm": ["HR03"] },
