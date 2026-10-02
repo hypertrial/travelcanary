@@ -4,9 +4,11 @@ TravelCanary has two runtime trust domains: a writer-only collector and a read-o
 
 ## State and collection
 
-Private state V16 is Catalog 3-only. It retains source evidence, receipts, quotas, provider state, collection revision, state revision, a monotonically increasing ingestion fence, and the current global writer lease. V1–V15 parsers are frozen migration readers. The first V16 write preserves an immutable V15 backup; active code never writes an older schema or selects Catalog 2.
+Private state V16 is Catalog 3-only. It retains source evidence, receipts, quotas, provider state, collection revision, state revision, a monotonically increasing ingestion fence, and the current global writer lease. V1–V15 parsers are frozen migration readers. The first V16 write preserves an immutable V15 backup normalized from any supported V1–V15 input; local storage commits the backup and migration atomically. Active code never writes an older schema or selects Catalog 2.
 
-One random-owner global lease serializes the six collector cadences. Acquisition increments the fence through state CAS. Before publication, the writer revalidates lease owner, fence, state revision, and collection revision. Expired or replaced owners cannot publish.
+LU-Alert catch-up stores a bounded `(resource timestamp, URL)` cursor and superseded CAP identifiers in private V16 state. Cursor progress advances only through contiguous successful resources, including timestamp ties, independently of health status. Completion clears the cursor while retaining supersession history, so replay cannot restore a cancelled alert. Disabling the transport also clears the cursor because it removes cached warnings; re-enabling must replay them. Missing historical V16 fields default to an empty cache and no cursor; frozen migration readers remain unchanged.
+
+One random-owner global lease serializes the six collector cadences. Acquisition increments the fence through state CAS. Immediately before the pointer commit, the writer revalidates lease owner, fence, state revision, and collection revision against the current clock, separately from the evidence timestamp. Expired or replaced owners cannot publish.
 
 ## Atomic publication
 
@@ -28,6 +30,8 @@ Maintenance retains the current generation, the most recent preceding valid gene
 `/api/v1/data` redirects to the server-selected pointer. Preview and Development always redirect to checked-in demo publication, even if production-looking variables are present. Production redirects to `TRAVELCANARY_PUBLICATION_URL`; local mode redirects to the closed `/live/` object route.
 
 The browser reads the pointer, validates the manifest digest, loads Snapshot V11, and loads only the selected country’s Conditions V3 object. Local serving accepts only exact pointer, manifest, and content-addressed object keys and rejects traversal, encoded separators, backslashes, symlinks, hardlinks, non-regular files, oversized data, and digest mismatches.
+
+The local plugin summary uses the browser's warning-expiry and snapshot-staleness projection. Restricted-source activation is disclosed through the informational manifest code `policy/restricted_sources_active`, which does not degrade health. Snapshot-only publication retains disclosure while reused conditions contain current restricted records. Older manifests without that code are checked against at most 45 public Conditions V3 objects; invalid or unreadable objects fail the summary instead of reporting inactive sources. No private policy or acceptance digest is exposed.
 
 ## Process isolation
 

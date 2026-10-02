@@ -149,7 +149,7 @@ export async function runConditions(options: {
   let remainingBytes = 16 * 1024 * 1024;
   const cacheUpdates: Record<string, string> = {};
   let forecastFailure: Error | undefined;
-  const request = async (url: string, maxBytes = 1024 * 1024, format: "json" | "xml" | "bytes" = "json", taskDeadline = deadline, init: RequestInit = {}) => {
+  const request = async (url: string, maxBytes = 1024 * 1024, format: "json" | "xml" | "bytes" = "json", taskDeadline = deadline, init: RequestInit = {}, forecastWeight = 0) => {
     if (forecastFailure) throw forecastFailure;
     const target = new URL(url);
     if (target.protocol !== "https:" || target.username || target.password || !hosts.has(target.hostname)) throw new ConditionsFailure("contract_mismatch", false);
@@ -157,6 +157,9 @@ export async function runConditions(options: {
     for (let attempt = 0; attempt < 2; attempt += 1) {
       if (Date.now() + 4000 > Math.min(deadline, taskDeadline)) { diagnostics.skipped += 1; throw new ConditionsFailure("deadline_exhausted", false); }
       if (diagnostics.requests >= 128 || remainingBytes < maxBytes) { diagnostics.skipped += 1; throw new ConditionsFailure("quota_exhausted", false); }
+      if (attempt > 0 && forecastWeight && !await reserveRetryWeight(forecastWeight)) {
+        diagnostics.skipped += 1; throw new ConditionsFailure("quota_exhausted", false);
+      }
       diagnostics.requests += 1; remainingBytes -= maxBytes;
       let consumed = 0;
       try {
@@ -170,6 +173,10 @@ export async function runConditions(options: {
           const until = retry && /^\d+$/.test(retry) ? now.getTime() + Number(retry) * 1000 : retry ? Date.parse(retry) : NaN;
           const retryDelay = Number.isFinite(until) ? Math.max(0, until - now.getTime()) : 0;
           await response.body?.cancel();
+          if (response.status === 429 && target.hostname.endsWith("open-meteo.com")) {
+            const retryAt = Math.min(now.getTime() + 7 * 86400000, Math.max(now.getTime() + 3_600_000, Number.isFinite(until) ? until : 0));
+            cooldown = new Date(Math.max(retryAt, cooldown ? Date.parse(cooldown) : 0)).toISOString();
+          }
           if (transientStatus && attempt === 0 && retryDelay <= 1_000
             && Date.now() + retryDelay + 4_000 <= Math.min(deadline, taskDeadline)) {
             // A response can arrive after activation or rollback. Recheck the
@@ -178,10 +185,6 @@ export async function runConditions(options: {
             if (retryDelay) await new Promise((resolve) => setTimeout(resolve, retryDelay));
             lastError = new ConditionsFailure("http_error", true, true);
             continue;
-          }
-          if (response.status === 429 && target.hostname.endsWith("open-meteo.com")) {
-            const retryAt = Math.min(now.getTime() + 7 * 86400000, Math.max(now.getTime() + 3_600_000, Number.isFinite(until) ? until : 0));
-            cooldown = new Date(Math.max(retryAt, cooldown ? Date.parse(cooldown) : 0)).toISOString();
           }
           throw new ConditionsFailure("http_error", response.status !== 429, false);
         }
@@ -275,7 +278,7 @@ export async function runConditions(options: {
     try {
       if (cooldown) throw new ConditionsFailure("quota_exhausted", false);
       const coordinates = ids.map((id) => kind === "marine" ? catalog3MarineMappingByLocation.get(id)!.queryCoordinates : byId.get(id)!.centroid);
-      const { body } = await request(forecastUrl(kind, coordinates), 512 * 1024);
+      const { body } = await request(forecastUrl(kind, coordinates), 512 * 1024, "json", deadline, {}, ids.length);
       const rows = Array.isArray(body) ? body : [body];
       if (rows.length !== ids.length) throw new ConditionsFailure("contract_mismatch");
       for (let index = 0; index < ids.length; index += 1) {
@@ -544,7 +547,7 @@ export async function runConditions(options: {
   const publicationState = await options.stateStore.read();
   assertCollection(publicationState.data, collection);
   const expandedPublication = await publishCommittedCatalog({ stateStore: options.stateStore, stores: options.catalogPublication,
-    collection: collection!, lease: options.lease, now, family: "conditions", env });
+    collection: collection!, lease: options.lease, now, publicationClock: options.now ? leaseNow : undefined, family: "conditions", env });
   const publication = expandedPublication.publication;
   const combinedFailures = publication.failed;
   const failures = combinedFailures.slice(0, MAX_PUBLICATION_FAILURES);

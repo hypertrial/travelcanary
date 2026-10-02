@@ -51,6 +51,10 @@ The command authenticates `HEAD` before each sequential `GET`, applies a bounded
 
 Do not delete leases, cursors, state, or quotas to force a run. Wait for lease expiry or diagnose the bounded failure. `INGESTION_PAUSED=true` pauses hosted writes during recovery.
 
+LU-Alert retains at most 1,000 superseded CAP identifiers without eviction. Exceeding this bound fails the transport before updating events or cursor progress. Recovery requires reviewing the replayable resources and establishing a safe baseline; clearing only the supersession cache can restore cancelled alerts.
+
+Forecast quota reservations charge every issued Open-Meteo destination, including automatic transport retries and split retries. A retry without enough remaining weight is deferred, and a real 429 retains its cooldown. Release initialization keeps each request deadline active through response-body consumption.
+
 ## Health and verification
 
 ## 3. Verify cron routes

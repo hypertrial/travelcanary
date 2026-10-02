@@ -117,16 +117,17 @@ export function parseLuCap(xml: string, context: IngestionContext): ParsedCap {
   };
 }
 
-function applyLifecycle(existing: NormalizedEvent[], records: ParsedCap[], now: Date): NormalizedEvent[] {
+function applyLifecycle(existing: NormalizedEvent[], records: ParsedCap[], now: Date, supersededIds: Set<string>): NormalizedEvent[] {
   let events = existing.slice();
   for (const record of records.sort((a, b) => a.sent - b.sent || a.identifier.localeCompare(b.identifier))) {
     const superseded = new Set(record.references);
     if (superseded.size) events = events.filter((event) => ![...superseded].some((identifier) => event.id.startsWith(`lu-alert:${identifier}:`)));
-    if (record.msgType === "cancel" || record.msgType === "pause" || record.ignored) continue;
+    if (record.msgType === "cancel" || record.msgType === "pause" || record.ignored || supersededIds.has(record.identifier)) continue;
     events = events.filter((event) => !event.id.startsWith(`lu-alert:${record.identifier}:`));
     events.push(...record.events);
   }
-  return limitEvents(events.filter((event) => Date.parse(event.expiresAt) > now.getTime()));
+  return limitEvents(events.filter((event) => Date.parse(event.expiresAt) > now.getTime()
+    && !supersededIds.has(event.id.slice("lu-alert:".length, event.id.lastIndexOf(":")))));
 }
 
 function resourceTimestamp(resource: LuResource): number {
@@ -145,7 +146,8 @@ export async function fetchLuPartition(context: IngestionContext): Promise<Natio
   const transport = context.state?.partitionTransports.nationalCivilAlerts.LU["lu-alert"];
   const previous = transport?.lastAttempt ? transport : context.state?.sourcePartitions.nationalCivilAlerts.LU;
   const previousUpdated = previous?.sourceUpdatedAt;
-  if (previous?.status === "ok" && previousUpdated === datasetUpdated) return {
+  const cursor = context.state?.luAlertCursor;
+  if (!cursor && previous?.status === "ok" && previousUpdated === datasetUpdated) return {
     status: "ok", sourceUpdatedAt: datasetUpdated, events: retainedCountryEvents(context, "LU", "lu-alert:"), error: null,
     checkedLocationIds: locations.map(({ id }) => id), unavailableLocationIds: [],
   };
@@ -159,9 +161,13 @@ export async function fetchLuPartition(context: IngestionContext): Promise<Natio
       && /^https:\/\/download\.data\.public\.lu\//.test(url) && cleanText(resource.format).toLowerCase() === "xml";
   });
   const newResources = eligible.filter((resource) => resourceTimestamp(resource) > watermark);
-  const continuingOverflow = previous?.status === "partial" && previous.error === "LU-Alert resource limit or deadline reached";
+  const continuingOverflow = previous?.error === "LU-Alert resource limit or deadline reached";
   const cutoff = isFirstRun || continuingOverflow || newResources.length > RESOURCE_COUNT_LIMIT ? watermark : watermark - 60 * 60_000;
-  const candidates = eligible.filter((resource) => resourceTimestamp(resource) > cutoff)
+  const cursorTimestamp = cursor ? Date.parse(cursor.timestamp) : cutoff;
+  const candidates = eligible.filter((resource) => cursor
+    ? resourceTimestamp(resource) > cursorTimestamp || resourceTimestamp(resource) === cursorTimestamp
+      && (cursor.resourceUrl === null || cleanText(resource.url).localeCompare(cursor.resourceUrl) > 0)
+    : continuingOverflow ? resourceTimestamp(resource) >= cutoff : resourceTimestamp(resource) > cutoff)
     .sort((a, b) => resourceTimestamp(a) - resourceTimestamp(b) || cleanText(a.url).localeCompare(cleanText(b.url)));
   const selected = candidates.slice(0, RESOURCE_COUNT_LIMIT);
   let deadlineLimited = false;
@@ -214,20 +220,26 @@ export async function fetchLuPartition(context: IngestionContext): Promise<Natio
   if (overflow) locations.forEach(({ id }) => unavailable.add(id));
   const checked = locations.map(({ id }) => id).filter((id) => !unavailable.has(id));
   const retained = retainedCountryEvents(context, "LU", "lu-alert:");
+  const supersededIds = new Set([...(context.state?.luAlertSupersededIds || []), ...records.flatMap(({ references }) => references)]);
+  // ponytail: keep 1000 identifiers without eviction; review replayable resources before any recovery at this fail-closed ceiling.
+  if (supersededIds.size > 1000 || [...supersededIds].some((id) => id.length > 512)) throw new Error("LU-Alert supersession state limit reached");
   // Successfully processed lifecycle records must survive even when catch-up is incomplete.
-  const events = applyLifecycle(retained, records, context.now);
+  const events = applyLifecycle(retained, records, context.now, supersededIds);
   const eventIds = new Set(events.map(({ id }) => id));
   const removedEventPrefixes = retained.filter(({ id }) => !eventIds.has(id)).map(({ id }) => id);
   const partial = invalid > 0 || overflow;
   let processedWatermark = watermark;
+  let nextCursor = cursor || { timestamp: new Date(cutoff).toISOString(), resourceUrl: null as string | null };
   if (partial) for (const item of fetched) {
     if (failedResources.has(item.resource)) break;
     processedWatermark = Math.max(processedWatermark, resourceTimestamp(item.resource));
+    nextCursor = { timestamp: new Date(resourceTimestamp(item.resource)).toISOString(), resourceUrl: cleanText(item.resource.url) };
   }
   return {
     status: partial ? "partial" : "ok",
     sourceUpdatedAt: partial ? new Date(processedWatermark).toISOString() : datasetUpdated,
     events, removedEventPrefixes, error: overflow ? "LU-Alert resource limit or deadline reached" : invalid ? `${invalid} CAP-LU resources were invalid` : null,
     checkedLocationIds: checked, unavailableLocationIds: [...unavailable].sort(),
+    luAlertCursor: partial ? nextCursor : null, luAlertSupersededIds: [...supersededIds].sort(),
   };
 }

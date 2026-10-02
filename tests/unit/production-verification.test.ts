@@ -45,7 +45,7 @@ async function fixture(healthy = true, mutate?: (state: IngestionState) => void,
   const lease = await acquireIngestionLease(stateStore, "production-verifier-test", now, 330_000);
   if (!lease) throw new Error("lease unavailable");
   await publishCommittedCatalog({ stateStore, stores: { publicationStore }, collection: { catalogVersion: 3, revision: 1 }, lease,
-    now, family: "all", env: { VERCEL_GIT_COMMIT_SHA: sha, ...env } });
+    now, publicationClock: () => now, family: "all", env: { VERCEL_GIT_COMMIT_SHA: sha, ...env } });
   const current = await readCurrentPublication(publicationStore);
   if (!current) throw new Error("publication unavailable");
   const fetch = vi.fn<typeof globalThis.fetch>().mockImplementation(async (input) => {

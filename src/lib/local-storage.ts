@@ -5,7 +5,7 @@ import { z } from "zod";
 import type { CatalogPublicationStores } from "./catalog-publication";
 import { captureStateControl, assertStateControlChange } from "./publication-control";
 import { createEmptyState } from "./risk";
-import { IngestionStateV15Schema, IngestionStateV16Schema, parseCatalogState, type IngestionState } from "./domain/catalog-state";
+import { IngestionStateV15Schema, IngestionStateV16Schema, parseCatalogState, parseCatalogStateV15, type IngestionState } from "./domain/catalog-state";
 import { PRIVATE_STATE_HARD_LIMIT_BYTES, StateLimitError } from "./ingestion/limits";
 import { ConcurrencyError, type StateStore, type Versioned } from "./state-store";
 import { disabledLocalPolicy, LocalRuntimePolicySchema, type LocalRuntimePolicy } from "./local-policy";
@@ -160,15 +160,15 @@ export class LocalStateStore implements StateStore {
     if (Buffer.byteLength(row.value) > PRIVATE_STATE_HARD_LIMIT_BYTES) throw new StateLimitError("Private ingestion state exceeds 5 MB hard limit");
     const raw = JSON.parse(row.value) as { schemaVersion?: unknown };
     const data = parseCatalogState(raw);
-    const legacy = raw.schemaVersion === 15 ? { schemaVersion: 15, raw: row.value } : undefined;
+    const legacy = typeof raw.schemaVersion === "number" && raw.schemaVersion <= 15 ? { schemaVersion: raw.schemaVersion, raw: row.value } : undefined;
     return { data, etag: String(row.revision), legacy, ...captureStateControl(data) };
   }
   async write(state: IngestionState, expected: Versioned<IngestionState>) {
     const validated = IngestionStateV16Schema.parse({ ...state, stateRevision: state.stateRevision + 1 });
     assertStateControlChange(validated, expected);
     const value = JSON.stringify(validated);
-    if (expected.legacy?.schemaVersion === 15) {
-      const backup = JSON.stringify(IngestionStateV15Schema.parse(JSON.parse(expected.legacy.raw)));
+    if (expected.legacy) {
+      const backup = JSON.stringify(parseCatalogStateV15(JSON.parse(expected.legacy.raw)));
       const existing = this.database.read("private", "ingestion/state-v15-backup.json");
       if (existing) {
         const existingBody = JSON.stringify(IngestionStateV15Schema.parse(JSON.parse(existing.value)));

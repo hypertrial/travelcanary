@@ -21,10 +21,7 @@ function configuration(env: Record<string, string | undefined>) {
 }
 
 async function request(fetchImpl: typeof fetch, url: string, init: RequestInit, timeoutMs: number) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  try { return await fetchImpl(url, { ...init, signal: controller.signal, redirect: "error", cache: "no-store" }); }
-  finally { clearTimeout(timer); }
+  return fetchImpl(url, { ...init, signal: AbortSignal.timeout(timeoutMs), redirect: "error", cache: "no-store" });
 }
 
 function normalizedBody(value: unknown) {

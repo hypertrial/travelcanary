@@ -308,7 +308,7 @@ Panel {
               width: parent.width
               textFormat: Text.PlainText
               wrapMode: Text.WrapAnywhere
-              text: "Docker\nbin/travelcanary setup --runtime docker --port 3000\n\nNative Node/systemd\nbin/travelcanary setup --runtime native --port 3000"
+              text: "Docker\nbin/travelcanary setup --runtime docker --port 3000\n\nNative Node/systemd\nFollow docs/SELF_HOSTING.md (Native Linux)."
               color: root.foreground
               font.family: "monospace"
               font.pixelSize: Style.font.bodySmall

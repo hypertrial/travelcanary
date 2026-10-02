@@ -13,6 +13,8 @@ import { publicationSha256, readCurrentPublication, readPublishedObject, type Pu
 import { providerRegistry } from "./provider-registry";
 import { PublicationRaceError } from "./operation-failure";
 import type { StateStore } from "./state-store";
+import { publishedRestrictedConditions, RESTRICTED_SOURCES_ACTIVE_CODE, restrictedConditionSourceIds } from "./local-policy";
+import { conditionRecords } from "./domain/conditions";
 
 export { PublicationRaceError };
 
@@ -39,7 +41,7 @@ function statusCodes(state: Awaited<ReturnType<StateStore["read"]>>["data"]) {
   for (const [group, countries] of Object.entries(state.sourcePartitions)) for (const [country, health] of Object.entries(countries)) {
     if (["failed", "delayed"].includes(health.status)) codes.add(`partition/${group.toLowerCase()}/${country.toLowerCase()}/${health.status}`);
   }
-  return [...codes].sort().slice(0, 100);
+  return [...codes].sort().slice(0, 99);
 }
 
 function latestEvidenceTime(state: Awaited<ReturnType<StateStore["read"]>>["data"], requested: Date) {
@@ -58,6 +60,7 @@ export async function publishCommittedCatalog(options: {
   collection: CollectionControl;
   lease: IngestionLease;
   now: Date;
+  publicationClock?: () => Date;
   family: "snapshots" | "conditions" | "all";
   env?: Record<string, string | undefined>;
 }) {
@@ -91,6 +94,12 @@ export async function publishCommittedCatalog(options: {
   });
 
   const codes = statusCodes(read.data);
+  const status = codes.length || snapshot.dataHealth !== "complete" ? "degraded" : "complete";
+  const restrictedActive = env.NONCOMMERCIAL_DATA_ENABLED === "true" || (canReuseConditions
+    ? await publishedRestrictedConditions(options.stores.publicationStore, current.manifest, generatedAt)
+    : conditionFiles.some((file) => Object.values(file.locations).some((location) => conditionRecords(location)
+      .some(({ sourceId }) => restrictedConditionSourceIds.has(sourceId)))));
+  if (restrictedActive) codes.push(RESTRICTED_SOURCES_ACTIVE_CODE);
   const manifest = PublicationManifestV1Schema.parse({
     schemaVersion: 1,
     catalogVersion: 3,
@@ -104,7 +113,7 @@ export async function publishCommittedCatalog(options: {
     complete: true,
     snapshot: snapshotObject,
     conditions,
-    status: { state: codes.length || snapshot.dataHealth !== "complete" ? "degraded" : "complete", codes,
+    status: { state: status, codes,
       collectorLastSuccess: generatedAt.toISOString() },
   });
   const manifestBody = JSON.stringify(manifest);
@@ -112,7 +121,7 @@ export async function publishCommittedCatalog(options: {
   const manifestPath = publicationManifestPath(manifestSha256);
   await options.stores.publicationStore.putImmutable(manifestPath, manifestBody);
 
-  const latest = await assertIngestionLease(options.stateStore, options.lease, generatedAt);
+  const latest = await assertIngestionLease(options.stateStore, options.lease, options.publicationClock?.() || new Date());
   if (latest.data.stateRevision !== read.data.stateRevision) throw new PublicationRaceError("Private state changed during publication");
   const pointer = PublicationPointerV1Schema.parse({
     schemaVersion: 1,

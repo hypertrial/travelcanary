@@ -22,6 +22,14 @@ const validSummary = {
 };
 
 describe("Omarchy TravelCanary model", () => {
+  it("directs native installation to the supported manual procedure", () => {
+    for (const file of ["docs/OMARCHY.md", "omarchy/Panel.qml"]) {
+      const content = readFileSync(file, "utf8");
+      expect(content).not.toContain("setup --runtime native");
+      expect(content).toContain("SELF_HOSTING.md");
+    }
+    expect(readFileSync("docs/SELF_HOSTING.md", "utf8")).toContain("## Native Linux");
+  });
   it("accepts only loopback HTTP origins and clamps polling", () => {
     expect(model.normalizeServiceUrl("http://127.0.0.1:3000/")).toBe("http://127.0.0.1:3000");
     expect(model.normalizeServiceUrl("http://localhost:8080")).toBe("http://localhost:8080");

@@ -42,26 +42,29 @@ function unwrapJson(value: unknown): unknown {
 function alertAreas(alert: AtAlert) {
   const rawPolygons = Array.isArray(alert.polygons) ? alert.polygons : [];
   const geometry = alert.geometry && typeof alert.geometry === "object" ? alert.geometry as { type?: unknown; coordinates?: unknown } : null;
-  const rings = geometry?.type === "Polygon" && Array.isArray(geometry.coordinates)
-    ? geometry.coordinates
+  const polygons = geometry?.type === "Polygon" && Array.isArray(geometry.coordinates)
+    ? [geometry.coordinates]
     : geometry?.type === "MultiPolygon" && Array.isArray(geometry.coordinates)
-      ? geometry.coordinates.flat()
-      : rawPolygons;
-  if (!Array.isArray(rings) || rings.length === 0) throw new Error("AT-Alert record has no geometry");
-  return rings.map((ring) => {
-    if (!Array.isArray(ring) || ring.length < 4) throw new Error("AT-Alert polygon is incomplete");
-    const points = ring.map((pair) => {
-      if (!Array.isArray(pair) || pair.length < 2) throw new Error("AT-Alert coordinate is invalid");
-      const first = Number(pair[0]);
-      const second = Number(pair[1]);
-      if (!Number.isFinite(first) || !Number.isFinite(second)) throw new Error("AT-Alert coordinate is invalid");
-      const [longitude, latitude] = Math.abs(first) <= 90 && Math.abs(second) > 90 ? [second, first] : [first, second];
-      if (Math.abs(latitude) > 90 || Math.abs(longitude) > 180) throw new Error("AT-Alert coordinate is out of range");
-      return [longitude, latitude] as [number, number];
-    });
-    if (points[0][0] !== points.at(-1)![0] || points[0][1] !== points.at(-1)![1]) points.push(points[0]);
-    if (points.length < 4) throw new Error("AT-Alert polygon must be a closed ring");
-    return polygon([points]);
+      ? geometry.coordinates
+      : rawPolygons.map((ring) => [ring]);
+  if (polygons.length === 0) throw new Error("AT-Alert record has no geometry");
+  return polygons.map((rings) => {
+    if (!Array.isArray(rings) || rings.length === 0) throw new Error("AT-Alert polygon is incomplete");
+    return polygon(rings.map((ring) => {
+      if (!Array.isArray(ring) || ring.length < 4) throw new Error("AT-Alert polygon is incomplete");
+      const points = ring.map((pair) => {
+        if (!Array.isArray(pair) || pair.length < 2) throw new Error("AT-Alert coordinate is invalid");
+        const first = Number(pair[0]);
+        const second = Number(pair[1]);
+        if (!Number.isFinite(first) || !Number.isFinite(second)) throw new Error("AT-Alert coordinate is invalid");
+        const [longitude, latitude] = Math.abs(first) <= 90 && Math.abs(second) > 90 ? [second, first] : [first, second];
+        if (Math.abs(latitude) > 90 || Math.abs(longitude) > 180) throw new Error("AT-Alert coordinate is out of range");
+        return [longitude, latitude] as [number, number];
+      });
+      if (points[0][0] !== points.at(-1)![0] || points[0][1] !== points.at(-1)![1]) points.push(points[0]);
+      if (points.length < 4) throw new Error("AT-Alert polygon must be a closed ring");
+      return points;
+    }));
   });
 }
 

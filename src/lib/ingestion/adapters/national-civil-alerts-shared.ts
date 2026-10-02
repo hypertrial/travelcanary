@@ -5,10 +5,11 @@ import type { CatalogLocation as Location } from "../../catalog-data";
 import { locationPolygon } from "../../geospatial";
 import { hazardLevelRank } from "../../hazard-lifecycle";
 import type { IngestionContext } from "../types";
+import type { CatalogTransportResult } from "../../domain/catalog-state";
 
 export type NationalPartition = PartitionedSourceResult["partitions"][CountryCode] & {
   frozenEaFloodAreaGeometries?: Record<string, Array<{ kind: "polygon"; coordinates: [number, number][][] }>>;
-};
+} & Pick<CatalogTransportResult, "luAlertCursor" | "luAlertSupersededIds">;
 
 export function countryLocations(context: IngestionContext, countryCode: string): Location[] {
   return context.locations.filter((location) => location.countryCode === countryCode).sort((a, b) => a.id.localeCompare(b.id));

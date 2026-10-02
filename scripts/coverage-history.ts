@@ -2,7 +2,7 @@ import { open } from "node:fs/promises";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { z } from "zod";
-import { CompleteSnapshotSchema } from "../src/lib/snapshot-validation";
+import { SnapshotV11Schema } from "../src/lib/domain/catalog-public";
 import { measureCapture } from "./coverage-measurement";
 
 const count = z.number().int().nonnegative();
@@ -57,7 +57,7 @@ async function main() {
     for (const path of paths) reports.push(await readJson(path, 2 * 1024 * 1024));
     console.log(JSON.stringify(summarizeCoverageHistory(reports), null, 2));
   } else if (mode === "capture" && paths.length === 2) {
-    const snapshot = CompleteSnapshotSchema.parse(await readJson(paths[0], 500_000));
+    const snapshot = SnapshotV11Schema.parse(await readJson(paths[0], 2_000_000));
     const cases = measureCapture(snapshot, await readJson(paths[1], 128 * 1024));
     console.log(JSON.stringify({ snapshotAt: snapshot.generatedAt, cases,
       limitation: "Reviewed sample capture only. Evidence URL, publication time and headline must jointly identify a reviewed official incident; this is not population-wide recall." }, null, 2));

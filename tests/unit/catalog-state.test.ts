@@ -61,6 +61,19 @@ function historical(version: number) {
 }
 
 describe("V16 private-state migration", () => {
+  it.each(Array.from({ length: 15 }, (_, index) => index + 1))("atomically backs up V%i locally before migrating", async (version) => {
+    const input = version <= 12 ? historical(version) : version === 13 ? parseCatalogStateV13(populatedV12())
+      : version === 14 ? parseCatalogStateV14(populatedV12()) : parseCatalogStateV15(populatedV12());
+    const directory = mkdtempSync(join(tmpdir(), "travelcanary-historical-"));
+    const database = new LocalDatabase(join(directory, "travelcanary.db"));
+    try {
+      database.initialize([{ namespace: "private", key: "ingestion/state.json", value: JSON.stringify(input), maxBytes: 5 * 1024 * 1024 }]);
+      const store = new LocalStateStore(database); const read = await store.read();
+      await store.write(read.data, read);
+      expect(JSON.parse(database.read("private", "ingestion/state-v15-backup.json")!.value)).toEqual(parseCatalogStateV15(input));
+      expect((await store.read()).data.schemaVersion).toBe(16);
+    } finally { database.close(); }
+  });
   it.each(Array.from({ length: 12 }, (_, index) => index + 1))("migrates V%i directly to Catalog 3 while retaining usable evidence", (version) => {
     const input = historical(version); const before = structuredClone(input); const migrated = parseCatalogState(input);
     expect(migrated).toMatchObject({ schemaVersion: 16, collection: { catalogVersion: 3 }, stateRevision: 0, ingestionFence: 0, ingestionLease: null });

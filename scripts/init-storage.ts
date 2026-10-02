@@ -29,7 +29,7 @@ export async function initializeStorage(options: { privateAuth: BlobAuthInput; p
   try {
     const state = await stateStore.read();
     const publication = await publishCommittedCatalog({ stateStore, stores: { publicationStore: options.publicationStore || new BlobPublicationStore(options.publicAuth) },
-      collection: state.data.collection, lease, now, family: "all" });
+      collection: state.data.collection, lease, now, publicationClock: options.now ? () => options.now! : undefined, family: "all" });
     return { initialized, publicationUrl: publication.pointerUrl || null, manifestSha256: publication.pointer.manifestSha256 };
   } finally { await releaseIngestionLease(stateStore, lease); }
 }

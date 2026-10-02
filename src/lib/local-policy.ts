@@ -1,6 +1,11 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
 import sourceInventory from "../../data/source-inventory.json";
+import { ConditionsV3Schema } from "./domain/catalog-public";
+import { conditionRecords } from "./domain/conditions";
+import type { PublicationManifestV1 } from "./domain/publication";
+import { currentConditions } from "./conditions/presentation";
+import { readPublishedObject, type PublicationStore } from "./publication-store";
 
 export const LocalRuntimePolicySchema = z.object({
   schemaVersion: z.literal(1),
@@ -20,6 +25,18 @@ const restrictedManifest = {
 export const restrictedSourceCount = restrictedManifest.localConditions.length
   + restrictedManifest.providers.length + restrictedManifest.nationalWarningSystems.length;
 export const restrictedConditionSourceIds = new Set(restrictedManifest.localConditions.map(({ id }) => id));
+export const RESTRICTED_SOURCES_ACTIVE_CODE = "policy/restricted_sources_active";
+
+export async function publishedRestrictedConditions(store: PublicationStore, manifest: PublicationManifestV1, now: Date) {
+  for (const reference of manifest.conditions) {
+    const file = ConditionsV3Schema.parse(JSON.parse(await readPublishedObject(store, reference)));
+    if (file.countryCode !== reference.countryCode || file.generatedAt !== reference.generatedAt
+      || file.producerCommitSha !== manifest.producerCommitSha) throw new Error("Public conditions identity mismatch");
+    if (Object.values(file.locations).some((location) => conditionRecords(currentConditions(location, now))
+      .some(({ sourceId }) => restrictedConditionSourceIds.has(sourceId)))) return true;
+  }
+  return false;
+}
 export const restrictedSourceManifestDigest = createHash("sha256")
   .update(JSON.stringify(restrictedManifest)).digest("hex");
 

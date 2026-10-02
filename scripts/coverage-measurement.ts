@@ -6,7 +6,7 @@ import applicability from "../data/hazard-applicability.json";
 import national from "../data/national-warning-sources.json";
 import { providerRegistry } from "../src/lib/provider-registry";
 import { type CatalogSnapshot, type PublicCatalogLocation } from "../src/lib/domain/catalog-public";
-import { HazardTypeSchema, type Snapshot } from "../src/lib/domain/schemas";
+import { HazardTypeSchema } from "../src/lib/domain/schemas";
 import { coverageBreakdown } from "../src/lib/coverage-measurement";
 
 export { coveragePairStates } from "../src/lib/coverage-measurement";
@@ -26,13 +26,13 @@ export function measureCoverage(snapshot: CatalogSnapshot, catalog: PublicCatalo
 
 export const CaptureCasesSchema = z.array(z.object({
   id: z.string().min(1).max(100), headline: z.string().min(1).max(500), sourceUpdatedAt: z.string().datetime(), hazard: HazardTypeSchema, evidenceUrl: z.string().url(),
-  locationIds: z.array(z.string().min(1)).min(1).max(503),
+  locationIds: z.array(z.string().min(1)).min(1).max(679),
 }).strict()).min(1).max(100).superRefine((cases, context) => {
   if (new Set(cases.map(({ id }) => id)).size !== cases.length) context.addIssue({ code: "custom", message: "Duplicate capture case ID" });
   for (const item of cases) if (new Set(item.locationIds).size !== item.locationIds.length) context.addIssue({ code: "custom", message: "Duplicate expected destination" });
 });
 
-export function measureCapture(snapshot: Snapshot, input: unknown) {
+export function measureCapture(snapshot: CatalogSnapshot, input: unknown) {
   const cases = CaptureCasesSchema.parse(input);
   return cases.map((sample) => {
     if (sample.locationIds.some((id) => !snapshot.locations[id])) throw new Error(`Unknown capture destination in ${sample.id}`);
