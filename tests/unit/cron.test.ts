@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { readFile } from "node:fs/promises";
-import { BlobNotFoundError } from "@vercel/blob";
+import { BlobError, BlobNotFoundError } from "@vercel/blob";
 import { ZodError } from "zod";
 import { handleCron } from "@/lib/cron";
 import { CollectionChangedError } from "@/lib/domain/catalog-state";
@@ -120,6 +120,7 @@ describe("cron authentication", () => {
   it.each([
     ["acquisition", new BlobNotFoundError(), "blob_not_found"],
     ["operation", new BlobNotFoundError(), "blob_not_found"],
+    ["operation", new BlobError(`Failed to fetch blob: 403 https://blob.example/private?token=secret-sentinel\r\n${"x".repeat(1_000_000)}`), "blob_fetch_403"],
     ["operation", new ZodError([{ code: "custom", path: ["private-state", "secret-sentinel"], message: "secret-sentinel" }]), "schema_invalid"],
     ["operation", new SyntaxError("secret-sentinel"), "json_invalid"],
     ["operation", { name: "BlobNotFoundError", constructor: BlobNotFoundError, code: "blob_not_found", message: "secret-sentinel" }, "unknown"],

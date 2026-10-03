@@ -55,7 +55,7 @@ The command authenticates `HEAD` before each sequential `GET`, applies a bounded
 
 Do not delete leases, cursors, state, or quotas to force a run. Wait for lease expiry or diagnose the bounded failure. `INGESTION_PAUSED=true` pauses hosted writes during recovery.
 
-Collector `ingestion_failed` runtime logs include a fixed `phase` (`acquisition` or `operation`) and an allowlisted `reason` for known Blob, schema or JSON failures; unknown exceptions remain `unknown`. These console diagnostics never include exception messages, stacks, issue paths or causes. HTTP failure responses retain their existing public codes and JSON shape.
+Collector `ingestion_failed` runtime logs include a fixed `phase` (`acquisition` or `operation`) and an allowlisted `reason` for known Blob, schema or JSON failures; unknown exceptions remain `unknown`. Generic Blob read failures matching the pinned SDK's exact HTTP prefix report fixed `blob_fetch_<status>` categories for HTTP 400, 401, 403, 408, 429, 500, 502, 503 or 504. The classifier inspects only an own message data property's bounded prefix, never a getter or status-text suffix; other Blob failures remain `blob_error`. These console diagnostics never include exception messages, stacks, issue paths or causes. HTTP failure responses retain their existing public codes and JSON shape.
 
 LU-Alert retains at most 1,000 superseded CAP identifiers without eviction. Exceeding this bound fails the transport before updating events or cursor progress. Recovery requires reviewing the replayable resources and establishing a safe baseline; clearing only the supersession cache can restore cancelled alerts.
 

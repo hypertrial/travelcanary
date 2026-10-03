@@ -38,7 +38,28 @@ const failureReasons = [
   [SyntaxError, "json_invalid"],
 ] as const;
 
+const blobFetchPrefix = "Vercel Blob: Failed to fetch blob: ";
+const blobFetchReasons = {
+  "400": "blob_fetch_400", "401": "blob_fetch_401", "403": "blob_fetch_403",
+  "408": "blob_fetch_408", "429": "blob_fetch_429", "500": "blob_fetch_500",
+  "502": "blob_fetch_502", "503": "blob_fetch_503", "504": "blob_fetch_504",
+} as const;
+
+function blobFetchFailureReason(error: BlobError) {
+  try {
+    const message = Object.getOwnPropertyDescriptor(error, "message");
+    if (!message || typeof message.value !== "string") return "blob_error";
+    // Inspect only the pinned SDK's fixed prefix, status and space; discard status text.
+    const prefix = message.value.slice(0, blobFetchPrefix.length + 4);
+    if (!prefix.startsWith(blobFetchPrefix) || !prefix.endsWith(" ")) return "blob_error";
+    const status = prefix.slice(blobFetchPrefix.length, -1);
+    return blobFetchReasons[status as keyof typeof blobFetchReasons] || "blob_error";
+  } catch { return "blob_error"; }
+}
+
 export function operationFailureReason(error: unknown) {
-  for (const [type, reason] of failureReasons) if (error instanceof type) return reason;
+  for (const [type, reason] of failureReasons) if (error instanceof type) {
+    return type === BlobError ? blobFetchFailureReason(error) : reason;
+  }
   return "unknown";
 }
