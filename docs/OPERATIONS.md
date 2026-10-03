@@ -55,6 +55,8 @@ The command authenticates `HEAD` before each sequential `GET`, applies a bounded
 
 Do not delete leases, cursors, state, or quotas to force a run. Wait for lease expiry or diagnose the bounded failure. `INGESTION_PAUSED=true` pauses hosted writes during recovery.
 
+Collector `ingestion_failed` runtime logs include a fixed `phase` (`acquisition` or `operation`) and an allowlisted `reason` for known Blob, schema or JSON failures; unknown exceptions remain `unknown`. These console diagnostics never include exception messages, stacks, issue paths or causes. HTTP failure responses retain their existing public codes and JSON shape.
+
 LU-Alert retains at most 1,000 superseded CAP identifiers without eviction. Exceeding this bound fails the transport before updating events or cursor progress. Recovery requires reviewing the replayable resources and establishing a safe baseline; clearing only the supersession cache can restore cancelled alerts.
 
 Forecast quota reservations charge every issued Open-Meteo destination, including automatic transport retries and split retries. A retry without enough remaining weight is deferred, and a real 429 retains its cooldown. Release initialization keeps each request deadline active through response-body consumption.
