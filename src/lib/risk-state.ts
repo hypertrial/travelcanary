@@ -290,7 +290,7 @@ function mergePartitionedResult(events: NormalizedEvent[], state: IngestionState
         const removed = transport.removedEventPrefixes || [];
         const primaryId = meteoalarmPrimarySystem(countryCode)?.id || "meteoalarm-primary";
         if ([primaryId, "ifrc-meteoalarm"].includes(id)) return removed;
-        const root = id === "aemet-cap" ? "meteoalarm:aemet:" : id === "dhmz-cap" ? "meteoalarm:dhmz:"
+        const root = id === "aemet-cap" ? "meteoalarm:aemet:" : id === "dhmz-cap" ? "meteoalarm:dhmz:" : id === "fmi-cap" ? "meteoalarm:fmi:"
           : id === "meteoalarm-edr" ? "meteoalarm:edr:" : null;
         return root ? removed.filter((prefix) => prefix.startsWith(root) && prefix.length > root.length)
           .map((prefix) => `meteoalarm:${prefix.slice(root.length)}`) : [];
@@ -298,7 +298,7 @@ function mergePartitionedResult(events: NormalizedEvent[], state: IngestionState
       if (superseded.length) events = events.filter((event) => event.sourceId !== result.sourceId
         || !eventBelongsToCountry(event, countryCode)
         || !superseded.some((prefix) => eventMatchesRemovalPrefix(event.id, prefix)
-          || eventMatchesRemovalPrefix(event.id.replace(/^meteoalarm:(?:aemet|dhmz):/, "meteoalarm:"), prefix)));
+          || eventMatchesRemovalPrefix(event.id.replace(/^meteoalarm:(?:aemet|dhmz|fmi):/, "meteoalarm:"), prefix)));
       continue;
     }
     if (partition.status === "ok" || partition.status === "disabled") {

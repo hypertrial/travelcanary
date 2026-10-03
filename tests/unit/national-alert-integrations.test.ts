@@ -232,6 +232,50 @@ describe("aggressive national alert integrations", () => {
     }
   });
 
+  it.each(["Cancel", "Update"].flatMap((lifecycle) => ["not_due", "failed"].map((outcome) => [lifecycle, outcome])))
+    ("supersedes cached Finnish CAP warnings from primary %s while recovery is %s", async (lifecycle, outcome) => {
+      const atom = finnishMarineAtom.replaceAll("fi-sea", "fmi-sea");
+      const first = await new MeteoAlarmAdapter().fetch({ ...context, fetch: (async (input) => {
+        const url = String(input);
+        if (url.endsWith("/rss_en-GB.rss")) return new Response(`<rss><channel><item><link>https://alerts.fmi.fi/cap/marine.xml</link></item><item><link>https://alerts.fmi.fi/cap/other.xml</link></item></channel></rss>`);
+        if (url.endsWith("/marine.xml")) return new Response(fmiMarineCap);
+        if (url.endsWith("/other.xml")) return new Response(fmiMarineCap.replaceAll("fmi-sea", "fmi-sea-other"));
+        return new Response(url.endsWith("-finland") ? atom : emptyAtom);
+      }) as typeof fetch });
+      const initial = mergeSourceResults(createEmptyState(now), [first], now);
+      expect(initial.events).toHaveLength(2);
+      const at = new Date(outcome === "not_due" ? "2026-08-30T10:10:00Z" : "2026-08-30T10:31:00Z");
+      const reference = atom.replaceAll("fmi-sea", "replacement")
+        .replace("<cap:message_type>Alert</cap:message_type>", `<cap:message_type>${lifecycle}</cap:message_type><cap:references>sender,fmi-sea,2026-08-30T09:55:00Z</cap:references>`)
+        .match(/<entry>[\s\S]*?<\/entry>/)![0];
+      const ongoing = atom.replaceAll("fmi-sea", "another-warning").replace("</feed>", reference + "</feed>");
+      const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url.includes("alerts.fmi.fi") || url.includes("alert-hub")) return new Response(null, { status: 503 });
+        return new Response(url.endsWith("-finland") ? ongoing : emptyAtom);
+      });
+      const result = await new MeteoAlarmAdapter().fetch({ ...context, now: at, state: initial, fetch: fetchMock as typeof fetch });
+      expect(result.partitions.FI.transports?.["fmi-cap"].status).toBe(outcome);
+      expect(result.partitions.FI.transports?.["meteoalarm-primary"].removedEventPrefixes).toContain("meteoalarm:fmi-sea:");
+      const stale = mergeSourceResults(initial, [{ ...result, checkedAt: new Date(now.getTime() - 60_000).toISOString() }], at);
+      expect(stale.events).toHaveLength(2);
+      const merged = mergeSourceResults(initial, [result], at);
+      expect(merged.events.some(({ id }) => id.startsWith("meteoalarm:fmi:fmi-sea:"))).toBe(false);
+      expect(merged.events.some(({ id }) => id.startsWith("meteoalarm:fmi:fmi-sea-other:"))).toBe(true);
+      const snapshot = buildCatalog3Snapshot(merged, at);
+      expect(snapshot.locations["fi-oulu"].hazards.some(({ id }) => id.startsWith("meteoalarm:fmi:fmi-sea:"))).toBe(false);
+      expect(snapshot.locations["fi-oulu"].hazards.some(({ id }) => id.startsWith("meteoalarm:fmi:fmi-sea-other:"))).toBe(true);
+      const primaryState = { ...initial, events: initial.events.map((event) => ({ ...event,
+        id: event.id.replace("meteoalarm:fmi:", "meteoalarm:"), transportId: "meteoalarm-primary" })) };
+      const reverse = structuredClone(result);
+      reverse.partitions.FI.transports!["meteoalarm-primary"] = { status: "failed", sourceUpdatedAt: null, error: "offline", events: [] };
+      reverse.partitions.FI.transports!["fmi-cap"] = { status: "ok", sourceUpdatedAt: at.toISOString(), error: null, events: [],
+        removedEventPrefixes: ["meteoalarm:fmi:", "meteoalarm:fmi:fmi-sea:"] };
+      expect(mergeSourceResults(primaryState, [reverse], at).events.map(({ id }) => id))
+        .toEqual(primaryState.events.filter(({ id }) => id.startsWith("meteoalarm:fmi-sea-other:")).map(({ id }) => id));
+      if (outcome === "not_due") expect(fetchMock.mock.calls.some(([url]) => String(url).includes("alerts.fmi.fi"))).toBe(false);
+    });
+
   it("recovers mixed Finnish land and unmapped marine warnings together", async () => {
     const landAtom = finnishMarineAtom.replaceAll("fi-sea", "fi-land").replace("FI809", "FI1B").replace("Selkämeri, Merenkurkku, Perämeri", "Helsinki");
     const mixedAtom = finnishMarineAtom.replace("</feed>", landAtom.match(/<entry>[\s\S]*?<\/entry>/)![0] + "</feed>");
