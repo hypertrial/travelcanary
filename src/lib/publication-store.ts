@@ -14,6 +14,7 @@ const immutableKey = /^catalogs\/3\/(?:objects\/sha256\/[a-f0-9]{64}\.json|gener
 const readableKey = /^catalogs\/3\/(?:objects\/sha256\/[a-f0-9]{64}\.json|generations\/[a-f0-9]{64}\/manifest\.json|publication\/latest\.json)$/;
 
 export type PublicationRead = { body: string; etag: string; url?: string; updatedAt?: Date };
+export class BlobPublicationPointerConflictError extends ConcurrencyError {}
 export interface PublicationStore {
   read(pathname: string, maxBytes: number): Promise<PublicationRead | null>;
   putImmutable(pathname: string, body: string): Promise<{ url?: string }>;
@@ -233,7 +234,10 @@ export class BlobPublicationStore implements PublicationStore {
         contentType: "application/json", cacheControlMaxAge: 60 });
       return { etag: result.etag, url: result.url };
     } catch (error) {
-      if (error instanceof BlobPreconditionFailedError) throw new ConcurrencyError("Publication pointer changed");
+      if (error instanceof BlobPreconditionFailedError) {
+        console.info(JSON.stringify({ event: "publication_pointer_conflict" }));
+        throw new BlobPublicationPointerConflictError("Publication pointer changed");
+      }
       if (!(error instanceof ConcurrencyError)) console.error(JSON.stringify({ event: "blob_storage_failed", operation: "pointer_write" }));
       throw error;
     }

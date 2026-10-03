@@ -9,7 +9,7 @@ import { PublicationManifestV1Schema, PublicationPointerV1Schema, publicationMan
 import { assertSupportedCollection, type CollectionControl } from "./domain/catalog-state";
 import { mapConcurrent } from "./ingestion/fetch";
 import { assertIngestionLease, type IngestionLease } from "./ingestion-lease";
-import { publicationSha256, readCurrentPublication, readPublishedObject, type PublicationStore } from "./publication-store";
+import { BlobPublicationPointerConflictError, publicationSha256, readCurrentPublication, readPublishedObject, type PublicationStore } from "./publication-store";
 import { providerRegistry } from "./provider-registry";
 import { PublicationRaceError } from "./operation-failure";
 import type { StateStore } from "./state-store";
@@ -54,7 +54,7 @@ function latestEvidenceTime(state: Awaited<ReturnType<StateStore["read"]>>["data
   return new Date(Math.max(requested.getTime(), latest));
 }
 
-export async function publishCommittedCatalog(options: {
+type CatalogPublicationOptions = {
   stateStore: StateStore;
   stores: CatalogPublicationStores;
   collection: CollectionControl;
@@ -63,7 +63,24 @@ export async function publishCommittedCatalog(options: {
   publicationClock?: () => Date;
   family: "snapshots" | "conditions" | "all";
   env?: Record<string, string | undefined>;
-}) {
+};
+
+export async function publishCommittedCatalog(options: CatalogPublicationOptions) {
+  try { return await publishCatalogGeneration(options); }
+  catch (error) {
+    if (!(error instanceof BlobPublicationPointerConflictError)) throw error;
+    const checkedAt = options.publicationClock?.() || new Date();
+    const current = await assertIngestionLease(options.stateStore, options.lease, checkedAt);
+    const expiresAt = current.data.ingestionLease?.expiresAt;
+    if (!expiresAt || Date.parse(expiresAt) - checkedAt.getTime() <= 61_000) throw error;
+    // Public Blob reads can retain the preceding pointer for up to 60 seconds.
+    await new Promise<void>((resolve) => setTimeout(resolve, 61_000));
+    await assertIngestionLease(options.stateStore, options.lease, options.publicationClock?.() || new Date());
+    return publishCatalogGeneration(options);
+  }
+}
+
+async function publishCatalogGeneration(options: CatalogPublicationOptions) {
   const env = options.env || process.env;
   const read = await options.stateStore.read();
   assertSupportedCollection(read.data, options.collection);

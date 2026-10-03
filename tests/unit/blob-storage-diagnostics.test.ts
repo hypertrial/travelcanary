@@ -195,37 +195,45 @@ describe("redacted Blob storage diagnostics", () => {
   });
 
   it("finishes a pointer CAS retry despite generic SDK duplicate immutable errors and commits private state once", async () => {
-    const stateStore = new MemoryStateStore(createEmptyState(now));
-    const lease = await acquireIngestionLease(stateStore, "blob-publication-retry", now, 330_000);
-    if (!lease) throw new Error("Test lease unavailable");
-    const write = vi.spyOn(stateStore, "write");
-    const objects = new Map<string, string>();
-    const duplicates: string[] = [];
-    let pointerAttempts = 0;
-    blob.get.mockImplementation(async (pathname: string) => objects.has(pathname) ? response(objects.get(pathname)!) : null);
-    blob.put.mockImplementation(async (pathname: string, value: string) => {
-      if (pathname === pointerPath) {
-        pointerAttempts += 1;
-        if (pointerAttempts === 1) throw new BlobPreconditionFailedError();
-      } else if (objects.has(pathname)) {
-        duplicates.push(pathname);
-        throw new BlobError("This blob already exists, use allowOverwrite: true to overwrite it.");
-      }
-      objects.set(pathname, value);
-      return { etag: '"new"', url: secret };
-    });
-    const result = await runIngestion({ cadence: "fast", adapters: [], stateStore,
-      catalogPublication: { publicationStore: publicStore }, lease, now });
-    expect(result.status).toBe("ok");
-    expect(pointerAttempts).toBe(2);
-    expect(write).toHaveBeenCalledOnce();
-    expect(duplicates.length).toBeGreaterThan(0);
-    const current = await readCurrentPublication(publicStore);
-    expect(current?.pointer.stateRevision).toBe((await stateStore.read()).data.stateRevision);
-    expect(current?.manifest.conditions).toHaveLength(45);
-    expect(log).not.toHaveBeenCalled();
-    expect(info.mock.calls).toHaveLength(duplicates.length);
-    expect(info.mock.calls.every((call) => call.length === 1
-      && String(call[0]) === JSON.stringify({ event: "immutable_write_recovered" }))).toBe(true);
+    vi.useFakeTimers({ toFake: ["Date", "setTimeout", "clearTimeout"] });
+    vi.setSystemTime(now);
+    try {
+      const stateStore = new MemoryStateStore(createEmptyState(now));
+      const lease = await acquireIngestionLease(stateStore, "blob-publication-retry", now, 330_000);
+      if (!lease) throw new Error("Test lease unavailable");
+      const write = vi.spyOn(stateStore, "write");
+      const objects = new Map<string, string>();
+      const duplicates: string[] = [];
+      let pointerAttempts = 0;
+      blob.get.mockImplementation(async (pathname: string) => objects.has(pathname) ? response(objects.get(pathname)!) : null);
+      blob.put.mockImplementation(async (pathname: string, value: string) => {
+        if (pathname === pointerPath) {
+          pointerAttempts += 1;
+          if (pointerAttempts === 1) throw new BlobPreconditionFailedError();
+        } else if (objects.has(pathname)) {
+          duplicates.push(pathname);
+          throw new BlobError("This blob already exists, use allowOverwrite: true to overwrite it.");
+        }
+        objects.set(pathname, value);
+        return { etag: '"new"', url: secret };
+      });
+      const pending = runIngestion({ cadence: "fast", adapters: [], stateStore,
+        catalogPublication: { publicationStore: publicStore }, lease, now });
+      await vi.advanceTimersByTimeAsync(61_000);
+      const result = await pending;
+      expect(result.status).toBe("ok");
+      expect(pointerAttempts).toBe(2);
+      expect(write).toHaveBeenCalledOnce();
+      expect(duplicates.length).toBeGreaterThan(0);
+      const current = await readCurrentPublication(publicStore);
+      expect(current?.pointer.stateRevision).toBe((await stateStore.read()).data.stateRevision);
+      expect(current?.manifest.conditions).toHaveLength(45);
+      expect(log).not.toHaveBeenCalled();
+      expect(info.mock.calls[0]).toEqual([JSON.stringify({ event: "publication_pointer_conflict" })]);
+      const recovered = info.mock.calls.slice(1);
+      expect(recovered).toHaveLength(duplicates.length);
+      expect(recovered.every((call) => call.length === 1
+        && String(call[0]) === JSON.stringify({ event: "immutable_write_recovered" }))).toBe(true);
+    } finally { vi.useRealTimers(); }
   });
 });
