@@ -99,6 +99,10 @@ describe("operationFailureReason", () => {
       expect(classifyOperationFailure(error)).toBe("operation_failed");
     });
 
+    it("recognizes an SDK status with an empty status text after the required space", () => {
+      expect(operationFailureReason(new BlobError("Failed to fetch blob: 403 "))).toBe("blob_fetch_403");
+    });
+
     it.each([
       [new BlobAccessError(), "blob_access"],
       [new BlobNotFoundError(), "blob_not_found"],
