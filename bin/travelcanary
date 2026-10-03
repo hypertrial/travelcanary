@@ -13,8 +13,8 @@ const [command, ...args] = process.argv.slice(2);
 function fail(message) { console.error(message); process.exit(1); }
 function run(program, programArgs, options = {}) {
   const result = spawnSync(program, programArgs, { cwd: repository, env: options.env || process.env, input: options.input,
-    stdio: options.capture ? [options.input ? "pipe" : "ignore", "pipe", "inherit"] : "inherit", maxBuffer: 64 * 1024 * 1024 });
-  if (result.error || result.status !== 0) fail(result.error?.message || `${program} exited with status ${result.status}`);
+    stdio: [options.input !== undefined ? "pipe" : options.capture ? "ignore" : "inherit", options.capture ? "pipe" : "inherit", "inherit"], maxBuffer: 64 * 1024 * 1024 });
+  if (result.error || result.status !== 0) throw new Error(result.error?.message || `${program} exited with status ${result.status}`);
   return result.stdout;
 }
 function install() { try { return JSON.parse(readFileSync(installFile, "utf8")); } catch { return null; } }

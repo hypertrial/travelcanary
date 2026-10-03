@@ -172,6 +172,9 @@ gbSystems.push({
   contactUrl: "https://naturalresources.wales/flooding/check-flood-warnings/?lang=en", reReviewTrigger: "Credentials are provisioned or the API contract changes.", license: null,
 });
 
+manifest.countries.IT.systems.find(({ id }) => id === "dpc-flood-bulletin").endpoint =
+  "https://api.github.com/repos/pcm-dpc/DPC-Bollettini-Criticita-Idrogeologica-Idraulica/commits?path=files/topojson&per_page=8";
+
 const dwd = manifest.countries.DE.systems.find(({ id }) => id === "dwd-cap");
 Object.assign(dwd, {
   reviewedAt, nextReviewAt, evidenceUrls: ["https://opendata.dwd.de/weather/alerts/cap/COMMUNEUNION_EVENT_STAT/", "https://github.com/advisories/GHSA-px8p-9vwx-vf98"],

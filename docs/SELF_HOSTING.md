@@ -70,6 +70,20 @@ bin/travelcanary restore /secure/path/travelcanary.db
 
 Backups are private and mode `0600`. Restoring private state does not mutate an already published generation. After V16 migration, never restore V15 or run an older collector. Public rollback means repointing to the preceding valid Catalog 3 manifest while ingestion is paused.
 
+Docker restore stops web and collector, forwards the binary backup to the inner
+restore, and attempts to restart the services after either success or failure.
+For native services, stop `travelcanary-collector.service` before restoring and
+run the CLI as the collector account with its private storage environment. An
+active collector lease causes restore to refuse without replacing state; an
+expired lease does not prove that the collector process has stopped. Restart
+the collector after the command completes.
+
+Restore validates the V16 backup first, preserves the current database as a
+mode-`0600` `travelcanary.db.pre-restore-<timestamp>` backup, and replaces private
+objects in one SQLite transaction while keeping the database file in place.
+Failure rolls back the replacement. Restored objects receive fresh target
+revisions; collector leases from the backup are discarded.
+
 ## Source policy
 
 Open reviewed sources run by default. Restricted sources require explicit acceptance of the current data-policy manifest:

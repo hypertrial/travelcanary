@@ -94,3 +94,25 @@ EEA fixtures use the versioned official station metadata index, bounded hourly s
 ## Luxembourg structured test message
 
 `tests/fixtures/providers/lu-alert-test-cap.xml` is the unmodified official [7 September 2026 LU-Alert test bulletin](https://download.data.public.lu/resources/alertes-du-systeme-lu-alert/20260907-092504/dump-alert.1788773030.xml), captured on 8 September 2026. It contains three languages, `Actual/Public`, unknown severity, circle geometry, and the exact CAP-LU `cb-eu-level=TEST` parameter in every information block. Size: 6,250 bytes; SHA-256: `6790e5a2fb62e95829c811a937e74cd26e200e35905a4f4621181e61647126e1`. It supports only the narrow structured-test exclusion, not a broader undocumented parameter taxonomy. Regression tests also cover contradictory language markers and preserving real alerts when a test carries lifecycle references.
+
+## Italian flood bulletin discovery
+
+DPC publishes today and tomorrow separately. Discovery reads at most eight
+path commits and one ancestor-to-latest comparison, then pins raw requests to
+the latest SHA. Metadata responses are capped at 512 KiB each; comparisons
+with 300 changed files fail closed because GitHub may truncate them. At most
+three intersecting Rome calendar periods are fetched in parallel, each capped
+at 3 MiB, within a 10 MiB transport byte budget and the existing eight-second
+transport deadline. No credentials or additional reuse rights are required.
+
+Use the newest filename issuance for each validity date. Filename issuance is
+validated in Europe/Rome independently of the latest transport commit time.
+Tests cover separately committed periods, later corrections, missing/failed
+periods, untrusted raw URLs, and spring/autumn DST windows. Event IDs include
+the validity date so active and upcoming warnings coexist. A missing period
+leaves mapped destinations unavailable and preserves successful warnings; a
+complete successful period can retire only its own dated warning prefix.
+Legacy IDs from before validity-date identities are retired only when their
+stored start and end times match a complete successful period.
+The eight-commit ceiling can conservatively report partial coverage when a
+needed bulletin lies outside that history or only in the excluded base commit.

@@ -132,7 +132,7 @@ describe("aggressive national alert integrations", () => {
     } })) } } };
     const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
       const url = String(input);
-      if (url.includes("commits?path=files/topojson&per_page=1")) return Response.json([{ sha, commit: { committer: { date: now.toISOString() } } }]);
+      if (url.includes("commits?path=files/topojson&per_page=8")) return Response.json([{ sha, commit: { committer: { date: now.toISOString() } } }]);
       if (url.endsWith(`/commits/${sha}`)) return Response.json({ files: [{ filename: "files/topojson/20260830_1000_tomorrow.json", status: "modified", raw_url: rawUrl }] });
       if (url === contentUrl) return Response.json(fixture);
       throw new Error(`Unexpected URL: ${url}`);

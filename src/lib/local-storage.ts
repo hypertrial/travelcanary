@@ -1,5 +1,5 @@
-import { DatabaseSync } from "node:sqlite";
-import { chmodSync, lstatSync, mkdirSync } from "node:fs";
+import { backup, DatabaseSync } from "node:sqlite";
+import { chmodSync, existsSync, lstatSync, mkdirSync } from "node:fs";
 import { dirname, isAbsolute, resolve } from "node:path";
 import { z } from "zod";
 import type { CatalogPublicationStores } from "./catalog-publication";
@@ -149,6 +149,32 @@ export class LocalDatabase {
 
   releaseCollector(owner: string) {
     this.database.prepare("DELETE FROM collector_lease WHERE singleton=1 AND owner=?").run(owner);
+  }
+
+  async restoreBackup(candidatePath: string, previousPath: string) {
+    const candidate = new DatabaseSync(candidatePath, { readOnly: true });
+    let entries: Array<ObjectRow & { namespace: string; key: string }>;
+    try { entries = candidate.prepare("SELECT namespace, key, value, revision, updated_at FROM objects ORDER BY key").all() as typeof entries; }
+    finally { candidate.close(); }
+    for (const entry of entries) {
+      namespace.parse(entry.namespace); objectKey.parse(entry.key);
+      if (Buffer.byteLength(text(entry)) > PRIVATE_STATE_HARD_LIMIT_BYTES) throw new Error("Backup object exceeds its size limit");
+    }
+    this.database.exec("BEGIN IMMEDIATE");
+    try {
+      const lease = this.database.prepare("SELECT expires_at FROM collector_lease WHERE singleton=1").get() as { expires_at: number } | undefined;
+      if (lease && Number(lease.expires_at) > Date.now()) throw new Error("Stop the collector before restoring its database");
+      if (existsSync(previousPath)) throw new Error("Refusing to overwrite the pre-restore backup");
+      const revision = Number((this.database.prepare("SELECT COALESCE(MAX(revision), 0) AS revision FROM objects").get() as { revision: number }).revision);
+      // Keep the database inode and writer lock across preservation and replacement.
+      const previous = new DatabaseSync(this.path, { readOnly: true });
+      try { await backup(previous, previousPath); chmodSync(previousPath, 0o600); }
+      finally { previous.close(); }
+      this.database.exec("DELETE FROM objects; DELETE FROM collector_lease;");
+      const insert = this.database.prepare("INSERT INTO objects(namespace, key, value, revision, updated_at) VALUES (?, ?, ?, ?, ?)");
+      entries.forEach((entry, index) => insert.run(entry.namespace, entry.key, entry.value, revision + index + 1, new Date().toISOString()));
+      this.secureFiles(); this.database.exec("COMMIT");
+    } catch (error) { this.database.exec("ROLLBACK"); throw error; }
   }
 }
 

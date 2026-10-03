@@ -1,6 +1,6 @@
 import { backup, DatabaseSync } from "node:sqlite";
 import { spawnSync } from "node:child_process";
-import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { initializeLocalRuntime, localDatabasePath, LocalDatabase, readLocalPolicy, writeLocalPolicy } from "../src/lib/local-storage";
@@ -26,8 +26,8 @@ function portValue(value: string | undefined) {
 }
 function run(command: string, args: string[], options: { env?: NodeJS.ProcessEnv; input?: Buffer; capture?: boolean } = {}) {
   const result = spawnSync(command, args, { cwd: repository, env: options.env || process.env, input: options.input,
-    stdio: options.capture ? [options.input ? "pipe" : "ignore", "pipe", "inherit"] : "inherit", maxBuffer: 64 * 1024 * 1024 });
-  if (result.error || result.status !== 0) fail(result.error?.message || `${command} exited with status ${result.status}`);
+    stdio: [options.input !== undefined ? "pipe" : options.capture ? "ignore" : "inherit", options.capture ? "pipe" : "inherit", "inherit"], maxBuffer: 64 * 1024 * 1024 });
+  if (result.error || result.status !== 0) throw new Error(result.error?.message || `${command} exited with status ${result.status}`);
   return result.stdout as Buffer | null;
 }
 function readInstall(): Install | null {
@@ -146,7 +146,7 @@ function validateBackup(path: string) {
   } finally { candidate.close(); }
 }
 
-function directRestore(input: string) {
+async function directRestore(input: string) {
   const target = localDatabasePath(); mkdirSync(dirname(target), { recursive: true, mode: 0o700 });
   const temporaryDirectory = mkdtempSync(join(dirname(target), ".restore-"));
   const temp = join(temporaryDirectory, "travelcanary.db");
@@ -155,13 +155,14 @@ function directRestore(input: string) {
     else copyFileSync(resolve(input), temp);
     chmodSync(temp, 0o600); validateBackup(temp);
     const stamp = new Date().toISOString().replaceAll(":", "-");
-    for (const suffix of ["", "-wal", "-shm"]) if (existsSync(`${target}${suffix}`)) renameSync(`${target}${suffix}`, `${target}.pre-restore-${stamp}${suffix}`);
-    renameSync(temp, target); chmodSync(target, 0o600);
+    const database = new LocalDatabase(target);
+    try { await database.restoreBackup(temp, `${target}.pre-restore-${stamp}`); }
+    finally { database.close(); }
   } finally { rmSync(temporaryDirectory, { recursive: true, force: true }); }
   console.log(input === "-" ? "TravelCanary database restored." : `TravelCanary restored from private backup ${basename(input)}.`);
 }
 
-function restoreCommand(input?: string) {
+async function restoreCommand(input?: string) {
   if (!input) fail("Usage: travelcanary restore <backup>");
   const install = readInstall();
   if (install?.runtime === "docker" && !process.env.TRAVELCANARY_DATA_DIR) {
@@ -173,7 +174,7 @@ function restoreCommand(input?: string) {
   }
   if (install?.runtime === "native") fail("Migrate this legacy same-user native installation to the dedicated-user system services before restoring");
   if (install?.dataDirectory) process.env.TRAVELCANARY_DATA_DIR = install.dataDirectory;
-  directRestore(input);
+  await directRestore(input);
 }
 
 const [command, ...args] = process.argv.slice(2);
@@ -181,5 +182,5 @@ if (command === "setup") await setup(args);
 else if (command === "status") await status();
 else if (command === "policy") policy(args[0]);
 else if (command === "backup") await backupCommand(args[0]);
-else if (command === "restore") restoreCommand(args[0]);
+else if (command === "restore") await restoreCommand(args[0]);
 else fail("Usage: travelcanary setup --runtime docker [--port 3000] | status | policy accept-restricted|disable-restricted | backup [output] | restore <backup>");

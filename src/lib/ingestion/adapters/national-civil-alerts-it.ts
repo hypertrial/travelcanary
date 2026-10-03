@@ -2,7 +2,7 @@ import mappingJson from "../../../../data/italy-flood-zone-mapping.json";
 import type { HazardLevel, NormalizedEvent } from "../../domain/schemas";
 import { fetchAllowlisted, fetchWithRetry } from "../fetch";
 import type { IngestionContext } from "../types";
-import { countryLocations, limitEvents, type NationalPartition } from "./national-civil-alerts-shared";
+import { countryLocations, limitEvents, retainedCountryEvents, type NationalPartition } from "./national-civil-alerts-shared";
 
 const GITHUB_API = "https://api.github.com/repos/pcm-dpc/DPC-Bollettini-Criticita-Idrogeologica-Idraulica";
 const OFFICIAL_URL = "https://mappe.protezionecivile.gov.it/it/mappe-rischi/bollettino-di-criticita/";
@@ -23,8 +23,8 @@ function bulletinLevel(value: unknown): HazardLevel | null | "empty" {
 
 const levelRank: Record<HazardLevel, number> = { ELEVATED: 1, HIGH: 2, SEVERE: 3 };
 
-function italianLocalInstant(year: number, month: number, day: number) {
-  const targetAsUtc = Date.UTC(year, month - 1, day);
+function italianLocalInstant(year: number, month: number, day: number, hour = 0, minute = 0) {
+  const targetAsUtc = Date.UTC(year, month - 1, day, hour, minute);
   const formatter = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Europe/Rome", year: "numeric", month: "2-digit", day: "2-digit",
     hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23",
@@ -38,6 +38,10 @@ function italianLocalInstant(year: number, month: number, day: number) {
   return instant;
 }
 
+function italianDate(date: Date) {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome", year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
+}
+
 function bulletinValidity(filename: string, now: Date) {
   const match = filename.match(/\/(\d{4})(\d{2})(\d{2})_\d{4}_(today|tomorrow)\.json$/);
   if (!match) throw new Error("Italian bulletin filename does not identify its validity period");
@@ -46,9 +50,21 @@ function bulletinValidity(filename: string, now: Date) {
   const next = new Date(Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate() + 1));
   const ends = italianLocalInstant(next.getUTCFullYear(), next.getUTCMonth() + 1, next.getUTCDate());
   if (ends <= now.getTime() || starts >= now.getTime() + 24 * 60 * 60_000) {
-    throw new Error("Italian bulletin validity does not intersect the next 24 hours");
+    return null;
   }
-  return { startsAt: new Date(starts).toISOString(), endsAt: new Date(ends).toISOString() };
+  return { date: day.toISOString().slice(0, 10).replaceAll("-", ""), startsAt: new Date(starts).toISOString(), endsAt: new Date(ends).toISOString() };
+}
+
+function bulletinIssuance(filename: string, now: Date) {
+  const match = filename.match(/\/(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})_(?:today|tomorrow)\.json$/)!;
+  const [year, month, day, hour, minute] = match.slice(1).map(Number);
+  const calendar = new Date(Date.UTC(year, month - 1, day));
+  if (calendar.getUTCFullYear() !== year || calendar.getUTCMonth() !== month - 1 || calendar.getUTCDate() !== day || hour > 23 || minute > 59) {
+    throw new Error("Italian bulletin issuance is invalid");
+  }
+  const issued = italianLocalInstant(year, month, day, hour, minute);
+  if (issued > now.getTime() + 5 * 60_000 || now.getTime() - issued > 36 * 60 * 60_000) throw new Error("Italian bulletin issuance is stale or future-dated");
+  return new Date(issued).toISOString();
 }
 
 export function italianFloodBulletin(
@@ -87,7 +103,7 @@ export function italianFloodBulletin(
       .sort((a, b) => levelRank[b] - levelRank[a])[0];
     if (!level) continue;
     events.push({
-      id: `it:flood-bulletin:${sourceUpdatedAt.slice(0, 10)}:${location.id}`, sourceId: "national-civil-alerts", providerId: "national-civil-alerts",
+      id: `it:flood-bulletin:${italianDate(new Date(validity.startsAt)).replaceAll("-", "")}:${location.id}`, sourceId: "national-civil-alerts", providerId: "national-civil-alerts",
       type: "flood", level, timing: Date.parse(validity.startsAt) > context.now.getTime() ? "UPCOMING" : "ACTIVE", headline: `Official flood warning affects ${location.name}`,
       explanation: "Italian Civil Protection reports hydrogeological or hydraulic warning conditions for this official warning zone.",
       action: "Follow local civil-protection instructions and avoid flooded or fast-flowing areas.", affectedArea: location.name,
@@ -104,28 +120,68 @@ export function italianFloodBulletin(
 }
 
 type Commit = { sha?: unknown; commit?: { committer?: { date?: unknown } } };
-type CommitDetail = { files?: Array<{ filename?: unknown; status?: unknown; raw_url?: unknown }> };
+type CommitDetail = { files?: Array<{ filename?: unknown; status?: unknown }>; base_commit?: { sha?: unknown }; merge_base_commit?: { sha?: unknown } };
 
 export async function fetchItPartition(context: IngestionContext): Promise<NationalPartition> {
-  const list = await fetchWithRetry(context.fetch, `${GITHUB_API}/commits?path=files/topojson&per_page=1`, {}, 2, 512 * 1024, undefined, 5_000, "it_commits");
+  const budget = { remaining: 10 * 1024 * 1024 };
+  const list = await fetchWithRetry(context.fetch, `${GITHUB_API}/commits?path=files/topojson&per_page=8`, {}, 1, 512 * 1024, budget, 2_000, "it_commits");
   const commits = await list.json() as Commit[];
-  if (!Array.isArray(commits) || !commits.length) throw new Error("Italian bulletin commit list is empty");
+  if (!Array.isArray(commits) || !commits.length || commits.length > 8) throw new Error("Italian bulletin commit list is empty or exceeds its limit");
   const commit = commits[0];
   const sha = String(commit.sha || "");
-  if (!/^[a-f0-9]{40}$/.test(sha)) throw new Error("Italian bulletin commit identifier is invalid");
-  const response = await fetchWithRetry(context.fetch, `${GITHUB_API}/commits/${sha}`, {}, 1, 512 * 1024, undefined, 4_000, "it_commit");
-  const detail = await response.json() as CommitDetail;
-  const file = (detail.files || []).find(({ filename, status }) => status !== "removed"
-    && /^files\/topojson\/\d{8}_\d{4}_(?:today|tomorrow)\.json$/.test(String(filename || "")));
-  if (!file || typeof file.raw_url !== "string") throw new Error("Latest Italian topology commit does not contain a current bulletin JSON");
-  const filename = String(file.filename);
-  const rawUrl = `https://raw.githubusercontent.com/pcm-dpc/DPC-Bollettini-Criticita-Idrogeologica-Idraulica/${sha}/${filename}`;
-  const raw = await fetchAllowlisted(context.fetch, rawUrl, ["raw.githubusercontent.com"], 1, {
-    maxBytes: 3 * 1024 * 1024, diagnosticsCategory: "it_bulletin",
-  });
+  if (commits.some(({ sha }) => !/^[a-f0-9]{40}$/.test(String(sha || "")))) throw new Error("Italian bulletin commit identifier is invalid");
   const updated = Date.parse(String(commit.commit?.committer?.date || ""));
   if (!Number.isFinite(updated) || updated > context.now.getTime() + 5 * 60_000 || context.now.getTime() - updated > 36 * 60 * 60_000) {
     throw new Error("Italian bulletin commit time is missing, stale, or future-dated");
   }
-  return italianFloodBulletin(await raw.json(), context, new Date(updated).toISOString(), bulletinValidity(filename, context.now));
+  const oldest = String(commits.at(-1)!.sha);
+  const discovery = commits.length === 1 ? `commits/${sha}` : `compare/${oldest}...${sha}?per_page=1`;
+  const response = await fetchWithRetry(context.fetch, `${GITHUB_API}/${discovery}`, {}, 1, 512 * 1024, budget, 2_000, "it_commit");
+  const detail = await response.json() as CommitDetail;
+  if (!Array.isArray(detail.files) || detail.files.length >= 300 || commits.length > 1
+    && (detail.base_commit?.sha !== oldest || detail.merge_base_commit?.sha !== oldest)) throw new Error("Italian bulletin discovery is incomplete or truncated");
+  const today = new Date(`${italianDate(context.now)}T00:00:00Z`);
+  const required = [0, 1, 2].flatMap((offset) => {
+    const date = new Date(today.getTime() + offset * 86_400_000).toISOString().slice(0, 10).replaceAll("-", "");
+    const validity = bulletinValidity(`files/topojson/${date}_0000_today.json`, context.now);
+    return validity ? [validity] : [];
+  });
+  // ponytail: inspect eight path commits; missing periods stay partial instead of unbounded history traversal.
+  const selected = new Map<string, { filename: string; validity: NonNullable<ReturnType<typeof bulletinValidity>> }>();
+  for (const file of detail.files) {
+    const filename = String(file.filename || "");
+    if (file.status === "removed" || !/^files\/topojson\/\d{8}_\d{4}_(?:today|tomorrow)\.json$/.test(filename)) continue;
+    const validity = bulletinValidity(filename, context.now);
+    if (validity && (!selected.has(validity.date) || filename > selected.get(validity.date)!.filename)) selected.set(validity.date, { filename, validity });
+  }
+  const periods = await Promise.all(required.map(async ({ date }) => {
+    const file = selected.get(date);
+    if (!file) return null;
+    try {
+      const issuedAt = bulletinIssuance(file.filename, context.now);
+      const rawUrl = `https://raw.githubusercontent.com/pcm-dpc/DPC-Bollettini-Criticita-Idrogeologica-Idraulica/${sha}/${file.filename}`;
+      const raw = await fetchAllowlisted(context.fetch, rawUrl, ["raw.githubusercontent.com"], 1, {
+        maxBytes: 3 * 1024 * 1024, byteBudget: budget, timeoutMs: 3_000, diagnosticsCategory: "it_bulletin",
+      });
+      return { date, result: italianFloodBulletin(await raw.json(), context, issuedAt, file.validity) };
+    } catch { return null; }
+  }));
+  const parsed = periods.filter((period) => period !== null);
+  if (!parsed.length) throw new Error("Italian bulletin has no usable validity periods");
+  const mappedIds = countryLocations(context, "IT").filter(({ id }) => mappings.some(({ locationId }) => locationId === id)).map(({ id }) => id);
+  const missing = parsed.length !== required.length;
+  const unavailable = new Set(missing ? mappedIds : parsed.flatMap(({ result }) => result.unavailableLocationIds || []));
+  const complete = parsed.filter(({ result }) => result.status === "ok");
+  const legacyIds = retainedCountryEvents(context, "IT", "it:flood-bulletin:").filter((event) =>
+    /^it:flood-bulletin:\d{4}-\d{2}-\d{2}:/.test(event.id) && complete.some(({ date }) => {
+      const validity = required.find((period) => period.date === date)!;
+      return event.startsAt === validity.startsAt && event.endsAt === validity.endsAt;
+    })).map(({ id }) => id);
+  return {
+    status: unavailable.size ? "partial" : "ok", sourceUpdatedAt: new Date(updated).toISOString(),
+    events: limitEvents(parsed.flatMap(({ result }) => result.events)),
+    checkedLocationIds: mappedIds.filter((id) => !unavailable.has(id)), unavailableLocationIds: [...unavailable].sort(),
+    removedEventPrefixes: [...complete.map(({ date }) => `it:flood-bulletin:${date}:`), ...legacyIds],
+    error: unavailable.size ? "Italian bulletin coverage is incomplete for the next 24 hours" : null,
+  };
 }

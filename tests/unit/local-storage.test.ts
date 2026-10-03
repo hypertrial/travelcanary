@@ -1,5 +1,5 @@
 import { DatabaseSync } from "node:sqlite";
-import { mkdtempSync, statSync } from "node:fs";
+import { mkdtempSync, rmSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -52,6 +52,22 @@ describe("private local state", () => {
     database.compareAndSwap("private", "test/partial", "{}", null, 10);
     expect(() => initializeLocalRuntime(database)).toThrow(/partially initialized/);
     database.close();
+  });
+
+  it("excludes a new collector throughout restore and lets it read the committed restored state", async () => {
+    const directory = mkdtempSync(join(tmpdir(), "travelcanary-restore-lock-"));
+    const targetPath = join(directory, "target.db"); const candidatePath = join(directory, "candidate.db");
+    const target = new LocalDatabase(targetPath, 100); const contender = new LocalDatabase(targetPath, 100);
+    const candidate = new LocalDatabase(candidatePath);
+    initializeLocalRuntime(target, new Date("2026-09-17T00:00:00Z"));
+    initializeLocalRuntime(candidate, new Date("2026-09-18T00:00:00Z")); candidate.close();
+    const pending = target.restoreBackup(candidatePath, join(directory, "before.db"));
+    try {
+      expect(() => contender.acquireCollector("new-collector")).toThrow(/locked/);
+      await pending;
+      expect(() => contender.acquireCollector("new-collector")).not.toThrow();
+      expect(JSON.parse(contender.read("private", "ingestion/state.json")!.value).updatedAt).toBe("2026-09-18T00:00:00.000Z");
+    } finally { await pending; target.close(); contender.close(); rmSync(directory, { recursive: true, force: true }); }
   });
 });
 

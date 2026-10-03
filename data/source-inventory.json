@@ -2521,7 +2521,7 @@
         "https://raw.githubusercontent.com/pcm-dpc/DPC-Bollettini-Criticita-Idrogeologica-Idraulica/master/README.md"
       ],
       "enabled": true,
-      "endpoint": "https://api.github.com/repos/pcm-dpc/DPC-Bollettini-Criticita-Idrogeologica-Idraulica/commits?path=files/topojson&per_page=1",
+      "endpoint": "https://api.github.com/repos/pcm-dpc/DPC-Bollettini-Criticita-Idrogeologica-Idraulica/commits?path=files/topojson&per_page=8",
       "hazards": [
         "flood"
       ],
