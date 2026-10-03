@@ -6,6 +6,8 @@ Import the public repository directly into a Vercel Pro project and keep Fluid C
 
 Keep the checked-in `npm ci` install command so deployments preserve the reviewed lockfile, including optional platform dependencies. The separate release audit remains required.
 
+The Next.js ESLint plugin retains all of its rules. Its directory-root glob dependency is replaced by the bounded `tools/next-eslint-glob` adapter over the audited, unbundled `glob/raw` export, removing the unpatched `braces` chain. The adapter supports only the plugin's directory lookup, including symlinked roots. Custom root patterns are case sensitive and must explicitly include a dot to select hidden roots; the adapter does not reproduce fast-glob's implicit hidden-root matches for negative extglobs. Remove the override when the official plugin adopts a safe dependency. Never suppress the release audit to work around this dependency.
+
 Production-only configuration is:
 
 ```text

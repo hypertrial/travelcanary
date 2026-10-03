@@ -90,8 +90,14 @@
     "@types/react-dom": "19.2.5",
     "eslint": "9.39.1",
     "eslint-config-next": "16.3.8",
+    "fast-glob": "file:tools/next-eslint-glob",
     "tsx": "4.23.12",
     "typescript": "5.9.3",
     "vitest": "3.2.7"
+  },
+  "overrides": {
+    "@next/eslint-plugin-next": {
+      "fast-glob": "$fast-glob"
+    }
   }
 }

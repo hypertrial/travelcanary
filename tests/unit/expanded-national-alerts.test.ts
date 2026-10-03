@@ -72,6 +72,75 @@ describe("expanded direct warning transports", () => {
     expect(partial.removedEventPrefixes).not.toContain("national:met-no:");
   });
 
+  it.each([
+    ["expired", "2026-09-08T09:00:00Z", "2026-09-09T09:00:00Z"],
+    ["ending now", "2026-09-09T09:00:00Z", "2026-09-09T10:00:00Z"],
+    ["starting at the 24-hour boundary", "2026-09-10T10:00:00Z", "2026-09-10T15:00:00Z"],
+    ["starting after the 24-hour boundary", "2026-09-10T15:00:00Z", "2026-09-11T15:00:00Z"],
+  ])("treats a valid MET Norway warning %s as healthy outside the display window", (_label, starts, ends) => {
+    // Current MetAlerts lists valid warnings for the next days, beyond our 24-hour display window.
+    const result = parseMetNorway({ type: "FeatureCollection", features: [{ geometry: square(10.75, 59.91),
+      when: { interval: [starts, ends] }, properties: { id: "outside-window", status: "Actual", type: "Alert",
+        geographicDomain: "land", event: "rain", severity: "Moderate", area: "Oslo" } }] }, context);
+    expect(result).toMatchObject({ status: "ok", events: [], error: null, unavailableLocationIds: [],
+      removedEventPrefixes: ["national:met-no:"] });
+    expect(result.checkedLocationIds).toHaveLength(20);
+  });
+
+  it("keeps current MET Norway evidence while ignoring a valid warning for a later day", () => {
+    const warning = (id: string, starts: string, ends: string) => ({ geometry: square(10.75, 59.91),
+      when: { interval: [starts, ends] }, properties: { id, status: "Actual", type: "Alert",
+        geographicDomain: "land", event: "rain", severity: "Moderate", area: "Oslo" } });
+    const result = parseMetNorway({ type: "FeatureCollection", features: [
+      warning("current", "2026-09-09T09:00:00Z", "2026-09-09T13:00:00Z"),
+      warning("later", "2026-09-10T15:00:00Z", "2026-09-11T15:00:00Z"),
+    ] }, context);
+    expect(result).toMatchObject({ status: "ok", events: [{ id: "national:met-no:current:0" }], unavailableLocationIds: [] });
+    expect(result.checkedLocationIds).toHaveLength(20);
+  });
+
+  it.each(["geometry", "classification", "timestamp", "reversed interval", "equal interval"])(
+    "keeps malformed MET Norway %s outside the display window unavailable", (invalidField) => {
+      const warning = { geometry: square(10.75, 59.91),
+        when: { interval: ["2026-09-10T15:00:00Z", "2026-09-11T15:00:00Z"] },
+        properties: { id: "malformed-later", status: "Actual", type: "Alert", geographicDomain: "land", event: "rain", severity: "Moderate" } };
+      if (invalidField === "geometry") warning.geometry.coordinates[0].pop();
+      if (invalidField === "classification") warning.properties.event = "unreviewed-event";
+      if (invalidField === "timestamp") warning.when.interval[0] = "not-a-timestamp";
+      if (invalidField === "reversed interval") warning.when.interval.reverse();
+      if (invalidField === "equal interval") warning.when.interval[1] = warning.when.interval[0];
+      const result = parseMetNorway({ type: "FeatureCollection", features: [warning] }, context);
+      expect(result).toMatchObject({ status: "partial", events: [], checkedLocationIds: [], limitationCode: "malformed_warning_records" });
+      expect(result.unavailableLocationIds).toHaveLength(20);
+      expect(result.removedEventPrefixes).not.toContain("national:met-no:");
+    },
+  );
+
+  it.each([
+    { type: "Polygon", coordinates: [] },
+    { type: "MultiPolygon", coordinates: [] },
+    { type: "MultiPolygon", coordinates: [[]] },
+    { type: "MultiPolygon", coordinates: [square(10.75, 59.91).coordinates, []] },
+  ])("rejects empty MET Norway polygon constituents outside the display window: %j", (geometry) => {
+    const result = parseMetNorway({ type: "FeatureCollection", features: [{ geometry,
+      when: { interval: ["2026-09-10T15:00:00Z", "2026-09-11T15:00:00Z"] },
+      properties: { id: "empty-later", status: "Actual", type: "Alert", geographicDomain: "land", event: "rain", severity: "Moderate" } }] }, context);
+    expect(result).toMatchObject({ status: "partial", events: [], checkedLocationIds: [], limitationCode: "malformed_warning_records" });
+    expect(result.unavailableLocationIds).toHaveLength(20);
+    expect(result.removedEventPrefixes).not.toContain("national:met-no:");
+  });
+
+  it("retains MET Norway supersession from a valid later-day update during a partial refresh", () => {
+    const result = parseMetNorway({ type: "FeatureCollection", features: [
+      { geometry: square(10.75, 59.91), when: { interval: ["2026-09-10T15:00:00Z", "2026-09-11T15:00:00Z"] },
+        properties: { id: "later-update", status: "Actual", type: "Update", geographicDomain: "land", event: "rain",
+          severity: "Moderate", references: "met@met.no,old,2026-09-09T08:00:00Z" } },
+      { geometry: square(10.75, 59.91), properties: { id: "malformed", status: "Actual", geographicDomain: "land" } },
+    ] }, context);
+    expect(result).toMatchObject({ status: "partial", events: [], checkedLocationIds: [],
+      removedEventPrefixes: ["national:met-no:old:"] });
+  });
+
   it("selects the newest NVE version, normalizes Norway civil time, and never treats activity zero or unmapped municipalities as all-clear", () => {
     const warning = (activityLevel: number, version: number, lastUpdated: string, municipality = "Oslo") => ({
       Id: `NVE-${version}`, MasterId: "NVE-1", Version: version, CapStatus: "actual", ActivityLevel: activityLevel,

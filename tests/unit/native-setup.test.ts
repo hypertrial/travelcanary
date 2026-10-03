@@ -7,6 +7,21 @@ import { describe, expect, it } from "vitest";
 import { fetchHealth } from "../../scripts/fetch-health.mjs";
 
 describe("native self-host setup", () => {
+  it("copies local file dependencies into the Docker build before npm ci", () => {
+    const packageJson = JSON.parse(readFileSync("package.json", "utf8"));
+    const localDependencies = Object.values({ ...packageJson.dependencies, ...packageJson.devDependencies })
+      .filter((value): value is string => typeof value === "string" && value.startsWith("file:"));
+    const dockerfile = readFileSync("Dockerfile", "utf8");
+    const install = dockerfile.search(/^RUN\s+npm\s+ci\b/m);
+    expect(install).toBeGreaterThanOrEqual(0);
+    const sources = dockerfile.slice(0, install).split(/\r?\n/)
+      .filter((line) => /^COPY\s/.test(line)).flatMap((line) => line.trim().split(/\s+/).slice(1, -1));
+    for (const dependency of localDependencies) {
+      const target = dependency.slice("file:".length).replace(/^\.\//, "").replace(/\/$/, "");
+      expect(sources.some((source) => source === "." || target === source || target.startsWith(`${source}/`)), dependency).toBe(true);
+    }
+  });
+
   it("runs web and collector system services under distinct operating-system identities", () => {
     const web = readFileSync("deploy/systemd/travelcanary-web.service", "utf8");
     const collector = readFileSync("deploy/systemd/travelcanary-collector.service", "utf8");
