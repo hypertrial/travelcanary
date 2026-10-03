@@ -8,6 +8,7 @@ import { locations } from "../data";
 import { catalogLocationsV3 } from "../catalog-data";
 import { mergeSourceResults } from "../risk";
 import { ConcurrencyError, type StateStore } from "../state-store";
+import { BlobPublicationPointerConflictError } from "../publication-store";
 import { withFetchDiagnostics } from "./fetch";
 import { MAX_EVENTS_PER_PARTITION, MAX_EVENTS_PER_SOURCE_RESULT, PRIVATE_STATE_HARD_LIMIT_BYTES, StateLimitError } from "./limits";
 import { createSourceDiagnostics, isExpandedSourceAdapter, partitionExecutionStatus, type Cadence, type MutableSourceDiagnostics, type SourceAdapter, type SourceExecutionSummary } from "./types";
@@ -210,7 +211,9 @@ async function publishResults(options: {
         publication: { manifestSha256: publication.pointer.manifestSha256, conditions: publication.publication },
         timings: { sourcesMs: rounded(options.sourceDurationMs), readMs: rounded(readMs), mergeAndBuildMs: rounded(mergeAndBuildMs),
           publishMs: rounded(publishMs), totalMs: rounded(performance.now() - options.totalStarted) } };
-    } catch (error) { if (!(error instanceof ConcurrencyError) || attempt === 1) throw error; }
+    } catch (error) {
+      if (error instanceof BlobPublicationPointerConflictError || !(error instanceof ConcurrencyError) || attempt === 1) throw error;
+    }
   }
   throw new Error("Catalog 3 publication could not resolve a concurrent write");
 }
