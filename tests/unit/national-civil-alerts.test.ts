@@ -44,6 +44,93 @@ describe("national civil alert country partitions", () => {
       .toMatchObject([{ level: "SEVERE", geometry: { ids: ["at-vienna"] } }]);
     expect(atAlertPartition({ alerts: [{ ...alert, polygons: [ring(2)] }] }, current).events).toHaveLength(1);
   });
+
+  describe("AT-Alert plural geometries", () => {
+    const vienna = locations.find(({ id }) => id === "at-vienna")!;
+    const linz = locations.find(({ id }) => id === "at-linz")!;
+    const graz = locations.find(({ id }) => id === "at-graz")!;
+    const current = { ...context, locations: [vienna, linz, graz] };
+    const checkedIds = current.locations.map(({ id }) => id).sort();
+    const ring = ([lon, lat]: number[], radius = 0.2) => [[lon - radius, lat - radius], [lon + radius, lat - radius],
+      [lon + radius, lat + radius], [lon - radius, lat + radius], [lon - radius, lat - radius]];
+    const viennaPolygon = { type: "Polygon", coordinates: [ring(vienna.centroid)] };
+    const linzPolygon = { type: "Polygon", coordinates: [ring(linz.centroid)] };
+    const alert = { consolidation_identifier: "plural", alert_level: "AlertLevel1", title: "Public emergency warning",
+      begin_date: "2026-08-28T04:00:00Z", end_date: "2026-08-29T04:00:00Z" };
+    const parse = (alerts: unknown[]) => atAlertPartition({ json: { totalCount: alerts.length, alerts } }, current);
+
+    it.each(["Polygon", "MultiPolygon"])("accepts the current plural %s format", (type) => {
+      const geometry = type === "Polygon" ? viennaPolygon : { type, coordinates: [viennaPolygon.coordinates] };
+      const result = parse([{ ...alert, geometries: [geometry] }]);
+      expect(result).toMatchObject({ status: "ok", error: null, unavailableLocationIds: [],
+        events: [{ id: "at-alert:plural:at-vienna", level: "SEVERE", geometry: { kind: "locations", ids: ["at-vienna"] } }] });
+      expect(result.checkedLocationIds?.slice().sort()).toEqual(checkedIds);
+    });
+
+    it("combines all geometries without duplicating destinations or warning IDs", () => {
+      const record = { ...alert, geometries: [viennaPolygon, { type: "MultiPolygon", coordinates: [linzPolygon.coordinates, viennaPolygon.coordinates] }] };
+      const result = parse([record, structuredClone(record)]);
+      expect(result.status).toBe("ok");
+      expect(result.events.map(({ id }) => id)).toEqual(["at-alert:plural:at-linz", "at-alert:plural:at-vienna"]);
+    });
+
+    it.each(["Polygon", "MultiPolygon"])("preserves holes and distinct exteriors in plural %s geometry", (type) => {
+      const holed = [ring(vienna.centroid, 0.6), ring(vienna.centroid, 0.4)];
+      const geometries = type === "Polygon" ? [{ type, coordinates: holed }, linzPolygon]
+        : [{ type, coordinates: [holed, linzPolygon.coordinates] }];
+      expect(parse([{ ...alert, geometries }])).toMatchObject({ status: "ok", unavailableLocationIds: [],
+        events: [{ id: "at-alert:plural:at-linz", geometry: { kind: "locations", ids: ["at-linz"] } }] });
+    });
+
+    it.each([
+      ["ended", "2026-08-28T04:00:00Z", "2026-08-28T04:29:59.999Z", null],
+      ["ends exactly now", "2026-08-28T04:00:00Z", "2026-08-28T04:30:00Z", null],
+      ["ends just after now", "2026-08-28T04:00:00Z", "2026-08-28T04:30:00.001Z", "ACTIVE"],
+      ["starts just before the horizon", "2026-08-29T04:29:59.999Z", "2026-08-29T05:00:00Z", "UPCOMING"],
+      ["starts at the horizon", "2026-08-29T04:30:00Z", "2026-08-29T05:00:00Z", null],
+      ["starts beyond the horizon", "2026-08-29T04:30:00.001Z", "2026-08-29T05:00:00Z", null],
+    ])("keeps monitoring healthy when a valid plural warning %s", (_label, begin_date, end_date, timing) => {
+      const result = parse([{ ...alert, begin_date, end_date, geometries: [viennaPolygon] }]);
+      expect(result).toMatchObject({ status: "ok", error: null, unavailableLocationIds: [] });
+      expect(result.checkedLocationIds?.slice().sort()).toEqual(checkedIds);
+      expect(result.events).toMatchObject(timing ? [{ id: "at-alert:plural:at-vienna", timing }] : []);
+    });
+
+    it.each([
+      ["empty array", []],
+      ["non-array", null],
+      ["unsupported geometry", [{ type: "Point", coordinates: vienna.centroid }]],
+      ["empty Polygon", [{ type: "Polygon", coordinates: [] }]],
+      ["empty MultiPolygon", [{ type: "MultiPolygon", coordinates: [] }]],
+      ["malformed member after a valid polygon", [viennaPolygon, null]],
+      ["malformed polygon member", [viennaPolygon, { type: "Polygon", coordinates: [[["invalid", 48], [16, 48], [16, 49], ["invalid", 48]]] }]],
+      ["empty exterior after a valid MultiPolygon exterior", [{ type: "MultiPolygon", coordinates: [viennaPolygon.coordinates, []] }]],
+    ])("rejects %s before expiry filtering instead of using valid legacy fallback", (_label, geometries) => {
+      const result = parse([
+        { ...alert, geometries, geometry: viennaPolygon, polygons: [ring(vienna.centroid)], end_date: "2026-08-28T04:29:59.999Z" },
+        { ...alert, consolidation_identifier: "healthy", polygons: [ring(linz.centroid)] },
+      ]);
+      expect(result).toMatchObject({ status: "partial", error: "1 AT-Alert records were invalid", checkedLocationIds: [],
+        events: [{ id: "at-alert:healthy:at-linz" }] });
+      expect(result.unavailableLocationIds).toEqual(checkedIds);
+    });
+
+    it("uses valid plural geometries rather than conflicting legacy geometry", () => {
+      expect(parse([{ ...alert, geometries: [linzPolygon], geometry: viennaPolygon, polygons: [ring(graz.centroid)] }]))
+        .toMatchObject({ status: "ok", events: [{ id: "at-alert:plural:at-linz" }] });
+    });
+
+    it.each([
+      ["polygons", { polygons: [ring(vienna.centroid)] }],
+      ["singular Polygon", { geometry: viennaPolygon }],
+      ["singular MultiPolygon", { geometry: { type: "MultiPolygon", coordinates: [viennaPolygon.coordinates] } }],
+    ])("retains healthy legacy %s compatibility when plural geometry is absent", (_label, geometry) => {
+      const result = parse([{ ...alert, ...geometry }]);
+      expect(result).toMatchObject({ status: "ok", error: null, unavailableLocationIds: [], events: [{ id: "at-alert:plural:at-vienna" }] });
+      expect(result.checkedLocationIds?.slice().sort()).toEqual(checkedIds);
+    });
+  });
+
   it("maps LHP CAP severity, fallback classes, cancellation, and mixed reference geometry", () => {
     const berlin = locations.find(({ id }) => id === "de-berlin")!;
     const [longitude, latitude] = berlin.centroid;

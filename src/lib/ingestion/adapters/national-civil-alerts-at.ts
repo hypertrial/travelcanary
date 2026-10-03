@@ -33,6 +33,7 @@ type AtAlert = {
   sender?: unknown;
   polygons?: unknown;
   geometry?: unknown;
+  geometries?: unknown;
 };
 
 function unwrapJson(value: unknown): unknown {
@@ -42,11 +43,23 @@ function unwrapJson(value: unknown): unknown {
 function alertAreas(alert: AtAlert) {
   const rawPolygons = Array.isArray(alert.polygons) ? alert.polygons : [];
   const geometry = alert.geometry && typeof alert.geometry === "object" ? alert.geometry as { type?: unknown; coordinates?: unknown } : null;
-  const polygons = geometry?.type === "Polygon" && Array.isArray(geometry.coordinates)
-    ? [geometry.coordinates]
-    : geometry?.type === "MultiPolygon" && Array.isArray(geometry.coordinates)
-      ? geometry.coordinates
-      : rawPolygons.map((ring) => [ring]);
+  let polygons: unknown[];
+  if ("geometries" in alert) {
+    if (!Array.isArray(alert.geometries) || !alert.geometries.length) throw new Error("AT-Alert geometries are incomplete");
+    polygons = alert.geometries.flatMap((value) => {
+      const item = value as { type?: unknown; coordinates?: unknown } | null;
+      if (!item || !Array.isArray(item.coordinates) || !item.coordinates.length) throw new Error("AT-Alert geometry is incomplete");
+      if (item.type === "Polygon") return [item.coordinates];
+      if (item.type === "MultiPolygon") return item.coordinates;
+      throw new Error("Unsupported AT-Alert geometry");
+    });
+  } else {
+    polygons = geometry?.type === "Polygon" && Array.isArray(geometry.coordinates)
+      ? [geometry.coordinates]
+      : geometry?.type === "MultiPolygon" && Array.isArray(geometry.coordinates)
+        ? geometry.coordinates
+        : rawPolygons.map((ring) => [ring]);
+  }
   if (polygons.length === 0) throw new Error("AT-Alert record has no geometry");
   return polygons.map((rings) => {
     if (!Array.isArray(rings) || rings.length === 0) throw new Error("AT-Alert polygon is incomplete");

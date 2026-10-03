@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { readFile } from "node:fs/promises";
+import { BlobNotFoundError } from "@vercel/blob";
+import { ZodError } from "zod";
 import { handleCron } from "@/lib/cron";
 import { CollectionChangedError } from "@/lib/domain/catalog-state";
 import * as lease from "@/lib/ingestion-lease";
@@ -112,6 +114,43 @@ describe("cron authentication", () => {
     expect(response.status).toBe(500);
     expect(body).toEqual({ error: "Ingestion failed", code });
     expect(log).toHaveBeenCalledTimes(1);
-    expect(JSON.parse(String(log.mock.calls[0][0]))).toEqual({ event: "ingestion_failed", operation: "fast", code });
+    expect(JSON.parse(String(log.mock.calls[0][0]))).toEqual({ event: "ingestion_failed", operation: "fast", code, phase: "operation", reason: "unknown" });
+  });
+
+  it.each([
+    ["acquisition", new BlobNotFoundError(), "blob_not_found"],
+    ["operation", new BlobNotFoundError(), "blob_not_found"],
+    ["operation", new ZodError([{ code: "custom", path: ["private-state", "secret-sentinel"], message: "secret-sentinel" }]), "schema_invalid"],
+    ["operation", new SyntaxError("secret-sentinel"), "json_invalid"],
+    ["operation", { name: "BlobNotFoundError", constructor: BlobNotFoundError, code: "blob_not_found", message: "secret-sentinel" }, "unknown"],
+    ["operation", new Error("secret-sentinel", { cause: new BlobNotFoundError() }), "unknown"],
+    ["operation", "BlobNotFoundError: secret-sentinel", "unknown"],
+  ] as const)("logs only fixed diagnostic tokens for %s failures", async (phase, error, reason) => {
+    process.env.VERCEL_ENV = "production";
+    process.env.CRON_SECRET = "correct-secret-that-is-at-least-32-bytes";
+    process.env.PRIVATE_INGESTION_STORE_ID = "store_private";
+    process.env.PUBLIC_SNAPSHOT_STORE_ID = "store_public";
+    process.env.VERCEL_OIDC_TOKEN = "oidc-token";
+    delete process.env.PRIVATE_INGESTION_BLOB_READ_WRITE_TOKEN;
+    delete process.env.PUBLIC_SNAPSHOT_BLOB_READ_WRITE_TOKEN;
+    if (error instanceof BlobNotFoundError) error.message = "https://blob.example/private/state?token=secret-sentinel";
+    const acquire = vi.spyOn(lease, "acquireIngestionLease");
+    if (phase === "acquisition") acquire.mockRejectedValue(error);
+    else acquire.mockResolvedValue({ owner: "vercel-fast", fence: 1, expiresAt: "2099-01-01T00:00:00.000Z", collectionRevision: 1 });
+    const release = vi.spyOn(lease, "releaseIngestionLease").mockResolvedValue(undefined);
+    const run = vi.spyOn(orchestrator, "runIngestion").mockRejectedValue(error);
+    const log = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const response = await handleCron(new Request("https://example.test/api/cron/fast", {
+      headers: { authorization: `Bearer ${process.env.CRON_SECRET}` },
+    }), "fast");
+    const body = await response.json();
+    expect(response.status).toBe(500);
+    expect(body).toEqual({ error: "Ingestion failed", code: "operation_failed" });
+    expect(log).toHaveBeenCalledTimes(1);
+    expect(log.mock.calls[0]).toHaveLength(1);
+    expect(JSON.parse(String(log.mock.calls[0][0]))).toEqual({ event: "ingestion_failed", operation: "fast", code: "operation_failed", phase, reason });
+    expect(JSON.stringify({ body, logs: log.mock.calls })).not.toContain("secret-sentinel");
+    expect(run).toHaveBeenCalledTimes(phase === "operation" ? 1 : 0);
+    expect(release).toHaveBeenCalledTimes(phase === "operation" ? 1 : 0);
   });
 });

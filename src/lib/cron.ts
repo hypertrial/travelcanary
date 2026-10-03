@@ -8,7 +8,7 @@ import { runConditions } from "./conditions/worker";
 import type { Cadence } from "./ingestion/types";
 import { assertSourceRuntimeIntegrity } from "./ingestion/source-runtime";
 import { acquireIngestionLease, newLeaseOwner, releaseIngestionLease } from "./ingestion-lease";
-import { classifyOperationFailure } from "./operation-failure";
+import { classifyOperationFailure, operationFailureReason } from "./operation-failure";
 import { publicOperationSummary } from "./operation-summary";
 
 assertSourceRuntimeIntegrity();
@@ -42,10 +42,12 @@ async function handleCronRequest(request: Request, operation: Cadence | "mainten
   if (process.env.INGESTION_PAUSED === "true") return Response.json({ status: "paused" }, { headers: { "Cache-Control": "no-store" } });
   let stores: ReturnType<typeof productionStores> | null = null;
   let lease: Awaited<ReturnType<typeof acquireIngestionLease>> = null;
+  let phase: "acquisition" | "operation" = "acquisition";
   try {
     stores = productionStores();
     lease = await acquireIngestionLease(stores.stateStore, newLeaseOwner(`vercel-${operation}`));
     if (!lease) return Response.json({ status: "busy" }, { headers: { "Cache-Control": "no-store" } });
+    phase = "operation";
     const summary = operation === "conditions"
       ? await runConditions({ ...stores, lease })
       : operation === "maintenance"
@@ -56,7 +58,7 @@ async function handleCronRequest(request: Request, operation: Cadence | "mainten
     return Response.json(response, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     const code = classifyOperationFailure(error);
-    console.error(JSON.stringify({ event: "ingestion_failed", operation, code }));
+    console.error(JSON.stringify({ event: "ingestion_failed", operation, code, phase, reason: operationFailureReason(error) }));
     return Response.json({ error: "Ingestion failed", code }, { status: 500, headers: { "Cache-Control": "no-store" } });
   } finally {
     if (stores && lease) try { await releaseIngestionLease(stores.stateStore, lease); }
