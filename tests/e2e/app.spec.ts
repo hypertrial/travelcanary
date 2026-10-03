@@ -374,7 +374,10 @@ test("explains unavailable data once without a duplicate empty-state card", asyn
   await page.goto("/");
   await selectDestination(page, "Linz", /Linz/);
   const panel = destinationDetails(page);
-  await expect(panel.getByText(/Checks delayed$/)).toHaveCount(1);
+  const monitoring = panel.getByRole("region", { name: "Detailed monitoring information for Linz", exact: true });
+  await expect(monitoring).toBeVisible();
+  await expect(panel.locator("header").getByText(/Checks delayed$/)).toHaveCount(1);
+  await expect(monitoring.getByRole("heading", { name: "Checks delayed", exact: true })).toBeVisible();
   await expect(panel.getByText("Check official local sources before relying on this result.")).toHaveCount(1);
   await expect(panel.getByText(/Current information could not be confirmed/i)).toHaveCount(0);
   await expect(panel.getByText("This can happen when a monitored source is delayed, incomplete, or unavailable.")).toHaveCount(0);
