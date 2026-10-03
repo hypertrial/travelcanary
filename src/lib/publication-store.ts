@@ -178,7 +178,12 @@ export class BlobPublicationStore implements PublicationStore {
   constructor(auth: BlobAuthInput) { this.auth = resolveBlobAuth(auth); }
   async read(pathname: string, maxBytes: number): Promise<PublicationRead | null> {
     assertReadableKey(pathname);
-    const result = await get(pathname, { ...this.auth, access: "public", useCache: false });
+    let result: Awaited<ReturnType<typeof get>>;
+    try { result = await get(pathname, { ...this.auth, access: "public", useCache: false }); }
+    catch (error) {
+      console.error(JSON.stringify({ event: "blob_storage_failed", operation: "public_read" }));
+      throw error;
+    }
     if (!result || result.statusCode !== 200 || !result.stream) return null;
     if (!Number.isFinite(result.blob.size) || result.blob.size < 0 || result.blob.size > maxBytes) {
       await result.stream.cancel(); throw new Error("Invalid publication object size");
@@ -203,10 +208,22 @@ export class BlobPublicationStore implements PublicationStore {
         contentType: "application/json", cacheControlMaxAge: 31536000 });
       return { url: result.url };
     } catch (error) {
-      if (!(error instanceof BlobPreconditionFailedError)) throw error;
-      const existing = await this.read(pathname, Math.max(1, Buffer.byteLength(body)));
-      if (existing?.body !== body) throw new ConcurrencyError("Immutable publication race");
-      return { url: existing.url };
+      if (error instanceof ConcurrencyError) throw error;
+      const precondition = error instanceof BlobPreconditionFailedError;
+      let existing: PublicationRead | null;
+      try { existing = await this.read(pathname, Math.max(1, Buffer.byteLength(body))); }
+      catch (readError) {
+        if (precondition) throw readError;
+        console.error(JSON.stringify({ event: "blob_storage_failed", operation: "immutable_write" }));
+        throw error;
+      }
+      if (existing?.body === body) {
+        if (!precondition) console.info(JSON.stringify({ event: "immutable_write_recovered" }));
+        return { url: existing.url };
+      }
+      if (precondition) throw new ConcurrencyError("Immutable publication race");
+      console.error(JSON.stringify({ event: "blob_storage_failed", operation: "immutable_write" }));
+      throw error;
     }
   }
   async replacePointer(body: string, expectedEtag: string | null) {
@@ -217,6 +234,7 @@ export class BlobPublicationStore implements PublicationStore {
       return { etag: result.etag, url: result.url };
     } catch (error) {
       if (error instanceof BlobPreconditionFailedError) throw new ConcurrencyError("Publication pointer changed");
+      if (!(error instanceof ConcurrencyError)) console.error(JSON.stringify({ event: "blob_storage_failed", operation: "pointer_write" }));
       throw error;
     }
   }
