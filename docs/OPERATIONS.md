@@ -4,6 +4,8 @@
 
 Import the public repository directly into a Vercel Pro project and keep Fluid Compute enabled. The repository root is the Vercel Root Directory. `vercel.json` owns all six schedules.
 
+Keep the checked-in `npm ci` install command so deployments preserve the reviewed lockfile, including optional platform dependencies. The separate release audit remains required.
+
 Production-only configuration is:
 
 ```text
