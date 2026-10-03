@@ -358,6 +358,7 @@ export class MeteoAlarmAdapter implements SourceAdapter {
       status: "disabled", sourceUpdatedAt: null, events: [], error: null, limitationCode: "not_supported",
       checkedLocationIds: [], unavailableLocationIds: context.locations.filter((location) => location.countryCode === countryCode).map(({ id }) => id),
     }])) as unknown as Record<CatalogCountryCode, MutablePartition>;
+    const incompleteGeometryCountries = new Set<CatalogCountryCode>();
     for (const feed of feeds) {
       const countryLocationIds = context.locations.filter((location) => location.countryCode === feed.countryCode).map(({ id }) => id);
       if (!feed.xml) {
@@ -373,13 +374,19 @@ export class MeteoAlarmAdapter implements SourceAdapter {
           recordsExamined: parsed.recordsExamined,
           ...(parsed.overflow ? { overflowCode: "meteoalarm_entry_or_event_limit" } : {}),
         });
+        // FMI marine area labels can describe partial drawn areas; recover exact CAP polygons.
+        const usableEvents = parsed.events.filter(({ geometry }) => !(feed.countryCode === "FI" && geometry.kind === "regions"
+          && geometry.codes.some((code) => /^FI8\d{2}$/.test(code))));
+        const incompleteGeometry = usableEvents.length !== parsed.events.length;
+        if (incompleteGeometry) incompleteGeometryCountries.add(feed.countryCode);
         const partialReasons = [
           parsed.invalid ? `${parsed.invalid} MeteoAlarm records were invalid` : null,
           parsed.overflow ? "MeteoAlarm feed exceeded its bounded record limit" : null,
           supplementOverflowCountries.has(feed.countryCode) ? "MeteoAlarm CAP supplement queue exceeded its bounded limit" : null,
+          incompleteGeometry ? "Finnish marine warnings require authority CAP polygon geometry" : null,
         ].filter(Boolean);
         partitions[feed.countryCode] = {
-          status: partialReasons.length ? "partial" : "ok", sourceUpdatedAt: parsed.updatedAt, events: parsed.events,
+          status: partialReasons.length ? "partial" : "ok", sourceUpdatedAt: parsed.updatedAt, events: usableEvents,
           error: partialReasons.join("; ").slice(0, 300) || null,
           removedEventPrefixes: parsed.supersededIdentifiers.map((identifier) => `meteoalarm:${identifier}:`),
           checkedLocationIds: countryLocationIds, unavailableLocationIds: [],
@@ -392,8 +399,8 @@ export class MeteoAlarmAdapter implements SourceAdapter {
         };
       }
     }
-    const failedCountries = (Object.entries(partitions) as [CatalogCountryCode, MutablePartition][])
-      .filter(([, partition]) => partition.status === "failed").map(([countryCode]) => countryCode);
+    const recoveryCountries = (Object.entries(partitions) as [CatalogCountryCode, MutablePartition][])
+      .filter(([countryCode, partition]) => partition.status === "failed" || incompleteGeometryCountries.has(countryCode)).map(([countryCode]) => countryCode);
     const primaryPartitions = structuredClone(partitions);
     const nationallyRecovered = new Set<CatalogCountryCode>();
     const retainedFallback = new Set<CatalogCountryCode>();
@@ -402,14 +409,14 @@ export class MeteoAlarmAdapter implements SourceAdapter {
       const previous = system && context.state?.partitionTransports.meteoalarm[countryCode]?.[system.id];
       return !previous?.nextExpectedUpdate || Date.parse(previous.nextExpectedUpdate) <= context.now.getTime();
     };
-    const reviewedFallbacks = failedCountries.filter((countryCode) => nationalWeatherFallbackConfigured(countryCode));
+    const reviewedFallbacks = recoveryCountries.filter((countryCode) => nationalWeatherFallbackConfigured(countryCode));
     for (const countryCode of reviewedFallbacks.filter((countryCode) => !fallbackDue(countryCode))) {
       const system = meteoalarmRuntimeFallbackSystem(countryCode)!;
       const previous = context.state!.partitionTransports.meteoalarm[countryCode][system.id];
       retainedFallback.add(countryCode);
       partitions[countryCode] = {
         status: "partial", sourceUpdatedAt: previous.sourceUpdatedAt, events: [],
-        error: `Primary MeteoAlarm feed failed; ${system.systemName} retained until its next bounded check`, limitationCode: "national_authority_fallback",
+        error: `Primary MeteoAlarm delivery needs recovery; ${system.systemName} retained until its next bounded check`, limitationCode: "national_authority_fallback",
         transports: { [system.id]: { status: "not_due", sourceUpdatedAt: previous.sourceUpdatedAt, error: null } },
         checkedLocationIds: context.locations.filter((location) => location.countryCode === countryCode).map(({ id }) => id), unavailableLocationIds: [],
       };
@@ -422,7 +429,7 @@ export class MeteoAlarmAdapter implements SourceAdapter {
         partitions[countryCode] = {
           status: "partial", sourceUpdatedAt: recovered.sourceUpdatedAt, events: recovered.events,
           removedEventPrefixes: recovered.removedEventPrefixes,
-          error: `Primary MeteoAlarm feed failed; ${countryCode} national authority fallback succeeded`, limitationCode: "national_authority_fallback",
+          error: `Primary MeteoAlarm delivery needs recovery; ${countryCode} national authority fallback succeeded`, limitationCode: "national_authority_fallback",
           transports: { [recovered.transportId]: { status: "ok", sourceUpdatedAt: recovered.sourceUpdatedAt, error: null } },
           checkedLocationIds: context.locations.filter((location) => location.countryCode === countryCode).map(({ id }) => id),
           unavailableLocationIds: [],
@@ -435,7 +442,7 @@ export class MeteoAlarmAdapter implements SourceAdapter {
         } };
       }
     });
-    const ifrcCountries = failedCountries.filter((countryCode): countryCode is CountryCode => (
+    const ifrcCountries = recoveryCountries.filter((countryCode): countryCode is CountryCode => (
       !nationallyRecovered.has(countryCode) && !retainedFallback.has(countryCode) && (catalogV2CountryCodes as readonly string[]).includes(countryCode)
     ));
     const fallback = await fetchIfrcMeteoAlarmFallback(ifrcCountries, context).catch((error) => {
@@ -453,7 +460,7 @@ export class MeteoAlarmAdapter implements SourceAdapter {
       partitions[countryCode] = { status: "partial", sourceUpdatedAt: recovered.events.map(({ sourceUpdatedAt }) => sourceUpdatedAt).sort().at(-1) || checkedAt, events: recovered.events,
         transports: partitions[countryCode].transports,
         removedEventPrefixes: recovered.supersededIdentifiers.map((identifier) => `meteoalarm:${identifier}:`),
-        error: `Primary MeteoAlarm feed failed; IFRC Alert Hub fallback checked ${recovered.events.length} originating alert${recovered.events.length === 1 ? "" : "s"}`, limitationCode: "ifrc_fallback",
+        error: `Primary MeteoAlarm delivery needs recovery; IFRC Alert Hub fallback checked ${recovered.events.length} originating alert${recovered.events.length === 1 ? "" : "s"}`, limitationCode: "ifrc_fallback",
         checkedLocationIds: context.locations.filter((location) => location.countryCode === countryCode).map(({ id }) => id),
         unavailableLocationIds: [],
       };
@@ -488,6 +495,12 @@ export class MeteoAlarmAdapter implements SourceAdapter {
       if (nationalFallback && (nationalWeatherFallbackDisabled(countryCode) || !nationalWeatherFallbackConfigured(countryCode))) partition.transports[nationalFallback.id] = {
         status: "disabled", sourceUpdatedAt: null, events: [], error: null, limitationCode: "runtime_transport_disabled",
       };
+      if (incompleteGeometryCountries.has(countryCode) && primary.events.length) {
+        const primaryIds = new Set(primary.events.map(({ id }) => id));
+        const combined = [...tag(primary.events, primaryTransportId), ...partition.events.filter(({ id }) => !primaryIds.has(id))];
+        if (combined.length > MAX_EVENTS_PER_PARTITION) recordSourceDiagnostics(context, { overflowCode: "meteoalarm_entry_or_event_limit" });
+        partition.events = combined.slice(0, MAX_EVENTS_PER_PARTITION);
+      }
     }
     const result = (expanded ? CatalogPartitionedSourceResultSchema : PartitionedSourceResultSchema)
       .parse({ sourceId: this.id, checkedAt, partitions }) as RuntimePartitionedSourceResult;

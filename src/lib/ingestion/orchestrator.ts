@@ -200,7 +200,7 @@ async function publishResults(options: {
       }
       phase = performance.now();
       const publication = await publishCommittedCatalog({ stateStore: options.stateStore, stores: options.catalogPublication,
-        collection: options.collection, lease: options.lease, now: options.now,
+        collection: options.collection, lease: options.lease, now: options.now, publicationClock: options.publicationClock,
         family: options.operation === "maintenance" ? "all" : "snapshots" });
       publishMs += performance.now() - phase;
       const snapshot = publication.snapshot; const bytes = Buffer.byteLength(JSON.stringify(snapshot));

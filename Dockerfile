@@ -4,6 +4,7 @@ RUN npm install --global npm@11.6.2
 FROM base AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
+COPY tools/next-eslint-glob ./tools/next-eslint-glob
 COPY scripts/copy-maplibre-worker.mjs ./scripts/copy-maplibre-worker.mjs
 RUN npm ci
 COPY . .

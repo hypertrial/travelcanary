@@ -1,10 +1,11 @@
 import { z } from "zod";
-import catalog from "../../public/catalogs/3/locations.json";
+import catalogJson from "../../public/catalogs/3/locations.json";
 import packageJson from "../../package.json";
-import { SnapshotV11Schema } from "./domain/catalog-public";
+import { PublicCatalogV3Schema, SnapshotV11Schema } from "./domain/catalog-public";
 import { COLLECTOR_STATUS_KEY, LocalDatabase } from "./local-storage";
-import { restrictedSourceCount } from "./local-policy";
+import { publishedRestrictedConditions, RESTRICTED_SOURCES_ACTIVE_CODE, restrictedSourceCount } from "./local-policy";
 import { readCurrentPublication, readPublishedObject, type PublicationStore } from "./publication-store";
+import { applySnapshotStaleness } from "./snapshot-health";
 
 export const CollectorStatusSchema = z.object({
   schemaVersion: z.literal(1), state: z.enum(["starting", "running", "idle", "failed", "stopping"]),
@@ -34,12 +35,15 @@ export function readCollectorStatus(database: LocalDatabase) {
 }
 
 const levelRank = { SEVERE: 5, HIGH: 4, ELEVATED: 3, UNKNOWN: 2, NORMAL: 1 } as const;
+const catalog = PublicCatalogV3Schema.parse(catalogJson);
 const names = new Map(catalog.map((location) => [location.id, location]));
 
 export async function publishedPluginSummary(store: PublicationStore, now = new Date()) {
   const current = await readCurrentPublication(store);
   if (!current) throw new Error("Public snapshot is unavailable");
-  const snapshot = SnapshotV11Schema.parse(JSON.parse(await readPublishedObject(store, current.manifest.snapshot)));
+  const snapshot = applySnapshotStaleness(SnapshotV11Schema.parse(JSON.parse(await readPublishedObject(store, current.manifest.snapshot))), now, catalog);
+  const restrictedActive = current.manifest.status.codes.includes(RESTRICTED_SOURCES_ACTIVE_CODE)
+    || await publishedRestrictedConditions(store, current.manifest, now);
   const counts = { NORMAL: 0, ELEVATED: 0, HIGH: 0, SEVERE: 0, UNKNOWN: 0 };
   for (const value of Object.values(snapshot.locations)) counts[value.level] += 1;
   const destinations = Object.entries(snapshot.locations).map(([id, state]) => ({
@@ -53,7 +57,8 @@ export async function publishedPluginSummary(store: PublicationStore, now = new 
     schemaVersion: 1 as const, appVersion: packageJson.version, catalogVersion: 3 as const,
     health: delayed ? "degraded" as const : "ok" as const, freshness: delayed ? "delayed" as const : "fresh" as const,
     generatedAt: snapshot.generatedAt,
-    restrictedSources: { active: false, count: restrictedSourceCount, disclosure: null },
+    restrictedSources: { active: restrictedActive, count: restrictedSourceCount,
+      disclosure: restrictedActive ? "Restricted sources are enabled or retained in this public generation. Their terms apply." : null },
     counts: { ...counts, attention: counts.ELEVATED + counts.HIGH + counts.SEVERE + counts.UNKNOWN }, destinations,
   };
 }

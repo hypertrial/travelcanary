@@ -265,7 +265,7 @@ async function fetchFinland(context: IngestionContext): Promise<Recovery> {
     throw new Error("FMI RSS index contains unsupported or excessive CAP links");
   }
   const records = await mapConcurrent(links, 4, async (url) => {
-    const response = await fetchAllowlisted(context.fetch, url, ["alerts.fmi.fi"], 1, { maxBytes: 256 * 1024, diagnosticsCategory: "fmi_cap" });
+    const response = await fetchAllowlisted(context.fetch, url, ["alerts.fmi.fi"], 1, { maxBytes: system.maxBytes || 1024 * 1024, diagnosticsCategory: "fmi_cap" });
     return parseFmiCap(await response.text(), context, url);
   });
   return {

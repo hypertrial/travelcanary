@@ -57,4 +57,21 @@ describe("release initialization", () => {
     })) as typeof fetch;
     await expect(initializeRelease({ env, fetch: fetchImpl, timeoutMs: 5 })).rejects.toMatchObject({ name: "AbortError" });
   });
+
+  it("keeps the deadline active after headers while consuming the response body", async () => {
+    let calls = 0; let aborted = false;
+    const fetchImpl = (async (_input, init) => {
+      calls += 1;
+      if (init?.method === "HEAD") return new Response(null);
+      return new Response(new ReadableStream({ start(controller) {
+        const timer = setTimeout(() => { controller.enqueue(new TextEncoder().encode('{"status":"ok"}')); controller.close(); }, 70);
+        init?.signal?.addEventListener("abort", () => {
+          aborted = true; clearTimeout(timer); controller.error(new DOMException("aborted", "AbortError"));
+        }, { once: true });
+      } }));
+    }) as typeof fetch;
+    await expect(initializeRelease({ env, fetch: fetchImpl, timeoutMs: 20 })).rejects.toMatchObject({ name: "AbortError" });
+    expect(aborted).toBe(true);
+    expect(calls).toBe(2);
+  });
 });

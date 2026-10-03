@@ -99,17 +99,8 @@ function eventAffectsLocationInternal(event: NormalizedEvent, location: Location
     if (event.geometry.countryCode !== location.countryCode) return false;
     if (event.geometry.codes.includes(`${location.countryCode}:country`)) return true;
     const normalized = location.sourceRegionCodes.meteoalarm.map((code) => code.replace(/^GR/, "EL"));
-    return event.geometry.codes.some((code) => {
-      const candidate = code.replace(/^GR/, "EL");
-      if (normalized.includes(candidate)) return true;
-      if (!candidate.startsWith("area:") || !["capital", "city", "resort"].includes(location.type)) return false;
-      const eventArea = candidate.slice(5);
-      return normalized.some((locationCode) => {
-        if (!locationCode.startsWith("area:")) return false;
-        const locationArea = locationCode.slice(5);
-        return locationArea.length >= 5 && (eventArea.startsWith(`${locationArea} `) || locationArea.startsWith(`${eventArea} `));
-      });
-    });
+    // Shared words in area names do not establish a geographic intersection.
+    return event.geometry.codes.some((code) => normalized.includes(code.replace(/^GR/, "EL")));
   }
   if (event.geometry.kind === "point") {
     if (location.geometry.kind === "radius") {

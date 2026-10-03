@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { prunePublications, publishCommittedCatalog } from "@/lib/catalog-publication";
 import { acquireIngestionLease, assertIngestionLease } from "@/lib/ingestion-lease";
 import { publicationPointerPath } from "@/lib/domain/publication";
@@ -9,6 +9,9 @@ import { MemoryPublicationStore } from "../helpers/publication";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import { emptyConditions, type LocationConditions } from "@/lib/domain/conditions";
+import { parseOpenMeteo } from "@/lib/conditions/forecast";
+import { publishedPluginSummary } from "@/lib/local-status";
 
 const now = new Date("2026-09-18T06:00:00.000Z");
 
@@ -46,10 +49,65 @@ async function writer(store: PublicationStore) {
   const lease = await acquireIngestionLease(stateStore, "atomic-publication-test", now, 330_000);
   if (!lease) throw new Error("lease unavailable");
   return { stateStore, lease, publish: () => publishCommittedCatalog({ stateStore, stores: { publicationStore: store },
-    collection: { catalogVersion: 3, revision: 1 }, lease, now, family: "all", env: { VERCEL_GIT_COMMIT_SHA: "a".repeat(40) } }) };
+    collection: { catalogVersion: 3, revision: 1 }, lease, now, publicationClock: () => now, family: "all", env: { VERCEL_GIT_COMMIT_SHA: "a".repeat(40) } }) };
 }
 
 describe("atomic public generations", () => {
+  it("discloses restricted data through opt-out reuse and clears only after replacing those objects", async () => {
+    const state = createEmptyState(now);
+    const forecast = JSON.parse(readFileSync("tests/fixtures/conditions/forecast.json", "utf8"));
+    const shift = now.getTime() / 1000 - forecast.hourly.time[0];
+    forecast.hourly.time = forecast.hourly.time.map((time: number) => time + shift);
+    state.conditions.locations["at-vienna"] = { ...emptyConditions(),
+      weather: parseOpenMeteo(forecast, "weather", now) as NonNullable<LocationConditions["weather"]> };
+    const stateStore = new MemoryStateStore(state); const store = new MemoryPublicationStore();
+    const lease = await acquireIngestionLease(stateStore, "restricted-publication-test", now, 330_000);
+    if (!lease) throw new Error("lease unavailable");
+    const options = { stateStore, stores: { publicationStore: store }, collection: { catalogVersion: 3 as const, revision: 1 }, lease,
+      now, publicationClock: () => now };
+    const enabled = await publishCommittedCatalog({ ...options, family: "all", env: { LOCAL_CONDITIONS_ENABLED: "true", NONCOMMERCIAL_DATA_ENABLED: "true" } });
+    expect(enabled.manifest.status.codes).toContain("policy/restricted_sources_active");
+    const reused = await publishCommittedCatalog({ ...options, family: "snapshots", env: { LOCAL_CONDITIONS_ENABLED: "true", NONCOMMERCIAL_DATA_ENABLED: "false" } });
+    expect(reused.manifest.conditions).toEqual(enabled.manifest.conditions);
+    expect((await publishedPluginSummary(store, now)).restrictedSources.active).toBe(true);
+    const replaced = await publishCommittedCatalog({ ...options, family: "all", env: { LOCAL_CONDITIONS_ENABLED: "true", NONCOMMERCIAL_DATA_ENABLED: "false" } });
+    expect(replaced.manifest.status.codes).not.toContain("policy/restricted_sources_active");
+    expect((await publishedPluginSummary(store, now)).restrictedSources.active).toBe(false);
+  });
+
+  it("keeps a complete generation healthy when disclosure is the only status code", async () => {
+    const state = createEmptyState(now);
+    for (const health of [...Object.values(state.sources), ...Object.values(state.providers),
+      ...Object.values(state.sourcePartitions).flatMap(Object.values)]) Object.assign(health,
+        { status: "ok", lastAttempt: now.toISOString(), lastSuccess: now.toISOString(), sourceUpdatedAt: now.toISOString(),
+          nextExpectedUpdate: new Date(now.getTime() + 60 * 60_000).toISOString(), error: null });
+    const stateStore = new MemoryStateStore(state); const store = new MemoryPublicationStore();
+    const lease = await acquireIngestionLease(stateStore, "informational-policy-test", now, 330_000);
+    if (!lease) throw new Error("lease unavailable");
+    const result = await publishCommittedCatalog({ stateStore, stores: { publicationStore: store },
+      collection: { catalogVersion: 3, revision: 1 }, lease, now, publicationClock: () => now, family: "all",
+      env: { NONCOMMERCIAL_DATA_ENABLED: "true" } });
+    expect(result.manifest.status).toMatchObject({ state: "complete", codes: ["policy/restricted_sources_active"] });
+    expect((await publishedPluginSummary(store, now)).health).toBe("ok");
+  });
+  it("rejects an owner whose lease expires during the manifest PUT", async () => {
+    const currentTime = new Date();
+    const stateStore = new MemoryStateStore(createEmptyState(currentTime));
+    const lease = await acquireIngestionLease(stateStore, "expired-publication-test", currentTime, 60_000);
+    if (!lease) throw new Error("lease unavailable");
+    const store = new MemoryPublicationStore(); const put = store.putImmutable.bind(store);
+    const clock = vi.useFakeTimers({ toFake: ["Date"] }); clock.setSystemTime(currentTime);
+    store.putImmutable = async (...args) => {
+      const result = await put(...args);
+      if (args[0].endsWith("/manifest.json")) clock.setSystemTime(new Date(currentTime.getTime() + 61_000));
+      return result;
+    };
+    try {
+      await expect(publishCommittedCatalog({ stateStore, stores: { publicationStore: store },
+        collection: { catalogVersion: 3, revision: 1 }, lease, now: currentTime, family: "all", env: {} })).rejects.toThrow(/lease/i);
+      expect(await store.read(publicationPointerPath, 64_000)).toBeNull();
+    } finally { vi.useRealTimers(); }
+  });
   it("never exposes a pointer when any object, manifest, or pointer write fails", async () => {
     for (let failAt = 1; failAt <= 48; failAt += 1) {
       const target = new MemoryPublicationStore(); const failing = new FailingPublicationStore(target, failAt); const run = await writer(failing);
@@ -96,7 +154,7 @@ describe("atomic public generations", () => {
     if (!lease) throw new Error("lease unavailable");
     const wrapperSha = "b".repeat(40);
     await publishCommittedCatalog({ stateStore, stores: { publicationStore: store },
-      collection: { catalogVersion: 3, revision: 1 }, lease, now, family: "all",
+      collection: { catalogVersion: 3, revision: 1 }, lease, now, publicationClock: () => now, family: "all",
       env: { VERCEL_GIT_COMMIT_SHA: "a".repeat(40), TRAVELCANARY_RELEASE_SHA: wrapperSha } });
     const current = await readCurrentPublication(store);
     expect(current?.pointer.producerCommitSha).toBe(wrapperSha);

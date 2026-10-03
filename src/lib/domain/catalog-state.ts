@@ -177,10 +177,16 @@ export const ExpandedAggregateSourceResultSchema = AggregateSourceResultSchema.s
   unavailableLocationIds: z.array(z.string().min(1)).max(679).optional(),
 });
 
+const LuAlertCursorSchema = z.object({ timestamp, resourceUrl: z.string().max(2048).url()
+  .refine((value) => /^https:\/\/download\.data\.public\.lu\//.test(value)).nullable() }).strict();
+const LuAlertSupersededIdsSchema = z.array(z.string().min(1).max(512)).max(1000)
+  .refine((value) => new Set(value).size === value.length, "LU supersession identifiers must be unique");
 const CatalogTransportResultSchema = z.object({ ...SourcePartitionTransportResultSchema.shape,
   checkedLocationIds: locationIds.optional(), unavailableLocationIds: locationIds.optional(),
   events: z.array(NormalizedEventV13Schema).max(500).optional(),
   frozenEaFloodAreaGeometries: z.record(z.string().min(1).max(100), z.array(geometry[1]).min(1).max(64)).refine((value) => Object.keys(value).length <= 100).optional(),
+  luAlertCursor: LuAlertCursorSchema.nullable().optional(),
+  luAlertSupersededIds: LuAlertSupersededIdsSchema.optional(),
 }).superRefine((transport, context) => {
   const checked = new Set(transport.checkedLocationIds || []);
   if (transport.unavailableLocationIds?.some((id) => checked.has(id))) context.addIssue({ code: "custom", message: "Transport checked and unavailable destinations must be disjoint" });
@@ -301,6 +307,8 @@ export const IngestionStateV16Schema = z.object({
   stateRevision: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
   ingestionFence: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
   ingestionLease: IngestionLeaseSchema.nullable(),
+  luAlertCursor: LuAlertCursorSchema.nullable().default(null),
+  luAlertSupersededIds: LuAlertSupersededIdsSchema.default([]),
 }).superRefine((value, context) => {
   if (value.ingestionLease && value.ingestionLease.fence !== value.ingestionFence) {
     context.addIssue({ code: "custom", path: ["ingestionLease", "fence"], message: "Lease fence must match state fence" });

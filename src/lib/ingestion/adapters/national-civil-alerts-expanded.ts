@@ -64,7 +64,7 @@ function polygonRings(geometry: unknown): Position[][][] {
     if (!Array.isArray(part)) throw new Error("Warning multipolygon is malformed");
     return part.map(ring);
     }) : null;
-  if (!result) throw new Error("Warning geometry must be Polygon or MultiPolygon");
+  if (!result || !result.length || result.some((part) => !part.length)) throw new Error("Warning geometry must be a nonempty Polygon or MultiPolygon");
   const allRings = result.flat();
   if (allRings.length > 64 || allRings.reduce((total, item) => total + item.length, 0) > 5_000) throw new Error("Warning geometry exceeds aggregate limits");
   return result;
@@ -129,8 +129,10 @@ export function parseMetNorway(value: unknown, context: IngestionContext): Natio
       const starts = timestamp(properties.onset || properties.effective || properties.sent || intervalValues[0]);
       const ends = timestamp(properties.expires || properties.eventEndingTime || intervalValues[1]);
       const updated = timestamp(properties.sent || properties.updated || properties.effective || intervalValues[0]);
-      if (!identifier || !type || !hazardLevel || starts >= ends || ends <= context.now.getTime() || starts >= context.now.getTime() + 86_400_000) throw new Error("MET Norway warning fields are invalid");
-      for (const [index, coordinates] of polygonRings(raw.geometry).entries()) events.push(event({
+      if (!identifier || !type || !hazardLevel || starts >= ends) throw new Error("MET Norway warning fields are invalid");
+      const areas = polygonRings(raw.geometry);
+      if (ends <= context.now.getTime() || starts >= context.now.getTime() + 86_400_000) continue;
+      for (const [index, coordinates] of areas.entries()) events.push(event({
         id: `national:met-no:${identifier}:${index}`, type, level: hazardLevel, area: text(properties.area || properties.areaDesc || "Norway"),
         starts, ends, updated, geometry: { kind: "polygon", coordinates }, sourceName: "MET Norway",
         sourceUrl: "https://www.met.no/en/weather-and-climate/text-forecast-and-warnings", context,

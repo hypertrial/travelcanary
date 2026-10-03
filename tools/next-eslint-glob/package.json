@@ -1,0 +1,10 @@
+{
+  "name": "@travelcanary/next-eslint-glob",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bounded directory-glob adapter for the Next.js ESLint plugin",
+  "main": "index.mjs",
+  "dependencies": {
+    "glob": "13.0.6"
+  }
+}

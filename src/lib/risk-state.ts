@@ -231,6 +231,14 @@ function mergePartitionedResult(events: NormalizedEvent[], state: IngestionState
           checkedLocationIds: [...new Set(transport.checkedLocationIds || [])].sort(),
           unavailableLocationIds: [...new Set(transport.unavailableLocationIds || [])].sort(),
         };
+        if (result.sourceId === "national-civil-alerts" && countryCode === "LU" && transportId === "lu-alert"
+          && ["ok", "partial", "disabled"].includes(transport.status)) {
+          if (transport.status === "disabled") state.luAlertCursor = null;
+          else {
+            if (transport.luAlertCursor !== undefined) state.luAlertCursor = transport.luAlertCursor;
+            if (transport.luAlertSupersededIds !== undefined) state.luAlertSupersededIds = [...new Set([...state.luAlertSupersededIds, ...transport.luAlertSupersededIds])].sort();
+          }
+        }
         if (transportId === "ea-flood" && transport.frozenEaFloodAreaGeometries) {
           const byId = ([left]: [string, unknown], [right]: [string, unknown]) => left.localeCompare(right);
           const current = Object.entries(state.frozenEaFloodAreaGeometries).sort(byId);
@@ -248,6 +256,9 @@ function mergePartitionedResult(events: NormalizedEvent[], state: IngestionState
         }
       }
     }
+    const luAttempt = state.partitionTransports.nationalCivilAlerts.LU["lu-alert"]?.lastAttempt;
+    if (result.sourceId === "national-civil-alerts" && countryCode === "LU" && partition.status === "disabled"
+      && !partition.transports?.["lu-alert"] && (!luAttempt || Date.parse(luAttempt) <= Date.parse(result.checkedAt))) state.luAlertCursor = null;
     (partition.checkedLocationIds || []).forEach((id) => checkedLocationIds.add(id));
     (partition.unavailableLocationIds || []).forEach((id) => unavailableLocationIds.add(id));
     const owned = Object.entries((partition.transports || {}) as Record<string, CatalogTransportResult>).filter(([, transport]) => transport.events !== undefined);
@@ -279,7 +290,7 @@ function mergePartitionedResult(events: NormalizedEvent[], state: IngestionState
         const removed = transport.removedEventPrefixes || [];
         const primaryId = meteoalarmPrimarySystem(countryCode)?.id || "meteoalarm-primary";
         if ([primaryId, "ifrc-meteoalarm"].includes(id)) return removed;
-        const root = id === "aemet-cap" ? "meteoalarm:aemet:" : id === "dhmz-cap" ? "meteoalarm:dhmz:"
+        const root = id === "aemet-cap" ? "meteoalarm:aemet:" : id === "dhmz-cap" ? "meteoalarm:dhmz:" : id === "fmi-cap" ? "meteoalarm:fmi:"
           : id === "meteoalarm-edr" ? "meteoalarm:edr:" : null;
         return root ? removed.filter((prefix) => prefix.startsWith(root) && prefix.length > root.length)
           .map((prefix) => `meteoalarm:${prefix.slice(root.length)}`) : [];
@@ -287,7 +298,7 @@ function mergePartitionedResult(events: NormalizedEvent[], state: IngestionState
       if (superseded.length) events = events.filter((event) => event.sourceId !== result.sourceId
         || !eventBelongsToCountry(event, countryCode)
         || !superseded.some((prefix) => eventMatchesRemovalPrefix(event.id, prefix)
-          || eventMatchesRemovalPrefix(event.id.replace(/^meteoalarm:(?:aemet|dhmz):/, "meteoalarm:"), prefix)));
+          || eventMatchesRemovalPrefix(event.id.replace(/^meteoalarm:(?:aemet|dhmz|fmi):/, "meteoalarm:"), prefix)));
       continue;
     }
     if (partition.status === "ok" || partition.status === "disabled") {

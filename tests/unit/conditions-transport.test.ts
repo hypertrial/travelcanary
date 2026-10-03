@@ -27,6 +27,22 @@ const successfulPublish = async (files: Conditions[]) => ({ published: files.map
 // Synthetic geometry only, to exercise intersection against a configured destination.
 const geo = { type: "FeatureCollection", features: [{ type: "Feature", geometry: { type: "Point", coordinates: helsinki.centroid }, properties: { situationId: "GUID50469906", version: 1 } }] };
 describe("bounded conditions transports", () => {
+  it.each(["http", "transport"])("charges every issued forecast retry and stops at quota (%s)", async (failure) => {
+    const env = { LOCAL_CONDITIONS_ENABLED: "true", NONCOMMERCIAL_DATA_ENABLED: "true",
+      CONDITIONS_DISABLED_SOURCES: conditionSourceIds.filter((id) => !["open-meteo-weather", "open-meteo-air", "open-meteo-marine"].includes(id)).join(",") };
+    const initial = createEmptyState(now); const planned = forecastBatches(initial, now, env);
+    expect(planned.reduce((sum, { ids }) => sum + ids.length, 0)).toBe(400);
+    const store = new MemoryStateStore(initial); let issuedWeight = 0;
+    const result = await runConditions({ now, stateStore: store, env, fetch: (async (input) => {
+      issuedWeight += new URL(String(input)).searchParams.get("latitude")!.split(",").length;
+      if (failure === "transport") throw new Error("temporary transport failure");
+      return new Response(null, { status: 503 });
+    }) as typeof fetch });
+    const recorded = (await store.read()).data.conditions.reservations.reduce((sum, { weight }) => sum + weight, 0);
+    expect(issuedWeight).toBe(400);
+    expect(recorded).toBe(issuedWeight);
+    expect(result.diagnostics!.weightedCalls).toBe(issuedWeight);
+  });
   it("uses MET Norway directly when noncommercial Open-Meteo weather is disabled", async () => {
     const env = { LOCAL_CONDITIONS_ENABLED: "true",
       CONDITIONS_DISABLED_SOURCES: conditionSourceIds.filter((id) => id !== "met-norway").join(",") };
@@ -131,7 +147,7 @@ describe("bounded conditions transports", () => {
     expect(fetchMock).toHaveBeenCalledTimes(6);
     expect(result.diagnostics!.forecasts.weather).toMatchObject({ attempted: 200, matched: 200, failed: 0, splitRetried: 0, recovered: 0, skipped: 0,
       failureCodes: {}, affectedCountries: [] });
-    expect((await store.read()).data.conditions.reservations.map(({ weight }) => weight)).toEqual([200]);
+    expect((await store.read()).data.conditions.reservations.map(({ weight }) => weight)).toEqual([200, 40]);
     expect((await store.read()).data.conditions.health["open-meteo-weather"]).toMatchObject({ status: "ok", matched: 200 });
   });
 
@@ -176,7 +192,7 @@ describe("bounded conditions transports", () => {
       return Response.json(latitude.map((lat, index) => ({ ...structuredClone(forecast), latitude: lat, longitude: longitude[index] })));
     });
     const result = await runConditions({ now, stateStore: store, publish: successfulPublish, fetch: fetchMock, env });
-    expect(fetchMock).toHaveBeenCalledTimes(6);
+    expect(fetchMock).toHaveBeenCalledTimes(5); // No unreserved automatic retry at the quota ceiling.
     expect(result.diagnostics!.forecasts.weather).toMatchObject({ splitRetried: 0, skipped: 40, failed: 40 });
     expect((await store.read()).data.conditions.reservations.map(({ weight }) => weight)).toEqual([180, 200]);
   });

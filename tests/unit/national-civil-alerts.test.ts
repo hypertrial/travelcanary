@@ -29,6 +29,21 @@ beforeAll(async () => {
 });
 
 describe("national civil alert country partitions", () => {
+  it.each(["Polygon", "MultiPolygon"])("preserves AT-Alert %s holes and separate exteriors", (type) => {
+    const vienna = locations.find(({ id }) => id === "at-vienna")!;
+    const [lon, lat] = vienna.centroid;
+    const ring = (radius: number) => [[lon - radius, lat - radius], [lon + radius, lat - radius],
+      [lon + radius, lat + radius], [lon - radius, lat + radius], [lon - radius, lat - radius]];
+    const alert = { consolidation_identifier: "hole", alert_level: "AlertLevel1", title: "Public emergency warning",
+      begin_date: "2026-08-28T04:00:00Z", end_date: "2026-08-29T04:00:00Z" };
+    const current = { ...context, locations: [vienna] };
+    const coordinates = type === "Polygon" ? [ring(2), ring(1)] : [[ring(2), ring(1)]];
+    expect(atAlertPartition({ alerts: [{ ...alert, geometry: { type, coordinates } }] }, current).events).toEqual([]);
+    const solid = type === "Polygon" ? [ring(2)] : [[ring(2), ring(1)], [ring(0.2)]];
+    expect(atAlertPartition({ alerts: [{ ...alert, geometry: { type, coordinates: solid } }] }, current).events)
+      .toMatchObject([{ level: "SEVERE", geometry: { ids: ["at-vienna"] } }]);
+    expect(atAlertPartition({ alerts: [{ ...alert, polygons: [ring(2)] }] }, current).events).toHaveLength(1);
+  });
   it("maps LHP CAP severity, fallback classes, cancellation, and mixed reference geometry", () => {
     const berlin = locations.find(({ id }) => id === "de-berlin")!;
     const [longitude, latitude] = berlin.centroid;
@@ -421,6 +436,7 @@ describe("national civil alert country partitions", () => {
     state.sourcePartitions.nationalCivilAlerts.LU.status = "partial";
     state.sourcePartitions.nationalCivilAlerts.LU.sourceUpdatedAt = result.sourceUpdatedAt;
     state.sourcePartitions.nationalCivilAlerts.LU.error = result.error;
+    state.luAlertCursor = result.luAlertCursor ?? null;
     const catchUpFetch = vi.fn(async (url: string | URL | Request) => String(url).includes("api/1/datasets")
       ? Response.json({ last_update: "2026-08-28T05:00:00Z", resources })
       : new Response(luCap));

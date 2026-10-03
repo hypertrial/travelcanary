@@ -4,6 +4,10 @@
 
 Import the public repository directly into a Vercel Pro project and keep Fluid Compute enabled. The repository root is the Vercel Root Directory. `vercel.json` owns all six schedules.
 
+Keep the checked-in `npm ci` install command so deployments preserve the reviewed lockfile, including optional platform dependencies. The separate release audit remains required.
+
+The Next.js ESLint plugin retains all of its rules. Its directory-root glob dependency is replaced by the bounded `tools/next-eslint-glob` adapter over the audited, unbundled `glob/raw` export, removing the unpatched `braces` chain. The adapter supports only the plugin's directory lookup, including symlinked roots. Custom root patterns are case sensitive and must explicitly include a dot to select hidden roots; the adapter does not reproduce fast-glob's implicit hidden-root matches for negative extglobs. Remove the override when the official plugin adopts a safe dependency. Never suppress the release audit to work around this dependency.
+
 Production-only configuration is:
 
 ```text
@@ -50,6 +54,10 @@ PRODUCTION_ORIGIN=https://YOUR_DOMAIN npm run release:initialize
 The command authenticates `HEAD` before each sequential `GET`, applies a bounded request deadline, and prints only route status and aggregate counters. Cron responses add successful, partial, failed, and disabled source counts plus a bounded sorted list of source IDs needing attention; they never include upstream prose, payloads, raw exceptions, or secrets. A completed job can still report degraded sources. A busy, paused, unauthorized, malformed, or non-successful response exits nonzero. To invoke one route manually, pass the secret in an authorization header, never a command argument. `HEAD` verifies authentication without work. `GET` performs bounded work.
 
 Do not delete leases, cursors, state, or quotas to force a run. Wait for lease expiry or diagnose the bounded failure. `INGESTION_PAUSED=true` pauses hosted writes during recovery.
+
+LU-Alert retains at most 1,000 superseded CAP identifiers without eviction. Exceeding this bound fails the transport before updating events or cursor progress. Recovery requires reviewing the replayable resources and establishing a safe baseline; clearing only the supersession cache can restore cancelled alerts.
+
+Forecast quota reservations charge every issued Open-Meteo destination, including automatic transport retries and split retries. A retry without enough remaining weight is deferred, and a real 429 retains its cooldown. Release initialization keeps each request deadline active through response-body consumption.
 
 ## Health and verification
 

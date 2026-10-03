@@ -30,8 +30,8 @@
     "check:audit": "npm audit --audit-level=high",
     "check:release": "node --eval \"console.error('Use scripts/verify instead of npm run check:release'); process.exit(1)\"",
     "check:full": "node --import tsx scripts/check.ts --full",
-    "data:generate": "node scripts/generate-catalog.mjs && node scripts/generate-coverage.mjs",
-    "data:metadata": "node scripts/update-catalog-metadata.mjs",
+    "data:generate": "node --import tsx scripts/generate-catalog-v3.ts && node scripts/generate-coverage.mjs",
+    "data:metadata": "node --import tsx scripts/generate-catalog-v3.ts",
     "applicability:generate": "node scripts/generate-hazard-applicability.mjs",
     "chmi-orp:generate": "node scripts/generate-chmi-orp-mapping.mjs",
     "coverage:generate": "node scripts/generate-coverage.mjs",
@@ -75,7 +75,7 @@
     "fflate": "0.8.3",
     "geotiff": "3.0.5",
     "maplibre-gl": "6.6.0",
-    "next": "16.3.3",
+    "next": "16.3.8",
     "react": "19.2.8",
     "react-aria-components": "1.20.0",
     "react-dom": "19.2.8",
@@ -89,9 +89,15 @@
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.5",
     "eslint": "9.39.1",
-    "eslint-config-next": "16.3.3",
+    "eslint-config-next": "16.3.8",
+    "fast-glob": "file:tools/next-eslint-glob",
     "tsx": "4.23.12",
     "typescript": "5.9.3",
     "vitest": "3.2.7"
+  },
+  "overrides": {
+    "@next/eslint-plugin-next": {
+      "fast-glob": "$fast-glob"
+    }
   }
 }

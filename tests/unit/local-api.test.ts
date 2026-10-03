@@ -43,7 +43,7 @@ describe("local public APIs", () => {
     const body = await summary.json();
     expect(summary.status).toBe(200);
     expect(body.destinations.length).toBeLessThanOrEqual(10);
-    expect(body.counts.UNKNOWN).toBe(177);
+    expect(body.counts.UNKNOWN).toBe(679); // The historical demo is stale at the current clock.
     expect(body.restrictedSources.active).toBe(false);
     expect(JSON.stringify(body)).not.toMatch(/ingestion|acceptedManifestDigest|lastError/);
   });

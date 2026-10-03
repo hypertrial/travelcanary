@@ -57,6 +57,8 @@ EXPECTED_COMMIT_SHA=<40-char-sha> EXPECTED_CATALOG_VERSION=3 npm run verify:prod
 
 The production verifier discovers `/api/v1/data`, validates the pointer, manifest, all object digests, exact membership, producer SHA, freshness, coverage floors, public health, and liveness. A blocked report exits nonzero.
 
+Catalog maintenance uses `npm run data:metadata` to regenerate the active Catalog 3 public catalog, or `npm run data:generate` to regenerate it and coverage. Runtime mappings apply reviewed metadata overrides without rewriting frozen Catalog 2 inputs or legacy fixtures. The retired legacy generator scripts refuse writes. `npm run coverage:measure -- capture <snapshot.json> <cases.json>` validates current Snapshot V11 and supports cases spanning all 679 destinations.
+
 ## Policy and license
 
 Review the [public data policy](docs/DATA_POLICY.md), [source inventory](data/source-inventory.json), and [third-party notices](THIRD_PARTY_NOTICES.md) before operating a collector. Restricted noncommercial sources require explicit local operator acceptance. Optional credentialed integrations remain dormant and request-free when unconfigured.
