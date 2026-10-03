@@ -32,7 +32,12 @@ export class BlobStateStore implements StateStore {
     this.auth = resolveBlobAuth(auth);
   }
   async read() {
-    const result = await this.getBlob(this.pathname, { ...this.auth, access: "private", useCache: false });
+    let result: Awaited<ReturnType<typeof get>>;
+    try { result = await this.getBlob(this.pathname, { ...this.auth, access: "private", useCache: false }); }
+    catch (error) {
+      if (!(error instanceof BlobNotFoundError)) console.error(JSON.stringify({ event: "blob_storage_failed", operation: "private_read" }));
+      throw error;
+    }
     if (!result || result.statusCode !== 200 || !result.stream) throw new BlobNotFoundError();
     const raw = await new Response(result.stream).text();
     const value = JSON.parse(raw) as { schemaVersion?: unknown };
@@ -67,8 +72,16 @@ export class BlobStateStore implements StateStore {
     const validated = stateForWrite(state, expected);
     try {
       if (expected.legacy) await this.preserveV15Backup(expected.legacy.raw);
-      const result = await this.putBlob(this.pathname, JSON.stringify(validated), { ...this.auth, access: "private",
-        allowOverwrite: true, ifMatch: expected.etag, contentType: "application/json", cacheControlMaxAge: 60 });
+      let result: Awaited<ReturnType<typeof put>>;
+      try {
+        result = await this.putBlob(this.pathname, JSON.stringify(validated), { ...this.auth, access: "private",
+          allowOverwrite: true, ifMatch: expected.etag, contentType: "application/json", cacheControlMaxAge: 60 });
+      } catch (error) {
+        if (!(error instanceof BlobPreconditionFailedError) && !(error instanceof ConcurrencyError)) {
+          console.error(JSON.stringify({ event: "blob_storage_failed", operation: "private_write" }));
+        }
+        throw error;
+      }
       return { etag: result.etag, url: result.url };
     } catch (error) {
       if (error instanceof BlobPreconditionFailedError) throw new ConcurrencyError("Private state changed during ingestion");
