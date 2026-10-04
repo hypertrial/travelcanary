@@ -50,8 +50,8 @@ function corrupt(path: string) {
   try {
     database = new DatabaseSync(path, { readOnly: true });
     database.exec("PRAGMA busy_timeout=0");
-    const checks = database.prepare("PRAGMA quick_check").all() as Array<{ quick_check: string }>;
-    return checks.length !== 1 || checks[0].quick_check !== "ok";
+    const checks = database.prepare("PRAGMA integrity_check").all() as Array<{ integrity_check: string }>;
+    return checks.length !== 1 || checks[0].integrity_check !== "ok";
   } catch (error) {
     const code = error instanceof Error && "errcode" in error ? Number(error.errcode) & 255 : 0;
     if (code === 11 || code === 26) return true;

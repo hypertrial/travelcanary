@@ -47,8 +47,8 @@ export function assertNoPendingRecovery(path: string) {
 export function validateLocalBackup(path: string) {
   const candidate = new DatabaseSync(path, { readOnly: true });
   try {
-    const checks = candidate.prepare("PRAGMA quick_check").all() as Array<{ quick_check: string }>;
-    if (checks.length !== 1 || checks[0].quick_check !== "ok") throw new Error("Backup failed SQLite integrity validation");
+    const checks = candidate.prepare("PRAGMA integrity_check").all() as Array<{ integrity_check: string }>;
+    if (checks.length !== 1 || checks[0].integrity_check !== "ok") throw new Error("Backup failed SQLite integrity validation");
     const rows = candidate.prepare("SELECT namespace, key, value, revision, updated_at FROM objects").all() as Array<ObjectRow & { namespace: string; key: string }>;
     for (const row of rows) {
       namespace.parse(row.namespace); objectKey.parse(row.key);

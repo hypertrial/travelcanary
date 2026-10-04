@@ -106,7 +106,9 @@ Only confirmed SQLite corruption qualifies. Permission, I/O, locking, missing
 target, incompatible schema and invalid-state errors never authorize file
 replacement. A healthy supported target uses normal transactional restore,
 including its active collector lease check. The backup must pass full V16,
-Catalog 3, policy and private-object validation before recovery begins.
+Catalog 3, policy and private-object validation before recovery begins. SQLite
+validation uses `integrity_check`, including index/table consistency and
+uniqueness checks; the faster `quick_check` is insufficient for recovery.
 
 Recovery preserves the original database, WAL and SHM bytes in a private
 `travelcanary.db.recovery/originals/` directory, diagnoses a disposable copy,

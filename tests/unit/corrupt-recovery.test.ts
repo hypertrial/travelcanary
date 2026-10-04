@@ -8,7 +8,7 @@ import { setImmediate } from "node:timers/promises";
 import { afterEach, describe, expect, it } from "vitest";
 import { assertNoPendingRecovery, recoverCorruptDatabase } from "@/lib/corrupt-recovery";
 import { disabledLocalPolicy } from "@/lib/local-policy";
-import { initializeLocalRuntime, LocalDatabase } from "@/lib/local-storage";
+import { initializeLocalRuntime, LocalDatabase, validateLocalBackup } from "@/lib/local-storage";
 import { createEmptyState } from "@/lib/risk-state";
 
 const roots: string[] = [];
@@ -34,6 +34,28 @@ function fixture() {
 }
 function originals(target: string) {
   return suffixes.map((suffix) => ({ suffix, bytes: existsSync(`${target}${suffix}`) ? readFileSync(`${target}${suffix}`) : null }));
+}
+function corruptObjectIndex(path: string) {
+  const database = new DatabaseSync(path);
+  let pageSize: number; let rootpage: number;
+  try {
+    database.exec("PRAGMA wal_checkpoint(TRUNCATE); PRAGMA journal_mode=DELETE;");
+    pageSize = (database.prepare("PRAGMA page_size").get() as { page_size: number }).page_size;
+    rootpage = (database.prepare("SELECT rootpage FROM sqlite_schema WHERE name='sqlite_autoindex_objects_1'").get() as { rootpage: number }).rootpage;
+  } finally { database.close(); }
+  const bytes = readFileSync(path); const pageStart = (rootpage - 1) * pageSize;
+  const indexPage = bytes.subarray(pageStart, pageStart + pageSize);
+  expect(indexPage[0], "The canonical object autoindex fixture fits one leaf page").toBe(0x0a);
+  const key = Buffer.from("ingestion/state.json"); const offset = indexPage.indexOf(key);
+  expect(offset).toBeGreaterThanOrEqual(0); expect(indexPage.indexOf(key, offset + 1)).toBe(-1);
+  bytes[pageStart + offset] = "h".charCodeAt(0); writeFileSync(path, bytes);
+  const corrupted = new DatabaseSync(path, { readOnly: true });
+  try {
+    expect(corrupted.prepare("PRAGMA quick_check").all()).toEqual([{ quick_check: "ok" }]);
+    expect(corrupted.prepare("PRAGMA integrity_check").all()).not.toEqual([{ integrity_check: "ok" }]);
+    expect(corrupted.prepare("SELECT value FROM objects NOT INDEXED WHERE namespace='private' AND key='ingestion/state.json'").get()).toBeDefined();
+    expect(corrupted.prepare("SELECT value FROM objects INDEXED BY sqlite_autoindex_objects_1 WHERE namespace='private' AND key='ingestion/state.json'").get()).toBeUndefined();
+  } finally { corrupted.close(); }
 }
 function expectOriginals(target: string, files: ReturnType<typeof originals>) {
   for (const { suffix, bytes } of files) {
@@ -107,6 +129,29 @@ afterEach(async () => {
 });
 
 describe("guarded corrupt-database recovery", () => {
+  it("rejects an index-corrupt backup that passes quick_check before acquiring the target guard", async () => {
+    const { target, candidate } = fixture(); corruptObjectIndex(candidate);
+    const before = originals(target); const candidateHash = hash(candidate);
+    expect(() => validateLocalBackup(candidate)).toThrow(/integrity validation/);
+    await expect(recoverCorruptDatabase(target, candidate)).rejects.toThrow(/integrity validation/);
+    expectOriginals(target, before); expect(hash(candidate)).toBe(candidateHash);
+    expect(existsSync(`${target}.recovery`)).toBe(false);
+  });
+
+  it("replaces an index-corrupt target that passes quick_check with a fresh staged inode", async () => {
+    const { root, target, candidate, state } = fixture(); rmSync(target);
+    const original = new LocalDatabase(target); initializeLocalRuntime(original, new Date("2026-09-17T00:00:00Z")); original.close();
+    corruptObjectIndex(target); const before = originals(target); const inode = statSync(target).ino;
+    await recoverCorruptDatabase(target, candidate);
+    expect(statSync(target).ino).not.toBe(inode); expectArchive(root, target, before);
+    const restored = new DatabaseSync(target, { readOnly: true });
+    try {
+      expect(restored.prepare("PRAGMA integrity_check").all()).toEqual([{ integrity_check: "ok" }]);
+      const row = restored.prepare("SELECT value FROM objects INDEXED BY sqlite_autoindex_objects_1 WHERE namespace='private' AND key='ingestion/state.json'").get() as { value: Uint8Array };
+      expect(JSON.parse(Buffer.from(row.value).toString())).toEqual(state);
+    } finally { restored.close(); }
+  });
+
   it("preserves the complete original file set and imports objects without the SQLite collector lease", async () => {
     const { root, target, candidate, state } = fixture();
     writeFileSync(`${target}-wal`, Buffer.from("original WAL\u0000\u00ff"), { mode: 0o600 });
