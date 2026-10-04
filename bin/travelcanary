@@ -41,6 +41,7 @@ function inner(extraEnvironment = {}) {
 }
 
 const runtimeIndex = args.indexOf("--runtime");
+if (command === "setup" && args[runtimeIndex + 1] === "native") fail("Native Linux requires the dedicated-user system services documented in docs/SELF_HOSTING.md; automated setup supports Docker only");
 if (command === "setup" && args[runtimeIndex + 1] === "docker") {
   const portIndex = args.indexOf("--port"); const port = portValue(portIndex >= 0 ? args[portIndex + 1] : undefined);
   const environmentFile = join(controlDirectory, "docker.env");
@@ -71,10 +72,5 @@ if (command === "setup" && args[runtimeIndex + 1] === "docker") {
     compose(current, ["stop", "web", "collector"]);
     try { compose(current, ["run", "--rm", "--no-deps", "-T", "collector", "bin/travelcanary", "restore", "-"], { input: bytes }); }
     finally { compose(current, ["up", "-d"]); }
-  } else if (command === "setup" && args[runtimeIndex + 1] === "native") {
-    if (process.versions.node !== "24.19.0") fail(`Node 24.19.0 is required; found ${process.version}`);
-    const npm = spawnSync("npm", ["--version"], { encoding: "utf8" });
-    if (npm.status !== 0 || npm.stdout.trim() !== "11.6.2") fail(`npm 11.6.2 is required; found ${npm.stdout?.trim() || "unavailable"}`);
-    run("npm", ["ci"]); inner({ TRAVELCANARY_DEPENDENCIES_READY: "true" });
   } else inner();
 }

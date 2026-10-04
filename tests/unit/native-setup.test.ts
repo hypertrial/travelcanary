@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -42,6 +42,28 @@ describe("native self-host setup", () => {
     expect(cli).toContain("Native Linux requires the dedicated-user system services");
     expect(cli).not.toContain('systemctl", ["--user"');
   });
+
+  for (const entry of ["bin/travelcanary", "scripts/travelcanary-cli.ts"]) {
+    it(`${entry} rejects native setup immediately without invoking npm or writing install state`, () => {
+      const directory = mkdtempSync(join(tmpdir(), "travelcanary-native-rejection-"));
+      try {
+        for (const path of ["bin", "scripts", "fakebin"]) mkdirSync(join(directory, path));
+        for (const path of ["bin/travelcanary", "scripts/travelcanary-cli.ts", "scripts/fetch-health.mjs", "package.json", "tsconfig.json"]) copyFileSync(path, join(directory, path));
+        if (existsSync("scripts/restore-options.mjs")) copyFileSync("scripts/restore-options.mjs", join(directory, "scripts/restore-options.mjs"));
+        for (const path of ["src", "node_modules"]) symlinkSync(join(process.cwd(), path), join(directory, path), "dir");
+        const npm = join(directory, "fakebin/npm"); const log = join(directory, "npm-called");
+        writeFileSync(npm, '#!/bin/sh\nprintf called >> "$TC_NATIVE_NPM_LOG"\nif [ "$1" = "--version" ]; then printf "11.6.2\\n"; fi\n');
+        chmodSync(npm, 0o755);
+        const result = spawnSync(process.execPath, [...(entry.endsWith(".ts") ? ["--import", "tsx"] : []), entry, "setup", "--runtime", "native"], {
+          cwd: directory, env: { ...process.env, PATH: `${join(directory, "fakebin")}:${process.env.PATH}`, TC_NATIVE_NPM_LOG: log }, encoding: "utf8", timeout: 10_000,
+        });
+        expect(result.status).not.toBe(0);
+        expect(result.stderr).toMatch(/dedicated-user system services/);
+        expect(existsSync(log)).toBe(false);
+        expect(existsSync(join(directory, ".travelcanary"))).toBe(false);
+      } finally { rmSync(directory, { recursive: true, force: true }); }
+    }, 15_000);
+  }
 
   it("disables every live source in the system-service smoke fixture", () => {
     const renderer = readFileSync("scripts/render-systemd-smoke.ts", "utf8");
