@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { setImmediate } from "node:timers/promises";
 import { afterEach, describe, expect, it } from "vitest";
 import { parseCatalogStateV15 } from "@/lib/domain/catalog-state";
 import { disabledLocalPolicy } from "@/lib/local-policy";
@@ -17,7 +18,11 @@ function temporaryRoot() {
   const root = mkdtempSync(join(tmpdir(), "travelcanary-restore-"));
   temporaryRoots.push(root); return root;
 }
-afterEach(() => temporaryRoots.splice(0).forEach((root) => rmSync(root, { recursive: true, force: true })));
+afterEach(async () => {
+  temporaryRoots.splice(0).forEach((root) => rmSync(root, { recursive: true, force: true }));
+  // Let Vitest receive worker RPC replies between synchronous subprocess tests.
+  await setImmediate();
+});
 
 function backup(path: string, state: unknown) {
   const database = new LocalDatabase(path);

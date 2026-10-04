@@ -4,6 +4,7 @@ import { existsSync, linkSync, mkdirSync, mkdtempSync, readFileSync, readdirSync
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { setImmediate } from "node:timers/promises";
 import { afterEach, describe, expect, it } from "vitest";
 import { assertNoPendingRecovery, recoverCorruptDatabase } from "@/lib/corrupt-recovery";
 import { disabledLocalPolicy } from "@/lib/local-policy";
@@ -99,7 +100,11 @@ function manualRecovery(target: string, outcome: string) {
     cwd: process.cwd(), env: { ...process.env, RECOVERY_DIR: `${target}.recovery`, RECOVERY_OUTCOME: outcome }, encoding: "utf8", timeout: 10_000,
   });
 }
-afterEach(() => roots.splice(0).forEach((root) => rmSync(root, { recursive: true, force: true })));
+afterEach(async () => {
+  roots.splice(0).forEach((root) => rmSync(root, { recursive: true, force: true }));
+  // Let Vitest receive worker RPC replies between synchronous subprocess tests.
+  await setImmediate();
+});
 
 describe("guarded corrupt-database recovery", () => {
   it("preserves the complete original file set and imports objects without the SQLite collector lease", async () => {
