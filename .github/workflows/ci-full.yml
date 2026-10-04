@@ -97,6 +97,16 @@ jobs:
           systemd-analyze verify "$unit_dir/travelcanary-web.service" "$unit_dir/travelcanary-collector.service" "$unit_dir/travelcanary-collector-once.service"
           sudo systemctl link "$unit_dir/travelcanary-web.service" "$unit_dir/travelcanary-collector.service"
           sudo systemctl daemon-reload
+          collector_node() {
+            (cd /opt/travelcanary-smoke && sudo -u travelcanary-collector env TRAVELCANARY_RUNTIME=local \
+              TRAVELCANARY_PRIVATE_DATA_DIR=/var/lib/travelcanary/private \
+              TRAVELCANARY_PUBLIC_DATA_DIR=/var/lib/travelcanary/public \
+              TRAVELCANARY_CACHE_DIR=/var/lib/travelcanary/cache \
+              "$(command -v node)" --import tsx "$@")
+          }
+          # Initialize disposable state before starting asynchronous services.
+          collector_node --input-type=module -e \
+            "import {LocalDatabase,initializeLocalRuntime} from './src/lib/local-storage.ts'; const db=new LocalDatabase(); initializeLocalRuntime(db); db.close();"
           sudo systemctl start travelcanary-web.service travelcanary-collector.service
           if ! curl --fail --retry 20 --retry-delay 1 --retry-all-errors http://127.0.0.1:3199/api/healthz; then
             sudo systemctl status travelcanary-web.service travelcanary-collector.service --no-pager || true
@@ -105,17 +115,10 @@ jobs:
           fi
           sudo systemctl is-active travelcanary-web.service travelcanary-collector.service
           sudo systemctl stop travelcanary-collector.service
-          collector_cli() {
-            (cd /opt/travelcanary-smoke && sudo -u travelcanary-collector env TRAVELCANARY_RUNTIME=local \
-              TRAVELCANARY_PRIVATE_DATA_DIR=/var/lib/travelcanary/private \
-              TRAVELCANARY_PUBLIC_DATA_DIR=/var/lib/travelcanary/public \
-              TRAVELCANARY_CACHE_DIR=/var/lib/travelcanary/cache \
-              "$(command -v node)" --import tsx scripts/travelcanary-cli.ts "$@")
-          }
-          collector_cli backup /var/lib/travelcanary/private/smoke-backup.db
+          collector_node scripts/travelcanary-cli.ts backup /var/lib/travelcanary/private/smoke-backup.db
           sudo -u travelcanary-collector "$(command -v node)" -e \
             "require('node:fs').writeFileSync('/var/lib/travelcanary/private/travelcanary.db','disposable Linux corruption',{mode:0o600})"
-          collector_cli restore /var/lib/travelcanary/private/smoke-backup.db --recover-corrupt --collector-stopped
+          collector_node scripts/travelcanary-cli.ts restore /var/lib/travelcanary/private/smoke-backup.db --recover-corrupt --collector-stopped
           sudo systemctl start travelcanary-collector.service
           sudo systemctl is-active travelcanary-web.service travelcanary-collector.service
           curl --fail http://127.0.0.1:3199/api/healthz

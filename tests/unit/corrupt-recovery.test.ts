@@ -1,6 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { chmodSync, existsSync, linkSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
+import { existsSync, linkSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -165,13 +165,29 @@ describe("guarded corrupt-database recovery", () => {
     expect(existsSync(target)).toBe(false);
   });
 
-  it("does not turn an unreadable target into corruption evidence or replace it", async () => {
-    const { target, candidate } = fixture(); const before = readFileSync(target);
-    chmodSync(target, 0o000);
-    try { await expect(recoverCorruptDatabase(target, candidate)).rejects.toThrow(); }
-    finally { chmodSync(target, 0o600); }
-    expect(readFileSync(target)).toEqual(before);
-  });
+  it("does not turn an unreadable target into corruption evidence or replace it", () => {
+    const { target, candidate } = fixture(); const before = originals(target);
+    // Root can read mode-000 files; inject the real boundary error on every runner.
+    const script = `
+import fs from 'node:fs';
+import { syncBuiltinESMExports } from 'node:module';
+const originalOpen = fs.openSync;
+fs.openSync = (path, ...args) => {
+  if (String(path) === process.env.TC_TEST_TARGET) {
+    throw Object.assign(new Error('TC_INJECTED_UNREADABLE_TARGET'), {code:'EACCES'});
+  }
+  return originalOpen(path, ...args);
+};
+syncBuiltinESMExports();
+const { recoverCorruptDatabase } = await import(${JSON.stringify(resolve("src/lib/corrupt-recovery.ts"))});
+await recoverCorruptDatabase(process.env.TC_TEST_TARGET, process.env.TC_TEST_CANDIDATE);
+`;
+    const child = spawnSync(process.execPath, ["--import", "tsx", "--input-type=module", "--eval", script], {
+      cwd: process.cwd(), env: { ...process.env, TC_TEST_TARGET: target, TC_TEST_CANDIDATE: candidate }, encoding: "utf8", timeout: 15_000,
+    });
+    expect(child.status).not.toBe(0); expect(child.stderr).toMatch(/TC_INJECTED_UNREADABLE_TARGET/); expect(child.stderr).toMatch(/EACCES/);
+    expectOriginals(target, before); expect(existsSync(`${target}.recovery`)).toBe(false);
+  }, 20_000);
 
   for (const failure of ["setup", "preservation", "changed-during-setup"]) {
     it(`handles an ordinary ${failure} failure without stranding an unchanged target behind the guard`, () => {
