@@ -57,7 +57,7 @@ jobs:
           cache: npm
       - run: npm install --global npm@11.6.2
       - run: npm ci --no-audit --no-fund
-      - run: npx vitest run tests/unit/local-storage.test.ts tests/unit/local-api.test.ts tests/unit/native-setup.test.ts
+      - run: npx vitest run tests/unit/local-storage.test.ts tests/unit/local-api.test.ts tests/unit/native-setup.test.ts tests/unit/travelcanary-cli.test.ts tests/unit/corrupt-recovery.test.ts
       - run: npm run omarchy:check
       - run: npm run build
         env:
@@ -65,6 +65,8 @@ jobs:
           LOCAL_CONDITIONS_ENABLED: "true"
       - run: docker compose config --quiet
       - run: docker build --tag travelcanary:ci .
+      - name: Recover a corrupt database in disposable Docker volumes
+        run: node --import tsx scripts/smoke-private-recovery.ts
       - name: Smoke test generated systemd services
         run: |
           set -euo pipefail
@@ -102,3 +104,18 @@ jobs:
             exit 1
           fi
           sudo systemctl is-active travelcanary-web.service travelcanary-collector.service
+          sudo systemctl stop travelcanary-collector.service
+          collector_cli() {
+            (cd /opt/travelcanary-smoke && sudo -u travelcanary-collector env TRAVELCANARY_RUNTIME=local \
+              TRAVELCANARY_PRIVATE_DATA_DIR=/var/lib/travelcanary/private \
+              TRAVELCANARY_PUBLIC_DATA_DIR=/var/lib/travelcanary/public \
+              TRAVELCANARY_CACHE_DIR=/var/lib/travelcanary/cache \
+              "$(command -v node)" --import tsx scripts/travelcanary-cli.ts "$@")
+          }
+          collector_cli backup /var/lib/travelcanary/private/smoke-backup.db
+          sudo -u travelcanary-collector "$(command -v node)" -e \
+            "require('node:fs').writeFileSync('/var/lib/travelcanary/private/travelcanary.db','disposable Linux corruption',{mode:0o600})"
+          collector_cli restore /var/lib/travelcanary/private/smoke-backup.db --recover-corrupt --collector-stopped
+          sudo systemctl start travelcanary-collector.service
+          sudo systemctl is-active travelcanary-web.service travelcanary-collector.service
+          curl --fail http://127.0.0.1:3199/api/healthz

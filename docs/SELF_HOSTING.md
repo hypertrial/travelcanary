@@ -84,6 +84,146 @@ objects in one SQLite transaction while keeping the database file in place.
 Failure rolls back the replacement. Restored objects receive fresh target
 revisions; collector leases from the backup are discarded.
 
+### Recovering a corrupt private database
+
+Use this opt-in mode only after stopping every process that uses the private
+database. Native operators must stop both collector services, any one-shot
+jobs, and other CLI operations, then run as the collector account:
+
+```bash
+bin/travelcanary restore /secure/path/backup.db --recover-corrupt --collector-stopped
+```
+
+For a managed Docker installation, omit `--collector-stopped`: the launcher
+stops web, collector, collector-once and all containers mounting its private
+volume, including one-off and unlabeled containers, and verifies shutdown
+before forwarding the backup. Keep other operators from starting containers
+or native writers until recovery finishes. This mode requires Docker Compose
+with JSON configuration output. Successful recovery starts only the regular
+web and collector; any recovery failure leaves services stopped.
+
+Only confirmed SQLite corruption qualifies. Permission, I/O, locking, missing
+target, incompatible schema and invalid-state errors never authorize file
+replacement. A healthy supported target uses normal transactional restore,
+including its active collector lease check. The backup must pass full V16,
+Catalog 3, policy and private-object validation before recovery begins.
+
+Recovery preserves the original database, WAL and SHM bytes in a private
+`travelcanary.db.recovery/originals/` directory, diagnoses a disposable copy,
+and builds a fresh validated database without importing backup triggers or
+SQLite collector-table leases. Embedded V16 ingestion and conditions leases
+retain their existing restore semantics and may delay collection until expiry.
+The staged database is checkpointed and installed without overwriting an
+unexpected target. A successful operation retains a mode-`0700`
+`travelcanary.db.pre-recovery-<uuid>` archive with mode-`0600` files. Archives
+are private operator evidence; do not publish or automatically prune them.
+
+### Interrupted corruption recovery
+
+A pending `travelcanary.db.recovery` directory blocks collector, policy,
+backup and restore operations before opening SQLite. Do not delete it based
+on its age or PID. Stop all writers and confirm that the original restore
+process has exited. Preserve an additional private copy of the entire pending
+directory before manual resolution. Missing/invalid manifests or unknown files
+require investigation with services stopped.
+
+The following manual procedure verifies recorded hashes before changing files.
+Set `RECOVERY_OUTCOME=complete` to finish the validated staged installation, or
+`RECOVERY_OUTCOME=rollback` to restore the recorded original file set. Rollback
+returns the original corrupt database; afterward rerun the backup restore while
+writers remain stopped. Neither outcome starts services. Run as the collector
+account with `RECOVERY_DIR` set to the absolute pending directory; for Docker,
+run the same Node input in a `docker compose run --rm --no-deps -T collector`
+container, supplying those two environment variables and `/data/private/` as
+the private root. Never invoke the collector command for this manual step.
+
+```bash
+RECOVERY_DIR=/var/lib/travelcanary/private/travelcanary.db.recovery \
+RECOVERY_OUTCOME=complete node --input-type=module <<'JS'
+// manual-private-recovery
+import assert from 'node:assert/strict';
+import { createHash, randomUUID } from 'node:crypto';
+import { constants, closeSync, copyFileSync, fsyncSync, linkSync, lstatSync, openSync, readFileSync, renameSync, unlinkSync } from 'node:fs';
+import { basename, dirname, join, resolve } from 'node:path';
+const guard = resolve(process.env.RECOVERY_DIR);
+assert(guard.endsWith('/travelcanary.db.recovery'));
+assert(lstatSync(guard).isDirectory() && !lstatSync(guard).isSymbolicLink());
+const target = guard.slice(0, -'.recovery'.length);
+const manifest = JSON.parse(readFileSync(join(guard, 'manifest.json'), 'utf8'));
+assert.equal(manifest.version, 1); assert.equal(manifest.target, basename(target));
+const suffixes = ['', '-wal', '-shm'];
+assert(Array.isArray(manifest.files) && manifest.files.length <= 3);
+assert.equal(new Set(manifest.files.map(f => f.suffix)).size, manifest.files.length);
+assert(manifest.files.some(f => f.suffix === ''));
+for (const f of manifest.files) assert(suffixes.includes(f.suffix) && /^[a-f0-9]{64}$/.test(f.sha256));
+const restored = manifest.restored ?? [];
+assert(Array.isArray(restored) && restored.length <= 3);
+assert.equal(new Set(restored.map(f => f.suffix)).size, restored.length);
+for (const f of restored) assert(manifest.files.some(original => original.suffix === f.suffix && original.sha256 === f.sha256));
+const present = path => { try { return lstatSync(path); } catch (e) { if (e.code === 'ENOENT') return null; throw e; } };
+const hash = path => {
+  const fd = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+  try { assert(lstatSync(path).isFile()); return createHash('sha256').update(readFileSync(fd)).digest('hex'); }
+  finally { closeSync(fd); }
+};
+const flush = path => { const fd = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW); try { fsyncSync(fd); } finally { closeSync(fd); } };
+const stage = join(guard, 'staged.db');
+const isStage = path => {
+  if (!present(path) || !manifest.staged) return false;
+  const stat = lstatSync(path);
+  return stat.dev === manifest.staged.dev && stat.ino === manifest.staged.ino && hash(path) === manifest.staged.sha256;
+};
+// Validate all source evidence and destination identities before changing any file.
+for (const f of manifest.files) assert.equal(hash(join(guard, 'originals', basename(target) + f.suffix)), f.sha256);
+for (const f of restored) {
+  const alias = join(guard, 'rollback' + f.suffix + '.db'); const stat = present(alias);
+  if (stat) assert(stat.dev === f.dev && stat.ino === f.ino && hash(alias) === f.sha256, 'Unknown rollback alias');
+}
+for (const suffix of suffixes) {
+  const path = target + suffix; const stat = present(path);
+  if (!stat) continue;
+  const f = manifest.files.find(f => f.suffix === suffix);
+  const replacement = restored.find(f => f.suffix === suffix);
+  assert((f && stat.dev === f.dev && stat.ino === f.ino && hash(path) === f.sha256) ||
+    (replacement && stat.dev === replacement.dev && stat.ino === replacement.ino && hash(path) === replacement.sha256) ||
+    (suffix === '' && isStage(path)), 'Unknown target file; investigate without overwriting');
+}
+if (process.env.RECOVERY_OUTCOME === 'complete') {
+  assert(manifest.staged && /^[a-f0-9]{64}$/.test(manifest.staged.sha256));
+  assert(isStage(stage) || isStage(target), 'Validated stage unavailable; use rollback');
+  for (const suffix of suffixes) if (present(target + suffix) && !(suffix === '' && isStage(target))) unlinkSync(target + suffix);
+  if (!present(target)) linkSync(stage, target);
+  assert(isStage(target)); if (present(stage)) unlinkSync(stage); flush(target);
+} else {
+  assert.equal(process.env.RECOVERY_OUTCOME, 'rollback');
+  for (const suffix of suffixes) {
+    const path = target + suffix; const f = manifest.files.find(f => f.suffix === suffix);
+    if (present(path) && !f) { assert(suffix === '' && isStage(path)); unlinkSync(path); }
+    else if (present(path) && isStage(path)) unlinkSync(path);
+    if (f && !present(path)) { copyFileSync(join(guard, 'originals', basename(target) + suffix), path, constants.COPYFILE_EXCL); flush(path); }
+    if (f) assert.equal(hash(path), f.sha256); else assert(!present(path));
+  }
+}
+// Interrupted rollback may leave its private installation link. Remove only
+// aliases whose identity was durably recorded by this operation.
+for (const f of restored) {
+  const alias = join(guard, 'rollback' + f.suffix + '.db'); const stat = present(alias);
+  if (!stat) continue;
+  assert(stat.dev === f.dev && stat.ino === f.ino && hash(alias) === f.sha256, 'Unknown rollback alias');
+  unlinkSync(alias);
+}
+for (const suffix of suffixes) if (present(target + suffix)) assert.equal(lstatSync(target + suffix).nlink, 1, 'Unidentified target hardlink');
+flush(guard); flush(dirname(target));
+renameSync(guard, target + '.pre-recovery-' + randomUUID()); flush(dirname(target));
+console.log('Manual recovery verified; private archive retained. Services remain stopped.');
+JS
+```
+
+Do not automatically retry a failed manual procedure. Preserve the guard and
+files, inspect the reported invariant, and investigate. After successful
+completion, restart only regular web/collector services. Never restore V15,
+clear embedded leases, or mutate public publications as part of private recovery.
+
 ## Source policy
 
 Open reviewed sources run by default. Restricted sources require explicit acceptance of the current data-policy manifest:

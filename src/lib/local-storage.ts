@@ -38,6 +38,33 @@ function text(row: ObjectRow): string {
   return typeof row.value === "string" ? row.value : Buffer.from(row.value).toString("utf8");
 }
 
+export function assertNoPendingRecovery(path: string) {
+  try { lstatSync(`${path}.recovery`); }
+  catch (error) { if (error instanceof Error && "code" in error && error.code === "ENOENT") return; throw error; }
+  throw new Error(`Pending private database recovery: ${path}.recovery. Keep all writers stopped and follow docs/SELF_HOSTING.md.`);
+}
+
+export function validateLocalBackup(path: string) {
+  const candidate = new DatabaseSync(path, { readOnly: true });
+  try {
+    const checks = candidate.prepare("PRAGMA quick_check").all() as Array<{ quick_check: string }>;
+    if (checks.length !== 1 || checks[0].quick_check !== "ok") throw new Error("Backup failed SQLite integrity validation");
+    const rows = candidate.prepare("SELECT namespace, key, value, revision, updated_at FROM objects").all() as Array<ObjectRow & { namespace: string; key: string }>;
+    for (const row of rows) {
+      namespace.parse(row.namespace); objectKey.parse(row.key);
+      if (Buffer.byteLength(text(row)) > PRIVATE_STATE_HARD_LIMIT_BYTES) throw new Error("Backup object exceeds its size limit");
+    }
+    const required = (key: string, maxBytes: number) => {
+      const row = rows.find((entry) => entry.key === key);
+      if (!row || Buffer.byteLength(text(row)) > maxBytes) throw new Error(`Backup is missing or exceeds limits for ${key}`);
+      return JSON.parse(text(row));
+    };
+    const state = IngestionStateV16Schema.parse(required(STATE_KEY, PRIVATE_STATE_HARD_LIMIT_BYTES));
+    if (state.collection.catalogVersion !== 3) throw new Error("Backup catalog is not supported");
+    LocalRuntimePolicySchema.parse(required(POLICY_KEY, 4096));
+  } finally { candidate.close(); }
+}
+
 export class LocalDatabase {
   readonly path: string;
   private readonly database: DatabaseSync;
@@ -45,6 +72,7 @@ export class LocalDatabase {
   constructor(path = localDatabasePath(), busyTimeoutMs = DEFAULT_BUSY_TIMEOUT_MS) {
     if (!Number.isInteger(busyTimeoutMs) || busyTimeoutMs < 100 || busyTimeoutMs > 30_000) throw new Error("SQLite busy timeout must be between 100 and 30000 ms");
     this.path = resolve(path);
+    assertNoPendingRecovery(this.path);
     mkdirSync(dirname(this.path), { recursive: true, mode: 0o700 });
     if (!lstatSync(dirname(this.path)).isDirectory()) throw new Error("SQLite parent is not a directory");
     try { if (!lstatSync(this.path).isFile()) throw new Error("SQLite path must be a regular file"); }

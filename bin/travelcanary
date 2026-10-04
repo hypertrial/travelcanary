@@ -4,11 +4,13 @@ import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "n
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fetchHealth } from "../scripts/fetch-health.mjs";
+import { parseRestoreArgs, stopRecoveryWriters } from "../scripts/restore-options.mjs";
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const controlDirectory = join(repository, ".travelcanary");
 const installFile = join(controlDirectory, "install.json");
 const [command, ...args] = process.argv.slice(2);
+const restoreOptions = command === "restore" ? parseRestoreArgs(args) : null;
 
 function fail(message) { console.error(message); process.exit(1); }
 function run(program, programArgs, options = {}) {
@@ -67,10 +69,15 @@ if (command === "setup" && args[runtimeIndex + 1] === "docker") {
     const bytes = compose(current, ["exec", "-T", "collector", "bin/travelcanary", "backup", "-"], { capture: true });
     writeFileSync(destination, bytes, { mode: 0o600 }); chmodSync(destination, 0o600); console.log(`Private backup created: ${destination}`);
   } else if (outsideDocker && command === "restore") {
-    if (!args[0]) fail("Usage: travelcanary restore <backup>");
-    const bytes = readFileSync(resolve(args[0]));
+    const bytes = readFileSync(resolve(restoreOptions.input));
+    if (restoreOptions.recover) {
+      stopRecoveryWriters((rest, options) => compose(current, rest, options), (rest, options) => run("docker", rest, options));
+      compose(current, ["run", "--rm", "--no-deps", "-T", "collector", "bin/travelcanary", "restore", "-", "--recover-corrupt", "--collector-stopped"], { input: bytes });
+      compose(current, ["up", "-d", "web", "collector"]);
+    } else {
     compose(current, ["stop", "web", "collector"]);
     try { compose(current, ["run", "--rm", "--no-deps", "-T", "collector", "bin/travelcanary", "restore", "-"], { input: bytes }); }
     finally { compose(current, ["up", "-d"]); }
+    }
   } else inner();
 }

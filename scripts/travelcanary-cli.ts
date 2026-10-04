@@ -3,15 +3,16 @@ import { spawnSync } from "node:child_process";
 import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { initializeLocalRuntime, localDatabasePath, LocalDatabase, readLocalPolicy, writeLocalPolicy } from "../src/lib/local-storage";
-import { disabledLocalPolicy, LocalRuntimePolicySchema, restrictedSourceManifestDigest } from "../src/lib/local-policy";
-import { IngestionStateV16Schema } from "../src/lib/domain/catalog-state";
-import { PRIVATE_STATE_HARD_LIMIT_BYTES } from "../src/lib/ingestion/limits";
+import { assertNoPendingRecovery, initializeLocalRuntime, localDatabasePath, LocalDatabase, readLocalPolicy, validateLocalBackup, writeLocalPolicy } from "../src/lib/local-storage";
+import { disabledLocalPolicy, restrictedSourceManifestDigest } from "../src/lib/local-policy";
+import { recoverCorruptDatabase } from "../src/lib/corrupt-recovery";
 import { FilePublicationStore } from "../src/lib/publication-store";
 import { checkPublicationHealth } from "../src/lib/public-health";
 import { runtimePaths } from "../src/lib/runtime-paths";
 // @ts-expect-error Shared JavaScript CLI helper has no declaration file.
 import { fetchHealth } from "./fetch-health.mjs";
+// @ts-expect-error Shared JavaScript CLI helper has no declaration file.
+import { parseRestoreArgs, stopRecoveryWriters } from "./restore-options.mjs";
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const controlDirectory = join(repository, ".travelcanary");
@@ -99,6 +100,7 @@ function policy(action: string) {
 
 async function directBackup(output: string) {
   const sourcePath = localDatabasePath();
+  assertNoPendingRecovery(sourcePath);
   if (!existsSync(sourcePath)) fail("TravelCanary database does not exist");
   const stream = output === "-";
   const temporaryDirectory = stream ? mkdtempSync(join(dirname(sourcePath), ".backup-")) : null;
@@ -126,55 +128,44 @@ async function backupCommand(output?: string) {
   await directBackup(output === "-" ? "-" : destination);
 }
 
-function validateBackup(path: string) {
-  const candidate = new DatabaseSync(path, { readOnly: true });
-  try {
-    const integrity = candidate.prepare("PRAGMA quick_check").all() as Array<{ quick_check: string }>;
-    if (integrity.length !== 1 || integrity[0].quick_check !== "ok") throw new Error("Backup failed SQLite integrity validation");
-    const decode = (value: Uint8Array | string) => typeof value === "string" ? value : Buffer.from(value).toString("utf8");
-    const select = candidate.prepare("SELECT value FROM objects WHERE namespace=? AND key=?");
-    const required = <T>(scope: "private", key: string, maxBytes: number, parse: (value: unknown) => T) => {
-      const row = select.get(scope, key) as { value?: Uint8Array | string } | undefined;
-      if (!row?.value) throw new Error(`Backup is missing required ${scope} object ${key}`);
-      const raw = decode(row.value);
-      if (Buffer.byteLength(raw) > maxBytes) throw new Error(`Backup object ${key} exceeds its size limit`);
-      return parse(JSON.parse(raw));
-    };
-    const state = required("private", "ingestion/state.json", PRIVATE_STATE_HARD_LIMIT_BYTES, IngestionStateV16Schema.parse);
-    if (state.collection.catalogVersion !== 3) throw new Error("Backup catalog is not supported");
-    required("private", "runtime/policy.json", 4096, LocalRuntimePolicySchema.parse);
-  } finally { candidate.close(); }
-}
-
-async function directRestore(input: string) {
+async function directRestore(input: string, recover = false) {
   const target = localDatabasePath(); mkdirSync(dirname(target), { recursive: true, mode: 0o700 });
   const temporaryDirectory = mkdtempSync(join(dirname(target), ".restore-"));
   const temp = join(temporaryDirectory, "travelcanary.db");
   try {
     if (input === "-") writeFileSync(temp, readFileSync(0), { mode: 0o600 });
     else copyFileSync(resolve(input), temp);
-    chmodSync(temp, 0o600); validateBackup(temp);
+    chmodSync(temp, 0o600); validateLocalBackup(temp);
+    if (recover) { await recoverCorruptDatabase(target, temp); }
+    else {
     const stamp = new Date().toISOString().replaceAll(":", "-");
     const database = new LocalDatabase(target);
     try { await database.restoreBackup(temp, `${target}.pre-restore-${stamp}`); }
     finally { database.close(); }
+    }
   } finally { rmSync(temporaryDirectory, { recursive: true, force: true }); }
   console.log(input === "-" ? "TravelCanary database restored." : `TravelCanary restored from private backup ${basename(input)}.`);
 }
 
-async function restoreCommand(input?: string) {
-  if (!input) fail("Usage: travelcanary restore <backup>");
+async function restoreCommand(args: string[]) {
+  const { input, recover, stopped } = parseRestoreArgs(args);
   const install = readInstall();
   if (install?.runtime === "docker" && !process.env.TRAVELCANARY_DATA_DIR) {
     const bytes = readFileSync(resolve(input));
+    if (recover) {
+      stopRecoveryWriters((rest: string[], options: { capture?: boolean }) => run("docker", composeArgs(install, rest), options), (rest: string[], options: { capture?: boolean }) => run("docker", rest, options));
+      run("docker", composeArgs(install, ["run", "--rm", "--no-deps", "-T", "collector", "bin/travelcanary", "restore", "-", "--recover-corrupt", "--collector-stopped"]), { input: bytes });
+      run("docker", composeArgs(install, ["up", "-d", "web", "collector"])); return;
+    }
     run("docker", composeArgs(install, ["stop", "web", "collector"]));
     try { run("docker", composeArgs(install, ["run", "--rm", "--no-deps", "-T", "collector", "bin/travelcanary", "restore", "-"]), { input: bytes }); }
     finally { run("docker", composeArgs(install, ["up", "-d"])); }
     return;
   }
   if (install?.runtime === "native") fail("Migrate this legacy same-user native installation to the dedicated-user system services before restoring");
+  if (recover && !stopped) fail("--recover-corrupt requires --collector-stopped after stopping every private database writer");
   if (install?.dataDirectory) process.env.TRAVELCANARY_DATA_DIR = install.dataDirectory;
-  await directRestore(input);
+  await directRestore(input, recover);
 }
 
 const [command, ...args] = process.argv.slice(2);
@@ -182,5 +173,5 @@ if (command === "setup") await setup(args);
 else if (command === "status") await status();
 else if (command === "policy") policy(args[0]);
 else if (command === "backup") await backupCommand(args[0]);
-else if (command === "restore") await restoreCommand(args[0]);
+else if (command === "restore") await restoreCommand(args);
 else fail("Usage: travelcanary setup --runtime docker [--port 3000] | status | policy accept-restricted|disable-restricted | backup [output] | restore <backup>");
